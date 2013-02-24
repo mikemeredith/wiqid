@@ -1,0 +1,6 @@
+Quick and Dirty functions for Wildlife simulations.
+
+Over the years I've done various wildlife data simulations and have written little functions to estimate occupancy or abundnace or survival directly in R, without having to pass the data to PRESENCE or MARK.
+
+With a simulations workshop coming up in a few weeks, seems like a good time to put these together into a package.
+

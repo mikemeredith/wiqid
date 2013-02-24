@@ -1,0 +1,96 @@
+# Single season occupancy with site and survey covariates.
+
+occSScov <- function(DH, psi=~1, p=~1, data=NULL) {
+  # single-season occupancy models with site and survey covatiates
+  # ** DH is detection data in a 1/0/NA matrix or data frame, sites in rows, 
+  #    detection occasions in columns..
+  # ** psi and p are one-sided formulae describing the model
+  # ** data is a LIST with vectors for site covariates and site x survey matrices
+  #     for survey covariates.
+
+  site.names <- rownames(DH)
+  DH <- as.matrix(DH)
+  nSites <- nrow(DH)
+  nSurv <- ncol(DH)
+  if(is.null(site.names))
+    site.names <- 1:nSites
+  # Sanity checks:
+  if (nSurv < 2)
+    stop("More than one survey occasion is needed")
+  survey.done <- !is.na(as.vector(DH))
+  DHvec <- as.vector(DH)[survey.done]
+  siteID <- as.vector(row(DH))[survey.done]
+  survID <- as.vector(col(DH))[survey.done]
+  if(!is.null(data))  {
+    covLen <- lapply(data, length)
+    psiDf <- as.data.frame(data[covLen == nSites])
+    if(any(is.na(psiDf)))
+      stop("Missing site covariates are not allowed.")
+    for(i in which(covLen == nSites * nSurv))
+      data[[i]] <- as.vector(data[[i]])
+    pDf.tmp <- as.data.frame(data[covLen == nSites | covLen == nSites*nSurv])
+    # Deal with NAs
+    pDf <- pDf.tmp[survey.done, ]
+    if(any(is.na(pDf)))
+      stop("Missing survey covariates are not allowed when a survey was done.")
+    pDf$.time <- as.factor(survID)
+  } else {
+    psiDf <- data.frame(.dummy = rep(NA, nSites))
+    pDf <- data.frame(.time = as.factor(survID))
+    # model.matrix needs a data frame, NULL won't do.
+  }
+
+  psiModMat <- model.matrix(psi, psiDf)
+  psiK <- ncol(psiModMat)
+  pModMat <- model.matrix(p, pDf)
+  pK <- ncol(pModMat)
+  K <- psiK + pK
+
+  beta.mat <- matrix(NA_real_, K, 4)
+  colnames(beta.mat) <- c("est", "SE", "lowCI", "uppCI")
+  rownames(beta.mat) <- c(
+    paste("psi:", colnames(psiModMat)),
+    paste("p:", colnames(pModMat)))
+  lp.mat <- matrix(NA_real_, nSites + sum(survey.done), 3)
+  colnames(lp.mat) <- c("est", "lowCI", "uppCI")
+  rownames(lp.mat) <- c(
+    paste("psi:", site.names, sep=""),
+    paste("p:", siteID, ",", survID, sep=""))
+  AIC <- NA_real_
+
+  nll <- function(param){
+    psiBeta <- param[1:psiK]
+    pBeta <- param[(psiK+1):K]
+    psiProb <- as.vector(plogis(psiModMat %*% psiBeta))
+    pProb <- plogis(pModMat %*% pBeta)
+    Lik1 <- DHvec*pProb + (1-DHvec) * (1-pProb)
+    Lik2 <- tapply(Lik1, siteID, prod)
+    llh <- sum(log(psiProb * Lik2 + 
+          (1 - psiProb) * (rowSums(DH, na.rm=TRUE) == 0)))
+    return(min(-llh, .Machine$double.xmax))
+  }
+
+  # Run mle estimation with nlm:
+  param <- rep(0, K)
+  res <- nlm(nll, param, hessian=TRUE)
+  if(res$code < 3)  {  # exit code 1 or 2 is ok.
+    beta.mat[,1] <- res$estimate
+    lp.mat[, 1] <- c(psiModMat %*% beta.mat[1:psiK, 1],
+                     pModMat %*% beta.mat[(psiK+1):K, 1])
+    AIC <- 2*res$minimum + 2 * K
+    if (det(res$hessian) > 0) {
+      varcov <- solve(res$hessian)
+      SE <- sqrt(diag(varcov))
+      beta.mat[, 2] <- SE
+      crit <- qnorm(c(0.025, 0.975))
+      beta.mat[, 3:4] <- sweep(outer(SE, crit), 1, res$estimate, "+")
+      SElp <- c(sqrt(diag(psiModMat %*% varcov[1:psiK, 1:psiK] %*% t(psiModMat))),
+                sqrt(diag(pModMat %*% varcov[(psiK+1):K, (psiK+1):K] %*% t(pModMat))))
+      lp.mat[, 2:3] <- sweep(outer(SElp, crit), 1, lp.mat[, 1], "+")
+    }
+  }
+  out <- list(beta = beta.mat, real = plogis(lp.mat), AIC = AIC)
+  return(out)
+}
+
+
