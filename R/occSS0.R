@@ -7,6 +7,8 @@ function(y, n) {
   if(length(y) != length(n))
     stop("y and n must have the same length")
   beta.mat <- matrix(NA_real_, 2, 3)
+  colnames(beta.mat) <- c("est", "lowCI", "uppCI")
+  rownames(beta.mat) <- c("psiHat", "pHat")
   AIC <- NA_real_
   if(sum(n) > 0) {    # If all n's are 0, no data available.
     nll <- function(params) {
@@ -27,9 +29,10 @@ function(y, n) {
       }
     }
   }
-  out.mat <- plogis(beta.mat)
-  colnames(out.mat) <- c("est", "lowCI", "uppCI")
-  rownames(out.mat) <- c("psiHat", "pHat")
-  attr(out.mat, "AIC") <- AIC
-  return(out.mat)
+  out <- list(call = match.call(),
+              beta = beta.mat,
+              real = plogis(beta.mat),
+              AIC = AIC)
+  class(out) <- c("occupancy", "list")
+  return(out)
 }

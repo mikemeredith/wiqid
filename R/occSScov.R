@@ -89,7 +89,11 @@ occSScov <- function(DH, psi=~1, p=~1, data=NULL) {
       lp.mat[, 2:3] <- sweep(outer(SElp, crit), 1, lp.mat[, 1], "+")
     }
   }
-  out <- list(beta = beta.mat, real = plogis(lp.mat), AIC = AIC)
+  out <- list(call = match.call(),
+              beta = beta.mat,
+              real = plogis(lp.mat),
+              AIC = AIC)
+  class(out) <- c("occupancy", "list")
   return(out)
 }
 

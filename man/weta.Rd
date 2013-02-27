@@ -11,9 +11,9 @@ Rewults of an occupancy survey to see if presence/absence of weta in 72 gorse bu
 \format{
   A data frame with 72 observations on the following 11 variables.
   \describe{
-    \item{\code{D1 - D5}}{a numeric vector for each of 5 daily suveys, showing whether weta were detected (1) or not detected (0); NA if the bush was not surveyed on the relevant day. }
+    \item{\code{D1, D2, D3, D4, D5}}{a numeric vector for each of 5 daily suveys, showing whether weta were detected (1) or not detected (0); NA if the bush was not surveyed on the relevant day. }
     \item{\code{Browsed}}{a numeric vector indicating whether the bush was browsed (1) or not browsed (0)}
-    \item{\code{ObsD1-obsD5}}{a factor with levels \code{A} \code{B} \code{C}, indicating which observer carried out each survey.}
+    \item{\code{ObsD1, ObsD2, ObsD3, ObsD4, ObsD5}}{a factor with levels \code{A} \code{B} \code{C}, indicating which observer carried out each survey.}
   }
 }
 \details{
@@ -31,19 +31,19 @@ data(weta)
 DH <- weta[, 1:5]
 y <- rowSums(DH, na.rm=TRUE)
 n <- rowSums(!is.na(DH))
-weta1 <- occSS0(y, n)
-weta2 <- occSS.t(DH)
+occSS0(y, n)
+occSS.t(DH)
 
 # Extract site covariate and use this:
 weta.covs <- weta[, 6, drop=FALSE]
   # drop=FALSE ensures that it remains as a data frame with 1 column.
-weta3 <- occSScovSite(DH, psi= ~ Browsed, data=weta.covs)
+occSScovSite(y, n, psi= ~ Browsed, data=weta.covs)
 
 # Extract the obs covariate and create the list of covariates
 weta.obs <- weta[, 7:11]
 weta.dat <- as.list(weta.covs)
 weta.dat$obs <- as.matrix(weta.obs)
-weta4 <- occSScov(DH, psi= ~ Browsed, p= ~ obs, data=weta.dat)
+occSScov(DH, psi= ~ Browsed, p= ~ obs, data=weta.dat)
 
 }
 \keyword{datasets}

@@ -1,1 +1,11 @@
-exportPattern("^[[:alpha:]]+")
+# exportPattern("^[[:alpha:]]+")
+
+export(
+  cjs0, cjsTime, ch2mArray,
+  closedCapM0, closedCapMh2, closedCapMhJK,
+  occSS0, occSS.t, occSS.T, occSScov,occSScovSite, occSSrn)
+
+# DON'T export data objects!
+# export(salamanders, weta)
+
+S3method("print", "occupancy")
