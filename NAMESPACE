@@ -3,7 +3,10 @@
 export(
   cjs0, cjsTime, ch2mArray,
   closedCapM0, closedCapMh2, closedCapMhJK,
-  occSS0, occSS.t, occSS.T, occSScov,occSScovSite, occSSrn)
+  occSS0, occSS.t, occSS.T, occSScov, occSScovSite, occSSrn,
+  richRarify,
+  richACE, richICE, richChao1, richChao2, richJack1, richJack2, richBoot, richMM,
+  richCurve, richSobs, richSingle, richDouble, richUnique, richDuplicate)
 
 # DON'T export data objects!
 # export(salamanders, weta)

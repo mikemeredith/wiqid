@@ -75,12 +75,14 @@ Returns an object of class \code{occupancy}, which is a list with the following 
   \item{real}{Estimates of occupancy and probability of detection on the real scale, with 95\% confidence intervals.}
   \item{AIC}{The AIC of the fitted model.}
 }
-\section{Benchmarks}{Output has been checked against output from PRESENCE for the \code{\link{salamanders}} and \code{\link{weta}} data sets. Real values are mostly the same to 4 decimal places, though there is occasionally a discrepancy of 0.0001. AICs are the same.
+\section{Benchmarks}{Output has been checked against output from PRESENCE (Hines 2006) v.5.5 for the \code{\link{salamanders}} and \code{\link{weta}} data sets. Real values are mostly the same to 4 decimal places, though there is occasionally a discrepancy of 0.0001. AICs are the same.
 }
 \references{
 MacKenzie, D I; J D Nichols; G B Lachman; S Droege; J A Royle; C A Langtimm. 2002. Estimating site occupancy rates when detection probabilities are less than one. \emph{Ecology} 83:2248-2255.
 
 MacKenzie, D I; J D Nichols; A J Royle; K H Pollock; L L Bailey; J E Hines 2006. \emph{Occupancy estimation and modeling : inferring patterns and dynamics of species occurrence}. Elsevier Publishing.
+
+Hines, J. E. (2006). PRESENCE - Software to estimate patch occupancy and related parameters. SGS-PWRC. \url{http://www.mbr-pwrc.usgs.gov/software/presence.html}.
 }
 \author{
 Mike Meredith
@@ -93,13 +95,11 @@ Mike Meredith
 }
 \examples{
 # The blue ridge salamanders data from MacKenzie et al (2006) p99:
-BRS <- matrix(0, 39, 5)
-BRS[c(4,10,13,14,41,42,43,82,83,84,85,86,87,89,90,92,118,121,128,
-        129,130,131,153,154,157,167,168,169,194,195)] <- 1
-y <- rowSums(BRS)
-n <- rep(5, 39)
+data(salamanders)
+y <- rowSums(salamanders)
+n <- rowSums(!is.na(salamanders))
 
 occSS0(y, n)
-occSS.t(BRS)
-occSS.T(BRS)
+occSS.t(salamanders)
+occSS.T(salamanders)
 }
