@@ -1,4 +1,6 @@
 CHANGES IN BUILD 2013-03-16
 
+  * Added distance (beta diversity) measures
+
   * Added species richness estimation as in EstimateS
   

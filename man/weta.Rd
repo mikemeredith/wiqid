@@ -5,7 +5,7 @@
 Detection data for weta in gorse bushes
 }
 \description{
-Rewults of an occupancy survey to see if presence/absence of weta in 72 gorse bushes is affected by browsing of the bushes by goats. Probability of detection may be different for each observer, and observer ID is also recorded.
+Results of an occupancy survey to see if presence/absence of weta in 72 gorse bushes is affected by browsing of the bushes by goats. Probability of detection may be different for each observer, and observer ID is also recorded.
 }
 \usage{data(weta)}
 \format{
