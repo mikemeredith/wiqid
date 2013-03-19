@@ -1,3 +1,15 @@
+CHANGES IN BUILD 2013-03-19
+
+  * Tweaked occSScovar and occSScovarSite to improve convergence and catch variance estimation problems. Covars internally standardised, so betas are different.
+
+CHANGES IN BUILD 2013-03-18
+
+  * Added allCombinations function.
+
+  * Added logLik and nobs methods for class occupancy; modified occSS* functions to accommodate that. Function stats::AIC now works for occupancy.
+
+  * Added AICc generic and AICc.default.
+
 CHANGES IN BUILD 2013-03-16
 
   * Added distance (beta diversity) measures

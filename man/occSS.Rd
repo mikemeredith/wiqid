@@ -4,7 +4,6 @@
 \alias{occSS.T}
 \alias{occSScovSite}
 \alias{occSScov}
-\alias{print.occupancy}
 
 \title{
 Single-season occupancy estimation
@@ -22,8 +21,6 @@ occSS.T(DH)
 occSScovSite(y, n, psi = ~1, p = ~1, data = NULL)
 
 occSScov(DH, psi = ~1, p = ~1, data = NULL)
-
-\method{print}{occupancy}(x, digits = 4, ...)
 }
 \arguments{
   \item{y}{
@@ -42,16 +39,7 @@ a one-sided formula symbolically defining a linear predictor for \code{psi} in t
 a one-sided formula symbolically defining a linear predictor for \code{p} in terms of site covariates and (for \code{occSScov}) survey covariates.
 }
   \item{data}{
-an optional data frame or list containing the variables in the model. If survey covariates are included this must be a list - see details.
-}
-  \item{x}{
-an object of class \code{occupancy} to be printed.
-}
-  \item{digits}{
-the number of digits to display.
-}
-  \item{...}{
-other arguments passed to the print command
+a data frame or list containing the variables in the model. If survey covariates are included this must be a list - see Details. You are advised to include all covariates in \code{data}, otherwise they will be sought in enclosing environments, which may not produce what you want -- and they won't be standardised.
 }
 }
 \details{
@@ -65,15 +53,19 @@ other arguments passed to the print command
 
 Survey covariates for use by \code{occSScov} should be included in the \code{data} list either as a sites x surveys matrix or as a vector of length sites*surveys, beginning with the observations for all the sites for the first survey. The latter is useful when the covariate is a factor, as matrices of factors don't generally work in R. Using \code{as.factor(covariate_matrix)} produces the right vector.
 
+Numeric covariates in \code{data} are standardised to facilitate convergence. This applies to binary covariates coded as 1/0; if this is not what you want, code these as TRUE/FALSE or as factors. 
+
 For speed, use the simplest function which will cope with your model. For example, you can run psi(.) p(.) models in \code{occSScovSite} or \code{occSScov}, but \code{occSS0} is much faster.
 }
 \value{
 Returns an object of class \code{occupancy}, which is a list with the following elements:
 
   \item{call}{The call used to produce the results}
-  \item{beta}{Values of the coefficients of the terms in the linear predictors, with standard errors and 95\% conidence intervals.}
+  \item{beta}{Values of the coefficients of the terms in the linear predictors, with standard errors and 95\% confidence intervals.}
   \item{real}{Estimates of occupancy and probability of detection on the real scale, with 95\% confidence intervals.}
-  \item{AIC}{The AIC of the fitted model.}
+  \item{logLik}{a vector with elements for log(likelihood), number of parameters, and effective sample size.}
+
+There are \code{print}, \code{logLik}, and \code{nobs} methods for class \code{occupancy}.
 }
 \section{Benchmarks}{Output has been checked against output from PRESENCE (Hines 2006) v.5.5 for the \code{\link{salamanders}} and \code{\link{weta}} data sets. Real values are mostly the same to 4 decimal places, though there is occasionally a discrepancy of 0.0001. AICs are the same.
 }

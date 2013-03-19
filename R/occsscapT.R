@@ -13,7 +13,8 @@ function(DH)  {
   lp.mat <- matrix(NA_real_, nocc+1, 3)
   colnames(lp.mat) <- c("est", "lowCI", "uppCI")
   rownames(lp.mat) <- c("psi", paste("p", 1:nocc, sep=""))
-  AIC <- NA_real_
+  # AIC <- NA_real_
+  logLik <- NA_real_
   varcovar <- NULL
   if(ncol(DH) > 1 && sum(DH, na.rm=TRUE) > 0)  {
     # Negative log-likelihood function:
@@ -30,7 +31,8 @@ function(DH)  {
     res <- nlm(nll, params, hessian=TRUE)
     if(res$code < 3)  {  # exit code 1 or 2 is ok.
       beta.mat[,1] <- res$estimate
-      AIC <- 2*res$minimum + 2 * n.par
+      # AIC <- 2*res$minimum + 2 * n.par
+      logLik <- -res$minimum
       crit <- qnorm(c(0.025, 0.975))
       if (det(res$hessian) > 1e-6) {
         varcovar <- solve(res$hessian)
@@ -40,7 +42,8 @@ function(DH)  {
     }
     if(mean(DH, na.rm=TRUE) == 1) {
       beta.mat[3:4 ] <- NA
-      AIC <- NA_real_
+      # AIC <- NA_real_
+      logLik <- NA_real_
     }
     lp.mat[1, ]  <- beta.mat[1, -2]
     lp.mat[-1, 1]  <- beta.mat[2, 1] + beta.mat[3, 1] * Time
@@ -53,7 +56,7 @@ function(DH)  {
   out <- list(call = match.call(),
               beta = beta.mat,
               real = plogis(lp.mat),
-              AIC = AIC)
+              logLik = c(logLik=logLik, df=n.par, nobs=nrow(DH)))
   class(out) <- c("occupancy", "list")
   return(out)
 }

@@ -23,14 +23,17 @@ occSScov <- function(DH, psi=~1, p=~1, data=NULL) {
   survID <- as.vector(col(DH))[survey.done]
   if(!is.null(data))  {
     covLen <- lapply(data, length)
-    psiDf <- as.data.frame(data[covLen == nSites])
+    # Covars for occupancy:
+    psiList <- data[covLen == nSites]
+    psiList <- lapply(psiList, function(x) if(is.numeric(x)) scale(x) else x)
+    psiDf <- as.data.frame(psiList)
     if(any(is.na(psiDf)))
       stop("Missing site covariates are not allowed.")
-    for(i in which(covLen == nSites * nSurv))
-      data[[i]] <- as.vector(data[[i]])
-    pDf.tmp <- as.data.frame(data[covLen == nSites | covLen == nSites*nSurv])
-    # Deal with NAs
-    pDf <- pDf.tmp[survey.done, ]
+    # Covars for probability of detection:
+    pList <- data[covLen == nSites | covLen == nSites*nSurv]
+    pList <- lapply(pList, as.vector)
+    pList <- lapply(pList, function(x) if(is.numeric(x)) scale(x) else x)
+    pDf <- as.data.frame(pList)[survey.done, ]
     if(any(is.na(pDf)))
       stop("Missing survey covariates are not allowed when a survey was done.")
     pDf$.time <- as.factor(survID)
@@ -56,7 +59,7 @@ occSScov <- function(DH, psi=~1, p=~1, data=NULL) {
   rownames(lp.mat) <- c(
     paste("psi:", site.names, sep=""),
     paste("p:", siteID, ",", survID, sep=""))
-  AIC <- NA_real_
+  logLik <- NA_real_
 
   nll <- function(param){
     psiBeta <- param[1:psiK]
@@ -73,13 +76,14 @@ occSScov <- function(DH, psi=~1, p=~1, data=NULL) {
   # Run mle estimation with nlm:
   param <- rep(0, K)
   res <- nlm(nll, param, hessian=TRUE)
-  if(res$code < 3)  {  # exit code 1 or 2 is ok.
+  if(res$code < 4)  {  # exit code 1 or 2 is ok, 3 dodgy but...
     beta.mat[,1] <- res$estimate
     lp.mat[, 1] <- c(psiModMat %*% beta.mat[1:psiK, 1],
                      pModMat %*% beta.mat[(psiK+1):K, 1])
-    AIC <- 2*res$minimum + 2 * K
-    if (det(res$hessian) > 0) {
-      varcov <- solve(res$hessian)
+    logLik <- -res$minimum
+    varcov <- try(solve(res$hessian), silent=TRUE)
+    if (!inherits(varcov, "try-error") &&
+        all(diag(varcov) > 0)) {
       SE <- sqrt(diag(varcov))
       beta.mat[, 2] <- SE
       crit <- qnorm(c(0.025, 0.975))
@@ -92,7 +96,7 @@ occSScov <- function(DH, psi=~1, p=~1, data=NULL) {
   out <- list(call = match.call(),
               beta = beta.mat,
               real = plogis(lp.mat),
-              AIC = AIC)
+              logLik = c(logLik=logLik, df=K, nobs=nrow(DH)))
   class(out) <- c("occupancy", "list")
   return(out)
 }

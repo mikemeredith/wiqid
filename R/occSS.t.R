@@ -17,7 +17,8 @@ function(DH)  {
   if(any(!NAcol))
     rownames.beta.mat <- c("psi", paste("p", (1:nocc)[!NAcol], sep=""))
   rownames(beta.mat) <- rownames.beta.mat
-  AIC <- NA_real_
+  # AIC <- NA_real_
+  logLik <- NA_real_
   if(ncol(DH) > 1 && sum(DH, na.rm=TRUE) > 0)  {
     # Negative log-likelihood function:
     nll <- function(params) {
@@ -33,7 +34,8 @@ function(DH)  {
     res <- nlm(nll, params, hessian=TRUE)
     if(res$code < 3)  {  # exit code 1 or 2 is ok.
       beta.mat[,1] <- res$estimate
-      AIC <- 2*res$minimum + 2 * n.par
+      # AIC <- 2*res$minimum + 2 * n.par
+      logLik <- -res$minimum
       if (det(res$hessian) > 1e-6) {
         SE <- sqrt(diag(solve(res$hessian)))
         beta.mat[, 2] <- SE
@@ -49,7 +51,7 @@ function(DH)  {
   out <- list(call = match.call(),
               beta = beta.mat,
               real = real.mat,
-              AIC = AIC)
+              logLik=c(logLik=logLik, df=n.par, nobs=nrow(DH)))
   class(out) <- c("occupancy", "list")
   return(out)
 }

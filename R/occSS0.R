@@ -9,7 +9,8 @@ function(y, n) {
   beta.mat <- matrix(NA_real_, 2, 3)
   colnames(beta.mat) <- c("est", "lowCI", "uppCI")
   rownames(beta.mat) <- c("psiHat", "pHat")
-  AIC <- NA_real_
+  # AIC <- NA_real_
+  logLik <- NA_real_
   if(sum(n) > 0) {    # If all n's are 0, no data available.
     nll <- function(params) {
        psi <- plogis(params[1])
@@ -21,7 +22,8 @@ function(y, n) {
     res <- nlm(nll, params, hessian=TRUE)
     if(res$code < 3)  {  # exit code 1 or 2 is ok.
       beta.mat[,1] <- res$estimate
-      AIC <- 2*res$minimum + 4
+      # AIC <- 2*res$minimum + 4
+      logLik <- -res$minimum
       if (det(res$hessian) > 0) {
         SE <- sqrt(diag(solve(res$hessian)))
         crit <- qnorm(c(0.025, 0.975))
@@ -32,7 +34,7 @@ function(y, n) {
   out <- list(call = match.call(),
               beta = beta.mat,
               real = plogis(beta.mat),
-              AIC = AIC)
+              logLik = c(logLik=logLik, df=2, nobs=length(y)))
   class(out) <- c("occupancy", "list")
   return(out)
 }

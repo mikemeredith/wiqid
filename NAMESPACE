@@ -1,6 +1,9 @@
 # exportPattern("^[[:alpha:]]+")
 
+importFrom(stats, nobs, logLik)
+
 export(
+  AICc, allCombinations,
   cjs0, cjsTime, ch2mArray,
   closedCapM0, closedCapMh2, closedCapMhJK,
   occSS0, occSS.t, occSS.T, occSScov, occSScovSite, occSSrn,
@@ -17,3 +20,7 @@ export(
 # export(salamanders, weta)
 
 S3method("print", "occupancy")
+S3method("logLik", "occupancy")
+S3method("nobs", "occupancy")
+S3method("AICc", "default")
+
