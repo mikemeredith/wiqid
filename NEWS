@@ -1,3 +1,21 @@
+CHANGES IN BUILD 2013-03-24
+
+  * Extra sanity checks added to occSS0, occSSrn, occSScovSite.
+
+  * occSSrn returns an object of class 'occupancy'.
+
+  * Took out bird_mass from KillarneyBirds data set.
+
+  * Changed spelling of *Rarify to *Rarefy (Oxford Dictionary online says both are correct but rarefy is more common).
+
+CHANGES IN BUILD 2013-03-19
+
+  * Tweaked occSScovar and occSScovarSite to accept formulae as character variables, also to return logLik = NA if convergence problems.
+
+  * occSScovar was throwing error if no survey covars were provided.
+
+  * Tweaked occSS.T to prevent warnings due to 'nll' returning Inf.
+
 CHANGES IN BUILD 2013-03-19
 
   * Tweaked occSScovar and occSScovarSite to improve convergence and catch variance estimation problems. Covars internally standardised, so betas are different.

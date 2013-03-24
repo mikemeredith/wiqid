@@ -3,8 +3,8 @@
 occSScovSite <- function(y, n, psi=~1, p=~1, data=NULL) {
   # single-season occupancy models with site-specific covatiates
   # new version with y/n input; much faster!
-  # n is a vector with the number of occasions at each site.
   # y is a vector with the number of detections at each site.
+  # n is a vector with the number of occasions at each site.
   # ** psi and p are one-sided formulae describing the model
   # ** data a data frame or list with the site covariates.
 
@@ -12,6 +12,8 @@ occSScovSite <- function(y, n, psi=~1, p=~1, data=NULL) {
     n <- rep(n, length(y))
   if(length(y) != length(n))
     stop("y and n must have the same length")
+  if(any(y > n))
+    stop("y cannot be greater than n")
   nSites <- length(y)
   if(!is.null(data))  {
     data <- lapply(data, function(x) if(is.numeric(x)) scale(x) else x)
@@ -25,9 +27,9 @@ occSScovSite <- function(y, n, psi=~1, p=~1, data=NULL) {
     # model.matrix needs a data frame, NULL won't do.
   }
 
-  psiModMat <- model.matrix(psi, ddf)
+  psiModMat <- model.matrix(as.formula(psi), ddf)
   psiK <- ncol(psiModMat)
-  pModMat <- model.matrix(p, ddf)
+  pModMat <- model.matrix(as.formula(p), ddf)
   pK <- ncol(pModMat)
   K <- psiK + pK
 
@@ -55,21 +57,24 @@ occSScovSite <- function(y, n, psi=~1, p=~1, data=NULL) {
   # Run mle estimation with nlm:
   param <- rep(0, K)
   res <- nlm(nll, param, hessian=TRUE)
-  if(res$code < 4)  {  # exit code 1 or 2 is ok, 3 probably ok.
+  if(res$code < 4)  {  # exit code 1 or 2 is ok, 3 doubtful.
     beta.mat[,1] <- res$estimate
     lp.mat[, 1] <- c(psiModMat %*% beta.mat[1:psiK, 1],
                      pModMat %*% beta.mat[(psiK+1):K, 1])
-    logLik <- -res$minimum
     varcov <- try(solve(res$hessian), silent=TRUE)
-    if (!inherits(varcov, "try-error") &&
+    if (!inherits(varcov, "try-error") && 
         all(diag(varcov) > 0)) {
       SE <- sqrt(diag(varcov))
       beta.mat[, 2] <- SE
       crit <- qnorm(c(0.025, 0.975))
       beta.mat[, 3:4] <- sweep(outer(SE, crit), 1, res$estimate, "+")
-      SElp <- c(sqrt(diag(psiModMat %*% varcov[1:psiK, 1:psiK] %*% t(psiModMat))),
-                sqrt(diag(pModMat %*% varcov[(psiK+1):K, (psiK+1):K] %*% t(pModMat))))
-      lp.mat[, 2:3] <- sweep(outer(SElp, crit), 1, lp.mat[, 1], "+")
+      temp <- c(diag(psiModMat %*% varcov[1:psiK, 1:psiK] %*% t(psiModMat)),
+                diag(pModMat %*% varcov[(psiK+1):K, (psiK+1):K] %*% t(pModMat)))
+      if(all(temp >= 0))  {
+        SElp <- sqrt(temp)
+        lp.mat[, 2:3] <- sweep(outer(SElp, crit), 1, lp.mat[, 1], "+")
+        logLik <- -res$minimum
+      }
     }
   }
   out <- list(call = match.call(),

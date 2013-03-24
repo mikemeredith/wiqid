@@ -19,8 +19,8 @@ occSScov <- function(DH, psi=~1, p=~1, data=NULL) {
     stop("More than one survey occasion is needed")
   survey.done <- !is.na(as.vector(DH))
   DHvec <- as.vector(DH)[survey.done]
-  siteID <- as.vector(row(DH))[survey.done]
-  survID <- as.vector(col(DH))[survey.done]
+  siteID <- as.factor(row(DH))[survey.done]
+  survID <- as.factor(col(DH))[survey.done]
   if(!is.null(data))  {
     covLen <- lapply(data, length)
     # Covars for occupancy:
@@ -33,19 +33,19 @@ occSScov <- function(DH, psi=~1, p=~1, data=NULL) {
     pList <- data[covLen == nSites | covLen == nSites*nSurv]
     pList <- lapply(pList, as.vector)
     pList <- lapply(pList, function(x) if(is.numeric(x)) scale(x) else x)
+    pList$.time <- as.factor(col(DH))
     pDf <- as.data.frame(pList)[survey.done, ]
     if(any(is.na(pDf)))
       stop("Missing survey covariates are not allowed when a survey was done.")
-    pDf$.time <- as.factor(survID)
   } else {
     psiDf <- data.frame(.dummy = rep(NA, nSites))
     pDf <- data.frame(.time = as.factor(survID))
     # model.matrix needs a data frame, NULL won't do.
   }
 
-  psiModMat <- model.matrix(psi, psiDf)
+  psiModMat <- model.matrix(as.formula(psi), psiDf)
   psiK <- ncol(psiModMat)
-  pModMat <- model.matrix(p, pDf)
+  pModMat <- model.matrix(as.formula(p), pDf)
   pK <- ncol(pModMat)
   K <- psiK + pK
 
@@ -80,7 +80,8 @@ occSScov <- function(DH, psi=~1, p=~1, data=NULL) {
     beta.mat[,1] <- res$estimate
     lp.mat[, 1] <- c(psiModMat %*% beta.mat[1:psiK, 1],
                      pModMat %*% beta.mat[(psiK+1):K, 1])
-    logLik <- -res$minimum
+    if(res$code < 3) # Keep NA if in doubt
+      logLik <- -res$minimum
     varcov <- try(solve(res$hessian), silent=TRUE)
     if (!inherits(varcov, "try-error") &&
         all(diag(varcov) > 0)) {

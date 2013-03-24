@@ -6,11 +6,14 @@ function(y, n) {
     n <- rep(n, length(y))
   if(length(y) != length(n))
     stop("y and n must have the same length")
+  if(any(y > n))
+    stop("y cannot be greater than n")
+
   beta.mat <- matrix(NA_real_, 2, 3)
   colnames(beta.mat) <- c("est", "lowCI", "uppCI")
   rownames(beta.mat) <- c("psiHat", "pHat")
-  # AIC <- NA_real_
   logLik <- NA_real_
+
   if(sum(n) > 0) {    # If all n's are 0, no data available.
     nll <- function(params) {
        psi <- plogis(params[1])
@@ -22,12 +25,12 @@ function(y, n) {
     res <- nlm(nll, params, hessian=TRUE)
     if(res$code < 3)  {  # exit code 1 or 2 is ok.
       beta.mat[,1] <- res$estimate
-      # AIC <- 2*res$minimum + 4
-      logLik <- -res$minimum
-      if (det(res$hessian) > 0) {
-        SE <- sqrt(diag(solve(res$hessian)))
+      varcov <- try(solve(res$hessian), silent=TRUE)
+      if (!inherits(varcov, "try-error") && all(diag(varcov) > 0)) {
+        SE <- sqrt(diag(varcov))
         crit <- qnorm(c(0.025, 0.975))
         beta.mat[, 2:3] <- sweep(outer(SE, crit), 1, res$estimate, "+")
+        logLik <- -res$minimum
       }
     }
   }

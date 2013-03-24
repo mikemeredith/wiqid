@@ -80,7 +80,7 @@ Output from these functions has been checked against EstimateS for the \code{see
 } 
 
 \seealso{
-\code{\link{richRarify}} for rarefaction curves, and \code{\link{richCurve}} for a function to give richness estimates for sub-sets of samples.
+\code{\link{richRarefy}} for rarefaction curves, and \code{\link{richCurve}} for a function to give richness estimates for sub-sets of samples.
 }
 \examples{
 data(seedbank)

@@ -1,5 +1,5 @@
-\name{richRarify}
-\alias{richRarify}
+\name{richRarefy}
+\alias{richRarefy}
 
 \title{
 Sample-based rarefaction curves
@@ -8,7 +8,7 @@ Sample-based rarefaction curves
 Uses Mao's tau estimator (Colwell et al, 2004) to obtain a rarefaction curve indicating the expected number of species observed if fewer samples were collected.
 }
 \usage{
-richRarify(incmat)
+richRarefy(incmat)
 }
 \arguments{
   \item{incmat}{
@@ -38,6 +38,6 @@ Mike Meredith
 }
 \examples{
 data(seedbank)
-plot(richRarify(seedbank)[, 1], type='l')
+plot(richRarefy(seedbank)[, 1], type='l')
 }
 

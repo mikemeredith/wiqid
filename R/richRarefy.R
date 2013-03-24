@@ -9,7 +9,7 @@
 # 	Sobs SD (Mao Tau)
 # For the confidence interval, just use +/- 1.96 * SD
 
-richRarify <- function(incmat)  {
+richRarefy <- function(incmat)  {
   # Calculates a sample-based rarefaction curve using Mao's tau estimator
   # incmat = matrix of incidences or counts, species x occasions
   # Returns: a matrix with columns for

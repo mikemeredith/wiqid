@@ -24,8 +24,7 @@ function(DH)  {
       p.DH <- sweep(DH, 2, p, "*") + sweep((1-DH), 2, (1-p), "*")
       llh <- sum(log(psi * apply(p.DH, 1, prod, na.rm=TRUE) + 
           (1 - psi) * (rowSums(DH, na.rm=TRUE) == 0)))
-      # return(min(-llh, .Machine$double.xmax)) # min(..) stops Inf being returned
-      return(-llh) # try it and see
+      return(min(-llh, .Machine$double.xmax)) # min(..) needed to stop Inf being returned
     }
     params <- rep(0, n.par)
     res <- nlm(nll, params, hessian=TRUE)

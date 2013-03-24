@@ -52,7 +52,7 @@ test_that("occSS0 gives right answers",  {
   brs5 <- occSS0(n, n)
   expect_that(round(as.vector(brs5$real), 4), 
       equals(c(1, 1, NA_real_, NA_real_, NA_real_, NA_real_)))
-  expect_that(round(AIC(brs5), 4), equals(4))
+  expect_that(AIC(brs5), equals(NA_real_))
   # All zeros:
   brs6 <- occSS0(rep(0, length(n)), n)
   expect_that(round(as.vector(brs6$real), 4), 
@@ -215,61 +215,66 @@ test_that("occSSnr gives right answers",  {
   n <- rowSums(!is.na(BRS))
   y <- rowSums(BRS > 0, na.rm=TRUE)
   res <- occSSrn(y, n)
-  expect_that(colnames(res), equals(c("est", "lowCI", "uppCI")))
-  expect_that(rownames(res), equals(c("psiHat", "lambdaHat", "rHat")))
-  expect_that(round(as.vector(res), 4), 
+
+  expect_that(class(res), equals(c("occupancy", "list")))
+  expect_that(names(res), equals(c("call", "beta", "real", "logLik")))
+  expect_that(is.call(res$call), is_true())
+  expect_that(colnames(res$real), equals(c("est", "lowCI", "uppCI")))
+  expect_that(rownames(res$real),
+       equals(c("psiHat", "lambdaHat", "rHat")))
+  expect_that(round(as.vector(res$real), 4), 
       is_equivalent_to(c(0.6810, 1.1425, 0.1475, 0.3772, 0.4735, 0.0581, 0.9365,
           2.7568, 0.3266)))
-  expect_that(round(attr(res, "AIC"), 4), equals(164.0016))
+  expect_that(round(AIC(res), 4), equals(164.0016))
       # These are the values returned by PRESENCE
   # Put in some NAs
   BRS[c(6,167,130,123,89,154,32,120,127,147)] <- NA
   n <- rowSums(!is.na(BRS))
   y <- rowSums(BRS > 0, na.rm=TRUE)
   res <- occSSrn(y, n)
-  expect_that(round(as.vector(res), 4), 
+  expect_that(round(as.vector(res$real), 4), 
       is_equivalent_to(c(0.6739, 1.1204, 0.1383, 0.3402, 0.4159, 0.0473, 0.9511,
           3.0186, 0.3414)))
-  expect_that(round(attr(res, "AIC"), 4), equals(148.5542))
+  expect_that(round(AIC(res), 4), equals(148.5542))
   # Put in a row of NAs
   BRS[3,] <- NA
   n <- rowSums(!is.na(BRS))
   y <- rowSums(BRS > 0, na.rm=TRUE)
   res <- occSSrn(y, n)
-  expect_that(round(as.vector(res), 4), 
+  expect_that(round(as.vector(res$real), 4), 
       is_equivalent_to(c(0.6349, 1.0076, 0.1510, 0.3244, 0.3922, 0.0545, 0.9249,
           2.5884, 0.3540)))
-  expect_that(round(attr(res, "AIC"), 4), equals(142.9799))
+  expect_that(round(AIC(res), 4), equals(142.9799))
   # Put in a column of NAs
   BRS[, 3] <- NA
   n <- rowSums(!is.na(BRS))
   y <- rowSums(BRS > 0, na.rm=TRUE)
   res <- occSSrn(y, n)
-  expect_that(round(as.vector(res), 4), 
+  expect_that(round(as.vector(res$real), 4), 
       is_equivalent_to(c(0.4030, 0.5158, 0.2464, 0.1915, 0.2126, 0.0957, 0.7139,
           1.2513, 0.5026)))
-  expect_that(round(attr(res, "AIC"), 4), equals(101.3649))
+  expect_that(round(AIC(res), 4), equals(101.3649))
   # All ones:
   y <- n <- rep(5, 39)
   res <- occSSrn(y, n)
-  expect_that(round(as.vector(res[, 1]), 4), 
+  expect_that(round(as.vector(res$real[, 1]), 4), 
       is_equivalent_to(c(1.0000, 26.9883,  0.8662)))
-  expect_that(as.vector(res[, 2:3]), 
-      is_equivalent_to(rep(NA_real_, 6)))
-  expect_that(round(attr(res, "AIC"), 4), equals(4))
+  expect_that(as.vector(res$real[, 2:3]), 
+      is_equivalent_to(c(0, 0, 0, 1, Inf, 1)))
+  expect_that(AIC(res), equals(4))
   # All zeros:
   n <- rep(5, 39)
   y <- rep(0, 39)
   res <- occSSrn(y, n)
-  expect_that(as.vector(res), 
+  expect_that(as.vector(res$real), 
       is_equivalent_to(rep(NA_real_, 9)))
-  expect_that(attr(res, "AIC"), equals(NA_real_))
+  expect_that(AIC(res), equals(NA_real_))
   # All NAs:
   y <- n <- rep(0, 39)
   res <- occSSrn(y, n)
-  expect_that(as.vector(res), 
+  expect_that(as.vector(res$real), 
       is_equivalent_to(rep(NA_real_, 9)))
-  expect_that(attr(res, "AIC"),
+  expect_that(AIC(res),
       equals(NA_real_))
 }  )
 # ....................................................................

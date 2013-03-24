@@ -278,7 +278,7 @@ richMM <- function(incMat)  {
   if(ncol(incMat) == 1)  # Can't fit curve to 1 data point!
     return(0)
   # get estimates of species for subsets:
-  tau <- richRarify(incMat)[, 1]
+  tau <- richRarefy(incMat)[, 1]
   Xi <- tau / seq(tau)
   Xbar <- mean(Xi)
   Yi <- tau

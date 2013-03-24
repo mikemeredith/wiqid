@@ -1,5 +1,6 @@
 \name{Occupancy Single Season}
 \alias{occSS0}
+\alias{occSSrn}
 \alias{occSS.t}
 \alias{occSS.T}
 \alias{occSScovSite}
@@ -14,6 +15,8 @@ Functions to estimate occupancy from detection/non-detection data for a single s
 \usage{
 occSS0(y, n)
 
+occSSrn(y, n)
+
 occSS.t(DH)
 
 occSS.T(DH)
@@ -27,7 +30,7 @@ occSScov(DH, psi = ~1, p = ~1, data = NULL)
 a vector with the number of detections at each site.
 }
   \item{n}{
-a vector with the number of visits (survey occasions) at each site.
+a scalar or vector with the number of visits (survey occasions) at each site.
 }
  \item{DH}{
 a 1/0/NA matrix (or data frame) of detection histories, sites x occasions
@@ -44,6 +47,8 @@ a data frame or list containing the variables in the model. If survey covariates
 }
 \details{
 \code{occSS0} implements a simple model with one parameter for probability of occupancy and one for probability of detection, ie. a \code{psi(.) p(.)} model.
+
+\code{occSSrn} implements the Royle-Nichols method for estimation of site occupancy allowing for abundance-induced heterogeneity in detection probability.
 
 \code{occSS.t} estimates a separate detection probability for each survey occasion, ie. a \code{psi(.) p(t)} model.
 
@@ -62,8 +67,8 @@ Returns an object of class \code{occupancy}, which is a list with the following 
 
   \item{call}{The call used to produce the results}
   \item{beta}{Values of the coefficients of the terms in the linear predictors, with standard errors and 95\% confidence intervals.}
-  \item{real}{Estimates of occupancy and probability of detection on the real scale, with 95\% confidence intervals.}
-  \item{logLik}{a vector with elements for log(likelihood), number of parameters, and effective sample size.}
+  \item{real}{Estimates of occupancy and probability of detection on the real scale, with 95\% confidence intervals; \code{occSSrn} gives occupancy, lambda and r.}
+  \item{logLik}{a vector with elements for log(likelihood), number of parameters, and effective sample size. If parameters \emph{and their SEs} cannot be estimated, the first element should be \code{NA}.}
 
 There are \code{print}, \code{logLik}, and \code{nobs} methods for class \code{occupancy}.
 }
@@ -83,7 +88,7 @@ Mike Meredith
 %%  ~~further notes~~
 }
 \seealso{
-\code{\link{occSSrn}} for the Royle-Nichols model. See the examples for the \code{\link{weta}} data set.
+See the examples for the \code{\link{weta}} data set.
 }
 \examples{
 # The blue ridge salamanders data from MacKenzie et al (2006) p99:
@@ -92,6 +97,7 @@ y <- rowSums(salamanders)
 n <- rowSums(!is.na(salamanders))
 
 occSS0(y, n)
+occSSrn(y, n)
 occSS.t(salamanders)
 occSS.T(salamanders)
 }

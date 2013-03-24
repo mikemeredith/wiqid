@@ -5,7 +5,7 @@
 Abundance of woodland birds
 }
 \description{
-The number of territories held by breeding males in 9 blocks of woodland habitat in County Killarney, Ireland, together with approximate body mass for each species.
+The number of territories held by breeding males in 9 blocks of woodland habitat in County Killarney, Ireland.
 }
 \usage{data(KillarneyBirds)}
 \format{
@@ -20,7 +20,6 @@ The number of territories held by breeding males in 9 blocks of woodland habitat
     \item{\code{Mixed}}{a mixed broadleaf wood}
     \item{\code{Patchy}}{a wood with patches of broadleaf and conifer trees}
     \item{\code{Swampy}}{a swampy seasonally-flooded woodland}
-    \item{\code{Bird_mass}}{approximate weights of individual adult birds (g)}
   }
 }
 \details{
@@ -36,10 +35,8 @@ Solow (1993) A simple test for change in community structure.	\emph{J Animal Eco
 }
 \examples{
 data(KillarneyBirds)
-## extract the abundance data:
-abund <- KillarneyBirds[, -10]
 ## number of species in each block of habitat:
-colSums(abund > 0)
+colSums(KillarneyBirds > 0)
 
 }
 \keyword{datasets}

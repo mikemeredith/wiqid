@@ -12,7 +12,7 @@ Artificial data for counts of 32 species at 5 sites.
   A matrix with 5 rows (sites), labelled A-B, and 32 columns (species).
 }
 \details{
-Sites A, B and C each have the same 16 species and 158 individuals.\cr
+Sites A, B and C each have 16 species and 158 individuals.\cr
 Sites A and B have the same species, but the numbers of each are different.\cr
 Site C has a completely different set of 16 species, but the same number of individuals.\cr
 Site D has the same species in the same proportions as A, but twice the number of individuals.\cr
