@@ -15,15 +15,18 @@ Provides a shell into which species richness estimators may be plugged to provid
 \usage{
 richCurve(obsMat, FUNC, runs = 10, ...)
 
-richSobs(incMat)
-richSingle(cntMat)
-richDouble(cntMat)
+richSobs(incVec)
+richSingle(cntVec)
+richDouble(cntVec)
 richUnique(incMat)
 richDuplicate(incMat)
 }
 \arguments{
-  \item{cntMat}{
-a matrix of species counts (abundances), species x sites.
+  \item{incVec}{
+a vector of species incidences (presences) in one or more samples; a vector of counts or a species x sites matrix of incidences or counts may be supplied.
+}
+  \item{cntVec}{
+a vector of species counts (abundances); a species x sites matrix of counts may be supplied and will be converted to a vector with \code{rowSums}.
 }
   \item{incMat}{
 a 1/0 matrix of species incidence (presence), species x sites. A matrix of counts may also be provided.
@@ -57,7 +60,7 @@ The other functions documented here are trivial, but useful for plugging into \c
   \code{richDuplicate } : the number of duplicates, ie. species represented in exactly 2 samples.
 }
 \value{
-\code{richCurve} returns list with elements:
+\code{richCurve} returns a list with elements:
   \item{mean }{A matrix (possibly 1-column) with a row for each sample and a column for each value returned by FUNC.}
   \item{SD }{The corresponding matrix with the standard deviations of the estimates from the runs.}
 

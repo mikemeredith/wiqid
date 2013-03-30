@@ -1,3 +1,11 @@
+CHANGES IN BUILD 2013-03-30
+
+  * Added richJackA1, richJackA2, richRenLau, and Temburong data set.
+
+  * Added biodSimpson, biodShannon, biodBerger, biodBrillouin.
+
+  * richSobs et al now accept vector input when appropriate.
+
 CHANGES IN BUILD 2013-03-24
 
   * Extra sanity checks added to occSS0, occSSrn, occSScovSite.

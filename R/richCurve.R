@@ -6,14 +6,30 @@
 # downloaded 2013-03-14.
 
 # Helper functions, pretty trivial but useful to plug into richCurve
-richSobs <- function(incMat)   
-  sum(rowSums(round(incMat)) > 0)
+richSobs <- function(incVec) {
+  # Convert a matrix/dataframe into a vector and round: 
+  incVec <- round(incVec)
+  if(is.matrix(incVec) || is.data.frame(incVec))
+    incVec <- rowSums(incVec)
+  sum(incVec > 0)
+}
 
-richSingle <- function(cntMat)
-  sum(rowSums(round(cntMat)) == 1)
+richSingle <- function(cntVec) {
+  # Convert a matrix/dataframe into a vector and round: 
+  cntVec <- round(cntVec)
+  if(is.matrix(cntVec) || is.data.frame(cntVec))
+    cntVec <- rowSums(cntVec)
+  sum(cntVec == 1)
+}
 
-richDouble <- function(cntMat)
-  sum(rowSums(round(cntMat)) == 2)
+richDouble <- function(cntVec) {
+  # Convert a matrix/dataframe into a vector and round: 
+  cntVec <- round(cntVec)
+  if(is.matrix(cntVec) || is.data.frame(cntVec))
+    cntVec <- rowSums(cntVec)
+  sum(cntVec == 2)
+}
+
 
 richUnique <- function(incMat)
   sum(rowSums(round(incMat) > 0) == 1)
