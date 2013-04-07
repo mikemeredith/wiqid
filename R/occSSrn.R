@@ -1,19 +1,27 @@
 occSSrn <-
-function(y, n)  {
+function(y, n, ci=0.95)  {
   # y is a vector with the number of detections at each site.
   # n is a vector with the number of occasions at each site.
+  # ci is the required confidence interval.
+  y <- round(y)
+  n <- round(n)
   if(length(n) == 1)
     n <- rep(n, length(y))
   if(length(y) != length(n))
     stop("y and n must have the same length")
   if(any(y > n))
     stop("y cannot be greater than n")
+  if(ci > 1 | ci < 0.5)
+    stop("ci must be between 0.5 and 1")
+  alf <- (1 - ci[1]) / 2
+  crit <- qnorm(c(alf, 1 - alf))
+
 	# Starting values:
   beta.mat <- matrix(NA_real_, 2, 4) 
   colnames(beta.mat) <- c("est", "SE", "lowCI", "uppCI")
   rownames(beta.mat) <- c("lambda", "r")
   logLik <- NA_real_
-  if(sum(n) > 0 && sum(y) > 0) {    # If all n's are 0, no data available.
+  if(sum(n) > 0 && sum(y) > 0 && any(y < n)) {    # If all n's are 0, no data available.
     params <- c(0, 0)
     Nmax <- 100 # See later if this is sensible
     # Negative log-likelihood function:
@@ -36,7 +44,6 @@ function(y, n)  {
           all(diag(varcov) > 0)) {
         SE <- sqrt(diag(varcov))
         beta.mat[, 2] <- SE
-        crit <- qnorm(c(0.025, 0.975))
         beta.mat[, 3:4] <- sweep(outer(SE, crit), 1, res$estimate, "+")
         logLik <- -res$minimum
       }

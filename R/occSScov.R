@@ -1,12 +1,17 @@
 # Single season occupancy with site and survey covariates.
 
-occSScov <- function(DH, psi=~1, p=~1, data=NULL) {
+occSScov <- function(DH, psi=~1, p=~1, data=NULL, ci=0.95) {
   # single-season occupancy models with site and survey covatiates
   # ** DH is detection data in a 1/0/NA matrix or data frame, sites in rows, 
   #    detection occasions in columns..
   # ** psi and p are one-sided formulae describing the model
   # ** data is a LIST with vectors for site covariates and site x survey matrices
   #     for survey covariates.
+  # ci is the required confidence interval.
+  if(ci > 1 | ci < 0.5)
+    stop("ci must be between 0.5 and 1")
+  alf <- (1 - ci[1]) / 2
+  crit <- qnorm(c(alf, 1 - alf))
 
   site.names <- rownames(DH)
   DH <- as.matrix(DH)
@@ -87,7 +92,6 @@ occSScov <- function(DH, psi=~1, p=~1, data=NULL) {
         all(diag(varcov) > 0)) {
       SE <- sqrt(diag(varcov))
       beta.mat[, 2] <- SE
-      crit <- qnorm(c(0.025, 0.975))
       beta.mat[, 3:4] <- sweep(outer(SE, crit), 1, res$estimate, "+")
       SElp <- c(sqrt(diag(psiModMat %*% varcov[1:psiK, 1:psiK] %*% t(psiModMat))),
                 sqrt(diag(pModMat %*% varcov[(psiK+1):K, (psiK+1):K] %*% t(pModMat))))

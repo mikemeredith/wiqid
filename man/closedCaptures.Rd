@@ -10,11 +10,11 @@ Analysis of mark-recapture data for closed populations
 Functions to analyse the classical models for closed populations without covariates. Currently M0, Mh2 (a 2-mixture model), and the jackknife estimator for Mh are available.
 }
 \usage{
-closedCapM0(freq, n.occ = length(freq))
+closedCapM0(freq, n.occ = length(freq), ci = 0.95)
 
-closedCapMh2(freq, n.occ = length(freq))
+closedCapMh2(freq, n.occ = length(freq), ci = 0.95)
 
-closedCapMhJK(freq, n.occ = length(freq))
+closedCapMhJK(freq, n.occ = length(freq), ci = 0.95)
 }
 \arguments{
   \item{freq}{
@@ -23,6 +23,9 @@ a vector of capture frequencies; trailing zeros are not required provided n.occ 
   \item{n.occ}{
 the total number of capture occasions.
 }
+  \item{ci}{
+the required confidence interval.
+}
 }
 \details{
 Model M0 assumes all animals have the same capture probability.
@@ -30,7 +33,7 @@ Model M0 assumes all animals have the same capture probability.
 Model Mh2 and the jackknife estimator allow for heterogeneity in capture probability.
 }
 \value{
-A matrix with columns for the point estimate and 95\% confidence interval, and rows for each of the parameters estimated.
+A matrix with columns for the point estimate and confidence interval, and rows for each of the parameters estimated.
 
 The matrix has an attribute with the AIC, though this will always be NA for the jackknife estimator.
 
@@ -68,6 +71,7 @@ Mike Meredith
 # Data from White et al (1982):
 freq1 <- c(50, 46, 35, 24, 14, 5, 0) # there were 7 capture occasions
 closedCapM0(freq1)
+closedCapM0(freq1, ci=0.8)
 closedCapMh2(freq1)
 closedCapMhJK(freq1)
 

@@ -15,7 +15,7 @@ export(
   distShell, distBrayCurtis,
   distChaoJaccCorr, distChaoJaccNaive, distChaoSorCorr, distChaoSorNaive,
   distChord, distJaccard, distMatching, distMorisitaHorn, distOchiai, distPreston,
-  distRogersTanimoto, distSimRatio, distSorensen, distWhittakerA, distWhittakerI
+  distRogersTanimoto, distSimRatio, distSorensen, distWhittaker
 )
 
 # DON'T export data objects!

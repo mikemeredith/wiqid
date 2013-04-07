@@ -26,10 +26,11 @@ qArray <- function(phi, p) {
 }
 # ..........................................................................
 
-cjs0 <- function(mArray) {
+cjs0 <- function(mArray, ci = 0.95) {
   # phi(.) p(.) model for Cormack-Joly-Seber estimation of apparent survival.
   # nArray is capture-recapture data in m-array format, with zeros in the lower
   #   triangle.
+  # ci is the required confidence interval
   # Original code from Ruth King, but cf. Kery & Schaub
   # Largely altered by MM
 
@@ -39,6 +40,10 @@ cjs0 <- function(mArray) {
     stop("More than one recapture occasion is needed")
   if (ncol(mArray) != ni + 1 || any(mArray[lower.tri(mArray)] != 0))
     stop("mArray is not a valid m-array format")
+  if(ci > 1 | ci < 0.5)
+    stop("ci must be between 0.5 and 1")
+  alf <- (1 - ci[1]) / 2
+  crit <- qnorm(c(alf, 1 - alf))
 
   beta.mat <- matrix(NA_real_, 2, 3)
   AIC <- NA_real_
@@ -61,7 +66,6 @@ cjs0 <- function(mArray) {
     AIC <- 2*res$minimum + 4
     if (det(res$hessian) > 0) {
       SE <- sqrt(diag(solve(res$hessian)))
-      crit <- qnorm(c(0.025, 0.975))
       beta.mat[, 2:3] <- sweep(outer(SE, crit), 1, res$estimate, "+")
     }
   }
@@ -73,13 +77,14 @@ cjs0 <- function(mArray) {
 }
 # .................................................................
 
-cjsTime <- function(mArray, phi=~1, p=~1, data=NULL) {
+cjsTime <- function(mArray, phi=~1, p=~1, data=NULL, ci = 0.95) {
   # phi(t) p(t) model or models with time covariates for Cormack-Joly-Seber
   # estimation of apparent survival.
   # ** mArray is capture-recapture data in m-array format, with zeros in the lower
   #   triangle.
   # ** phi and p are one-sided formulae describing the model
   # ** data a data frame with the covariates.
+  # ** ci is required confidence interval.
 
   # Sanity checks:
   ni <- nrow(mArray)
@@ -87,6 +92,10 @@ cjsTime <- function(mArray, phi=~1, p=~1, data=NULL) {
     stop("More than one recapture occasion is needed")
   if (ncol(mArray) != ni + 1 || any(mArray[lower.tri(mArray)] != 0))
     stop("mArray is not a valid m-array format")
+  if(ci > 1 | ci < 0.5)
+    stop("ci must be between 0.5 and 1")
+  alf <- (1 - ci[1]) / 2
+  crit <- qnorm(c(alf, 1 - alf))
 
   data$time <- as.factor(1:ni)
   ddf <- as.data.frame(data)
@@ -133,7 +142,6 @@ cjsTime <- function(mArray, phi=~1, p=~1, data=NULL) {
       varcov <- solve(res$hessian)
       SE <- sqrt(diag(varcov))
       beta.mat[, 2] <- SE
-      crit <- qnorm(c(0.025, 0.975))
       beta.mat[, 3:4] <- sweep(outer(SE, crit), 1, res$estimate, "+")
       SElp <- c(sqrt(diag(phiMat %*% varcov[1:phiK, 1:phiK] %*% t(phiMat))),
                 sqrt(diag(pMat %*% varcov[(phiK+1):K, (phiK+1):K] %*% t(pMat))))

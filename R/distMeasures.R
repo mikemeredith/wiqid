@@ -114,15 +114,10 @@ function(d1, d2) {
 }
 
 
-distWhittakerA <-
+distWhittaker <-
 function(d1, d2)  {
   p1 <- d1 / sum(d1)
   p2 <- d2 / sum(d2)
   sum(abs(p1 - p2))/2
 }
-
-
-distWhittakerI <-
-function(d1, d2)
-  2*sum(d1|d2) / (sum(d1>0)+sum(d2>0)) - 1
 

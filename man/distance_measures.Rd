@@ -14,8 +14,7 @@
 \alias{distRogersTanimoto}
 \alias{distSimRatio}
 \alias{distSorensen}
-\alias{distWhittakerA}
-\alias{distWhittakerI}
+\alias{distWhittaker}
 
 \title{
 Plug-in distance-measure functions for \code{\link{distShell}}.
@@ -38,8 +37,7 @@ distPreston(d1, d2)
 distRogersTanimoto(d1, d2)
 distSimRatio(d1, d2)
 distSorensen(d1, d2)
-distWhittakerA(d1, d2)
-distWhittakerI(d1, d2)
+distWhittaker(d1, d2)
 
 }
 \arguments{
@@ -80,13 +78,10 @@ Complement of Rogers and Tanimoto's coefficient of similarity. Based on presence
 Complement of the Similarity Ratio. Based on count data. See Zuur et al 2007:167.
 }
   \item{distSorensen}{
-Complement of Sorensen (or Dice) index of similarity. Based on presence-absence data. No. of shared species / Average number of species.
+Complement of Sorensen (or Dice) index of similarity. Based on presence-absence data. No. of shared species / Average number of species. Same as Whittaker's distance measure for Incidence (presence-absence) data minus one (Magurran 2004:244).
 }
-  \item{distWhittakerA}{
+  \item{distWhittaker}{
 Whittaker's index of association for Abundance (count) data. See Zuur et al 2007:170.
-}
-  \item{distWhittakerI}{
-Whittaker's distance measure for Incidence (presence-absence) data minus one. The original Whittaker index ranges from 1 (all species in common) to 2 (all species different). This function returns [0, 1]. See Magurran 2004:244.
 }
 }
 }

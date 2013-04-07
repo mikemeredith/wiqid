@@ -21,8 +21,8 @@ Functions to estimate species richness, based on samples from one or more survey
 \usage{
 richACE(cntVec, threshold = 10)
 richICE(incMat, threshold = 10)
-richChao1(cntVec, correct = FALSE)
-richChao2(incMat, correct = FALSE)
+richChao1(cntVec, correct = FALSE, ci = 0.95)
+richChao2(incMat, correct = FALSE, ci = 0.95)
 richJack1(incMat)
 richJack2(incMat)
 richJackA1(cntVec)
@@ -43,6 +43,9 @@ the definition of rare or infrequent species: species with \code{threshold} or s
 }
   \item{correct}{
 if TRUE, bias-corrected estimates are calculated.
+}
+  \item{ci}{
+the required confidence interval.
 }
 }
 \details{
@@ -65,7 +68,7 @@ The following are not included in EstimateS v.8.2:
 \code{richRenLau} calculates Rennolls & Laumonier's (2006) 'shadow species' abundance-based estimator of richness.
 }
 \value{
-\code{richChao1} and \code{richChao2} return a vector with a point estimate, upper and lower 95\% confidence limits, and standard deviation.
+\code{richChao1} and \code{richChao2} return a vector with a point estimate, upper and lower confidence limits, and standard deviation.
 
 The other functions return a scalar.
 }

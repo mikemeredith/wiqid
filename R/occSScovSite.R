@@ -1,19 +1,24 @@
 # Single season occupancy with site covariates (not survey covariates)
 
-occSScovSite <- function(y, n, psi=~1, p=~1, data=NULL) {
+occSScovSite <- function(y, n, psi=~1, p=~1, data=NULL, ci=0.95) {
   # single-season occupancy models with site-specific covatiates
   # new version with y/n input; much faster!
   # y is a vector with the number of detections at each site.
   # n is a vector with the number of occasions at each site.
   # ** psi and p are one-sided formulae describing the model
   # ** data a data frame or list with the site covariates.
-
+  # ci is the required confidence interval.
   if(length(n) == 1)
     n <- rep(n, length(y))
   if(length(y) != length(n))
     stop("y and n must have the same length")
   if(any(y > n))
     stop("y cannot be greater than n")
+  if(ci > 1 | ci < 0.5)
+    stop("ci must be between 0.5 and 1")
+  alf <- (1 - ci[1]) / 2
+  crit <- qnorm(c(alf, 1 - alf))
+
   nSites <- length(y)
   if(!is.null(data))  {
     data <- lapply(data, function(x) if(is.numeric(x)) scale(x) else x)
@@ -66,7 +71,6 @@ occSScovSite <- function(y, n, psi=~1, p=~1, data=NULL) {
         all(diag(varcov) > 0)) {
       SE <- sqrt(diag(varcov))
       beta.mat[, 2] <- SE
-      crit <- qnorm(c(0.025, 0.975))
       beta.mat[, 3:4] <- sweep(outer(SE, crit), 1, res$estimate, "+")
       temp <- c(diag(psiModMat %*% varcov[1:psiK, 1:psiK] %*% t(psiModMat)),
                 diag(pModMat %*% varcov[(psiK+1):K, (psiK+1):K] %*% t(pModMat)))

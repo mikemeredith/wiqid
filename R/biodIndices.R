@@ -79,17 +79,3 @@ biodBrillouin <- function(cntVec) {
   exp((lfactorial(N) - sum(lfactorial(cntVec))) / N)
 }
 
-
-
-
-
-
-
-if(FALSE) {
-data(KillarneyBirds)
-data(Temburong)
-berger(Temburong)
-apply(KillarneyBirds, 2, berger)
-cntVec <- KillarneyBirds[,1]
-
-}

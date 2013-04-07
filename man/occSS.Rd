@@ -13,17 +13,17 @@ Single-season occupancy estimation
 Functions to estimate occupancy from detection/non-detection data for a single season. 
 }
 \usage{
-occSS0(y, n)
+occSS0(y, n, ci=0.95)
 
-occSSrn(y, n)
+occSSrn(y, n, ci=0.95)
 
-occSS.t(DH)
+occSS.t(DH, ci=0.95)
 
-occSS.T(DH)
+occSS.T(DH, ci=0.95)
 
-occSScovSite(y, n, psi = ~1, p = ~1, data = NULL)
+occSScovSite(y, n, psi = ~1, p = ~1, data = NULL, ci=0.95)
 
-occSScov(DH, psi = ~1, p = ~1, data = NULL)
+occSScov(DH, psi = ~1, p = ~1, data = NULL, ci=0.95)
 }
 \arguments{
   \item{y}{
@@ -31,6 +31,9 @@ a vector with the number of detections at each site.
 }
   \item{n}{
 a scalar or vector with the number of visits (survey occasions) at each site.
+}
+  \item{ci}{
+the confidence interval to use.
 }
  \item{DH}{
 a 1/0/NA matrix (or data frame) of detection histories, sites x occasions
@@ -66,8 +69,8 @@ For speed, use the simplest function which will cope with your model. For exampl
 Returns an object of class \code{occupancy}, which is a list with the following elements:
 
   \item{call}{The call used to produce the results}
-  \item{beta}{Values of the coefficients of the terms in the linear predictors, with standard errors and 95\% confidence intervals.}
-  \item{real}{Estimates of occupancy and probability of detection on the real scale, with 95\% confidence intervals; \code{occSSrn} gives occupancy, lambda and r.}
+  \item{beta}{Values of the coefficients of the terms in the linear predictors, with standard errors and confidence intervals.}
+  \item{real}{Estimates of occupancy and probability of detection on the real scale, with confidence intervals; \code{occSSrn} gives occupancy, lambda and r.}
   \item{logLik}{a vector with elements for log(likelihood), number of parameters, and effective sample size. If parameters \emph{and their SEs} cannot be estimated, the first element should be \code{NA}.}
 
 There are \code{print}, \code{logLik}, and \code{nobs} methods for class \code{occupancy}.

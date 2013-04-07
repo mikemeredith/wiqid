@@ -1,8 +1,14 @@
 closedCapMh2 <-
-function(freq, n.occ = length(freq)) {
+function(freq, n.occ = length(freq), ci = 0.95) {
   # freq is a vector of capture frequencies.
   freq <- c(freq, rep(0, n.occ-length(freq)))
   # n.occ is the total number of capture occasions
+  # ci is the required confidence interval
+  if(ci > 1 | ci < 0.5)
+    stop("ci must be between 0.5 and 1")
+  alf <- (1 - ci[1]) / 2
+  crit <- qnorm(c(alf, 1 - alf))
+
   N.cap <- sum(freq)  # Number of individual animals captured
   beta.mat <- matrix(NA_real_, 4, 3)
   AIC <- NA_real_
@@ -48,10 +54,10 @@ function(freq, n.occ = length(freq)) {
       if(res2$code < 3)  {  
         beta.mat[,1] <- res2$estimate
         AIC <- 2*res2$minimum + 8
-        if (det(res2$hessian) > 1e-6) {
-          SE <- sqrt(diag(solve(res2$hessian)))
-          crit <- qnorm(c(0.025, 0.975))
-          beta.mat[, 2:3] <- sweep(outer(SE, crit), 1, res2$estimate, "+")
+        varcov <- try(solve(res2$hessian), silent=TRUE)
+        if (!inherits(varcov, "try-error") && all(diag(varcov) > 0)) {
+          SE <- sqrt(diag(varcov))
+            beta.mat[, 2:3] <- sweep(outer(SE, crit), 1, res2$estimate, "+")
         }
       }
     }

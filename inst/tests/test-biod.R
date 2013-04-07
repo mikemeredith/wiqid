@@ -6,6 +6,7 @@
 # test_file("test-biod.R")
 # test_file(file.choose())
 
+require(wiqid)
 
 context("Biodiversity indices")
 # =============================

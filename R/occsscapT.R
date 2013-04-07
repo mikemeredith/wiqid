@@ -1,8 +1,15 @@
 occSS.T <-
-function(DH)  {
+function(DH, ci=0.95)  {
   # DH is a 1/0 matrix of detection histories, sites x occasions
+  # ci is the required confidence interval.
   # This returns estimate & CI of psi as usual, plus the intercept
   #   and slope of the p vs time relationship on the logistic scale.
+
+  if(ci > 1 | ci < 0.5)
+    stop("ci must be between 0.5 and 1")
+  alf <- (1 - ci[1]) / 2
+  crit <- qnorm(c(alf, 1 - alf))
+
   DH <- as.matrix(DH)  # in case it's a data frame
 	nocc <- ncol(DH)
   Time <- 0:(nocc-1)
@@ -32,7 +39,6 @@ function(DH)  {
       beta.mat[,1] <- res$estimate
       # AIC <- 2*res$minimum + 2 * n.par
       logLik <- -res$minimum
-      crit <- qnorm(c(0.025, 0.975))
       if (det(res$hessian) > 1e-6) {
         varcovar <- solve(res$hessian)
         beta.mat[, 'SE'] <- sqrt(diag(varcovar))

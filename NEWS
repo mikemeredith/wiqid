@@ -1,3 +1,18 @@
+CHANGES IN BUILD 2013-04-07
+
+ * Fixed occSSrn to produce NAs if input is all ones; changed test file to match.
+
+ * Changed checks for solving hessian in closedCapM0, Mh2; increased interlim for mle in closedCapM0.
+
+ * Changes to test files for closedCap*, as R 3.0.0 was not giving exactly the same answer; round(...,4) changed to signif(..., 4).
+
+CHANGES IN BUILD 2013-03-31
+
+  * Removed distWhittackerI, which is same as distSorensen; renamed distWhittackerA
+ as just distWhittacker.
+
+  * add ci=0.95 argument to all functions that return a confidence interval.
+
 CHANGES IN BUILD 2013-03-30
 
   * Added richJackA1, richJackA2, richRenLau, and Temburong data set.

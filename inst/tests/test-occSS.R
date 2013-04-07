@@ -23,6 +23,10 @@ test_that("occSS0 gives right answers",  {
   expect_that(round(as.vector(brs1$real), 4), 
       equals(c(0.5946, 0.2587, 0.3512, 0.1622, 0.7990, 0.3863)))
   expect_that(round(AIC(brs1), 4), equals(165.7586))
+  brs1a <- occSS0(y, n, 0.85)
+  expect_that(round(as.vector(brs1a$real), 4), 
+      equals(c(0.5946, 0.2587, 0.4136, 0.1846, 0.7531, 0.3499)))
+
       # These are the values returned by PRESENCE
   # Put in some NAs
   BRS[c(6,167,130,123,89,154,32,120,127,147)] <- NA
@@ -85,7 +89,11 @@ test_that("occSS.t gives right answers",  {
           0.5920, 0.4993)))
   expect_that(round(AIC(res), 4), equals(167.7144))
       # These are the values returned by PRESENCE
-
+  res <- occSS.t(BRS, 0.85)
+  expect_that(round(as.vector(res$real), 4), 
+      equals(c(0.5799, 0.1769, 0.1327, 0.3980, 0.3537, 0.2653,
+               0.4079, 0.0852, 0.0571, 0.2443, 0.2111, 0.1462,
+               0.7344, 0.3314, 0.2786, 0.5747, 0.5283, 0.4323)))
   # Put in some NAs
   BRS[c(6,167,130,123,89,154,32,120,127,147)] <- NA
   res <- occSS.t(BRS)
@@ -143,7 +151,6 @@ test_that("occSS.T gives right answers",  {
   data(salamanders)
   BRS <- salamanders
   res <- occSS.T(BRS)
-
   expect_that(class(res), equals(c("occupancy", "list")))
   expect_that(names(res), equals(c("call", "beta", "real", "logLik")))
   expect_that(is.call(res$call), is_true())
@@ -153,13 +160,20 @@ test_that("occSS.T gives right answers",  {
   # Values returned by PRESENCE:
   expect_that(round(as.vector(t(res$real)), 4), 
       equals(c( 0.5899, 0.3505, 0.7931,
-                          0.1865, 0.0881, 0.3523,
-                          0.2197, 0.1251, 0.3566,
-                          0.2569, 0.1604, 0.3849,
-                          0.2981, 0.1811, 0.4493,
-                          0.3428, 0.1860, 0.5436)))
+                0.1865, 0.0881, 0.3523,
+                0.2197, 0.1251, 0.3566,
+                0.2569, 0.1604, 0.3849,
+                0.2981, 0.1811, 0.4493,
+                0.3428, 0.1860, 0.5436)))
   expect_that(round(AIC(res), 4), equals(165.9228))
-
+  res <- occSS.T(BRS, 0.85)
+  expect_that(round(as.vector(t(res$real)), 4), 
+      equals(c(0.5899, 0.4118, 0.7471,
+               0.1865, 0.1083, 0.3019,
+               0.2197, 0.1462, 0.3165,
+               0.2569, 0.1828, 0.3484,
+               0.2981, 0.2082, 0.4069,
+               0.3428, 0.2215, 0.4889)))
   # Put in some NAs
   BRS[c(6,167,130,123,89,154,32,120,127,147)] <- NA
   res <- occSS.T(BRS)
@@ -227,6 +241,10 @@ test_that("occSSnr gives right answers",  {
           2.7568, 0.3266)))
   expect_that(round(AIC(res), 4), equals(164.0016))
       # These are the values returned by PRESENCE
+  res <- occSSrn(y, n, 0.85)
+  expect_that(round(as.vector(res$real), 4), 
+      is_equivalent_to(c(0.6810, 1.1425, 0.1475, 0.4502, 0.5983, 0.0750,
+                         0.8872, 2.1819, 0.2695)))
   # Put in some NAs
   BRS[c(6,167,130,123,89,154,32,120,127,147)] <- NA
   n <- rowSums(!is.na(BRS))
@@ -257,11 +275,9 @@ test_that("occSSnr gives right answers",  {
   # All ones:
   y <- n <- rep(5, 39)
   res <- occSSrn(y, n)
-  expect_that(round(as.vector(res$real[, 1]), 4), 
-      is_equivalent_to(c(1.0000, 26.9883,  0.8662)))
-  expect_that(as.vector(res$real[, 2:3]), 
-      is_equivalent_to(c(0, 0, 0, 1, Inf, 1)))
-  expect_that(AIC(res), equals(4))
+  expect_that(as.vector(res$real), 
+      is_equivalent_to(rep(NA_real_, 9)))
+  expect_that(AIC(res), equals(NA_real_))
   # All zeros:
   n <- rep(5, 39)
   y <- rep(0, 39)

@@ -1,13 +1,18 @@
 occSS0 <-
-function(y, n) {
+function(y, n, ci=0.95) {
   # n is a vector with the number of occasions at each site.
   # y is a vector with the number of detections at each site.
+  # ci is the required confidence interval.
   if(length(n) == 1)
     n <- rep(n, length(y))
   if(length(y) != length(n))
     stop("y and n must have the same length")
   if(any(y > n))
     stop("y cannot be greater than n")
+  if(ci > 1 | ci < 0.5)
+    stop("ci must be between 0.5 and 1")
+  alf <- (1 - ci[1]) / 2
+  crit <- qnorm(c(alf, 1 - alf))
 
   beta.mat <- matrix(NA_real_, 2, 3)
   colnames(beta.mat) <- c("est", "lowCI", "uppCI")
@@ -28,7 +33,6 @@ function(y, n) {
       varcov <- try(solve(res$hessian), silent=TRUE)
       if (!inherits(varcov, "try-error") && all(diag(varcov) > 0)) {
         SE <- sqrt(diag(varcov))
-        crit <- qnorm(c(0.025, 0.975))
         beta.mat[, 2:3] <- sweep(outer(SE, crit), 1, res$estimate, "+")
         logLik <- -res$minimum
       }

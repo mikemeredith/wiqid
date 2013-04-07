@@ -40,6 +40,10 @@ test_that("richChao1 matches EstimateS",  {
   expect_that(round(res, 2), 
       is_equivalent_to(c(32.2, 31.14, 41.37, 1.84)))
         # EstS output is 32.2, 31.13, 41.36, 1.84, but is rounded down.
+  res <- richChao1(kilCntVec, ci=0.85)
+  expect_that(round(res, 2), 
+      is_equivalent_to(c(33, 31.47, 39.51, 2.65)))
+
   # no singletons:
   res <- richChao1(kilCntVec+1)
   expect_that(round(res, 2), 
@@ -155,7 +159,11 @@ test_that("richChao2 matches EstimateS",  {
   expect_that(round(res, 2), 
       is_equivalent_to(c(33.22, 31.36, 44.88, 2.63)))
         # EstS output is 33.22, 31.35, 44.88, 2.62, but is rounded down.
-  
+
+  res <- richChao2(kilInc, ci=0.85)
+  expect_that(round(res, 2), 
+      is_equivalent_to(c(34.6, 32.02, 43.66, 3.85)))
+
   #TODO check for no uniques, no duplicates.
 } )
 

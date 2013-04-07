@@ -16,6 +16,10 @@ test_that("closedCapM0 gives right answers",  {
       is_equivalent_to(c(96.2589, 0.0820, 86.4162, 0.0663, 115.4025, 0.1010)))
   expect_that(round(attr(res, "AIC"), 4), equals(379.5941))
       # These are almost the same as the values returned by MARK.
+  res <- closedCapM0(freq2, t2, ci=0.85)
+  expect_that(round(as.vector(res), 4), 
+      is_equivalent_to(c(96.2589, 0.0820, 88.4286, 0.0701, 109.0225, 0.0956)))
+
    # All zeros:
   res <- closedCapM0(rep(0, 18))
   expect_that(as.vector(res), 
@@ -33,9 +37,9 @@ test_that("closedCapM0 gives right answers",  {
   expect_that(round(attr(res, "AIC"), 4), equals(NA_real_))
   # Just 2 animals recaptured
   res <- closedCapM0(c(0,2), 18)
-  expect_that(signif(as.vector(res), 5), 
+  expect_that(signif(as.vector(res)[-5], 5), # 5th value is nonsense
       is_equivalent_to(c(2.0000e+00, 1.1111e-01,  2.0000e+00, 4.2336e-02,
-          5.6561e+251, 2.6114e-01)))
+          2.6114e-01)))
   expect_that(round(attr(res, "AIC"), 4), equals(27.7296))
 }  )
 # .........................................................................
@@ -46,11 +50,15 @@ test_that("closedCapMh2 gives right answers",  {
   res <- closedCapMh2(freq2, t2)
   expect_that(colnames(res), equals(c("est", "lowCI", "uppCI")))
   expect_that(rownames(res), equals(c("Nhat", "piHat","p1hat", "p2hat")))
-  expect_that(round(as.vector(res), 4), 
-      is_equivalent_to(c(135.4763, 0.1548, 0.1795, 0.0360, 93.8471, 0.0536, 0.1027,
-          0.0122, 274.2078, 0.3718, 0.2949, 0.1015)))
+  expect_that(signif(as.vector(res), 4),
+      is_equivalent_to(c(135.5, 0.1548,   0.1795,   0.03602,  93.85,   0.0536,   0.1027,
+                         0.01222, 274.2,   0.3718,   0.2949,   0.1015)))
   expect_that(round(attr(res, "AIC"), 4), equals(369.6155))
       # These are almost the same as the values returned by MARK.
+  res <- closedCapMh2(freq2, t2, 0.85)
+  expect_that(signif(as.vector(res), 4),
+      is_equivalent_to(c(135.5,   0.1548,  0.1795,   0.03602, 100.6,   0.07179,   0.1197,
+   0.01632, 220.0,  0.3024,   0.2604,   0.07765)))
    # All zeros:
   res <- closedCapMh2(rep(0, 18))
   expect_that(as.vector(res), 
@@ -68,9 +76,9 @@ test_that("closedCapMh2 gives right answers",  {
   expect_that(round(attr(res, "AIC"), 4), equals(NA_real_))
   # Kanha tiger data
   res <- closedCapMh2(c(10,6,6,2,2), 10)
-  expect_that(round(as.vector(res), 4), 
-      is_equivalent_to(c(31.5205, 0.4920, 0.2644, 0.1061, 26.2949, 0.0148, 0.1130,
-          0.0058, 129.3522, 0.9843, 0.5036, 0.7066)))
+  expect_that(signif(as.vector(res), 4),
+      is_equivalent_to(c(3.152e+01, 4.920e-01, 2.644e-01, 1.061e-01, 2.629e+01,
+        1.477e-02, 1.130e-01, 5.821e-03, 1.294e+02, 9.843e-01, 5.036e-01, 7.066e-01)))
   expect_that(round(attr(res, "AIC"), 4), equals(158.6416))
 }  )
 # .........................................................................
@@ -84,8 +92,12 @@ test_that("closedCapMhJK gives right answers",  {
   expect_that(rownames(res), equals(c("Nhat", "pHat")))
   expect_that(attr(res, "AIC"), equals(NA))
   expect_that(round(as.vector(res), 4), 
-      is_equivalent_to(c(143.8743, 0.0548, 112.9109, 0.0393, 200.8120, 0.0699)))
+      is_equivalent_to(c(143.8743, 0.0548, 112.9113, 0.0393, 200.8106, 0.0699)))
       # These are almost the same as the rounded values returned by CAPTURE.
+  res <- closedCapMhJK(freq2, t2, 0.85)
+  expect_that(round(as.vector(res), 4), 
+      is_equivalent_to(c(143.8743, 0.0548, 119.3915, 0.0433, 182.1710, 0.0661)))
+
    # All zeros:
   res <- closedCapMhJK(rep(0, 18))
   expect_that(as.vector(res), 
@@ -102,6 +114,6 @@ test_that("closedCapMhJK gives right answers",  {
   # Kanha tiger data
   res <- closedCapMhJK(c(10,6,6,2,2), 10)
   expect_that(round(as.vector(res), 4), 
-      is_equivalent_to(c(33.3188, 0.1741, 27.8791, 0.1064, 54.5052, 0.2080)))
+      is_equivalent_to(c(33.3188, 0.1741, 27.8792, 0.1064, 54.5044, 0.2080)))
 }  )
 # .........................................................................

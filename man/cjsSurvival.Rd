@@ -9,15 +9,18 @@ Survival from recapture data
 Calculation of apparent survival (accounting for recapture probability) from recapture data formated as an m-array. \code{cjs0} runs a phi(.)p(.) model. \code{cjsTime} allows for time-dependent phi or p, possibly with covariates. \code{ch2mArray} converts capture history matrices to m-arrays.
 }
 \usage{
-cjs0(mArray)
+cjs0(mArray, ci = 0.95)
 
-cjsTime(mArray, phi = ~1, p = ~1, data = NULL)
+cjsTime(mArray, phi = ~1, p = ~1, data = NULL, ci = 0.95)
 
 ch2mArray(CH)
 }
 \arguments{
   \item{mArray}{
 matrix giving the recapture history in m-array format, with zeros (not NAs) in the lower triangle.
+}
+  \item{ci}{
+the required confidence interval.
 }
   \item{phi}{
 a one-sided formula defining a linear predictor for apparent survival (phi).
@@ -37,14 +40,14 @@ For n REcapture occasions (ie. n + 1 capture occasions total), the m-array has:
 
   = n rows corresponding to marked animals caught and released on each occasion except for the last (those animals will not be recatured anyway).
 
-  = n columns with the number of animals recaptured on each occasion except the first,   PLUS a last column with the number never recaptured.
+  = n columns with the number of animals recaptured on each occasion except the first, PLUS a last column with the number never recaptured.
 
  The lower triangle of the matrix is all zeros.
 
 
 }
 \value{
-\code{cjs0} returns a matrix with estimates of phi and p in rows and columns for the estimate and upper and lower 95% confidence intervals, and AIC as an attribute.
+\code{cjs0} returns a matrix with estimates of phi and p in rows and columns for the estimate and upper and lower confidence intervals, and AIC as an attribute.
 
 \code{cjsTime} returns a list:
   \item{beta }{Estimates of the coefficients in the linear predictors for phi and p.}
@@ -63,7 +66,7 @@ Mike Meredith
 %%  ~~further notes~~
 }
 
-\section{Oracles}{
+\section{Benchmarks}{
 Output has been checked against program MARK with the dipper data set: coefficients are not the same as MARK uses models without an intercept, but the real values agree to 3 decimal places.
 }
 

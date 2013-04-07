@@ -1,7 +1,12 @@
 closedCapMhJK <-
-function(freq, n.occ = length(freq)) {
+function(freq, n.occ = length(freq), ci=0.95) {
    # freq is a vector of capture frequencies; trailing zeros are not wanted.
    # n.occ is the total number of capture occasions
+  # ci is the required confidence interval.
+  if(ci > 1 | ci < 0.5)
+    stop("ci must be between 0.5 and 1")
+  alf <- (1 - ci[1]) / 2
+  crit <- qnorm(1 - alf)
 
    N.cap <- sum(freq)  # Number of animals captured
    n.snap <- sum(freq * seq_along(freq)) # Total number of capture events
@@ -103,7 +108,7 @@ function(freq, n.occ = length(freq)) {
      if(f0 < .Machine$double.eps) {
         CI <- c(N.cap, N.cap)
      } else {
-        C <- exp(1.96*sqrt(log(1 + SE.rev^2/f0^2)))
+        C <- exp(crit*sqrt(log(1 + SE.rev^2/f0^2)))
         CI <- c(N.cap + f0/C, N.cap + f0*C)
      }
     # Prepare output

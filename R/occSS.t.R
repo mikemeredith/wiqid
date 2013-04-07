@@ -2,8 +2,15 @@
 # New verion 2013-02-27 without the time argument (no time=FALSE option)
 
 occSS.t <-
-function(DH)  {
+function(DH, ci=0.95)  {
   # DH is a 1/0 matrix of detection histories, sites x occasions
+  # ci is the required confidence interval.
+
+  if(ci > 1 | ci < 0.5)
+    stop("ci must be between 0.5 and 1")
+  alf <- (1 - ci[1]) / 2
+  crit <- qnorm(c(alf, 1 - alf))
+
   # Check for columns with all NAs:
   DH <- as.matrix(DH)  # in case it's a data frame
 	nocc <- ncol(DH)
@@ -39,7 +46,6 @@ function(DH)  {
       if (det(res$hessian) > 1e-6) {
         SE <- sqrt(diag(solve(res$hessian)))
         beta.mat[, 2] <- SE
-        crit <- qnorm(c(0.025, 0.975))
         beta.mat[, 3:4] <- sweep(outer(SE, crit), 1, res$estimate, "+")
       }
     }

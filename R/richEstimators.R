@@ -74,9 +74,13 @@ richICE <- function(incMat, threshold = 10) {
 
 # Equation numbers refer to Appendix B of EstimateS 8.2 Users Guide at
 
-richChao1 <- function(cntVec, correct=FALSE)  {
+richChao1 <- function(cntVec, correct=FALSE, ci = 0.95)  {
   # cntVec = vector of counts, one element per species
   # correct : if TRUE, bias-corrected Chao1 is calculated
+  # ci : the desired confidence interval.
+  if(ci > 1 | ci < 0.5)
+    stop("ci must be between 0.5 and 1")
+  crit <- qnorm(1 - (1 - ci[1]) / 2)
 
   # Convert a matrix into a vector and round: 
   cntVec <- round(cntVec)
@@ -116,18 +120,18 @@ richChao1 <- function(cntVec, correct=FALSE)  {
     var <- F2 * ((F1 / F2)^2 / 2 + (F1 / F2)^3 + (F1 / F2)^4 / 4)
   }
 
-  # Calculate 95% CI
+  # Calculate  CI
   if(F1 == 0) {
     # Eqn 14
     P <- exp(-N / Sobs)
-    low <- max(Sobs, Sobs / (1-P) - 1.96 * sqrt(Sobs * P / (1-P)))
-    upp <- Sobs / (1-P) + 1.96 * sqrt(Sobs * P / (1-P))
+    low <- max(Sobs, Sobs / (1-P) - crit * sqrt(Sobs * P / (1-P)))
+    upp <- Sobs / (1-P) + crit * sqrt(Sobs * P / (1-P))
   } else {
     # Eqn 13
     if(T == 0) {  # in this case K is undefined
       low <- upp <- Sobs
     } else {
-      K <- exp(1.96 * sqrt(log(1 + var / T^2)))
+      K <- exp(crit * sqrt(log(1 + var / T^2)))
       low <- Sobs + T / K
       upp <- Sobs + T * K
     }
@@ -144,9 +148,13 @@ richChao1 <- function(cntVec, correct=FALSE)  {
 #  	Chao 2 95% CI Upper Bound
 # 	Chao 2 SD (analytical)
 
-richChao2 <- function(incMat, correct=FALSE)  {
+richChao2 <- function(incMat, correct=FALSE, ci = 0.95)  {
   # incMat = a 0/1 matrix of incidence data, species x sites
   # correct : if TRUE, bias-corrected Chao2 is calculated
+  # ci : the desired confidence interval.
+  if(ci > 1 | ci < 0.5)
+    stop("ci must be between 0.5 and 1")
+  crit <- qnorm(1 - (1 - ci[1]) / 2)
 
   # Convert a count matrix into an incidence matrix: 
   incMat <- round(incMat) > 0  
@@ -189,18 +197,18 @@ richChao2 <- function(incMat, correct=FALSE)  {
     var <- Q2 * ((Q1 / Q2)^2 / 2 + (Q1 / Q2)^3 + (Q1 / Q2)^4 / 4)
   }
 
-  # Calculate 95% CI
+  # Calculate CI
   if(Q1 == 0) {
     # Eqn 14
     P <- exp(-M / Sobs)
-    low <- max(Sobs, Sobs / (1-P) - 1.96 * sqrt(Sobs * P / (1-P)))
-    upp <- Sobs / (1-P) + 1.96 * sqrt(Sobs * P / (1-P))
+    low <- max(Sobs, Sobs / (1-P) - crit * sqrt(Sobs * P / (1-P)))
+    upp <- Sobs / (1-P) + crit * sqrt(Sobs * P / (1-P))
   } else {
     # Eqn 13
     if(T == 0) {  # in this case K is undefined
       low <- upp <- Sobs
     } else {
-      K <- exp(1.96 * sqrt(log(1 + var / T^2)))
+      K <- exp(crit * sqrt(log(1 + var / T^2)))
       low <- Sobs + T / K
       upp <- Sobs + T * K
     }
