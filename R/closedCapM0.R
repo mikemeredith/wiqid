@@ -3,6 +3,8 @@ function(freq, n.occ = length(freq), ci = 0.95) {
   # freq is a vector of capture frequencies; trailing zeros are not required.
   # n.occ is the total number of capture occasions
   # ci is the required confidence interval
+  freq <- round(freq)
+  n.occ <- round(n.occ)
   if(ci > 1 | ci < 0.5)
     stop("ci must be between 0.5 and 1")
   alf <- (1 - ci[1]) / 2
@@ -12,7 +14,8 @@ function(freq, n.occ = length(freq), ci = 0.95) {
   n.snap <- sum(freq * (1:length(freq))) # Total number of capture events
   beta.mat <- matrix(NA_real_, 2, 3)
   AIC <- NA_real_
-  if(sum(freq[-1]) > 1) {  # Need recaptures
+#  if(sum(freq[-1]) > 1) {  # Need recaptures
+  if(sum(freq[-1]) > 0) {  # Need recaptures
     nll <- function(params) {
       N <- min(exp(params[1]) + N.cap, 1e+300, .Machine$double.xmax)
       p <- plogis(params[2])

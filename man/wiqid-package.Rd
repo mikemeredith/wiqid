@@ -12,8 +12,8 @@ Quick and dirty functions to estimate occupancy, survival, abundance, etc. for w
 \tabular{ll}{
 Package: \tab wiqid\cr
 Type: \tab Package\cr
-Version: \tab 0.0352\cr
-Date: \tab 2013-04-06\cr
+Version: \tab 0.0353\cr
+Date: \tab 2013-10-05\cr
 License: \tab GPL-3\cr
 }
 There are a number of sophisticated programs for the analysis of wildlife data, producing estimates of occupancy, survival, abundance, or density. But if you are generating hundreds of simulated data sets in R, you need fast, bare-bones functions which can be run from R.

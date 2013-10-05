@@ -32,9 +32,9 @@ test_that("closedCapM0 gives right answers",  {
   expect_that(round(attr(res, "AIC"), 4), equals(NA_real_))
   # Just 1 animal recaptured
   res <- closedCapM0(c(0,1), 18)
-  expect_that(as.vector(res), 
-      is_equivalent_to(rep(NA_real_, 6)))
-  expect_that(round(attr(res, "AIC"), 4), equals(NA_real_))
+  expect_that(round(as.vector(res),4), 
+      is_equivalent_to(c(1, 0.1111, rep(NA_real_, 4))))
+  expect_that(round(attr(res, "AIC"), 4), equals(16.558))
   # Just 2 animals recaptured
   res <- closedCapM0(c(0,2), 18)
   expect_that(signif(as.vector(res)[-5], 5), # 5th value is nonsense
@@ -109,8 +109,8 @@ test_that("closedCapMhJK gives right answers",  {
       is_equivalent_to(rep(NA_real_, 6)))
   # Just 1 animal recaptured
   res <- closedCapMhJK(c(0,1), 18)
-  expect_that(as.vector(res), 
-      is_equivalent_to(rep(NA_real_, 6)))
+  expect_that(round(as.vector(res), 4),
+      is_equivalent_to(c(1.0000, 0.1111, 1.0000, 0.1111, 1.0000, 0.1111)))
   # Kanha tiger data
   res <- closedCapMhJK(c(10,6,6,2,2), 10)
   expect_that(round(as.vector(res), 4), 

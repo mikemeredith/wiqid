@@ -1,3 +1,8 @@
+CHANGES IN BUILD 2013-10-04
+
+  * Changed sanity checks in closedCapM0 and closedCapsMhJK to allow just 1 recapture.
+    Test files modified to match.
+
 CHANGES IN BUILD 2013-04-07
 
  * Fixed occSSrn to produce NAs if input is all ones; changed test file to match.

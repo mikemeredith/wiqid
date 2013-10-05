@@ -3,6 +3,8 @@ function(freq, n.occ = length(freq), ci=0.95) {
    # freq is a vector of capture frequencies; trailing zeros are not wanted.
    # n.occ is the total number of capture occasions
   # ci is the required confidence interval.
+  freq <- round(freq)
+  n.occ <- round(n.occ)
   if(ci > 1 | ci < 0.5)
     stop("ci must be between 0.5 and 1")
   alf <- (1 - ci[1]) / 2
@@ -13,7 +15,8 @@ function(freq, n.occ = length(freq), ci=0.95) {
    n.jack <- min(5, n.occ) # Number of jackknife estimations
 
   out.mat <- matrix(NA_real_, 2, 3)
-  if(sum(freq[-1]) > 1)  {  # Do checks here
+#  if(sum(freq[-1]) > 1)  {  # Do checks here
+  if(sum(freq[-1]) > 0)  {  # Do checks here
     # Remove trailing zeros:
     while(freq[length(freq)] == 0)
       freq <- freq[-length(freq)]
