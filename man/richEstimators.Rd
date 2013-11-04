@@ -91,9 +91,7 @@ Smith, E.P. & van Belle, G. 1984. Nonparametric estimation of species richness. 
 \author{
 Mike Meredith
 }
-\note{
-%%  ~~further notes~~
-}
+
 \section{Benchmarks}{
 Output for estimators included in EstimateS 8.2 has been checked against EstimateS for the \code{seedbank} and \code{killarneyBirds} data sets. EstimateS results are often 0.01 lower, as EstimateS appears to truncate rather than rounding.
 } 

@@ -20,27 +20,16 @@ a character vector specifying the covariates/predictors.
 if TRUE, only the formulae are returned; otherwise a TRUE/FALSE matrix is returned, with the formulae as row names.
 }
 }
-\details{
-%%  ~~ If necessary, more details than the description above ~~
-}
 \value{
 If \code{formulae = TRUE}, returns a character vector with elements corresponding to the formulae for all possible combinations of main effects.
 
 Otherwise, returns a TRUE/FALSE matrix indicating which covariates are included in each model with the model formulae as the row names.
 }
-\references{
-%% ~put references to the literature/web site here ~
-}
+
 \author{
 Mike Meredith
 }
-\note{
-%%  ~~further notes~~
-}
 
-\seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
-}
 \examples{
 longNames <- colnames(swiss)
 # these would produce formulae too long for the console.

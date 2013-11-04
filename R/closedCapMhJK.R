@@ -15,6 +15,9 @@ function(freq, n.occ = length(freq), ci=0.95) {
    n.jack <- min(5, n.occ) # Number of jackknife estimations
 
   out.mat <- matrix(NA_real_, 2, 3)
+  colnames(out.mat) <- c("est", "lowCI", "uppCI")
+  rownames(out.mat) <- c("Nhat", "pHat")
+
 #  if(sum(freq[-1]) > 1)  {  # Do checks here
   if(sum(freq[-1]) > 0)  {  # Do checks here
     # Remove trailing zeros:
@@ -118,8 +121,10 @@ function(freq, n.occ = length(freq), ci=0.95) {
     out.mat[1, ] <- c(N.hat, CI)
     out.mat[2, ] <- n.snap / (out.mat[1, c(1,3,2)] * n.occ)
   }
-  colnames(out.mat) <- c("est", "lowCI", "uppCI")
-  rownames(out.mat) <- c("Nhat", "pHat")
-  attr(out.mat, "AIC") <- NA
-  return(out.mat)
+  out <- list(call = match.call(),
+          # beta = beta.mat,
+          real = out.mat,
+          logLik = c(logLik=NA, df=NA, nobs=N.cap * n.occ))
+  class(out) <- c("closedCap", "list")
+  return(out)
 }

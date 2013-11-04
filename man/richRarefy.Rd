@@ -15,9 +15,6 @@ richRarefy(incmat)
 a 1/0 matrix of species incidence (presence), species x sites. A matrix of counts may also be provided.
 }
 }
-\details{
-%%  ~~ If necessary, more details than the description above ~~
-}
 \value{
 A matrix with columns for the estimate and its standard deviation and rows for the number of samples pooled. Confidence limits may be obtained with estimate +/- 1.96 * SD.
 }
@@ -26,15 +23,6 @@ Colwell, R. K., C. X. Mao, & J. Chang. 2004. Interpolating, extrapolating, and c
 }
 \author{
 Mike Meredith
-}
-\note{
-%%  ~~further notes~~
-}
-
-%% ~Make other sections like Warning with \section{Warning }{....} ~
-
-\seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
 }
 \examples{
 data(seedbank)

@@ -62,17 +62,11 @@ Lebreton, J-D; K P Burnham; J Clobert; D R Anderson. 1992. Modeling survival and
 \author{
 Mike Meredith
 }
-\note{
-%%  ~~further notes~~
-}
 
 \section{Benchmarks}{
 Output has been checked against program MARK with the dipper data set: coefficients are not the same as MARK uses models without an intercept, but the real values agree to 3 decimal places.
 }
 
-\seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
-}
 \examples{
 # The classic Lebreton et al dipper data set:
 dippers <- matrix(c(

@@ -11,9 +11,7 @@ Number of seeds of different species germinating from 121 soil samples collected
 \format{
   A matrix with 34 rows for species and 121 columns corresponding to different soil samples.
 }
-\details{
-%%  ~~ If necessary, more details than the __description__ above ~~
-}
+
 \source{
 Butler & Chazdon 1998. Example data distributed with the EstimateS program (Colwell 2005).
 }

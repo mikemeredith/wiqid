@@ -87,9 +87,6 @@ Hines, J. E. (2006). PRESENCE - Software to estimate patch occupancy and related
 \author{
 Mike Meredith
 }
-\note{
-%%  ~~further notes~~
-}
 \seealso{
 See the examples for the \code{\link{weta}} data set.
 }

@@ -11,9 +11,6 @@ Detection/non-detection data for blue ridge salamanders (Eurycea wilderae) in Gr
 \format{
 A matrix with 39 rows corresponding to sites and 5 columns corresponding to survey occasions. 1 means that one or more salamanders were observed at the site/survey, 0 means none were seen.
 }
-\details{
-%%  ~~ If necessary, more details than the __description__ above ~~
-}
 \source{
 Described in MacKenzie et al (2006) p99. The data are distributed with the software package PRESENCE.
 }

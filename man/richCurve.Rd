@@ -66,20 +66,8 @@ The other functions documented here are trivial, but useful for plugging into \c
 
 The other functions return scalars.
 }
-\references{
-%% ~put references to the literature/web site here ~
-}
 \author{
 Mike Meredith
-}
-\note{
-%%  ~~further notes~~
-}
-
-%% ~Make other sections like Warning with \section{Warning }{....} ~
-
-\seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
 }
 \examples{
 data(seedbank)

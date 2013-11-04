@@ -22,9 +22,6 @@ The number of territories held by breeding males in 9 blocks of woodland habitat
     \item{\code{Swampy}}{a swampy seasonally-flooded woodland}
   }
 }
-\details{
-%%  ~~ If necessary, more details than the __description__ above ~~
-}
 \source{
 Batten L. A. (1976) Bird communities of some Killarney woodlands. \emph{Proceedings of the Royal Irish Academy} 76:285-313.
 }

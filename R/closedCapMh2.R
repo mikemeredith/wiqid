@@ -1,5 +1,5 @@
 closedCapMh2 <-
-function(freq, n.occ = length(freq), ci = 0.95) {
+function(freq, n.occ = length(freq), ci = 0.95, ciType=c("normal", "MARK")) {
   # freq is a vector of capture frequencies.
   freq <- c(freq, rep(0, n.occ-length(freq)))
   # n.occ is the total number of capture occasions
@@ -8,12 +8,17 @@ function(freq, n.occ = length(freq), ci = 0.95) {
     stop("ci must be between 0.5 and 1")
   alf <- (1 - ci[1]) / 2
   crit <- qnorm(c(alf, 1 - alf))
+  ciType <- match.arg(ciType)
 
   N.cap <- sum(freq)  # Number of individual animals captured
-  beta.mat <- matrix(NA_real_, 4, 3)
-  AIC <- NA_real_
+  beta.mat <- matrix(NA_real_, 4, 4) # objects to hold output
+  colnames(beta.mat) <- c("est", "SE", "lowCI", "uppCI")
+  rownames(beta.mat) <- c("Nhat", "piHat", "p1hat", "p2hat")
+  logLik <- NA_real_
 
   if(sum(freq[-1]) > 1)  {  # Do checks here
+    # nll1 ensures p2 <= p1, but useless for Hessian
+    # nll2 starts with output from nll1 (so p2/p1 not an issue)
     nll1 <- function(params) {
       f0 <- min(exp(params[1]), 1e+300, .Machine$double.xmax)
       f.vect <- c(f0, freq)
@@ -52,20 +57,25 @@ function(freq, n.occ = length(freq), ci = 0.95) {
       #res2 <- suppressWarnings(nlm(nll2, params, hessian=TRUE))
       res2 <- nlm(nll2, params, hessian=TRUE)
       if(res2$code < 3)  {  
-        beta.mat[,1] <- res2$estimate
-        AIC <- 2*res2$minimum + 8
+        beta.mat[, 1] <- res2$estimate
         varcov <- try(solve(res2$hessian), silent=TRUE)
         if (!inherits(varcov, "try-error") && all(diag(varcov) > 0)) {
-          SE <- sqrt(diag(varcov))
-            beta.mat[, 2:3] <- sweep(outer(SE, crit), 1, res2$estimate, "+")
+          beta.mat[, 2] <- sqrt(diag(varcov))
+          beta.mat[, 3:4] <- sweep(outer(beta.mat[, 2], crit), 1, res2$estimate, "+")
+          logLik <- -res2$minimum
         }
       }
     }
   }
-  out.mat <- rbind(exp(beta.mat[1, ]) + N.cap, 
-                    plogis(beta.mat[-1, ]))
-  colnames(out.mat) <- c("est", "lowCI", "uppCI")
-  rownames(out.mat) <- c("Nhat", "piHat", "p1hat", "p2hat")
-  attr(out.mat, "AIC") <- AIC
-  return(out.mat)
+  if(ciType == "normal") {
+    Nhat <- exp(beta.mat[1, -2]) + N.cap
+  } else {
+    Nhat <- getMARKci(beta.mat[1, 1], beta.mat[1, 2], ci) + N.cap
+  }
+  out <- list(call = match.call(),
+          beta = beta.mat,
+          real = rbind(Nhat, plogis(beta.mat[-1, -2])),
+          logLik = c(logLik=logLik, df=4, nobs=N.cap * n.occ))
+  class(out) <- c("closedCap", "list")
+  return(out)
 }

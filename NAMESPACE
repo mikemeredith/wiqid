@@ -3,9 +3,9 @@
 importFrom(stats, nobs, logLik)
 
 export(
-  AICc, allCombinations,
+  AICc, allCombinations, makeAICtable,
   cjs0, cjsTime, ch2mArray,
-  closedCapM0, closedCapMh2, closedCapMhJK,
+  closedCapM0, closedCapMh2, closedCapMhJK, closedCapMt, closedCapMtcov,
   occSS0, occSS.t, occSS.T, occSScov, occSScovSite, occSSrn,
   richRarefy,
   richACE, richICE, richChao1, richChao2, richJack1, richJack2, richBoot, richMM,
@@ -24,5 +24,8 @@ export(
 S3method("print", "occupancy")
 S3method("logLik", "occupancy")
 S3method("nobs", "occupancy")
+S3method("print", "closedCap")
+S3method("logLik", "closedCap")
+S3method("nobs", "closedCap")
 S3method("AICc", "default")
 
