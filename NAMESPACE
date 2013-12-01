@@ -1,12 +1,11 @@
-# exportPattern("^[[:alpha:]]+")
 
 importFrom(stats, nobs, logLik)
 
 export(
-  AICc, allCombinations, makeAICtable,
+  AICc, allCombinations, AICtable,
   cjs0, cjsTime, ch2mArray,
   closedCapM0, closedCapMh2, closedCapMhJK, closedCapMt, closedCapMtcov,
-  occSS0, occSS.t, occSS.T, occSScov, occSScovSite, occSSrn,
+  occSS0, occSS.t, occSS.T, occSScov, occSScovSite, occSSrn, occSSautocorA,
   richRarefy,
   richACE, richICE, richChao1, richChao2, richJack1, richJack2, richBoot, richMM,
   richJackA1, richJackA2, richRenLau,
@@ -17,9 +16,6 @@ export(
   distChord, distJaccard, distMatching, distMorisitaHorn, distOchiai, distPreston,
   distRogersTanimoto, distSimRatio, distSorensen, distWhittaker
 )
-
-# DON'T export data objects!
-# export(salamanders, weta)
 
 S3method("print", "occupancy")
 S3method("logLik", "occupancy")

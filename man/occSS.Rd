@@ -5,6 +5,7 @@
 \alias{occSS.T}
 \alias{occSScovSite}
 \alias{occSScov}
+\alias{occSSautocorA}
 
 \title{
 Single-season occupancy estimation
@@ -20,6 +21,8 @@ occSSrn(y, n, ci=0.95)
 occSS.t(DH, ci=0.95)
 
 occSS.T(DH, ci=0.95)
+
+occSSautocorA(DH, ci=0.95)
 
 occSScovSite(y, n, psi = ~1, p = ~1, data = NULL, ci=0.95)
 
@@ -57,7 +60,9 @@ a data frame or list containing the variables in the model. If survey covariates
 
 \code{occSS.T} estimates a logit-linear trend in detection probability, producing estimates of the intercept and slope.
 
-\code{occSScovSite} allows for psi or p to be modelled as a logistic function of site covariates, while \code{occSScov} extends this to allow for survey covariates to be included in the model for p. \code{occSScov} has a built in \code{.time} covariate which can be used for modelling p.
+\code{occSSautocorA} allows for autocorrelation among surveys: the probability of detection on a survey depends on detection/nondetection on the previous survey (Hines et al 2010, Appendix A).
+
+\code{occSScovSite} allows for psi or p to be modelled as a logistic function of site covariates, while \code{occSScov} extends this to allow for survey covariates to be included in the model for p. \code{occSScov} has a built in \code{.time} covariate which can be used for modelling p with time as a fixed effect, and \code{.Time} and \code{.Time2} for a linear or quadratic trend.
 
 Survey covariates for use by \code{occSScov} should be included in the \code{data} list either as a sites x surveys matrix or as a vector of length sites*surveys, beginning with the observations for all the sites for the first survey. The latter is useful when the covariate is a factor, as matrices of factors don't generally work in R. Using \code{as.factor(covariate_matrix)} produces the right vector.
 
@@ -75,15 +80,21 @@ Returns an object of class \code{occupancy}, which is a list with the following 
 
 There are \code{print}, \code{logLik}, and \code{nobs} methods for class \code{occupancy}.
 }
+
 \section{Benchmarks}{Output has been checked against output from PRESENCE (Hines 2006) v.5.5 for the \code{\link{salamanders}} and \code{\link{weta}} data sets. Real values are mostly the same to 4 decimal places, though there is occasionally a discrepancy of 0.0001. AICs are the same.
 }
+
 \references{
 MacKenzie, D I; J D Nichols; G B Lachman; S Droege; J A Royle; C A Langtimm. 2002. Estimating site occupancy rates when detection probabilities are less than one. \emph{Ecology} 83:2248-2255.
 
 MacKenzie, D I; J D Nichols; A J Royle; K H Pollock; L L Bailey; J E Hines 2006. \emph{Occupancy estimation and modeling : inferring patterns and dynamics of species occurrence}. Elsevier Publishing.
 
-Hines, J. E. (2006). PRESENCE - Software to estimate patch occupancy and related parameters. SGS-PWRC. \url{http://www.mbr-pwrc.usgs.gov/software/presence.html}.
+Hines, J. E. (2006). PRESENCE - Software to estimate patch occupancy and related parameters. SGS-PWRC. http://www.mbr-pwrc.usgs.gov/software/presence.html.
+
+Hines, J.E., Nichols, J.D., Royle, J.A., MacKenzie, D.I., Gopalaswamy, A.M., Kumar, N.S., Karanth, K.U. (2010) Tigers on trails: occupancy modeling for cluster sampling. \emph{Ecological Applications}, 20, 1456-1466.
+
 }
+
 \author{
 Mike Meredith
 }

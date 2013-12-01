@@ -36,6 +36,8 @@ occSScov <- function(DH, psi=~1, p=~1, data=NULL, ci=0.95) {
       stop("Missing site covariates are not allowed.")
     # Covars for probability of detection:
     pList <- data[covLen == nSites | covLen == nSites*nSurv]
+    pList$.Time <- col(DH)
+    pList$.Time2 <- col(DH)^2
     pList <- lapply(pList, as.vector)
     pList <- lapply(pList, function(x) if(is.numeric(x)) scale(x) else x)
     pList$.time <- as.factor(col(DH))
@@ -44,8 +46,10 @@ occSScov <- function(DH, psi=~1, p=~1, data=NULL, ci=0.95) {
       stop("Missing survey covariates are not allowed when a survey was done.")
   } else {
     psiDf <- data.frame(.dummy = rep(NA, nSites))
-    pDf <- data.frame(.time = as.factor(survID))
     # model.matrix needs a data frame, NULL won't do.
+    pDf <- data.frame(.time = as.factor(survID))
+    pDf$.Time <- scale(as.vector(col(DH))[survey.done])
+    pDf$.Time2 <- scale(as.vector(col(DH))[survey.done]^2)
   }
 
   psiModMat <- model.matrix(as.formula(psi), psiDf)

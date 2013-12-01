@@ -1,6 +1,13 @@
-CHANGES IN BUILD 2013-11-04
+CHANGES IN 0.0355
 
-  * added makeAICtable utility function.
+  * occSScovSite was throwing error if variables not in the model contained NAs.
+  TODO check other functions are not doing this too!
+  
+  * added .Time and .Time2 built-in covars to occSScov
+  
+  * added AICtable utility function.
+
+CHANGES IN BUILD 2013-11-04
 
   * closedCap* functions now return an object of class closedCap, for which there are print, logLik and nobs methods.
 

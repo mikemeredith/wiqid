@@ -23,8 +23,6 @@ occSScovSite <- function(y, n, psi=~1, p=~1, data=NULL, ci=0.95) {
   if(!is.null(data))  {
     data <- lapply(data, function(x) if(is.numeric(x)) scale(x) else x)
     ddf <- as.data.frame(data)
-    if(any(is.na(ddf)))
-      stop("Missing site covariates are not allowed.")
     if(nrow(ddf) != nSites)
       stop("'data' must have a row for each site.")
   } else {
@@ -37,6 +35,9 @@ occSScovSite <- function(y, n, psi=~1, p=~1, data=NULL, ci=0.95) {
   pModMat <- model.matrix(as.formula(p), ddf)
   pK <- ncol(pModMat)
   K <- psiK + pK
+  # model.matrix removes rows with NAs:
+  if(nrow(psiModMat) != nSites || nrow(pModMat) != nSites)
+    stop("Missing site covariates are not allowed.")
 
   beta.mat <- matrix(NA_real_, K, 4)
   colnames(beta.mat) <- c("est", "SE", "lowCI", "uppCI")
