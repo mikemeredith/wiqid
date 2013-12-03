@@ -221,6 +221,91 @@ test_that("occSS.T gives right answers",  {
 }  )
 # .............................................
 
+test_that("occSS.T2 gives right answers",  {
+  # Data set (Blue Ridge Salamanders)
+  require(wiqid)
+  data(salamanders)
+  BRS <- salamanders
+  res <- occSS.T2(BRS)
+  expect_that(class(res), equals(c("occupancy", "list")))
+  expect_that(names(res), equals(c("call", "beta", "real", "logLik")))
+  expect_that(is.call(res$call), is_true())
+  expect_that(colnames(res$real), equals(c("est", "lowCI", "uppCI")))
+  expect_that(rownames(res$real),
+       equals(c("psi", "p1",  "p2",  "p3",  "p4",  "p5")))
+  # Values returned by PRESENCE to within 0.0001
+  expect_that(round(as.vector(t(res$real)), 4), 
+      equals(c( 0.5870, 0.3502, 0.7894,
+                0.1321, 0.0461, 0.3242,
+                0.2404, 0.1335, 0.3940,
+                0.3210, 0.1801, 0.5043,
+                0.3364, 0.1995, 0.5075,
+                0.2807, 0.1304, 0.5039)))
+  expect_that(round(AIC(res), 4), equals(166.3525))
+  res <- occSS.T2(BRS, 0.85, FALSE)
+  expect_that(round(as.vector(t(res$real)), 4), 
+      equals(c( 0.5870, 0.4108, 0.7434,
+                0.1321, 0.0615, 0.2612,
+                0.2404, 0.1572, 0.3494,
+                0.3210, 0.2121, 0.4535,
+                0.3364, 0.2313, 0.4605,
+                0.2807, 0.1620, 0.4407)))
+  # Put in some NAs
+  BRS[c(6,167,130,123,89,154,32,120,127,147)] <- NA
+  res <- occSS.T2(BRS, plot=FALSE)
+  expect_that(round(as.vector(res$real), 4), 
+      is_equivalent_to(c( 0.5750, 0.1440, 0.2405,
+                          0.3057, 0.3114, 0.2554,
+                          0.3232, 0.0493, 0.1268,
+                          0.1577, 0.1678, 0.1072,
+                          0.7930, 0.3528, 0.4085,
+                          0.5086, 0.5035, 0.4948)))
+  expect_that(round(AIC(res), 4), equals(151.6391))
+  # Put in a row of NAs
+  BRS[3,] <- NA 
+  res <- occSS.T2(BRS, plot=FALSE)
+  expect_that(round(as.vector(res$real), 4), 
+      equals(c( 0.5464, 0.1449, 0.2398,
+                0.3083, 0.3234, 0.2801,
+                0.3086, 0.0479, 0.1251,
+                0.1583, 0.1751, 0.1187,
+                0.7647, 0.3633, 0.4102,
+                0.5138, 0.5185, 0.5292)))
+  expect_that(round(AIC(res), 4), equals(145.9611))
+  # Put in a column of NAs
+  BRS[, 3] <- NA
+  res <- occSS.T2(BRS)
+  expect_that(round(as.vector(res$real), 4), 
+      equals(c( 0.3665, 0.2312, 0.2661,
+                0.3136, 0.3756, 0.4528,
+                0.1888, 0.0768, 0.1110,
+                0.1101, 0.1602, 0.1832,
+                0.5897, 0.5209, 0.5129,
+                0.6278, 0.6548, 0.7532)))
+  expect_that(round(AIC(res), 4), equals(103.314))
+  # All ones:
+  tst <- matrix(1, 39, 5)
+  res <- occSS.T2(tst)
+  expect_that(round(as.vector(res$real[1,1]), 4), 
+      equals(1))
+  expect_that(as.vector(res$real)[-1], 
+      is_equivalent_to(rep(NA_real_, 17)))
+  expect_that(round(AIC(res), 4), equals(NA_real_))
+  # All zeros:
+  tst <- matrix(0, 39, 5)
+  res <- occSS.T2(tst)
+  expect_that(as.vector(res$real), 
+      equals(rep(NA_real_, 18)))
+  expect_that(AIC(res), equals(NA_real_))
+  # All NAs:
+  tst <- matrix(NA, 39, 5)
+  res <- occSS.T2(tst)
+  expect_that(as.vector(res$real), 
+      equals(rep(NA_real_, 18)))
+  expect_that(AIC(res), equals(NA_real_))
+}  )
+# .............................................
+
 test_that("occSSnr gives right answers",  {
   # Data set (Blue Ridge Salamanders)
   require(wiqid)

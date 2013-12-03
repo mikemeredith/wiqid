@@ -37,7 +37,7 @@ occSS.t(DH)
 # Extract site covariate and use this:
 weta.covs <- weta[, 6, drop=FALSE]
   # drop=FALSE ensures that it remains as a data frame with 1 column.
-occSScovSite(y, n, psi= ~ Browsed, data=weta.covs)
+occSScovSite(y, n, psi ~ Browsed, data=weta.covs)
 
 # Extract the obs covariate and create the list of covariates
 weta.obs <- weta[, 7:11]

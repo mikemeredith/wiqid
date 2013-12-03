@@ -1,4 +1,10 @@
+CHANGES IN 0.0356
+
+  * New function occSS.T2 does quadratic model for probabilitiy of detection. occSS.T and occSS.T2 do a plot of p vs time.
+  
 CHANGES IN 0.0355
+
+  * new function occSSautocorA does autocorrelation in detection probability.
 
   * occSScovSite was throwing error if variables not in the model contained NAs.
   TODO check other functions are not doing this too!

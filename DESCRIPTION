@@ -1,9 +1,10 @@
 Package: wiqid
 Type: Package
 Title: Quick and Dirty estimates for Wildlife simulations
-Version: 0.0355
-Date: 2013-11-22
+Version: 0.0356-1
+Date: 2013-12-3
 Imports: stats
+Depends: rjags, coda
 Author: Mike Meredith
 Maintainer: Mike Meredith <mmeredith@wcs.org>
 Description: Provides simple, fast functions for estimating wildlife population parameters, suitable for use with simulated data or bootstraps. Includes single season occupancy, closed capture population estimation, survival, species richness and distance measures.

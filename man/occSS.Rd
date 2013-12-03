@@ -3,6 +3,7 @@
 \alias{occSSrn}
 \alias{occSS.t}
 \alias{occSS.T}
+\alias{occSS.T2}
 \alias{occSScovSite}
 \alias{occSScov}
 \alias{occSSautocorA}
@@ -20,11 +21,13 @@ occSSrn(y, n, ci=0.95)
 
 occSS.t(DH, ci=0.95)
 
-occSS.T(DH, ci=0.95)
+occSS.T(DH, ci=0.95, plot=TRUE)
+
+occSS.T2(DH, ci=0.95, plot=TRUE)
 
 occSSautocorA(DH, ci=0.95)
 
-occSScovSite(y, n, psi = ~1, p = ~1, data = NULL, ci=0.95)
+occSScovSite(y, n, model=list(psi~1, p~1), data = NULL, ci=0.95)
 
 occSScov(DH, psi = ~1, p = ~1, data = NULL, ci=0.95)
 }
@@ -40,6 +43,12 @@ the confidence interval to use.
 }
  \item{DH}{
 a 1/0/NA matrix (or data frame) of detection histories, sites x occasions
+}
+  \item{plot}{
+if TRUE (default), draws a plot of probability of detection vs time.
+}
+  \item{model}{
+a list of formulae symbolically defining a linear predictor for each parameter in terms of covariates.
 }
   \item{psi}{
 a one-sided formula symbolically defining a linear predictor for \code{psi} in terms of site covariates.
@@ -58,7 +67,7 @@ a data frame or list containing the variables in the model. If survey covariates
 
 \code{occSS.t} estimates a separate detection probability for each survey occasion, ie. a \code{psi(.) p(t)} model.
 
-\code{occSS.T} estimates a logit-linear trend in detection probability, producing estimates of the intercept and slope.
+\code{occSS.T} estimates a logit-linear trend in detection probability, producing estimates of the intercept and slope. \code{occSS.T2} estimates a logit-quadratic trend.
 
 \code{occSSautocorA} allows for autocorrelation among surveys: the probability of detection on a survey depends on detection/nondetection on the previous survey (Hines et al 2010, Appendix A).
 

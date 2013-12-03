@@ -1,11 +1,14 @@
+# NAMESPACE for package 'wiqid'
 
-importFrom(stats, nobs, logLik)
+importFrom(stats, nobs, logLik, update)
+importFrom(rjags, jags.model, coda.samples)
+importFrom(coda, effectiveSize)
 
 export(
-  AICc, allCombinations, AICtable,
   cjs0, cjsTime, ch2mArray,
   closedCapM0, closedCapMh2, closedCapMhJK, closedCapMt, closedCapMtcov,
-  occSS0, occSS.t, occSS.T, occSScov, occSScovSite, occSSrn, occSSautocorA,
+  occSS0, occSS.t, occSS.T, occSS.T2, occSScov, occSScovSite, occSSrn, occSSautocorA,
+  BoccSS0, #occSS.t, occSS.T, occSS.T2, occSScov, occSScovSite, occSSrn, occSSautocorA,
   richRarefy,
   richACE, richICE, richChao1, richChao2, richJack1, richJack2, richBoot, richMM,
   richJackA1, richJackA2, richRenLau,
@@ -14,7 +17,8 @@ export(
   distShell, distBrayCurtis,
   distChaoJaccCorr, distChaoJaccNaive, distChaoSorCorr, distChaoSorNaive,
   distChord, distJaccard, distMatching, distMorisitaHorn, distOchiai, distPreston,
-  distRogersTanimoto, distSimRatio, distSorensen, distWhittaker
+  distRogersTanimoto, distSimRatio, distSorensen, distWhittaker,
+  AICc, allCombinations, AICtable, hdi
 )
 
 S3method("print", "occupancy")
@@ -24,4 +28,10 @@ S3method("print", "closedCap")
 S3method("logLik", "closedCap")
 S3method("nobs", "closedCap")
 S3method("AICc", "default")
+
+S3method("hdi", "default")
+S3method("hdi", "matrix")
+S3method("hdi", "data.frame")
+S3method("hdi", "mcmc.list")
+S3method("hdi", "function")
 

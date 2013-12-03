@@ -46,7 +46,7 @@ test_that("occSScovSite gives right answers",  {
   expect_that(round(as.vector(weta1a$real[73, ]), 4), 
       equals(c(0.3494, 0.2765, 0.4301)))
 
-  weta2 <- occSScovSite(y, n, psi= ~ Browsed, data=weta.covs)
+  weta2 <- occSScovSite(y, n, psi ~ Browsed, data=weta.covs)
 
   expect_that(names(weta2), equals(c("call", "beta", "real", "logLik"))) 
 
@@ -72,7 +72,7 @@ test_that("occSScovSite gives right answers",  {
   expect_that(round(AIC(weta2), 4), 
       equals(264.2643))
 
-  weta3 <- occSScovSite(y, n, psi= ~ Browsed, p= ~ Browsed, data=weta.covs)
+  weta3 <- occSScovSite(y, n, list(psi ~ Browsed, p ~ Browsed), data=weta.covs)
 
   expect_that(names(weta3), equals(c("call", "beta", "real", "logLik"))) 
 

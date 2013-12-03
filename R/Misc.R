@@ -33,3 +33,22 @@ AICtable <- function(x) {
   }
   return(out)
 }
+
+## Regularize a list of formulae, ensuring it is a named list
+#    of one-sided formulae.
+## based on Murray Efford's 'stdform' function in 'secr'
+stdform <- function (flist) {
+    LHS <- function (form) {
+        trms <- as.character (form)
+        if (length(trms)==2) '' else trms[2]
+    }
+    RHS <- function (form) {
+        trms <- as.character (form)
+        if (length(trms)==3) as.formula(paste(trms[c(1,3)])) else form
+    }
+    lhs <- sapply(flist, LHS)
+    temp <- lapply(flist, RHS)
+    if (is.null(names(flist))) names(temp) <- lhs
+    else names(temp) <- ifelse(names(flist) == '', lhs, names(flist))
+    temp
+}

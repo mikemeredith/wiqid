@@ -1,12 +1,14 @@
 # Single season occupancy with site covariates (not survey covariates)
 
-occSScovSite <- function(y, n, psi=~1, p=~1, data=NULL, ci=0.95) {
+# 'model' argument added 2013-12-02
+
+occSScovSite <- function(y, n, model=list(psi~1, p~1), data=NULL, ci=0.95) {
   # single-season occupancy models with site-specific covatiates
   # new version with y/n input; much faster!
   # y is a vector with the number of detections at each site.
   # n is a vector with the number of occasions at each site.
-  # ** psi and p are one-sided formulae describing the model
-  # ** data a data frame or list with the site covariates.
+  # model is a list of 2-sided formulae for psi and p; can also be a single
+  #   2-sided formula, eg, model = psi ~ habitat.
   # ci is the required confidence interval.
   if(length(n) == 1)
     n <- rep(n, length(y))
@@ -18,6 +20,13 @@ occSScovSite <- function(y, n, psi=~1, p=~1, data=NULL, ci=0.95) {
     stop("ci must be between 0.5 and 1")
   alf <- (1 - ci[1]) / 2
   crit <- qnorm(c(alf, 1 - alf))
+  
+  # Standardise the model:
+  if(inherits(model, "formula"))
+    model <- list(model)
+  model <- stdform (model)
+  model0 <- list(psi=~1, p=~1)
+  model <- replace (model0, names(model), model)
 
   nSites <- length(y)
   if(!is.null(data))  {
@@ -30,9 +39,9 @@ occSScovSite <- function(y, n, psi=~1, p=~1, data=NULL, ci=0.95) {
     # model.matrix needs a data frame, NULL won't do.
   }
 
-  psiModMat <- model.matrix(as.formula(psi), ddf)
+  psiModMat <- model.matrix(model$psi, ddf)
   psiK <- ncol(psiModMat)
-  pModMat <- model.matrix(as.formula(p), ddf)
+  pModMat <- model.matrix(model$p, ddf)
   pK <- ncol(pModMat)
   K <- psiK + pK
   # model.matrix removes rows with NAs:
