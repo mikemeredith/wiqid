@@ -34,16 +34,11 @@ n <- rowSums(!is.na(DH))
 occSS0(y, n)
 occSS.t(DH)
 
-# Extract site covariate and use this:
-weta.covs <- weta[, 6, drop=FALSE]
-  # drop=FALSE ensures that it remains as a data frame with 1 column.
+# Extract covariates:
+weta.covs <- weta[, 6:11]
 occSScovSite(y, n, psi ~ Browsed, data=weta.covs)
 
-# Extract the obs covariate and create the list of covariates
-weta.obs <- weta[, 7:11]
-weta.dat <- as.list(weta.covs)
-weta.dat$obs <- as.matrix(weta.obs)
-occSScov(DH, psi= ~ Browsed, p= ~ obs, data=weta.dat)
+occSScov(DH, list(psi ~ Browsed, p ~ ObsD), data=weta.covs)
 
 }
 \keyword{datasets}

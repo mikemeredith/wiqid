@@ -21,6 +21,8 @@ function(y, n, ci=0.95)  {
   colnames(beta.mat) <- c("est", "SE", "lowCI", "uppCI")
   rownames(beta.mat) <- c("lambda", "r")
   logLik <- NA_real_
+  varcov <- NULL
+  
   if(sum(n) > 0 && sum(y) > 0 && any(y < n)) {    # If all n's are 0, no data available.
     params <- c(0, 0)
     Nmax <- 100 # See later if this is sensible
@@ -39,14 +41,14 @@ function(y, n, ci=0.95)  {
     res <- nlm(nll, params, hessian=TRUE)
     if(res$code < 3)  {  # exit code 1 or 2 is ok.
       beta.mat[,1] <- res$estimate
-      varcov <- try(solve(res$hessian), silent=TRUE)
-      if (!inherits(varcov, "try-error") && 
-          all(diag(varcov) > 0)) {
+      varcov0 <- try(solve(res$hessian), silent=TRUE)
+      if (!inherits(varcov0, "try-error") && all(diag(varcov0) > 0)) {
+        varcov <- varcov0
         SE <- sqrt(diag(varcov))
         beta.mat[, 2] <- SE
         beta.mat[, 3:4] <- sweep(outer(SE, crit), 1, res$estimate, "+")
         logLik <- -res$minimum
-      }
+      } 
     }
   }
 	lambda <- exp(beta.mat[1, -2])
@@ -55,9 +57,10 @@ function(y, n, ci=0.95)  {
   rownames(real) <- c("psiHat", "lambdaHat", "rHat")
   out <- list(call = match.call(),
               beta = beta.mat,
+              beta.vcv = varcov,
               real = real,
               logLik = c(logLik=logLik, df=2, nobs=length(y)))
-  class(out) <- c("occupancy", "list")
+  class(out) <- c("wiqid", "list")
   return(out)
 
 }

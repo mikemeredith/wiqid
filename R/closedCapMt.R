@@ -48,9 +48,10 @@ function(CH, ci = 0.95, ciType=c("normal", "MARK")) {
   }
   out <- list(call = match.call(),
           beta = beta.mat,
+          beta.vcv = varcov,
           real = rbind(Nhat, plogis(beta.mat[-1, -2])),
           logLik = c(logLik=logLik, df=nocc+1, nobs=length(CH)))
-  class(out) <- c("closedCap", "list")
+  class(out) <- c("wiqid", "list")
   return(out)
 }
 

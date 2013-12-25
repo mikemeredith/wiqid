@@ -10,15 +10,15 @@ test_that("closedCapMt gives right answers",  {
   data(KanhaTigers)
   res <- closedCapMt(KanhaTigers)
   resM <- closedCapMt(KanhaTigers, ciType='MARK')
-  expect_that(class(res), equals(c("closedCap", "list"))) 
-  expect_that(names(res), equals(c("call", "beta", "real", "logLik"))) 
+  expect_that(class(res), equals(c("wiqid", "list"))) 
+  expect_that(names(res), equals(c("call", "beta", "beta.vcv", "real", "logLik"))) 
   expect_that(colnames(res$real), equals(c("est", "lowCI", "uppCI")))
   expect_that(rownames(res$real), equals(c("Nhat", "p1", "p2", "p3", "p4",
       "p5", "p6", "p7", "p8", "p9", "p10")))
   expect_that(rownames(resM$real), equals(c("Nhat", "p1", "p2", "p3", "p4",
       "p5", "p6", "p7", "p8", "p9", "p10")))
-  expect_that(round(as.vector(res$real[1, ]), 4), 
-      is_equivalent_to(c(28.0511, 26.3035, 39.8600)))
+  expect_that(round(as.vector(res$real[1, ]), 3), 
+      is_equivalent_to(c(28.051, 26.304, 39.860)))
   expect_that(round(as.vector(resM$real[1, ]), 3), 
       is_equivalent_to(c(28.051, 26.413, 36.178)))
       # MARK gives 36.180 for the upper limit
@@ -45,13 +45,13 @@ test_that("closedCapMt gives right answers",  {
 test_that("closedCapMtcov gives right answers",  {
   data(KanhaTigers)
   res0 <- closedCapMtcov(KanhaTigers)
-  expect_that(class(res0), equals(c("closedCap", "list"))) 
-  expect_that(names(res0), equals(c("call", "beta", "real", "logLik"))) 
+  expect_that(class(res0), equals(c("wiqid", "list"))) 
+  expect_that(names(res0), equals(c("call", "beta", "beta.vcv", "real", "logLik"))) 
   expect_that(colnames(res0$real), equals(c("est", "lowCI", "uppCI")))
   expect_that(rownames(res0$real), equals(c("Nhat", "p1", "p2", "p3", "p4",
       "p5", "p6", "p7", "p8", "p9", "p10")))
-  expect_that(round(as.vector(res0$real[1, ]), 4), 
-      is_equivalent_to(c(28.4464, 26.4289, 39.9533)))
+  expect_that(round(as.vector(res0$real[1, ]), 3), 
+      is_equivalent_to(c(28.446, 26.429, 39.953)))
   expect_that(round(as.vector(res0$real[-1, ]), 4), 
       is_equivalent_to(rep(c(0.2039, 0.1536, 0.2655), each=10)))
   expect_that(round(AIC(res0), 4), equals(155.2433))
@@ -60,7 +60,7 @@ test_that("closedCapMtcov gives right answers",  {
   set.seed(123)
   covars <- data.frame(Temp = runif(ncol(KanhaTigers), 15, 25),
       Cloud = sample(0:8, ncol(KanhaTigers), replace=TRUE))
-  resC <- closedCapMtcov(KanhaTigers, p=~Cloud, data=covars)
+  resC <- closedCapMtcov(KanhaTigers, p~Cloud, data=covars)
   expect_that(round(as.vector(resC$real[1, ]), 4), 
       is_equivalent_to(c(28.4435, 26.4280, 39.9514)))
   expect_that(round(as.vector(resC$real[-1, ]), 4), 
@@ -70,9 +70,9 @@ test_that("closedCapMtcov gives right answers",  {
      0.3080,0.2647,0.2778,0.2687,0.2893,0.3080,0.2706,0.2893,0.2706,0.3080)))
   expect_that(round(AIC(resC), 4), equals(157.1073))
 
-  resTC <- closedCapMtcov(KanhaTigers, p=~Temp+Cloud, data=covars)
-  expect_that(round(as.vector(resTC$real[1, ]), 4), 
-      is_equivalent_to(c(28.2261, 26.3579, 39.8478)))
+  resTC <- closedCapMtcov(KanhaTigers, p~Temp+Cloud, data=covars)
+  expect_that(round(as.vector(resTC$real[1, ]), 3), 
+      is_equivalent_to(c(28.226, 26.358, 39.848)))
   expect_that(round(as.vector(resTC$real[-1, ]), 4), 
       is_equivalent_to(c(
      0.1905,0.2793,0.1798,0.3715,0.2116,0.1142,0.1227,0.1924,0.1291,0.2638,

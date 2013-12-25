@@ -17,8 +17,8 @@ test_that("occSScovSite gives right answers",  {
   weta.covs <- weta[, 6, drop=FALSE]
   weta1 <- occSScovSite(y, n)
 
-  expect_that(class(weta1), equals(c("occupancy", "list"))) 
-  expect_that(names(weta1), equals(c("call", "beta", "real", "logLik"))) 
+  expect_that(class(weta1), equals(c("wiqid", "list"))) 
+  expect_that(names(weta1), equals(c("call", "beta", "beta.vcv", "real", "logLik"))) 
   expect_that(is.call(weta1$call), is_true())
 
   expect_that(dim(weta1$beta), equals(c(2, 4)))
@@ -48,7 +48,7 @@ test_that("occSScovSite gives right answers",  {
 
   weta2 <- occSScovSite(y, n, psi ~ Browsed, data=weta.covs)
 
-  expect_that(names(weta2), equals(c("call", "beta", "real", "logLik"))) 
+  expect_that(names(weta2), equals(c("call", "beta", "beta.vcv", "real", "logLik"))) 
 
   expect_that(dim(weta2$beta), equals(c(3, 4)))
   expect_that(colnames(weta2$beta),
@@ -74,7 +74,7 @@ test_that("occSScovSite gives right answers",  {
 
   weta3 <- occSScovSite(y, n, list(psi ~ Browsed, p ~ Browsed), data=weta.covs)
 
-  expect_that(names(weta3), equals(c("call", "beta", "real", "logLik"))) 
+  expect_that(names(weta3), equals(c("call", "beta", "beta.vcv", "real", "logLik"))) 
 
   expect_that(dim(weta3$beta), equals(c(4, 4)))
   expect_that(colnames(weta3$beta),
@@ -107,14 +107,11 @@ test_that("occSScov gives right answers",  {
   require(wiqid)
   data(weta)
   DH <- weta[, 1:5]
-  weta.covs <- weta[, 6, drop=FALSE]
-  weta.obs <- weta[, 7:11]
-  weta.dat <- as.list(weta.covs)
-  weta.dat$obs <- as.matrix(weta.obs)
+  weta.covs <- weta[, 6:11]
 
   weta4 <- occSScov(DH)
-  expect_that(class(weta4), equals(c("occupancy", "list"))) 
-  expect_that(names(weta4), equals(c("call", "beta", "real", "logLik"))) 
+  expect_that(class(weta4), equals(c("wiqid", "list"))) 
+  expect_that(names(weta4), equals(c("call", "beta", "beta.vcv", "real", "logLik"))) 
   expect_that(is.call(weta4$call), is_true())
   expect_that(dim(weta4$beta), equals(c(2, 4)))
   expect_that(colnames(weta4$beta),
@@ -140,11 +137,8 @@ test_that("occSScov gives right answers",  {
   expect_that(round(as.vector(weta4a$real[73, ]), 4), 
       equals(c(0.3494, 0.2765, 0.4301)))
 
-
-  weta5 <- occSScov(DH, psi= ~ Browsed, data=weta.dat)
-
-  expect_that(names(weta5), equals(c("call", "beta", "real", "logLik"))) 
-
+  weta5 <- occSScov(DH, psi ~ Browsed, data=weta.covs)
+  expect_that(names(weta5), equals(c("call", "beta", "beta.vcv", "real", "logLik"))) 
   expect_that(dim(weta5$beta), equals(c(3, 4)))
   expect_that(colnames(weta5$beta),
     equals(c("est", "SE",  "lowCI", "uppCI")))
@@ -153,7 +147,6 @@ test_that("occSScov gives right answers",  {
   expect_that(round(as.vector(weta5$beta), 4), 
       equals(c( 0.5196,  0.6167, -0.6223,  0.4188,  0.3627,  0.2367, -0.3012,
                -0.0942, -1.0861,  1.3403,  1.3276, -0.1584)))
-
   expect_that(dim(weta5$real), equals(c(334, 3)))
   expect_that(colnames(weta5$real),
     equals(c("est", "lowCI", "uppCI")))
@@ -169,21 +162,18 @@ test_that("occSScov gives right answers",  {
   expect_that(round(AIC(weta5), 4), 
       equals(264.2643))
 
-  weta6 <- occSScov(DH, psi= ~ Browsed, p= ~ obs, data=weta.dat)
-
-  expect_that(names(weta6), equals(c("call", "beta", "real", "logLik"))) 
-
+  weta6 <- occSScov(DH, list(psi ~ Browsed, p ~ ObsD), data=weta.covs)
+  expect_that(names(weta6), equals(c("call", "beta", "beta.vcv", "real", "logLik"))) 
   expect_that(dim(weta6$beta), equals(c(5, 4)))
   expect_that(colnames(weta6$beta),
     equals(c("est", "SE",  "lowCI", "uppCI")))
   expect_that(rownames(weta6$beta),
     equals(c("psi: (Intercept)", "psi: Browsed", "p: (Intercept)", 
-             "p: obsB",  "p: obsC")))
+             "p: ObsDB",  "p: ObsDC")))
   expect_that(round(as.vector(weta6$beta), 4), 
       equals(c( 0.5119,  0.5935, -1.2453,  0.7498,  1.0294,  0.4061,  0.3532,
                 0.3615,  0.4427,  0.4324, -0.2841, -0.0988, -1.9537, -0.1179,
                 0.1819,  1.3079,  1.2858, -0.5368,  1.6175,  1.8770)))
-
   expect_that(dim(weta6$real), equals(c(334, 3)))
   expect_that(colnames(weta6$real),
     equals(c("est", "lowCI", "uppCI")))
@@ -198,7 +188,6 @@ test_that("occSScov gives right answers",  {
       equals(c(0.3786, 0.2383, 0.5426)))
   expect_that(round(as.vector(weta6$real[334, ]), 4), 
       equals(c(0.4462, 0.2980, 0.6047)))
-
   expect_that(round(AIC(weta6), 4), 
       equals(262.0421))
 })

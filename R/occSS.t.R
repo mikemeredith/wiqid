@@ -24,8 +24,9 @@ function(DH, ci=0.95)  {
   if(any(!NAcol))
     rownames.beta.mat <- c("psi", paste("p", (1:nocc)[!NAcol], sep=""))
   rownames(beta.mat) <- rownames.beta.mat
-  # AIC <- NA_real_
   logLik <- NA_real_
+  varcov <- NULL
+  
   if(ncol(DH) > 1 && sum(DH, na.rm=TRUE) > 0)  {
     # Negative log-likelihood function:
     nll <- function(params) {
@@ -41,12 +42,12 @@ function(DH, ci=0.95)  {
     res <- nlm(nll, params, hessian=TRUE)
     if(res$code < 3)  {  # exit code 1 or 2 is ok.
       beta.mat[,1] <- res$estimate
-      # AIC <- 2*res$minimum + 2 * n.par
-      logLik <- -res$minimum
-      if (det(res$hessian) > 1e-6) {
-        SE <- sqrt(diag(solve(res$hessian)))
+      varcov <- try(solve(res$hessian), silent=TRUE)
+      if (!inherits(varcov, "try-error") && all(diag(varcov) > 0)) {
+        SE <- sqrt(diag(varcov))
         beta.mat[, 2] <- SE
         beta.mat[, 3:4] <- sweep(outer(SE, crit), 1, res$estimate, "+")
+        logLik <- -res$minimum
       }
     }
   }
@@ -56,8 +57,9 @@ function(DH, ci=0.95)  {
   colnames(real.mat) <- c("est", "lowCI", "uppCI")
   out <- list(call = match.call(),
               beta = beta.mat,
+              beta.vcv = varcov,
               real = real.mat,
               logLik=c(logLik=logLik, df=n.par, nobs=nrow(DH)))
-  class(out) <- c("occupancy", "list")
+  class(out) <- c("wiqid", "list")
   return(out)
 }

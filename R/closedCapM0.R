@@ -17,7 +17,7 @@ function(freq, n.occ = length(freq), ci = 0.95, ciType=c("normal", "MARK")) {
   beta.mat <- matrix(NA_real_, 2, 4) # objects to hold output
   colnames(beta.mat) <- c("est", "SE", "lowCI", "uppCI")
   rownames(beta.mat) <- c("Nhat", "phat")
-
+  varcov <- NULL
   logLik <- NA_real_
 #  if(sum(freq[-1]) > 1) {  # Need recaptures
   if(sum(freq[-1]) > 0) {  # Need recaptures
@@ -49,8 +49,9 @@ function(freq, n.occ = length(freq), ci = 0.95, ciType=c("normal", "MARK")) {
 
   out <- list(call = match.call(),
           beta = beta.mat,
+          beta.vcv = varcov,
           real = rbind(Nhat, plogis(beta.mat[2, -2, drop=FALSE])),
           logLik = c(logLik=logLik, df=2, nobs=N.cap * n.occ))
-  class(out) <- c("closedCap", "list")
+  class(out) <- c("wiqid", "list")
   return(out)
 }

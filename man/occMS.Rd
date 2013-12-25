@@ -1,0 +1,82 @@
+\name{Occupancy Multi-Season}
+\alias{occMS0}
+\alias{occMSseason}
+\alias{occMScov}
+
+\title{
+Multi-season occupancy estimation
+}
+\description{
+Functions to estimate occupancy from detection/non-detection data for multiple seasons. 
+}
+\usage{
+occMS0(DH, occsPerSeason, ci=0.95)
+
+occMSseason(DH, occsPerSeason,
+             model=list(gamma~1, epsilon~1, p~1),
+             data=NULL, ci=0.95)
+
+occMScov(DH, occsPerSeason,
+             model=list(psi1~1, gamma~1, epsilon~1, p~1),
+             data=NULL, ci=0.95)
+}
+\arguments{
+ \item{DH}{
+a 1/0/NA matrix (or data frame) of detection histories, sites x occasions
+}
+  \item{occsPerSeason}{
+the number of survey occasions per season; either a scalar if the number of surveys is constant, or a vector with one element for each season.
+}
+  \item{model}{
+a list of formulae symbolically defining a linear predictor for each parameter in terms of covariates.
+}
+  \item{data}{
+a data frame containing the variables in the model: one row for each season or between-season period for \code{occMSseason} and one for each site for \code{occMScov}.
+}
+
+  \item{ci}{
+the confidence interval to use.
+}
+}
+\details{
+\code{occMS0} implements a simple multi-season model with one parameter each for initial occupancy, colonisation, local extinction, and probability of detection, ie. a \code{psi1(.) gamma(.) epsilon(.) p(.)} model.
+
+\code{occMSseason} allows for between-season differences in colonisation, local extinction, and probability of detection, either with covariates given in \code{data} or the in-built covariate \code{season}.
+
+\code{occMScove} allows for between-season differences in colonisation, local extinction, and probability of detection with the in-built covariate \code{season} and for beteen-site differences with covariates defined in \code{data}.
+
+Missing values are allowed in \code{DH}, including entire seasons with no observations, but there must be some observations for each site after the first season. % Sanity checks!
+}
+\value{
+Returns an object of class \code{wiqid}, which is a list with the following elements:
+
+  \item{call}{The call used to produce the results}
+  \item{beta}{Values of the coefficients of the terms in the linear predictors, with standard errors and confidence intervals.}
+  \item{beta.vcv }{The variance-covariance matrix for the beta estimates.}
+  \item{real}{Estimates of occupancy and probability of detection on the real scale, with confidence intervals; \code{occSSrn} gives occupancy, lambda and r.}
+  \item{logLik}{a vector with elements for log(likelihood), number of parameters, and effective sample size. If parameters \emph{and their SEs} cannot be estimated, the first element should be \code{NA}.}
+
+There are \code{print}, \code{logLik}, and \code{nobs} methods for class \code{wiqid}.
+}
+
+%%%%\section{Benchmarks}{Output has been checked against output from PRESENCE (Hines 2006) v.5.5 for the \code{\link{salamanders}} and \code{\link{weta}} data sets. Real values are mostly the same to 4 decimal places, though there is occasionally a discrepancy of 0.0001. AICs are the same.
+%%}
+
+\references{
+MacKenzie, D I; J D Nichols; G B Lachman; S Droege; J A Royle; C A Langtimm. 2002. Estimating site occupancy rates when detection probabilities are less than one. \emph{Ecology} 83:2248-2255.
+
+MacKenzie, D I; J D Nichols; A J Royle; K H Pollock; L L Bailey; J E Hines 2006. \emph{Occupancy estimation and modeling : inferring patterns and dynamics of species occurrence}. Elsevier Publishing.
+
+Hines, J. E. (2006). PRESENCE - Software to estimate patch occupancy and related parameters. SGS-PWRC. http://www.mbr-pwrc.usgs.gov/software/presence.html.
+
+MacKenzie, D I; J D Nichols; J E Hines; et al 2003. Estimating site occupancy, colonization, and local extinction when a species is imperfectly detected.  \emph{Ecology} 84, 2200-2207.
+
+}
+
+\author{
+Mike Meredith
+}
+
+\examples{
+# TODO Need a suitable data set
+}

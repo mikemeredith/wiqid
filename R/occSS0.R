@@ -18,7 +18,8 @@ function(y, n, ci=0.95) {
   colnames(beta.mat) <- c("est", "lowCI", "uppCI")
   rownames(beta.mat) <- c("psiHat", "pHat")
   logLik <- NA_real_
-
+  varcov <- NULL
+  
   if(sum(n) > 0) {    # If all n's are 0, no data available.
     nll <- function(params) {
        psi <- plogis(params[1])
@@ -40,8 +41,9 @@ function(y, n, ci=0.95) {
   }
   out <- list(call = match.call(),
               beta = beta.mat,
+              beta.vcv = varcov,
               real = plogis(beta.mat),
               logLik = c(logLik=logLik, df=2, nobs=length(y)))
-  class(out) <- c("occupancy", "list")
+  class(out) <- c("wiqid", "list")
   return(out)
 }

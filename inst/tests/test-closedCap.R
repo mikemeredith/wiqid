@@ -11,8 +11,8 @@ test_that("closedCapM0 gives right answers",  {
   freq2 <- c(43, 16, 8, 6, 0, 2, 1) ; t2 <- 18 
   res <- closedCapM0(freq2, t2)
   resM <- closedCapM0(freq2, t2, ciType='MARK')
-  expect_that(class(res), equals(c("closedCap", "list"))) 
-  expect_that(names(res), equals(c("call", "beta", "real", "logLik"))) 
+  expect_that(class(res), equals(c("wiqid", "list"))) 
+  expect_that(names(res), equals(c("call", "beta", "beta.vcv", "real", "logLik"))) 
   expect_that(colnames(res$real), equals(c("est", "lowCI", "uppCI")))
   expect_that(rownames(res$real), equals(c("Nhat", "phat")))
   expect_that(round(as.vector(res$real[1, ]), 4), 
@@ -62,14 +62,14 @@ test_that("closedCapMh2 gives right answers",  {
   freq2 <- c(43, 16, 8, 6, 0, 2, 1) ; t2 <- 18 
   res <- closedCapMh2(freq2, t2)
   resM <- closedCapMh2(freq2, t2, ciType="MARK")
-  expect_that(class(res), equals(c("closedCap", "list"))) 
-  expect_that(names(res), equals(c("call", "beta", "real", "logLik"))) 
+  expect_that(class(res), equals(c("wiqid", "list"))) 
+  expect_that(names(res), equals(c("call", "beta",  "beta.vcv", "real", "logLik"))) 
   expect_that(colnames(res$real), equals(c("est", "lowCI", "uppCI")))
   expect_that(rownames(res$real), equals(c("Nhat", "piHat","p1hat", "p2hat")))
-  expect_that(round(as.vector(res$real[1, ]), 4),
-      is_equivalent_to(c(135.4763, 93.8471, 274.2073)))
-  expect_that(round(as.vector(resM$real[1, ]), 4),
-      is_equivalent_to(c(135.4763, 95.6243, 256.2573)))
+  expect_that(round(as.vector(res$real[1, ]), 3),
+      is_equivalent_to(c(135.476, 93.847, 274.207)))
+  expect_that(round(as.vector(resM$real[1, ]), 3),
+      is_equivalent_to(c(135.476, 95.624, 256.257)))
     # MARK gives 135.47714, 95.586384, 256.61168  
   expect_that(round(as.vector(res$real[-1, ]), 4),
       is_equivalent_to(c(0.1548, 0.1795, 0.0360, 0.0536, 0.1027,
@@ -114,7 +114,7 @@ test_that("closedCapMhJK gives right answers",  {
   # Rabbit data from Edwards and Eberhart (1967)
   freq2 <- c(43, 16, 8, 6, 0, 2, 1) ; t2 <- 18 
   res <- closedCapMhJK(freq2, t2)
-  expect_that(class(res), equals(c("closedCap", "list"))) 
+  expect_that(class(res), equals(c("wiqid", "list"))) 
   expect_that(names(res), equals(c("call", "real", "logLik"))) 
   expect_that(colnames(res$real), equals(c("est", "lowCI", "uppCI")))
   expect_that(rownames(res$real), equals(c("Nhat", "pHat")))

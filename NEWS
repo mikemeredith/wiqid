@@ -1,9 +1,41 @@
-CHANGES IN 0.0356
+TODO
 
+  * Check that SE is returned for betas, not for reals.
+  
+  * Use Gelman et al 2008 recommendations for priors for logistic coefficients. Do man page for priors.
+  
+  * Look at problem in occSSautocorA
+
+CHANGES IN 2013-12-24
+
+  * Functions cjsTime and BcjsTime renamed as survCJS and BsurvCJS.
+  
+  * New function survCJSaj for data sets for adults and juveniles, eg sociable lapwings.
+  
+  * New class 'wiqid' replaces classes 'occupancy' and 'closedCap' and is used for survCJS output.
+  
+CHANGES IN 2013-12-16
+
+  * New functions occMSseason and occMScov do covariate versions of multiple season occupancy.
+  
+CHANGES IN 2013-12-14
+
+  * New function Bsecr0 does Bayesian version of simple secr fit.
+
+  * New function occMS0 does simple multi-season analysis.
+
+  * New function BcjsTime does Bayesian version of survival.
+
+  * cjs0 removed; use cjsTime for phi(.) p(.) model
+  
+  * Argument 'model' now used in occSScov and occSScovSite.
+  
+  * Covariate data for occSScovSite now a data frame, not a list.
+  
   * New function occSS.T2 does quadratic model for probabilitiy of detection. occSS.T and occSS.T2 do a plot of p vs time.
   
-CHANGES IN 0.0355
-
+  * New function BoccSS0 does Bayesian modelling with JAGS.
+  
   * new function occSSautocorA does autocorrelation in detection probability.
 
   * occSScovSite was throwing error if variables not in the model contained NAs.

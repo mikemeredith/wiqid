@@ -1,3 +1,9 @@
+
+# Tidy up the column names in MCMC output: remove [] and ,
+fixNames <- function(x)
+  sub(",", "\\.", sub("\\]", "", sub("\\[", "", x)))
+
+
 # Function to calculate the MARK-style confidence intervals for N
 # See help for Closed Captures
 # Not exported
@@ -37,6 +43,9 @@ AICtable <- function(x) {
 ## Regularize a list of formulae, ensuring it is a named list
 #    of one-sided formulae.
 ## based on Murray Efford's 'stdform' function in 'secr'
+
+# Not (currently) exported
+
 stdform <- function (flist) {
     LHS <- function (form) {
         trms <- as.character (form)
@@ -51,4 +60,44 @@ stdform <- function (flist) {
     if (is.null(names(flist))) names(temp) <- lhs
     else names(temp) <- ifelse(names(flist) == '', lhs, names(flist))
     temp
+}
+
+## Convert a data frame of site and survey data into a list 
+# Site covars will each have a single column in the data frame,
+# survey covars will have a column for each survey occasion, and
+# column names end with the number of the occasion, eg, temperature
+# will be in columns named "temp1", "temp2", etc.
+
+# Not (currently) exported
+
+stddata <- function(df, nocc)  {
+  stopifnot(is.data.frame(df))
+  dataList <- as.list(df)
+  # look for names ending with number of occasions
+  nam <- names(df)
+  clue <- paste0(nocc, "$", collapse="")
+  clueDo <- grep(clue, nam)
+  if(length(clueDo) > 0) {
+    for(i in clueDo) {
+      # get stem, generate set of names
+      stem <- sub(clue, "", nam[i])
+      subnames <- paste0(stem, 1:nocc)
+      subtable <- df[, subnames]
+      # check that there's a column for each occasion
+      stopifnot(ncol(subtable) == nocc)  # do less brutal thing later
+      # check that all have same class
+      classes <- sapply(subtable, class)
+      stopifnot(length(unique(classes)) == 1)  # do less brutal thing later
+      # remove original columns from the list:
+      dataList <- replace(dataList, subnames, NULL)
+      # convert to a matrix, then a vector;
+      #   fortunately this also converts factors to character
+      tmp <- as.vector(as.matrix(subtable))
+      if(is.character(tmp))
+        tmp <- as.factor(tmp) # convert to factor AFTER combining columns
+      dataList <- c(dataList, list(tmp))
+      names(dataList)[length(dataList)] <- stem
+    }
+  }
+  return(dataList)
 }

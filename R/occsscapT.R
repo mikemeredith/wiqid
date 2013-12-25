@@ -24,7 +24,8 @@ function(DH, ci=0.95, plot=TRUE)  {
   colnames(lp.mat) <- c("est", "lowCI", "uppCI")
   rownames(lp.mat) <- c("psi", paste("p", 1:nocc, sep=""))
   logLik <- NA_real_
-  varcovar <- NULL
+  varcov <- NULL
+
   if(ncol(DH) > 1 && sum(DH, na.rm=TRUE) > 0)  {
     # Negative log-likelihood function:
     nll <- function(params) {
@@ -39,23 +40,25 @@ function(DH, ci=0.95, plot=TRUE)  {
     res <- nlm(nll, params, hessian=TRUE)
     if(res$code < 3)  {  # exit code 1 or 2 is ok.
       beta.mat[,1] <- res$estimate
-      logLik <- -res$minimum
-      if (det(res$hessian) > 1e-6) {
-        varcovar <- solve(res$hessian)
-        beta.mat[, 'SE'] <- sqrt(diag(varcovar))
+      varcov <- try(solve(res$hessian), silent=TRUE)
+      if (!inherits(varcov, "try-error") && all(diag(varcov) > 0)) {
+        SE <- sqrt(diag(varcov))
+        beta.mat[, 'SE'] <- sqrt(diag(varcov))
         beta.mat[, 3:4] <- sweep(outer(beta.mat[, 'SE'], crit), 1, res$estimate, "+")
+        logLik <- -res$minimum
+      } else {
+        varcov <- NULL
       }
     }
     if(mean(DH, na.rm=TRUE) == 1) {
       beta.mat[3:4 ] <- NA
-      # AIC <- NA_real_
       logLik <- NA_real_
     }
     lp.mat[1, ]  <- beta.mat[1, -2]
     lp.mat[-1, 1]  <- beta.mat[2, 1] + beta.mat[3, 1] * Time
-    if(!is.null(varcovar)) {
+    if(!is.null(varcov)) {
       pModMat <- cbind(1, Time)
-      SElp <- sqrt(diag(pModMat %*% varcovar[-1, -1] %*% t(pModMat)))
+      SElp <- sqrt(diag(pModMat %*% varcov[-1, -1] %*% t(pModMat)))
       lp.mat[-1, -1] <- sweep(outer(SElp, crit), 1, lp.mat[-1, 1], "+")
     }
     # Do the plot
@@ -70,9 +73,10 @@ function(DH, ci=0.95, plot=TRUE)  {
   }
   out <- list(call = match.call(),
               beta = beta.mat,
+              beta.vcv = varcov,
               real = plogis(lp.mat),
               logLik = c(logLik=logLik, df=n.par, nobs=nrow(DH)))
-  class(out) <- c("occupancy", "list")
+  class(out) <- c("wiqid", "list")
   return(out)
 }
 
@@ -104,7 +108,8 @@ function(DH, ci=0.95, plot=TRUE)  {
   colnames(lp.mat) <- c("est", "lowCI", "uppCI")
   rownames(lp.mat) <- c("psi", paste("p", 1:nocc, sep=""))
   logLik <- NA_real_
-  varcovar <- NULL
+  varcov <- NULL
+  
   if(ncol(DH) > 1 && sum(DH, na.rm=TRUE) > 0)  {
     # Negative log-likelihood function:
     nll <- function(params) {
@@ -120,10 +125,13 @@ function(DH, ci=0.95, plot=TRUE)  {
     if(res$code < 3)  {  # exit code 1 or 2 is ok.
       beta.mat[,1] <- res$estimate
       logLik <- -res$minimum
-      if (det(res$hessian) > 1e-6) {
-        varcovar <- solve(res$hessian)
-        beta.mat[, 'SE'] <- sqrt(diag(varcovar))
+      varcov <- try(solve(res$hessian), silent=TRUE)
+      if (!inherits(varcov, "try-error") && all(diag(varcov) > 0)) {
+        SE <- sqrt(diag(varcov))
+        beta.mat[, 'SE'] <- sqrt(diag(varcov))
         beta.mat[, 3:4] <- sweep(outer(beta.mat[, 'SE'], crit), 1, res$estimate, "+")
+      } else {
+        varcov <- NULL
       }
     }
     if(mean(DH, na.rm=TRUE) == 1) {
@@ -132,9 +140,9 @@ function(DH, ci=0.95, plot=TRUE)  {
     }
     lp.mat[1, ]  <- beta.mat[1, -2]
     lp.mat[-1, 1]  <- beta.mat[2, 1] + beta.mat[3, 1] * Time+ beta.mat[4, 1] * Time2
-    if(!is.null(varcovar)) {
+    if(!is.null(varcov)) {
       pModMat <- cbind(1, Time, Time2)
-      SElp <- sqrt(diag(pModMat %*% varcovar[-1, -1] %*% t(pModMat)))
+      SElp <- sqrt(diag(pModMat %*% varcov[-1, -1] %*% t(pModMat)))
       lp.mat[-1, -1] <- sweep(outer(SElp, crit), 1, lp.mat[-1, 1], "+")
     }
     # Do the plot
@@ -149,8 +157,9 @@ function(DH, ci=0.95, plot=TRUE)  {
   }
   out <- list(call = match.call(),
               beta = beta.mat,
+              beta.vcv = varcov,
               real = plogis(lp.mat),
               logLik = c(logLik=logLik, df=n.par, nobs=nrow(DH)))
-  class(out) <- c("occupancy", "list")
+  class(out) <- c("wiqid", "list")
   return(out)
 }

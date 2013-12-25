@@ -15,8 +15,8 @@ test_that("occSS0 gives right answers",  {
   n <- rowSums(!is.na(BRS))
   y <- rowSums(BRS > 0, na.rm=TRUE)
   brs1 <- occSS0(y, n)
-  expect_that(class(brs1), equals(c("occupancy", "list")))
-  expect_that(names(brs1), equals(c("call", "beta", "real", "logLik")))
+  expect_that(class(brs1), equals(c("wiqid", "list")))
+  expect_that(names(brs1), equals(c("call", "beta", "beta.vcv", "real", "logLik")))
   expect_that(is.call(brs1$call), is_true())
   expect_that(colnames(brs1$real), equals(c("est", "lowCI", "uppCI")))
   expect_that(rownames(brs1$real), equals(c("psiHat", "pHat")))
@@ -77,8 +77,8 @@ test_that("occSS.t gives right answers",  {
   data(salamanders)
   BRS <- salamanders
   res <- occSS.t(BRS)
-  expect_that(class(res), equals(c("occupancy", "list")))
-  expect_that(names(res), equals(c("call", "beta", "real", "logLik")))
+  expect_that(class(res), equals(c("wiqid", "list")))
+  expect_that(names(res), equals(c("call", "beta", "beta.vcv", "real", "logLik")))
   expect_that(is.call(res$call), is_true())
   expect_that(colnames(res$real), equals(c("est", "lowCI", "uppCI")))
   expect_that(rownames(res$real),
@@ -127,7 +127,7 @@ test_that("occSS.t gives right answers",  {
   expect_that(round(as.vector(res$real[,1]), 4), 
       is_equivalent_to(rep(1, 6)))
   expect_that(as.vector(res$real[, 2:3]), 
-      is_equivalent_to(rep(NA_real_, 12)))
+      is_equivalent_to(rep(0:1, each=6)))
   expect_that(round(AIC(res), 4), equals(12))
   # All zeros:
   tst <- matrix(0, 39, 5)
@@ -150,9 +150,9 @@ test_that("occSS.T gives right answers",  {
   require(wiqid)
   data(salamanders)
   BRS <- salamanders
-  res <- occSS.T(BRS)
-  expect_that(class(res), equals(c("occupancy", "list")))
-  expect_that(names(res), equals(c("call", "beta", "real", "logLik")))
+  res <- occSS.T(BRS, plot=FALSE)
+  expect_that(class(res), equals(c("wiqid", "list")))
+  expect_that(names(res), equals(c("call", "beta", "beta.vcv", "real", "logLik")))
   expect_that(is.call(res$call), is_true())
   expect_that(colnames(res$real), equals(c("est", "lowCI", "uppCI")))
   expect_that(rownames(res$real),
@@ -166,7 +166,7 @@ test_that("occSS.T gives right answers",  {
                 0.2981, 0.1811, 0.4493,
                 0.3428, 0.1860, 0.5436)))
   expect_that(round(AIC(res), 4), equals(165.9228))
-  res <- occSS.T(BRS, 0.85)
+  res <- occSS.T(BRS, 0.85, plot=FALSE)
   expect_that(round(as.vector(t(res$real)), 4), 
       equals(c(0.5899, 0.4118, 0.7471,
                0.1865, 0.1083, 0.3019,
@@ -176,7 +176,7 @@ test_that("occSS.T gives right answers",  {
                0.3428, 0.2215, 0.4889)))
   # Put in some NAs
   BRS[c(6,167,130,123,89,154,32,120,127,147)] <- NA
-  res <- occSS.T(BRS)
+  res <- occSS.T(BRS, plot=FALSE)
   expect_that(round(as.vector(res$real), 4), 
       is_equivalent_to(c(0.5800, 0.1939, 0.2189, 0.2461, 0.2754, 0.3068, 0.3234,
                          0.0879, 0.1183, 0.1432, 0.1531, 0.1493, 0.7997, 0.3752,
@@ -184,7 +184,7 @@ test_that("occSS.T gives right answers",  {
   expect_that(round(AIC(res), 4), equals(150.8355))
   # Put in a row of NAs
   BRS[3,] <- NA 
-  res <- occSS.T(BRS)
+  res <- occSS.T(BRS, plot=FALSE)
   expect_that(round(as.vector(res$real), 4), 
       equals(c(0.5494, 0.1913, 0.2211, 0.2542, 0.2904, 0.3294, 0.3087, 0.0847,
                0.1184, 0.1481, 0.1623, 0.1615, 0.7689, 0.3767, 0.3751, 0.4005,
@@ -192,7 +192,7 @@ test_that("occSS.T gives right answers",  {
   expect_that(round(AIC(res), 4), equals(144.8956))
   # Put in a column of NAs
   BRS[, 3] <- NA
-  res <- occSS.T(BRS)
+  res <- occSS.T(BRS, plot=FALSE)
   expect_that(round(as.vector(res$real), 4), 
       equals(c( 0.3666, 0.2247, 0.2722, 0.3255, 0.3837, 0.4455, 0.1889, 0.0877,
                 0.1307, 0.1699, 0.1919, 0.1965, 0.5899, 0.4662, 0.4820, 0.5321,
@@ -200,7 +200,7 @@ test_that("occSS.T gives right answers",  {
   expect_that(round(AIC(res), 4), equals(101.3259))
   # All ones:
   tst <- matrix(1, 39, 5)
-  res <- occSS.T(tst)
+  res <- occSS.T(tst, plot=FALSE)
   expect_that(round(as.vector(res$real[1,1]), 4), 
       equals(1))
   expect_that(as.vector(res$real)[-1], 
@@ -208,13 +208,13 @@ test_that("occSS.T gives right answers",  {
   expect_that(round(AIC(res), 4), equals(NA_real_))
   # All zeros:
   tst <- matrix(0, 39, 5)
-  res <- occSS.T(tst)
+  res <- occSS.T(tst, plot=FALSE)
   expect_that(as.vector(res$real), 
       equals(rep(NA_real_, 18)))
   expect_that(AIC(res), equals(NA_real_))
   # All NAs:
   tst <- matrix(NA, 39, 5)
-  res <- occSS.T(tst)
+  res <- occSS.T(tst, plot=FALSE)
   expect_that(as.vector(res$real), 
       equals(rep(NA_real_, 18)))
   expect_that(AIC(res), equals(NA_real_))
@@ -226,9 +226,9 @@ test_that("occSS.T2 gives right answers",  {
   require(wiqid)
   data(salamanders)
   BRS <- salamanders
-  res <- occSS.T2(BRS)
-  expect_that(class(res), equals(c("occupancy", "list")))
-  expect_that(names(res), equals(c("call", "beta", "real", "logLik")))
+  res <- occSS.T2(BRS, plot=FALSE)
+  expect_that(class(res), equals(c("wiqid", "list")))
+  expect_that(names(res), equals(c("call", "beta", "beta.vcv", "real", "logLik")))
   expect_that(is.call(res$call), is_true())
   expect_that(colnames(res$real), equals(c("est", "lowCI", "uppCI")))
   expect_that(rownames(res$real),
@@ -274,7 +274,7 @@ test_that("occSS.T2 gives right answers",  {
   expect_that(round(AIC(res), 4), equals(145.9611))
   # Put in a column of NAs
   BRS[, 3] <- NA
-  res <- occSS.T2(BRS)
+  res <- occSS.T2(BRS, plot=FALSE)
   expect_that(round(as.vector(res$real), 4), 
       equals(c( 0.3665, 0.2312, 0.2661,
                 0.3136, 0.3756, 0.4528,
@@ -285,7 +285,7 @@ test_that("occSS.T2 gives right answers",  {
   expect_that(round(AIC(res), 4), equals(103.314))
   # All ones:
   tst <- matrix(1, 39, 5)
-  res <- occSS.T2(tst)
+  res <- occSS.T2(tst, plot=FALSE)
   expect_that(round(as.vector(res$real[1,1]), 4), 
       equals(1))
   expect_that(as.vector(res$real)[-1], 
@@ -299,7 +299,7 @@ test_that("occSS.T2 gives right answers",  {
   expect_that(AIC(res), equals(NA_real_))
   # All NAs:
   tst <- matrix(NA, 39, 5)
-  res <- occSS.T2(tst)
+  res <- occSS.T2(tst, plot=FALSE)
   expect_that(as.vector(res$real), 
       equals(rep(NA_real_, 18)))
   expect_that(AIC(res), equals(NA_real_))
@@ -315,8 +315,8 @@ test_that("occSSnr gives right answers",  {
   y <- rowSums(BRS > 0, na.rm=TRUE)
   res <- occSSrn(y, n)
 
-  expect_that(class(res), equals(c("occupancy", "list")))
-  expect_that(names(res), equals(c("call", "beta", "real", "logLik")))
+  expect_that(class(res), equals(c("wiqid", "list")))
+  expect_that(names(res), equals(c("call", "beta", "beta.vcv", "real", "logLik")))
   expect_that(is.call(res$call), is_true())
   expect_that(colnames(res$real), equals(c("est", "lowCI", "uppCI")))
   expect_that(rownames(res$real),

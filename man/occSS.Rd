@@ -29,7 +29,7 @@ occSSautocorA(DH, ci=0.95)
 
 occSScovSite(y, n, model=list(psi~1, p~1), data = NULL, ci=0.95)
 
-occSScov(DH, psi = ~1, p = ~1, data = NULL, ci=0.95)
+occSScov(DH, model=list(psi~1, p~1), data = NULL, ci=0.95)
 }
 \arguments{
   \item{y}{
@@ -50,14 +50,8 @@ if TRUE (default), draws a plot of probability of detection vs time.
   \item{model}{
 a list of formulae symbolically defining a linear predictor for each parameter in terms of covariates.
 }
-  \item{psi}{
-a one-sided formula symbolically defining a linear predictor for \code{psi} in terms of site covariates.
-}
-  \item{p}{
-a one-sided formula symbolically defining a linear predictor for \code{p} in terms of site covariates and (for \code{occSScov}) survey covariates.
-}
   \item{data}{
-a data frame or list containing the variables in the model. If survey covariates are included this must be a list - see Details. You are advised to include all covariates in \code{data}, otherwise they will be sought in enclosing environments, which may not produce what you want -- and they won't be standardised.
+a data frame containing the variables in the model. Each site covariate has one column. Each survey covariate has one column for each occasion, and the column name must end with the occasion number (without leading zeros); eg, \code{Cov1, Cov2, ..., Cov15}. All covariates should be included in \code{data}, otherwise they will be sought in enclosing environments, which may not produce what you want -- and they won't be standardised.
 }
 }
 \details{
@@ -73,21 +67,20 @@ a data frame or list containing the variables in the model. If survey covariates
 
 \code{occSScovSite} allows for psi or p to be modelled as a logistic function of site covariates, while \code{occSScov} extends this to allow for survey covariates to be included in the model for p. \code{occSScov} has a built in \code{.time} covariate which can be used for modelling p with time as a fixed effect, and \code{.Time} and \code{.Time2} for a linear or quadratic trend.
 
-Survey covariates for use by \code{occSScov} should be included in the \code{data} list either as a sites x surveys matrix or as a vector of length sites*surveys, beginning with the observations for all the sites for the first survey. The latter is useful when the covariate is a factor, as matrices of factors don't generally work in R. Using \code{as.factor(covariate_matrix)} produces the right vector.
-
 Numeric covariates in \code{data} are standardised to facilitate convergence. This applies to binary covariates coded as 1/0; if this is not what you want, code these as TRUE/FALSE or as factors. 
 
 For speed, use the simplest function which will cope with your model. For example, you can run psi(.) p(.) models in \code{occSScovSite} or \code{occSScov}, but \code{occSS0} is much faster.
 }
 \value{
-Returns an object of class \code{occupancy}, which is a list with the following elements:
+Returns an object of class \code{wiqid}, which is a list with the following elements:
 
   \item{call}{The call used to produce the results}
   \item{beta}{Values of the coefficients of the terms in the linear predictors, with standard errors and confidence intervals.}
+  \item{beta.vcv }{The variance-covariance matrix for the beta estimates.}
   \item{real}{Estimates of occupancy and probability of detection on the real scale, with confidence intervals; \code{occSSrn} gives occupancy, lambda and r.}
   \item{logLik}{a vector with elements for log(likelihood), number of parameters, and effective sample size. If parameters \emph{and their SEs} cannot be estimated, the first element should be \code{NA}.}
 
-There are \code{print}, \code{logLik}, and \code{nobs} methods for class \code{occupancy}.
+There are \code{print}, \code{logLik}, and \code{nobs} methods for class \code{wiqid}.
 }
 
 \section{Benchmarks}{Output has been checked against output from PRESENCE (Hines 2006) v.5.5 for the \code{\link{salamanders}} and \code{\link{weta}} data sets. Real values are mostly the same to 4 decimal places, though there is occasionally a discrepancy of 0.0001. AICs are the same.

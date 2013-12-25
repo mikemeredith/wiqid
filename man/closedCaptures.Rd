@@ -16,7 +16,7 @@ closedCapM0(freq, n.occ = length(freq), ci = 0.95, ciType=c("normal", "MARK"))
 
 closedCapMt(CH, ci = 0.95, ciType=c("normal", "MARK"))
 
-closedCapMtcov(CH, p=~1, data=NULL, ci = 0.95, ciType=c("normal", "MARK"))
+closedCapMtcov(CH, model=list(p~1), data=NULL, ci = 0.95, ciType=c("normal", "MARK"))
 
 closedCapMh2(freq, n.occ = length(freq), ci = 0.95, ciType=c("normal", "MARK"))
 
@@ -33,8 +33,8 @@ the total number of capture occasions.
   \item{CH}{
 a 0/1 capture history matrix, animals x occasions; NAs not permitted.
 }
-  \item{p}{
-a one-sided formula symbolically defining a linear predictor for \code{p} in terms of time-varying covariates.
+  \item{model}{
+a list of formulae symbolically defining a linear predictor for p in terms of covariates.
 }
   \item{data}{
 a data frame containing the variables in the model, with one row for each occasion.
@@ -65,16 +65,17 @@ where C = exp(crit * sqrt(log(1 + CV^2))).
 Confidence intervals for capture probabilities are always calculated on the logit scale and back-transformed to real values.
 }
 \value{
-Returns an object of class \code{closedCap}, which is a list with the following elements:
+Returns an object of class \code{wiqid}, which is a list with the following elements:
 
   \item{call}{The call used to produce the results}
   \item{beta}{Values of the coefficients of the terms in the linear predictors, with standard errors and confidence intervals.}
+  \item{beta.vcv }{The variance-covariance matrix for the beta estimates.}
   \item{real}{Estimates of population size (N) and probability of detection on the real scale, with confidence intervals.}
   \item{logLik}{a vector with elements for log(likelihood), number of parameters, and effective sample size. If parameters \emph{and their SEs} cannot be estimated, the first element should be \code{NA}.}
   
-The jackknife estimator does not use likelihood maximisation, so element \code{beta} is NULL and \code{logLik = NA}.
+The jackknife estimator does not use likelihood maximisation, so elements \code{beta} and \code{beta.vcv} are NULL and \code{logLik = NA}.
 
-There are \code{print}, \code{logLik}, and \code{nobs} methods for class \code{closedCap}.
+There are \code{print}, \code{logLik}, and \code{nobs} methods for class \code{wiqid}.
 }
 \references{
 Basic work on mark-recapture for closed populations is in:
@@ -129,7 +130,7 @@ closedCapMt(KanhaTigers)
 # Generate some mythical covariates:
 covars <- data.frame(Temp = runif(ncol(KanhaTigers), 15, 25),
   Cloud = sample(0:8, ncol(KanhaTigers), replace=TRUE))
-closedCapMtcov(KanhaTigers, p=~Cloud, data=covars)
+closedCapMtcov(KanhaTigers, p~Cloud, data=covars)
   
 # Compare the normal (default) and MARK confidence intervals for N:
 rbind(closedCapMt(KanhaTigers)$real[1, ],

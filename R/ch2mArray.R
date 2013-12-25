@@ -1,28 +1,29 @@
 
-# From Kery & Schaub
+# Adapted from Kery & Schaub
 
-# Function to create a m-array based on capture-histories (CH)
+# Function to create a m-array based on capture-histories (CH) plus vector of frequencies.
 
-ch2mArray <- function(CH){
-   nind <- dim(CH)[1]
-   n.occasions <- dim(CH)[2]
-   m.array <- matrix(data = 0, ncol = n.occasions+1, nrow = n.occasions)
-   # Calculate the number of released individuals at each time period
-   for (t in 1:n.occasions){
-      m.array[t,1] <- sum(CH[,t])
-      }
-   for (i in 1:nind){
-      pos <- which(CH[i,]!=0)
-      g <- length(pos)
-      for (z in 1:(g-1)){
-         m.array[pos[z],pos[z+1]] <- m.array[pos[z],pos[z+1]] + 1
-         } # z
-      } # i
-   # Calculate the number of individuals that is never recaptured
-   for (t in 1:n.occasions){
-      m.array[t,n.occasions+1] <- m.array[t,1] - sum(m.array[t,2:n.occasions])
-      }
-   out <- m.array[1:(n.occasions-1),2:(n.occasions+1)]
-   return(out)
-   }
+ch2mArray <- function(CH, freq=1){
+  if(length(freq) == 1)
+    freq <- rep(freq, nrow(CH))
+  stopifnot(length(freq) == nrow(CH))
+  if(any(freq < 0))
+    stop("Sorry, I cannot deal with trap losses (yet).")
+  nocc <- ncol(CH)
+  ma <- matrix(0, nocc, nocc+1)
+    # First column and last row will be removed later
+    # Last col is for number never-seen-again
+  for(i in 1:nrow(CH)) {
+    cht <- which(CH[i, ] != 0) # When was animal caught?
+    # Fill in release/recapture data
+    for(z in seq_along(cht[-1]))  # Does nothing if length(cht) = 1
+      ma[cht[z], cht[z+1]] <- ma[cht[z], cht[z+1]] + freq[i]
+  }
+  # Marked animals never seen again:
+  totCH <- sweep(CH, 1, freq, "*")
+  ma[, nocc+1] <- colSums(totCH) - rowSums(ma)
+  # Remove 1st col (REcaptures on 1st occasion = all zeros) 
+  #  and last row (releases  on last occasion will never be recaptured).
+  return(ma[-nocc, -1])
+}
 

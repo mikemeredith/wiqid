@@ -1,17 +1,17 @@
-# Single season occupancy with site and survey covariates.
+# Bayesian Single season occupancy with site and survey covariates.
 
-occSScov <- function(DH, model=list(psi~1, p~1), data=NULL, ci=0.95) {
+# This doesn'twork properly with the weta data with site and survey covars.
+
+# DO NOT EXPORT
+
+BoccSScov <- function(DH, model=list(psi~1, p~1), data=NULL, 
+    numSavedSteps=1e4, thinSteps=1, burnInSteps = 1e3) {
   # single-season occupancy models with site and survey covatiates
   # ** DH is detection data in a 1/0/NA matrix or data frame, sites in rows, 
   #    detection occasions in columns..
   # ** model is a list of 2-sided formulae for psi and p; can also be a single
   #   2-sided formula, eg, model = psi ~ habitat.
   # ** data is a DATA FRAME with single columns for site covariates and a column for each survey occasion for each survey covariate.
-  # ci is the required confidence interval.
-  if(ci > 1 | ci < 0.5)
-    stop("ci must be between 0.5 and 1")
-  alf <- (1 - ci[1]) / 2
-  crit <- qnorm(c(alf, 1 - alf))
 
   # Standardise the model:
   if(inherits(model, "formula"))
@@ -37,7 +37,8 @@ occSScov <- function(DH, model=list(psi~1, p~1), data=NULL, ci=0.95) {
     stop("More than one survey occasion is needed")
   survey.done <- !is.na(as.vector(DH))
   DHvec <- as.vector(DH)[survey.done]
-  siteID <- as.factor(row(DH))[survey.done]
+  # siteID <- as.factor(row(DH))[survey.done]
+  siteID <- row(DH)[survey.done]
   survID <- as.factor(col(DH))[survey.done]
   if(!is.null(data))  {
     covLen <- lapply(data, length)
@@ -72,19 +73,7 @@ occSScov <- function(DH, model=list(psi~1, p~1), data=NULL, ci=0.95) {
   pK <- ncol(pModMat)
   K <- psiK + pK
 
-  # objects to hold output
-  beta.mat <- matrix(NA_real_, K, 4)
-  colnames(beta.mat) <- c("est", "SE", "lowCI", "uppCI")
-  rownames(beta.mat) <- c(
-    paste("psi:", colnames(psiModMat)),
-    paste("p:", colnames(pModMat)))
-  lp.mat <- matrix(NA_real_, nSites + sum(survey.done), 3)
-  colnames(lp.mat) <- c("est", "lowCI", "uppCI")
-  rownames(lp.mat) <- c(
-    paste("psi:", site.names, sep=""),
-    paste("p:", siteID, ",", survID, sep=""))
-  logLik <- NA_real_
-
+  # Do MLE estimate to get starting values
   # Negative log likelihood function
   nll <- function(param){
     psiBeta <- param[1:psiK]
@@ -92,7 +81,7 @@ occSScov <- function(DH, model=list(psi~1, p~1), data=NULL, ci=0.95) {
     psiProb <- as.vector(plogis(psiModMat %*% psiBeta))
     pProb <- plogis(pModMat %*% pBeta)
     Lik1 <- DHvec*pProb + (1-DHvec) * (1-pProb)
-    Lik2 <- tapply(Lik1, siteID, prod)
+    Lik2 <- tapply(Lik1, as.factor(siteID), prod)
     llh <- sum(log(psiProb * Lik2 + 
           (1 - psiProb) * (rowSums(DH, na.rm=TRUE) == 0)))
     return(min(-llh, .Machine$double.xmax))
@@ -100,31 +89,61 @@ occSScov <- function(DH, model=list(psi~1, p~1), data=NULL, ci=0.95) {
 
   # Run mle estimation with nlm:
   param <- rep(0, K)
-  res <- nlm(nll, param, hessian=TRUE)
-  if(res$code < 4)  {  # exit code 1 or 2 is ok, 3 dodgy but...
-    beta.mat[,1] <- res$estimate
-    lp.mat[, 1] <- c(psiModMat %*% beta.mat[1:psiK, 1],
-                     pModMat %*% beta.mat[(psiK+1):K, 1])
-    if(res$code < 3) # Keep NA if in doubt
-      logLik <- -res$minimum
-    varcov <- try(solve(res$hessian), silent=TRUE)
-    if (!inherits(varcov, "try-error") &&
-        all(diag(varcov) > 0)) {
-      SE <- sqrt(diag(varcov))
-      beta.mat[, 2] <- SE
-      beta.mat[, 3:4] <- sweep(outer(SE, crit), 1, res$estimate, "+")
-      SElp <- c(sqrt(diag(psiModMat %*% varcov[1:psiK, 1:psiK] %*% t(psiModMat))),
-                sqrt(diag(pModMat %*% varcov[(psiK+1):K, (psiK+1):K] %*% t(pModMat))))
-      lp.mat[, 2:3] <- sweep(outer(SElp, crit), 1, lp.mat[, 1], "+")
+  res <- nlm(nll, param)
+  if(res$code > 3)   # exit code 1 or 2 is ok, 3 dodgy but...
+    stop("MLE estimation failed")
+  start <- res$estimate
+
+  # JAGS model
+  modelFile <- tempfile(pattern = "model", tmpdir = tempdir(), fileext = ".txt")
+  # modelFile <- "model.txt"
+  modeltext <- "
+    model{
+      # priors for beta parameters
+      for(i in 1:psiK)  {
+        # psiBeta[i] ~ dnorm(0, 0.01)
+        psiBeta[i] ~ dunif(-5, 5)
+      }
+      for(i in 1:pK)  {
+        pBeta[i] ~ dnorm(0, 0.01)
+      }
+      # Calculate psi, do z
+      for(i in 1:nSites) {
+        logit(psi[i]) <- sum(psiBeta[] * psiMat[i, ])
+        # lp[i] <- sum(psiBeta[] * psiMat[i, ])
+        # psi[i] <- 1/(1+exp(-lp[i]))
+        z[i] ~ dbern(psi[i])
+      }
+      for(j in 1:nObs) {
+        logit(p[j]) <- sum(pBeta[] * pMat[j, ])
+        DHvec[j] ~ dbern(p[j] * z[siteID[j]])
+      }
     }
-  }
-  out <- list(call = match.call(),
-              beta = beta.mat,
-              beta.vcv = varcov,
-              real = plogis(lp.mat),
-              logLik = c(logLik=logLik, df=K, nobs=nrow(DH)))
-  class(out) <- c("wiqid", "list")
+  "
+  writeLines(modeltext, con=modelFile)
+  jagsData <- list(DHvec=DHvec, nSites = nSites, siteID=siteID,
+                nObs=length(DHvec), 
+                pK = pK, psiK = psiK, pMat=pModMat, psiMat=psiModMat)
+  inits <- function() {list(psiBeta = start[1:psiK],
+                        pBeta = start[(psiK+1):K],
+                        # z=rep(1, nSites))}
+                        z=(rowSums(DH, na.rm=TRUE) > 0)*1)}
+  wanted <- c("psi", "psiBeta", "pBeta")
+  # Create the model and run:
+  jm <-jags.model(modelFile, jagsData, inits,
+            n.chains = 3, n.adapt=1000, quiet=FALSE)
+  update(jm, n.iter=burnInSteps)
+  codaSamples <- coda.samples(jm, variable.names=wanted, 
+                        n.iter= numSavedSteps * thinSteps, thin=thinSteps)
+
+  out <- as.data.frame(as.matrix(codaSamples))
+  names(out) <- fixNames(names(out))
+  class(out) <- c("Bwiqid", class(out))
+  attr(out, "n.eff") <- effectiveSize(codaSamples)
+  attr(out, "data") <- DH
+  attr(out, "defaultPlot") <- "psi"
   return(out)
+
 }
 
 

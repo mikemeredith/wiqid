@@ -12,15 +12,15 @@ Quick and dirty functions to estimate occupancy, survival, abundance, etc. for w
 \tabular{ll}{
 Package: \tab wiqid\cr
 Type: \tab Package\cr
-Version: \tab 0.0356-1\cr
-Date: \tab 2013-12-03\cr
+Version: \tab 0.0358\cr
+Date: \tab 2013-12-24\cr
 License: \tab GPL-3\cr
 }
 There are a number of sophisticated programs for the analysis of wildlife data, producing estimates of occupancy, survival, abundance, or density. But if you are generating hundreds of simulated data sets in R, you need fast, bare-bones functions which can be run from R.
 
 So far the package has functions for 
 \itemize{ 
-  \item single-season occupancy with MLE (cf PRESENCE), 
+  \item single- and multi-season occupancy with MLE (cf PRESENCE), 
   \item single-season occupancy with JAGS, 
   \item closed-population mark-recapture studies and CJS survival models from m-arrays (cf MARK), 
   \item species richness from species x sample matrices (cf EstimateS),

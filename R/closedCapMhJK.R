@@ -125,6 +125,6 @@ function(freq, n.occ = length(freq), ci=0.95) {
           # beta = beta.mat,
           real = out.mat,
           logLik = c(logLik=NA, df=NA, nobs=N.cap * n.occ))
-  class(out) <- c("closedCap", "list")
+  class(out) <- c("wiqid", "list")
   return(out)
 }

@@ -45,8 +45,9 @@ function(y, n, numSavedSteps=1e4, thinSteps=1, burnInSteps = 1e3) {
                         n.iter= numSavedSteps * thinSteps, thin=thinSteps)
   
   out <- as.data.frame(as.matrix(codaSamples))
-  class(out) <- c("Boccupancy", class(out))
+  class(out) <- c("Bwiqid", class(out))
   attr(out, "n.eff") <- effectiveSize(codaSamples)
   attr(out, "data") <- list(y = y, n = n)
+  attr(out, "defaultPlot") <- "psi"
   return(out)
 }

@@ -3,12 +3,14 @@
 importFrom(stats, nobs, logLik, update)
 importFrom(rjags, jags.model, coda.samples)
 importFrom(coda, effectiveSize)
+importFrom(secr, secr.fit)
 
 export(
-  cjs0, cjsTime, ch2mArray,
+  survCJS, survCJSaj, ch2mArray,
   closedCapM0, closedCapMh2, closedCapMhJK, closedCapMt, closedCapMtcov,
   occSS0, occSS.t, occSS.T, occSS.T2, occSScov, occSScovSite, occSSrn, occSSautocorA,
-  BoccSS0, #occSS.t, occSS.T, occSS.T2, occSScov, occSScovSite, occSSrn, occSSautocorA,
+  occMS0, occMSseason, occMScov,
+  BoccSS0, BsurvCJS, Bsecr0,
   richRarefy,
   richACE, richICE, richChao1, richChao2, richJack1, richJack2, richBoot, richMM,
   richJackA1, richJackA2, richRenLau,
@@ -18,16 +20,17 @@ export(
   distChaoJaccCorr, distChaoJaccNaive, distChaoSorCorr, distChaoSorNaive,
   distChord, distJaccard, distMatching, distMorisitaHorn, distOchiai, distPreston,
   distRogersTanimoto, distSimRatio, distSorensen, distWhittaker,
-  AICc, allCombinations, AICtable, hdi
+  AICc, allCombinations, AICtable,
+  hdi, plotPost
 )
 
-S3method("print", "occupancy")
-S3method("logLik", "occupancy")
-S3method("nobs", "occupancy")
-S3method("print", "closedCap")
-S3method("logLik", "closedCap")
-S3method("nobs", "closedCap")
+S3method("print", "wiqid")
+S3method("logLik", "wiqid")
+S3method("nobs", "wiqid")
 S3method("AICc", "default")
+
+S3method("print", "Bwiqid")
+S3method("plot", "Bwiqid")
 
 S3method("hdi", "default")
 S3method("hdi", "matrix")

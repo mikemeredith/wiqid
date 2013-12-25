@@ -1,0 +1,157 @@
+
+# Multiseason occupancy
+
+# See MacKenzie et al (2006) "Occupancy..." p194ff
+
+occMSseason <- function(DH, occsPerSeason,
+             model=list(gamma~1, epsilon~1, p~1),
+             data=NULL, ci=0.95) {    
+
+  # ** DH is detection data in a 1/0/NA matrix or data frame, sites in rows, 
+  #    detection occasions in columns..
+  # ** occsPerSeason is a scalar or vector with the number of occasions per season
+  # ci is the required confidence interval.
+             
+  if(ci > 1 | ci < 0.5)
+    stop("ci must be between 0.5 and 1")
+  alf <- (1 - ci[1]) / 2
+  crit <- qnorm(c(alf, 1 - alf))
+
+  # Deal with occsPerSeason
+  nOcc <- ncol(DH)
+  if(length(occsPerSeason) == 1)
+    occsPerSeason <- rep(occsPerSeason, nOcc/occsPerSeason)
+  if(sum(occsPerSeason) != nOcc)
+    stop("Detection data do not match occasions per season.")
+  nseas <- length(occsPerSeason)
+  seasonID <- rep(1:nseas, occsPerSeason)
+
+  # Standardise the model:
+  if(inherits(model, "formula"))
+    model <- list(model)
+  model <- stdform (model)
+  model0 <- list(gamma=~1, epsilon=~1, p=~1)
+  model <- replace (model0, names(model), model)
+
+  # Check data file
+  datGE <- datP <- data
+  datGE$season <- as.factor(1:(nseas-1))
+  datP$season <- as.factor(1:nseas)
+  ddfGE <- as.data.frame(datGE)#[-nseas, ]
+  ddfP <- as.data.frame(datP)#[1:nseas, ]
+
+  # stopifnot(nrow(data) == nseas)
+  gamMat <- model.matrix(model$gamma, ddfGE)
+  gamK <- ncol(gamMat)
+  epsMat <- model.matrix(model$epsilon, ddfGE)
+  epsK <- ncol(epsMat)
+  pMat <- model.matrix(model$p, ddfP)
+  pK <- ncol(pMat)
+  K <- 1 + gamK + epsK + pK
+  parID <- rep(1:4, c(1, gamK, epsK, pK))
+  
+  
+  beta.mat <- matrix(NA_real_, K, 4)
+  colnames(beta.mat) <- c("est", "SE", "lowCI", "uppCI")
+  rownames(beta.mat) <- c("psi1",
+    paste("gam:", colnames(gamMat)),
+    paste("eps:", colnames(epsMat)),
+    paste("p:", colnames(pMat)))
+  lp.mat <- matrix(NA_real_, 3*nseas-1, 3)
+  colnames(lp.mat) <- c("est", "lowCI", "uppCI")
+  rownames(lp.mat) <- c("psi1",
+    paste0("gam", 1:(nseas-1)),
+    paste0("eps", 1:(nseas-1)),
+    paste0("p", 1:nseas))
+  logLik <- NA_real_
+
+  nll <- function(param){
+    psi1 <- plogis(param[1])
+    gamBeta <- param[parID==2]
+    epsBeta <- param[parID==3]
+    pBeta <- param[parID==4]
+    gamProb <- plogis(gamMat %*% gamBeta)
+    epsProb <- plogis(epsMat %*% epsBeta)
+    pProb <- plogis(pMat %*% pBeta)[seasonID]
+    PHI0 <- c(psi1, 1-psi1)
+    PHIt <- array(0, c(2, 2, nseas-1))
+    PHIt[1, 1, ] <- 1 - epsProb
+    PHIt[1, 2, ] <- epsProb
+    PHIt[2, 1, ] <- gamProb
+    PHIt[2, 2, ] <- 1 - gamProb
+    Prh <- apply(DH, 1, Prh1A, p=pProb, PHI0=PHI0, PHIt=PHIt, seasonID)
+    return(min(-sum(log(Prh)), .Machine$double.xmax))
+    # return(min(-sum(log(Prh)), .Machine$double.xmax, na.rm=TRUE))
+  }
+
+  start <- rep(0, K)
+  res <- nlm(nll, start, hessian=TRUE)
+  if(res$code < 3)  {  # exit code 1 or 2 is ok.
+    beta.mat[,1] <- res$estimate
+    lp.mat[, 1] <- c(beta.mat[1, 1],
+                     gamMat %*% beta.mat[parID==2, 1],
+                     epsMat %*% beta.mat[parID==3, 1],
+                     pMat %*% beta.mat[parID==4, 1])
+    varcov <- try(solve(res$hessian), silent=TRUE)
+    if (!inherits(varcov, "try-error") && all(diag(varcov) > 0)) {
+      SE <- sqrt(diag(varcov))
+      beta.mat[, 2] <- SE  # tidy later
+      beta.mat[, 3:4] <- sweep(outer(SE, crit), 1, res$estimate, "+")
+      temp <- c(varcov[1, 1],
+         diag(gamMat %*% varcov[parID==2, parID==2] %*% t(gamMat)),
+         diag(epsMat %*% varcov[parID==3, parID==3] %*% t(epsMat)),
+         diag(pMat %*% varcov[parID==4, parID==4] %*% t(pMat)))
+      if(all(temp >= 0))  {
+        SElp <- sqrt(temp)
+        lp.mat[, 2:3] <- sweep(outer(SElp, crit), 1, lp.mat[, 1], "+")
+        logLik <- -res$minimum
+      }
+    }
+  }
+  
+  out <- list(call = match.call(),
+              beta = beta.mat,
+              beta.vcv = varcov,
+              real = plogis(beta.mat),
+              logLik = c(logLik=logLik, df=4, nobs=nrow(DH)))
+  class(out) <- c("wiqid", "list")
+  return(out)
+}
+
+# ....................................................
+
+# A function to get Pr(dh) for a single detection history,
+#   ie, one row of DH. This version has a 3-D array for PHIt
+
+# Not exported
+
+# dh is a 0/1/NA of length equal total no. of surveys
+# p is a scalar, or vector of detection probs of length equal to 
+#   dh
+# PHI0 is the vector c(psi1, 1-psi1)
+# PHIt is a 2 x 2 x (nseas-1) array, where
+#   PHIt[,,t] = matrix(c(1-eps[t], gam[t], eps[t], 1-gam[t]), 2)
+# seasonID is a vector of length equal to dh, identifying the season.
+
+Prh1A <- function(dh, p, PHI0, PHIt, seasonID) {
+  if(all(is.na(dh)))
+    return(1)
+  # last season with data:
+  last <- max(which(tapply(!is.na(dh), seasonID, sum) > 0)) #####
+  stopifnot(last > 1) # TODO deal with this properly!
+  pvec <- p * dh + (1-p)*(1-dh)
+  res <- PHI0
+  for(t in 1:(last-1)) {
+    # if(t == 0) break    # happens if last = 1
+    if(!all(is.na(pvec[seasonID==t])))  {
+      D <- diag(c(prod(pvec[seasonID==t], na.rm=TRUE),
+                  1-max(dh[seasonID==t], na.rm=TRUE)))
+      res <- res %*% D
+    }
+    res <- res %*% PHIt[, , t]
+  }
+  PT <- c(prod(pvec[seasonID==last], na.rm=TRUE), 1-max(dh[seasonID==last], na.rm=TRUE))
+  res <- res %*% PT
+  return(res)
+}
+  

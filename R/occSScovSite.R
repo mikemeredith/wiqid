@@ -93,9 +93,10 @@ occSScovSite <- function(y, n, model=list(psi~1, p~1), data=NULL, ci=0.95) {
   }
   out <- list(call = match.call(),
               beta = beta.mat,
+              beta.vcv = varcov,
               real = plogis(lp.mat),
               logLik = c(logLik=logLik, df=K, nobs=length(y)))
-  class(out) <- c("occupancy", "list")
+  class(out) <- c("wiqid", "list")
   return(out)
 }
 

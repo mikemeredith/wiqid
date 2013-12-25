@@ -1,7 +1,7 @@
 # Mtcov model, capture probability a function of time dependent covariates
 
 closedCapMtcov <-
-function(CH, p=~1, data=NULL, ci = 0.95, ciType=c("normal", "MARK")) {
+function(CH, model=list(p~1), data=NULL, ci = 0.95, ciType=c("normal", "MARK")) {
   # CH is a 1/0 capture history matrix, animals x occasions
   # ci is the required confidence interval
   
@@ -10,6 +10,13 @@ function(CH, p=~1, data=NULL, ci = 0.95, ciType=c("normal", "MARK")) {
   alf <- (1 - ci[1]) / 2
   crit <- qnorm(c(alf, 1 - alf))
   ciType <- match.arg(ciType)
+
+  # Standardise the model:
+  if(inherits(model, "formula"))
+    model <- list(model)
+  model <- stdform (model)
+  model0 <- list(psi=~1, p=~1)
+  model <- replace (model0, names(model), model)
 
   CH <- round(as.matrix(CH))
   nocc <- ncol(CH)    # number of capture occasions
@@ -25,7 +32,7 @@ function(CH, p=~1, data=NULL, ci = 0.95, ciType=c("normal", "MARK")) {
     ddf <- data.frame(.dummy = rep(NA, nocc))
     # model.matrix needs a data frame, NULL won't do.
   }
-  pModMat <- model.matrix(as.formula(p), ddf)
+  pModMat <- model.matrix(model$p, ddf)
   K <- ncol(pModMat)
 
   beta.mat <- matrix(NA_real_, K+1, 4) # objects to hold output
@@ -69,8 +76,9 @@ function(CH, p=~1, data=NULL, ci = 0.95, ciType=c("normal", "MARK")) {
   }
   out <- list(call = match.call(),
           beta = beta.mat,
+          beta.vcv = varcov,
           real = rbind(Nhat, plogis(lp.mat)),
           logLik = c(logLik=logLik, df=K+1, nobs=length(CH)))
-  class(out) <- c("closedCap", "list")
+  class(out) <- c("wiqid", "list")
   return(out)
 }

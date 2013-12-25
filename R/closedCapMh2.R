@@ -15,7 +15,8 @@ function(freq, n.occ = length(freq), ci = 0.95, ciType=c("normal", "MARK")) {
   colnames(beta.mat) <- c("est", "SE", "lowCI", "uppCI")
   rownames(beta.mat) <- c("Nhat", "piHat", "p1hat", "p2hat")
   logLik <- NA_real_
-
+  varcov <- NULL
+  
   if(sum(freq[-1]) > 1)  {  # Do checks here
     # nll1 ensures p2 <= p1, but useless for Hessian
     # nll2 starts with output from nll1 (so p2/p1 not an issue)
@@ -74,8 +75,9 @@ function(freq, n.occ = length(freq), ci = 0.95, ciType=c("normal", "MARK")) {
   }
   out <- list(call = match.call(),
           beta = beta.mat,
+          beta.vcv = varcov,
           real = rbind(Nhat, plogis(beta.mat[-1, -2])),
           logLik = c(logLik=logLik, df=4, nobs=N.cap * n.occ))
-  class(out) <- c("closedCap", "list")
+  class(out) <- c("wiqid", "list")
   return(out)
 }
