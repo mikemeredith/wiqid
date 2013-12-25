@@ -1,12 +1,16 @@
 TODO
 
-  * Check that SE is returned for betas, not for reals.
+  * Check that SE is returned for betas, not for reals. Also all MLE functions should report var-covar matrix or NULL if Hessian cannot be inverted.
   
   * Use Gelman et al 2008 recommendations for priors for logistic coefficients. Do man page for priors.
   
   * Look at problem in occSSautocorA
+  
+  * Do test files for new functions
 
 CHANGES IN 2013-12-24
+
+  * wiqid-package man page gives a list of all functions by type, with links to man pages.
 
   * Functions cjsTime and BcjsTime renamed as survCJS and BsurvCJS.
   
