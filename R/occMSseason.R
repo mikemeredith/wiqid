@@ -25,6 +25,11 @@ occMSseason <- function(DH, occsPerSeason,
     stop("Detection data do not match occasions per season.")
   nseas <- length(occsPerSeason)
   seasonID <- rep(1:nseas, occsPerSeason)
+  # find last season with data
+  getLast <- function(dh, grp) max(which(rowsum(dh, grp) > 0))
+  last <- as.vector(apply((!is.na(DH))*1, 1, getLast, grp=factor(seasonID)))
+  DHplus <- as.matrix(cbind(last, DH))
+
 
   # Standardise the model:
   if(inherits(model, "formula"))
@@ -79,7 +84,7 @@ occMSseason <- function(DH, occsPerSeason,
     PHIt[1, 2, ] <- epsProb
     PHIt[2, 1, ] <- gamProb
     PHIt[2, 2, ] <- 1 - gamProb
-    Prh <- apply(DH, 1, Prh1A, p=pProb, PHI0=PHI0, PHIt=PHIt, seasonID)
+    Prh <- apply(DHplus, 1, Prh1A, p=pProb, PHI0=PHI0, PHIt=PHIt, seasonID)
     return(min(-sum(log(Prh)), .Machine$double.xmax))
     # return(min(-sum(log(Prh)), .Machine$double.xmax, na.rm=TRUE))
   }
@@ -133,11 +138,11 @@ occMSseason <- function(DH, occsPerSeason,
 #   PHIt[,,t] = matrix(c(1-eps[t], gam[t], eps[t], 1-gam[t]), 2)
 # seasonID is a vector of length equal to dh, identifying the season.
 
-Prh1A <- function(dh, p, PHI0, PHIt, seasonID) {
+Prh1A <- function(dhp, p, PHI0, PHIt, seasonID) {
+  last <- dhp[1]
+  dh <- dhp[-1]
   if(all(is.na(dh)))
     return(1)
-  # last season with data:
-  last <- max(which(tapply(!is.na(dh), seasonID, sum) > 0)) #####
   stopifnot(last > 1) # TODO deal with this properly!
   pvec <- p * dh + (1-p)*(1-dh)
   res <- PHI0

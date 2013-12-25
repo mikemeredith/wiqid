@@ -23,7 +23,10 @@ occMS0 <- function(DH, occsPerSeason, ci=0.95) {
     stop("Detection data do not match occasions per season.")
   nseas <- length(occsPerSeason)
   seasonID <- rep(1:nseas, occsPerSeason)
-
+  getLast <- function(dh, grp) max(which(rowsum(dh, grp) > 0))
+  last <- as.vector(apply((!is.na(DH))*1, 1, getLast, grp=factor(seasonID)))
+  DHplus <- as.matrix(cbind(last, DH))  # This speeds things up by a factor of 60
+  
   beta.mat <- matrix(NA_real_, 4, 4)
   colnames(beta.mat) <- c("est", "SE", "lowCI", "uppCI")
   rownames(beta.mat) <- c("psi1", "gamma", "epsilon", "p")
@@ -36,7 +39,7 @@ occMS0 <- function(DH, occsPerSeason, ci=0.95) {
     p <- plogis(param[4])
     PHI0 <- c(psi1, 1-psi1)
     PHIt <- matrix(c(1-eps, gam, eps, 1-gam), 2)
-    Prh <- apply(DH, 1, Prh1, p=p, PHI0=PHI0, PHIt=PHIt, seasonID)
+    Prh <- apply(DHplus, 1, Prh1, p=p, PHI0=PHI0, PHIt=PHIt, seasonID)
     return(min(-sum(log(Prh)), .Machine$double.xmax))
   }
 
@@ -68,12 +71,12 @@ occMS0 <- function(DH, occsPerSeason, ci=0.95) {
 #   ie, one row of DH.
 # Not exported
 
-Prh1 <- function(dh, p, PHI0, PHIt, seasonID) {
+Prh1 <- function(dhp, p, PHI0, PHIt, seasonID) {
+  last <- dhp[1]
+  dh <- dhp[-1]
   if(all(is.na(dh)))
     return(1)
   pvec <- p * dh + (1-p)*(1-dh)
-  # last season with data:
-  last <- max(which(tapply(!is.na(pvec), seasonID, sum) > 0))
   res <- PHI0
   for(j in 1:(last-1)) {
     # if(j == 0) break    # happens if last = 1

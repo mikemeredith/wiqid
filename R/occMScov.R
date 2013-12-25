@@ -6,6 +6,8 @@
 
 # See MacKenzie et al (2006) "Occupancy..." p194ff
 
+# function Prh1A is defined in the file occMSseason.R
+
 occMScov <- function(DH, occsPerSeason,
              model=list(psi1~1, gamma~1, epsilon~1, p~1),
              data=NULL, ci=0.95) {    
@@ -27,6 +29,10 @@ occMScov <- function(DH, occsPerSeason,
     stop("Detection data do not match occasions per season.")
   nseas <- length(occsPerSeason)
   seasonID <- rep(1:nseas, occsPerSeason)
+  # find last season with data
+  getLast <- function(dh, grp) max(which(rowsum(dh, grp) > 0))
+  last <- as.vector(apply((!is.na(DH))*1, 1, getLast, grp=factor(seasonID)))
+  DHplus <- as.matrix(cbind(last, DH))
 
   # Standardise the model:
   if(inherits(model, "formula"))
@@ -46,19 +52,12 @@ occMScov <- function(DH, occsPerSeason,
     data <- data.frame(.dummy = rep(NA, nSites))
   }
   cat("Preparing design matrices...") ; flush.console()
-  # ddfPSI <- data
-  # ddfPSI$.dummy <- rep(NA, nSites)
-  # ddfGE <- data
   GEseason <- rep(1:(nseas-1), each=nSites)
-  # ddfGE$season <- as.factor(GEseason)
   ddfGE <- as.data.frame(cbind(data, season=as.factor(GEseason)))
-  # ddfP <- data
   Pseason <- rep(1:nseas, each=nSites)
-  # ddfP$season <- as.factor(Pseason)
   ddfP <- as.data.frame(cbind(data, season=as.factor(Pseason)))
 
   # Build model matrices  
-  # psi1Mat <- model.matrix(model$psi1, as.data.frame(ddfPSI))
   psi1Mat <- model.matrix(model$psi1, as.data.frame(data))
   psi1K <- ncol(psi1Mat)
   gamMat <- model.matrix(model$gamma, ddfGE)
@@ -88,7 +87,6 @@ occMScov <- function(DH, occsPerSeason,
   logLik <- NA_real_
 
   nll <- function(param){
-    cat("+") ; flush.console()
     psi1Beta <- param[parID==1]
     gamBeta <- param[parID==2]
     epsBeta <- param[parID==3]
@@ -106,16 +104,16 @@ occMScov <- function(DH, occsPerSeason,
       PHIt[2, 1, ] <- gamProb[i, ]
       PHIt[2, 2, ] <- 1 - gamProb[i, ]
       p <- pProb[i, seasonID]
-      Prh[i] <- Prh1A(DH[i, ], p=p, PHI0=PHI0, PHIt=PHIt, seasonID)
+      Prh[i] <- Prh1A(DHplus[i, ], p=p, PHI0=PHI0, PHIt=PHIt, seasonID)
     }
     return(min(-sum(log(Prh)), .Machine$double.xmax))
   }
 
   cat("done\n")
-  cat("Maximizing likelihood...\n|") ; flush.console()
+  cat("Maximizing likelihood...") ; flush.console()
   start <- rep(0, K)
   res <- nlm(nll, start, hessian=TRUE)
-  cat("| done\n")
+  cat("done\n")
   cat("Organizing output...") ; flush.console()
   if(res$code < 3)  {  # exit code 1 or 2 is ok.
     beta.mat[,1] <- res$estimate
@@ -150,41 +148,3 @@ occMScov <- function(DH, occsPerSeason,
   class(out) <- c("wiqid", "list")
   return(out)
 }
-
-# ....................................................
-
-# A function to get Pr(dh) for a single detection history,
-#   ie, one row of DH. This version has a 3-D array for PHIt
-
-# Not exported
-
-# dh is a 0/1/NA of length equal total no. of surveys
-# p is a scalar, or vector of detection probs of length equal to 
-#   dh
-# PHI0 is the vector c(psi1, 1-psi1)
-# PHIt is a 2 x 2 x (nseas-1) array, where
-#   PHIt[,,t] = matrix(c(1-eps[t], gam[t], eps[t], 1-gam[t]), 2)
-# seasonID is a vector of length equal to dh, identifying the season.
-
-Prh1A <- function(dh, p, PHI0, PHIt, seasonID) {
-  if(all(is.na(dh)))
-    return(1)
-  # last season with data:
-  last <- max(which(tapply(!is.na(dh), seasonID, sum) > 0)) #####
-  stopifnot(last > 1) # TODO deal with this properly!
-  pvec <- p * dh + (1-p)*(1-dh)
-  res <- PHI0
-  for(t in 1:(last-1)) {
-    # if(t == 0) break    # happens if last = 1
-    if(!all(is.na(pvec[seasonID==t])))  {
-      D <- diag(c(prod(pvec[seasonID==t], na.rm=TRUE),
-                  1-max(dh[seasonID==t], na.rm=TRUE)))
-      res <- res %*% D
-    }
-    res <- res %*% PHIt[, , t]
-  }
-  PT <- c(prod(pvec[seasonID==last], na.rm=TRUE), 1-max(dh[seasonID==last], na.rm=TRUE))
-  res <- res %*% PT
-  return(res)
-}
-  
