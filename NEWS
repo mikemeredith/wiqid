@@ -8,6 +8,10 @@ TODO
   
   * Do test files for new functions
 
+CHANGES IN 2014-01-05
+
+  * Version number system changed as CRAN doesn't like leading zeros. Version 0.0359 followed by version 0.0.360. 
+  
 CHANGES IN 2013-12-24
 
   * wiqid-package man page gives a list of all functions by type, with links to man pages.

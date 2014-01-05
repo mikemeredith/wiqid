@@ -85,7 +85,8 @@ occMScov <- function(DH, occsPerSeason,
     paste0("epsilon:", siteNames, ",", GEseason),
     paste0("p:", siteNames, ",", Pseason))
   logLik <- NA_real_
-
+  varcov <- NULL
+  
   nll <- function(param){
     psi1Beta <- param[parID==1]
     gamBeta <- param[parID==2]
@@ -121,8 +122,9 @@ occMScov <- function(DH, occsPerSeason,
                      gamMat %*% beta.mat[parID==2, 1],
                      epsMat %*% beta.mat[parID==3, 1],
                      pMat %*% beta.mat[parID==4, 1])
-    varcov <- try(solve(res$hessian), silent=TRUE)
-    if (!inherits(varcov, "try-error") && all(diag(varcov) > 0)) {
+    varcov0 <- try(solve(res$hessian), silent=TRUE)
+    if (!inherits(varcov0, "try-error") && all(diag(varcov0) > 0)) {
+      varcov <- varcov0
       SE <- sqrt(diag(varcov))
       beta.mat[, 2] <- SE  # tidy later
       beta.mat[, 3:4] <- sweep(outer(SE, crit), 1, res$estimate, "+")
