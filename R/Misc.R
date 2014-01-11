@@ -46,6 +46,7 @@ AICtable <- function(x) {
 
 # Not (currently) exported
 
+# Old version, to be phased out
 stdform <- function (flist) {
     LHS <- function (form) {
         trms <- as.character (form)
@@ -60,6 +61,30 @@ stdform <- function (flist) {
     if (is.null(names(flist))) names(temp) <- lhs
     else names(temp) <- ifelse(names(flist) == '', lhs, names(flist))
     temp
+}
+
+# New version:
+stdModel <- function (model1, defaultModel) {
+  if(inherits(model1, "formula"))
+    model1 <- list(model1)
+  stopifnot(is.list(model1))
+  LHS <- function (form) {
+      trms <- as.character (form)
+      if (length(trms)==2) '' else trms[2]
+  }
+  RHS <- function (form) {
+      trms <- as.character (form)
+      if (length(trms)==3) as.formula(paste(trms[c(1,3)])) else form
+  }
+  lhs <- sapply(model1, LHS)
+  temp <- lapply(model1, RHS)
+  if (is.null(names(model1))) {
+    names(temp) <- lhs
+  } else {
+    names(temp) <- ifelse(names(model1) == '', lhs, names(model1))
+  }
+  newModel <- replace (defaultModel, names(temp), temp)
+  return(newModel)
 }
 
 ## Convert a data frame of site and survey data into a list 

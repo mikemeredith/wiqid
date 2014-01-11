@@ -20,6 +20,6 @@ MacKenzie, D I; J D Nichols; A J Royle; K H Pollock; L L Bailey; J E Hines 2006.
 \examples{
 data(salamanders)
 
-occSS.t(salamanders)
+occSStime(salamanders, p ~ .time)
 }
 \keyword{datasets}

@@ -26,22 +26,20 @@ The functions are listed by topic below.
   \bold{Single-season occupancy}
   
   \tabular{ll}{
-  \code{\link{occSS0}} \tab a basic psi(.) p(.) model \cr
+  \code{\link{occSScov}} \tab general-purpose function; allows site- and survey-specific covariates \cr
+  \code{\link{occSS0}} \tab a basic psi(.) p(.) model, faster if this is all you need \cr
   \code{\link{BoccSS0}} \tab a Bayesian implementation of the psi(.) p(.) model \cr
   \code{\link{occSSrn}} \tab Royle-Nichols method \cr
-  \code{\link{occSS.t}} \tab includes a fixed-effect for time \cr
-  \code{\link{occSS.T}} \tab includes a logit-linear trend in detection probability \cr
-  \code{\link{occSS.T2}} \tab estimates a logit-quadratic trend \cr
-  \code{\link{occSScovSite}} \tab allows site-specific covariates \cr
-  \code{\link{occSScov}} \tab allows site- and survey-specific covariates \cr
+  \code{\link{occSStime}} \tab faster if you have only time effects, also does a plot \cr
+  \code{\link{occSScovSite}} \tab faster if you only have site-specific covariates \cr
   \code{\link{occSSautocorA}} \tab autocorrelation among surveys  }
 
   \bold{Multi-season occupancy}
   
   \tabular{ll}{
-  \code{\link{occMS0}} \tab a simple multi-season model with four parameters \cr
-  \code{\link{occMSseason}} \tab parameters vary by season \cr
-  \code{\link{occMScov}} \tab parameters depend on covariates } 
+  \code{\link{occMScov}} \tab general-purpose function; parameters depend on covariates \cr
+  \code{\link{occMS0}} \tab a simple multi-season model with four parameters; faster \cr
+  \code{\link{occMSseason}} \tab parameters vary by season; faster  } 
 }
 
 \section{DENSITY from spatial capture-recapture data}{
@@ -157,7 +155,6 @@ All of these functions produce distance measures (not similarity) on a scale of 
   \code{\link{AICc}} \tab AIC with small-sample correction \cr
   \code{\link{AICtable}} \tab tabulate AIC for several models \cr
   \code{\link{allCombinations}} \tab model formulae for combinations of covariates \cr
-  \code{\link{ch2mArray}} \tab convert a capture history matrix to an m-array \cr
   \code{\link{hdi}} \tab calculate Highest Density Intervals of a distribution \cr
   \code{\link{plotPost}} \tab graphic display of a posterior distribution }
 }

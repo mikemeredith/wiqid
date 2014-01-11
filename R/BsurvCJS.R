@@ -2,33 +2,29 @@
 
 # Bayesian version of CJS models
 
-BsurvCJS <- function(mArray, model=list(phi~1, p~1), data=NULL,
+BsurvCJS <- function(DH, model=list(phi~1, p~1), data=NULL, freq=1,
     numSavedSteps=1e4, thinSteps=1, burnInSteps = 1e3) {
   # phi(t) p(t) model or models with time covariates for Cormack-Joly-Seber
   # estimation of apparent survival.
-  # ** mArray is capture-recapture data in m-array format, with zeros in the lower
-  #   triangle.
+  # ** DH is detection history matrix/data frame, animals x occasions.
+  # ** freq is vector of frequencies for each detection history
   # ** model is a list of 2-sided formulae for psi and p; can also be a single
   #   2-sided formula, eg, model = psi ~ habitat.
   # ** data a data frame with the covariates.
   # ** ci is required confidence interval.
 
   # Sanity checks:
-  ni <- nrow(mArray)
-  if (ni < 2)
-    stop("More than one recapture occasion is needed")
-  if (ncol(mArray) != ni + 1 || any(mArray[lower.tri(mArray)] != 0))
-    stop("mArray is not a valid m-array format")
+  ni <- ncol(DH) - 1  # number of survival intervals and REcapture occasions
+  stopifnot(is.null(data) || nrow(data) == ni)
+
+  # Convert detection history to m-array to facilitate use of multinomial likelihood
+  mArray <- ch2mArray(CH=DH, freq=freq)
 
   # Standardise the model:
-  if(inherits(model, "formula"))
-    model <- list(model)
-  model <- stdform (model)
-  model0 <- list(phi=~1, p=~1)
-  model <- replace (model0, names(model), model)
+  model <- stdModel(model, defaultModel=list(phi=~1, p=~1))
 
   # Prepare model matrices
-  data$time <- as.factor(1:ni)
+  data$.time <- as.factor(1:ni)
   ddf <- as.data.frame(data)
   phiMat <- model.matrix(model$phi, ddf)
   phiK <- ncol(phiMat)

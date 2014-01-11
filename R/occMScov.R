@@ -21,6 +21,11 @@ occMScov <- function(DH, occsPerSeason,
   alf <- (1 - ci[1]) / 2
   crit <- qnorm(c(alf, 1 - alf))
 
+  # Check for all-NA rows (eg, Grand Skinks data set!)
+  allNA <- rowSums(!is.na(DH)) == 0
+  if(any(allNA))
+    DH <- DH[!allNA, ]
+
   # Deal with occsPerSeason
   nOcc <- ncol(DH)
   if(length(occsPerSeason) == 1)
@@ -35,11 +40,7 @@ occMScov <- function(DH, occsPerSeason,
   DHplus <- as.matrix(cbind(last, DH))
 
   # Standardise the model:
-  if(inherits(model, "formula"))
-    model <- list(model)
-  model <- stdform (model)
-  model0 <- list(psi1=~1, gamma=~1, epsilon=~1, p=~1)
-  model <- replace (model0, names(model), model)
+  model <- stdModel(model, defaultModel=list(psi1=~1, gamma=~1, epsilon=~1, p=~1))
 
   # Check data file
   nSites <- nrow(DH)
@@ -116,28 +117,28 @@ occMScov <- function(DH, occsPerSeason,
   res <- nlm(nll, start, hessian=TRUE)
   cat("done\n")
   cat("Organizing output...") ; flush.console()
-  if(res$code < 3)  {  # exit code 1 or 2 is ok.
-    beta.mat[,1] <- res$estimate
-    lp.mat[, 1] <- c(psi1Mat %*% beta.mat[parID==1, 1],
-                     gamMat %*% beta.mat[parID==2, 1],
-                     epsMat %*% beta.mat[parID==3, 1],
-                     pMat %*% beta.mat[parID==4, 1])
-    varcov0 <- try(solve(res$hessian), silent=TRUE)
-    if (!inherits(varcov0, "try-error") && all(diag(varcov0) > 0)) {
-      varcov <- varcov0
-      SE <- sqrt(diag(varcov))
-      beta.mat[, 2] <- SE  # tidy later
-      beta.mat[, 3:4] <- sweep(outer(SE, crit), 1, res$estimate, "+")
-      temp <- c(
-         diag(psi1Mat %*% varcov[parID==1, parID==1] %*% t(psi1Mat)),
-         diag(gamMat %*% varcov[parID==2, parID==2] %*% t(gamMat)),
-         diag(epsMat %*% varcov[parID==3, parID==3] %*% t(epsMat)),
-         diag(pMat %*% varcov[parID==4, parID==4] %*% t(pMat)))
-      if(all(temp >= 0))  {
-        SElp <- sqrt(temp)
-        lp.mat[, 2:3] <- sweep(outer(SElp, crit), 1, lp.mat[, 1], "+")
-        logLik <- -res$minimum
-      }
+  if(res$code > 2)   # exit code 1 or 2 is ok.
+    warning(paste("Convergence may not have been reached (code", res$code, ")"))
+  beta.mat[,1] <- res$estimate
+  lp.mat[, 1] <- c(psi1Mat %*% beta.mat[parID==1, 1],
+                   gamMat %*% beta.mat[parID==2, 1],
+                   epsMat %*% beta.mat[parID==3, 1],
+                   pMat %*% beta.mat[parID==4, 1])
+  varcov0 <- try(solve(res$hessian), silent=TRUE)
+  if (!inherits(varcov0, "try-error") && all(diag(varcov0) > 0)) {
+    varcov <- varcov0
+    SE <- sqrt(diag(varcov))
+    beta.mat[, 2] <- SE  # tidy later
+    beta.mat[, 3:4] <- sweep(outer(SE, crit), 1, res$estimate, "+")
+    temp <- c(
+       diag(psi1Mat %*% varcov[parID==1, parID==1] %*% t(psi1Mat)),
+       diag(gamMat %*% varcov[parID==2, parID==2] %*% t(gamMat)),
+       diag(epsMat %*% varcov[parID==3, parID==3] %*% t(epsMat)),
+       diag(pMat %*% varcov[parID==4, parID==4] %*% t(pMat)))
+    if(all(temp >= 0))  {
+      SElp <- sqrt(temp)
+      lp.mat[, 2:3] <- sweep(outer(SElp, crit), 1, lp.mat[, 1], "+")
+      logLik <- -res$minimum
     }
   }
   cat("done\n") ; flush.console()

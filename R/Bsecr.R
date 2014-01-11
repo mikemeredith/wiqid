@@ -1,8 +1,8 @@
 
 # Bayesian version of secr to work with stoats data
 
-Bsecr0 <- function(capthist, buffer = 100, nAug = NA,
-                    numSavedSteps=1e3, thinSteps=1, burnInSteps = 0) {
+Bsecr0 <- function(capthist, buffer = 100, start=NULL, nAug = NA,
+                    nChains=3, numSavedSteps=1e4, thinSteps=1, burnInSteps = 0) {
   stopifnot(inherits(capthist, "capthist"))
   
   traps <- traps(capthist)
@@ -13,16 +13,21 @@ Bsecr0 <- function(capthist, buffer = 100, nAug = NA,
   yu <- max(traps$y) + buffer
   A <- (xu-xl)*(yu-yl) / 1e4 # ha
 
-  # Run secr.fit to get starting values, etc
-  #require(secr)
-  cat("Running secr.fit to get starting values...") ; flush.console()
-  mle.res <- predict(secr.fit(capthist, buffer=buffer, trace=FALSE))
-  cat("done\n") ; flush.console()
+  # Get starting values, etc from secr.fit
+  if(!is.null(start) && inherits(start, "secr")) {
+    mle.res <- predict(start)
+  } else {
+    cat("Running secr.fit to get starting values...") ; flush.console()
+    mle.res <- predict(secr.fit(capthist, buffer=buffer, trace=FALSE))
+    cat("done\n") ; flush.console()
+  }
   if(is.na(nAug))
-    nAug <- ceiling(1.1 * mle.res[1, 5] * A)
-  maxSig2 <- (1.1 * mle.res[3, 5]) ^ 2
+    nAug <- ceiling(1.5 * mle.res[1, 5] * A)
+  # maxSig2 <- (1.1 * mle.res[3, 5]) ^ 2
+  maxSig2 <- (2.2 * mle.res[3, 5]) ^ 2
   lam0start <- mle.res[2,2]
-  sigma2start <- mle.res[3,2]^2
+  # sigma2start <- mle.res[3,2]^2 # sigma2 = 2 * sigma^2
+  sigma2start <- 2 * mle.res[3,2]^2
   psistart  <- (mle.res[1,2] * A) / nAug
     
   # Convert capture histories into an Animals x Traps matrix
@@ -81,11 +86,11 @@ Bsecr0 <- function(capthist, buffer = 100, nAug = NA,
   wanted <- c("D", "lam0", "sigma")
   # Create the model and run:
   jm <-jags.model(modelFile, jagsData, inits,
-            n.chains = 1, n.adapt=500, quiet=FALSE)
+            n.chains = nChains, n.adapt=500, quiet=FALSE)
   if(burnInSteps > 0)
     update(jm, n.iter=burnInSteps)
   codaSamples <- coda.samples(jm, variable.names=wanted, 
-                        n.iter= numSavedSteps * thinSteps, thin=thinSteps)
+                        n.iter= ceiling(numSavedSteps * thinSteps / nChains), thin=thinSteps)
   # gelman.diag(codaSamples)
   # effectiveSize(codaSamples)
 
@@ -93,6 +98,7 @@ Bsecr0 <- function(capthist, buffer = 100, nAug = NA,
   # names(out) <- fixNames(names(out))
   class(out) <- c("Bwiqid", class(out))
   attr(out, "n.eff") <- effectiveSize(codaSamples)
+  attr(out, "Rhat") <- gelman.diag(codaSamples)$psrf[, 1]
   attr(out, "defaultPlot") <- "D"
   # attr(out, "data") <- ???
   return(out)

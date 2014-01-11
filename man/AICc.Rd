@@ -46,8 +46,8 @@ For some data types, including occupancy data, there is debate on the appropriat
 }
 \examples{
 data(salamanders)
-mt <- occSS.t(salamanders)
-mT <- occSS.T(salamanders, plot=FALSE)
+mt <- occSStime(salamanders, p ~ .time, plot=FALSE)
+mT <- occSStime(salamanders, p ~ .Time, plot=FALSE)
 AIC(mt, mT)
 AICc(mt, mT)
 nobs(mt)

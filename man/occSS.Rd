@@ -1,9 +1,7 @@
 \name{Occupancy Single Season}
 \alias{occSS0}
 \alias{occSSrn}
-\alias{occSS.t}
-\alias{occSS.T}
-\alias{occSS.T2}
+\alias{occSStime}
 \alias{occSScovSite}
 \alias{occSScov}
 \alias{occSSautocorA}
@@ -19,11 +17,7 @@ occSS0(y, n, ci=0.95)
 
 occSSrn(y, n, ci=0.95)
 
-occSS.t(DH, ci=0.95)
-
-occSS.T(DH, ci=0.95, plot=TRUE)
-
-occSS.T2(DH, ci=0.95, plot=TRUE)
+occSStime(DH, model=p~1, data=NULL, ci=0.95, plot=TRUE)
 
 occSSautocorA(DH, ci=0.95)
 
@@ -44,14 +38,14 @@ the confidence interval to use.
  \item{DH}{
 a 1/0/NA matrix (or data frame) of detection histories, sites x occasions
 }
-  \item{plot}{
-if TRUE (default), draws a plot of probability of detection vs time.
-}
   \item{model}{
 a list of formulae symbolically defining a linear predictor for each parameter in terms of covariates.
 }
   \item{data}{
-a data frame containing the variables in the model. Each site covariate has one column. Each survey covariate has one column for each occasion, and the column name must end with the occasion number (without leading zeros); eg, \code{Cov1, Cov2, ..., Cov15}. All covariates should be included in \code{data}, otherwise they will be sought in enclosing environments, which may not produce what you want -- and they won't be standardised.
+a data frame containing the variables in the model. For \code{occSStime}, a data frame with a row for each survey occasion; otherwise, a row for each site. Each site covariate has one column. Each survey covariate has one column for each occasion, and the column name must end with the occasion number (without leading zeros); eg, \code{Cov1, Cov2, ..., Cov15}. All covariates should be included in \code{data}, otherwise they will be sought in enclosing environments, which may not produce what you want -- and they won't be standardised.
+}
+  \item{plot}{
+if TRUE (default), draws a plot of probability of detection vs time.
 }
 }
 \details{
@@ -59,13 +53,11 @@ a data frame containing the variables in the model. Each site covariate has one 
 
 \code{occSSrn} implements the Royle-Nichols method for estimation of site occupancy allowing for abundance-induced heterogeneity in detection probability.
 
-\code{occSS.t} estimates a separate detection probability for each survey occasion, ie. a \code{psi(.) p(t)} model.
-
-\code{occSS.T} estimates a logit-linear trend in detection probability, producing estimates of the intercept and slope. \code{occSS.T2} estimates a logit-quadratic trend.
+\code{occSStime} allows for a time-varying covariate that is the same across all sites, eg, moon-phase. A categorical time variable \code{.time} and a time trend \code{.Time} are built-in. A plot of detection probability vs time is produced if \code{plot=TRUE}.
 
 \code{occSSautocorA} allows for autocorrelation among surveys: the probability of detection on a survey depends on detection/nondetection on the previous survey (Hines et al 2010, Appendix A).
 
-\code{occSScovSite} allows for psi or p to be modelled as a logistic function of site covariates, while \code{occSScov} extends this to allow for survey covariates to be included in the model for p. \code{occSScov} has a built in \code{.time} covariate which can be used for modelling p with time as a fixed effect, and \code{.Time} and \code{.Time2} for a linear or quadratic trend.
+\code{occSScovSite} allows for psi or p to be modelled as a logistic function of site covariates, while \code{occSScov} extends this to allow for survey covariates to be included in the model for p. \code{occSScov} has a built in \code{.time} covariate which can be used for modelling p with time as a fixed effect, and \code{.Time} for a linear or quadratic trend.
 
 Numeric covariates in \code{data} are standardised to facilitate convergence. This applies to binary covariates coded as 1/0; if this is not what you want, code these as TRUE/FALSE or as factors. 
 
@@ -111,6 +103,6 @@ n <- rowSums(!is.na(salamanders))
 
 occSS0(y, n)
 occSSrn(y, n)
-occSS.t(salamanders)
-occSS.T(salamanders)
+occSStime(salamanders, p ~ .time)  # time as a fixed effect
+occSStime(salamanders, p ~ .Time + I(.Time^2))  # a quadratic time effect
 }

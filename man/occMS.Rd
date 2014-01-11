@@ -45,7 +45,6 @@ the confidence interval to use.
 
 \code{occMScove} allows for between-season differences in colonisation, local extinction, and probability of detection with the in-built covariate \code{season} and for beteen-site differences with covariates defined in \code{data}.
 
-Missing values are allowed in \code{DH}, including entire seasons with no observations, but there must be some observations for each site after the first season. % Sanity checks!
 }
 \value{
 Returns an object of class \code{wiqid}, which is a list with the following elements:

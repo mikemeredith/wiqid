@@ -17,6 +17,11 @@ occMSseason <- function(DH, occsPerSeason,
   alf <- (1 - ci[1]) / 2
   crit <- qnorm(c(alf, 1 - alf))
 
+  # Check for all-NA rows (eg, Grand Skinks data set!)
+  allNA <- rowSums(!is.na(DH)) == 0
+  if(any(allNA))
+    DH <- DH[!allNA, ]
+    
   # Deal with occsPerSeason
   nOcc <- ncol(DH)
   if(length(occsPerSeason) == 1)
@@ -32,11 +37,7 @@ occMSseason <- function(DH, occsPerSeason,
 
 
   # Standardise the model:
-  if(inherits(model, "formula"))
-    model <- list(model)
-  model <- stdform (model)
-  model0 <- list(gamma=~1, epsilon=~1, p=~1)
-  model <- replace (model0, names(model), model)
+  model <- stdModel(model, defaultModel=list(gamma=~1, epsilon=~1, p=~1))
 
   # Check data file
   datGE <- datP <- data
@@ -117,8 +118,8 @@ occMSseason <- function(DH, occsPerSeason,
   out <- list(call = match.call(),
               beta = beta.mat,
               beta.vcv = varcov,
-              real = plogis(beta.mat),
-              logLik = c(logLik=logLik, df=4, nobs=nrow(DH)))
+              real = plogis(lp.mat),
+              logLik = c(logLik=logLik, df=K, nobs=nrow(DH)))
   class(out) <- c("wiqid", "list")
   return(out)
 }
@@ -141,20 +142,17 @@ occMSseason <- function(DH, occsPerSeason,
 Prh1A <- function(dhp, p, PHI0, PHIt, seasonID) {
   last <- dhp[1]
   dh <- dhp[-1]
-  if(all(is.na(dh)))
-    return(1)
-  stopifnot(last > 1) # TODO deal with this properly!
   pvec <- p * dh + (1-p)*(1-dh)
   res <- PHI0
-  for(t in 1:(last-1)) {
-    # if(t == 0) break    # happens if last = 1
-    if(!all(is.na(pvec[seasonID==t])))  {
-      D <- diag(c(prod(pvec[seasonID==t], na.rm=TRUE),
-                  1-max(dh[seasonID==t], na.rm=TRUE)))
-      res <- res %*% D
+  if(last > 1)
+    for(t in 1:(last-1)) {
+      if(!all(is.na(pvec[seasonID==t])))  {
+        D <- diag(c(prod(pvec[seasonID==t], na.rm=TRUE),
+                    1-max(dh[seasonID==t], na.rm=TRUE)))
+        res <- res %*% D
+      }
+      res <- res %*% PHIt[, , t]
     }
-    res <- res %*% PHIt[, , t]
-  }
   PT <- c(prod(pvec[seasonID==last], na.rm=TRUE), 1-max(dh[seasonID==last], na.rm=TRUE))
   res <- res %*% PT
   return(res)

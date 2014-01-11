@@ -1,13 +1,25 @@
 TODO
-
+  
   * Check that SE is returned for betas, not for reals. Also all MLE functions should report var-covar matrix or NULL if Hessian cannot be inverted.
   
-  * Use Gelman et al 2008 recommendations for priors for logistic coefficients. Do man page for priors.
+  * Use Gelman et al 2008 recommendations for priors for logistic coefficients. Do man page for priors. Also implement 0.5xSD scaling for all functions (not just Bayes).
   
   * Look at problem in occSSautocorA
   
   * Do test files for new functions
 
+CHANGES IN 2014-01-11 v.0.0.361
+
+  * Multi-season occupancy functions (occMS*) tidied up to deal with sites with surveys in first season only.
+  
+  * Fixed bug in Bsecr0 - prior for sigma was too constrained.
+ 
+  * Changed survival functions to use ordinary detection history matrix instead of m-array; conversion to m-array is done internally.
+  
+  * Added dippers data set.
+  
+  * Functions occSS.t, occSS.T and occSS.T2 replaced with a single function, occSStime, which can also accept time-varying covariates for probability of detection.
+ 
 CHANGES IN 2014-01-05
 
   * Version number system changed as CRAN doesn't like leading zeros. Version 0.0359 followed by version 0.0.360. 

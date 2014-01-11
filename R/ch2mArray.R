@@ -1,9 +1,12 @@
 
 # Adapted from Kery & Schaub
 
+# Not exported
+
 # Function to create a m-array based on capture-histories (CH) plus vector of frequencies.
 
 ch2mArray <- function(CH, freq=1){
+  CH <- as.matrix(CH)  # might be a data frame
   if(length(freq) == 1)
     freq <- rep(freq, nrow(CH))
   stopifnot(length(freq) == nrow(CH))

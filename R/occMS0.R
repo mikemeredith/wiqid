@@ -15,7 +15,12 @@ occMS0 <- function(DH, occsPerSeason, ci=0.95) {
   alf <- (1 - ci[1]) / 2
   crit <- qnorm(c(alf, 1 - alf))
 
-  # Deal with occsPerSeason
+  # Check for all-NA rows (eg, Grand Skinks data set!)
+  allNA <- rowSums(!is.na(DH)) == 0
+  if(any(allNA))
+    DH <- DH[!allNA, ]
+
+    # Deal with occsPerSeason
   nOcc <- ncol(DH)
   if(length(occsPerSeason) == 1)
     occsPerSeason <- rep(occsPerSeason, nOcc/occsPerSeason)
@@ -78,15 +83,15 @@ Prh1 <- function(dhp, p, PHI0, PHIt, seasonID) {
     return(1)
   pvec <- p * dh + (1-p)*(1-dh)
   res <- PHI0
-  for(j in 1:(last-1)) {
-    # if(j == 0) break    # happens if last = 1
-    if(!all(is.na(pvec[seasonID==j])))  {
-      D <- diag(c(prod(pvec[seasonID==j], na.rm=TRUE),
-                  1-max(dh[seasonID==j], na.rm=TRUE)))
-      res <- res %*% D
+  if(last > 1)
+    for(j in 1:(last-1)) {
+      if(!all(is.na(pvec[seasonID==j])))  {
+        D <- diag(c(prod(pvec[seasonID==j], na.rm=TRUE),
+                    1-max(dh[seasonID==j], na.rm=TRUE)))
+        res <- res %*% D
+      }
+      res <- res %*% PHIt
     }
-    res <- res %*% PHIt
-  }
   PT <- c(prod(pvec[seasonID==last], na.rm=TRUE), 1-max(dh[seasonID==last], na.rm=TRUE))
   res <- res %*% PT
 }

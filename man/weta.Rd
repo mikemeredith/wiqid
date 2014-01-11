@@ -27,18 +27,12 @@ MacKenzie, D I; J D Nichols; A J Royle; K H Pollock; L L Bailey; J E Hines 2006.
 }
 \examples{
 data(weta)
-# Extract the detection history and summarize:
-DH <- weta[, 1:5]
-y <- rowSums(DH, na.rm=TRUE)
-n <- rowSums(!is.na(DH))
-occSS0(y, n)
-occSS.t(DH)
 
-# Extract covariates:
-weta.covs <- weta[, 6:11]
-occSScovSite(y, n, psi ~ Browsed, data=weta.covs)
-
-occSScov(DH, list(psi ~ Browsed, p ~ ObsD), data=weta.covs)
+DH <- weta[, 1:5]  # extract the detection history:
+occSScov(DH)
+occSStime(DH, p~.time)
+# With covariates
+occSScov(DH, list(psi ~ Browsed, p ~ ObsD), data=weta)
 
 }
 \keyword{datasets}

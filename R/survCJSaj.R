@@ -1,10 +1,10 @@
-# Calculation of likelihood for m-array of recaptures 
+# Estimation of apparent survival - CJS models
 
 # These functions allow for Adult and Juvenile survival to differ,
 #  eg. when birds are ringed as nestlings.
 
-# Data should be organised as 2 m-arrays, one for juveniles and one for
-#   adults, noting that when juveniles are recaptured they are already adults.
+# Data should be organised as 2 detection history matrices, one for juveniles and one for
+#   adults (when juveniles are recaptured they are already adults).
 
 qArrayAJ <- function(phi, p, phiJ=phi) {
   # Calculates the matrix of multinomial cell probabilities
@@ -27,38 +27,60 @@ qArrayAJ <- function(phi, p, phiJ=phi) {
 }
 # ..........................................................................
 
-survCJSaj <- function(mArray, mArrayJ, model=list(phiA~1, phiJ~1, p~1), data=NULL, ci = 0.95) {
+survCJSaj <- function(DHj, DHa=NULL, model=list(phiJ~1, phiA~1, p~1), data=NULL,
+    freqj=1, freqa=1, ci = 0.95) {
   # phi(t) p(t) model or models with time covariates for Cormack-Joly-Seber
   # estimation of apparent survival.
-  # ** mArray is capture-recapture data in m-array format, with zeros in the lower
-  #   triangle.
+  # ** DHj is detection history matrix/data frame, animals x occasions, for animals marked as juveniles; DHa (optional) has detection histories for animals marked as adults.
+  # ** freqj and freq are vectors of frequencies for each detection history
   # ** model is a list of 2-sided formulae for psi and p; can also be a single
   #   2-sided formula, eg, model = psi ~ habitat.
   # ** data a data frame with the covariates.
   # ** ci is required confidence interval.
 
   # Sanity checks:
-  ni <- nrow(mArray)
-  if (ni < 2)
-    stop("More than one recapture occasion is needed")
-  if (ncol(mArray) != ni + 1 || any(mArray[lower.tri(mArray)] != 0))
-    stop("mArray is not a valid m-array format")
-  stopifnot(nrow(mArrayJ) == ni)
-  stopifnot(ncol(mArrayJ) == ni+1)
+  # Check DHj and DHa have same no. of columns ...
+  nocc <- ncol(DHj)
+  ni <- nocc - 1  # number of survival intervals and REcapture occasions
+  stopifnot(is.null(DHa) || ncol(DHa) == nocc)
+  
   if(ci > 1 | ci < 0.5)
     stop("ci must be between 0.5 and 1")
   alf <- (1 - ci[1]) / 2
   crit <- qnorm(c(alf, 1 - alf))
 
+  # Deal with grownup juveniles, do m-array for these:
+  grown <- DHj
+  # Remove first capture
+  getFirst <- function(x) min(which(x == 1))
+  first <- apply(DHj, 1, getFirst)
+  for(i in 1:nrow(grown))
+    grown[i, first[i]] <- 0
+  marrayA <- ch2mArray(grown, freqj)
+  
+  # Do m-array for juveniles
+  ma <- matrix(0, nocc, nocc+1)
+  for(i in 1:nrow(DHj)) {
+    cht <- which(DHj[i, ] != 0) # When was animal caught?
+    # Fill in release/recapture data
+    # we are only interested in the first recapture
+    if(length(cht) > 1)
+      ma[cht[1], cht[2]] <- ma[cht[1], cht[2]] + freqj[i]
+  }
+  # Juveniles never seen again:
+  ringed <- tapply(freqj, first, sum)
+  ma[, nocc+1] <- c(ringed, 0) - rowSums(ma)
+  marrayJ <- ma[-nocc, -1]
+  
+  # Add data for adults
+  if(!is.null(DHa))
+    marrayA <- marrayA + ch2mArray(DHa, freqa)
+  
   # Standardise the model:
-  if(inherits(model, "formula"))
-    model <- list(model)
-  model <- stdform (model)
-  model0 <- list(phiA=~1, phiJ=~1, p=~1)
-  model <- replace (model0, names(model), model)
-
-  data$time <- as.factor(1:ni)
-  ddf <- as.data.frame(data)
+  model <- stdModel(model, defaultModel=list(phiJ=~1, phiA=~1, p=~1))
+  
+  data$.time <- as.factor(1:ni)  # add .Time trend
+  ddf <- as.data.frame(data)  # Should standardise
   phiAMat <- model.matrix(model$phiA, ddf)
   phiAK <- ncol(phiAMat)
   phiJMat <- model.matrix(model$phiJ, ddf)
@@ -93,8 +115,8 @@ survCJSaj <- function(mArray, mArrayJ, model=list(phiA~1, phiJ~1, p~1), data=NUL
     if(any(pProb * phiAProb == 1) || any(pProb * phiJProb == 1) )
       return(.Machine$double.max)
     # Calculate the negative log(likelihood) value:
-    return(min(-sum(mArray  * log(qArrayAJ(phiAProb, pProb, phiAProb)),   # adults
-            mArrayJ * log(qArrayAJ(phiAProb, pProb, phiJProb)), na.rm=TRUE),   # juveniles
+    return(min(-sum(marrayA  * log(qArrayAJ(phiAProb, pProb, phiAProb)),   # adults
+            marrayJ * log(qArrayAJ(phiAProb, pProb, phiJProb)), na.rm=TRUE),   # juveniles
           .Machine$double.xmax))
   }
 
@@ -126,7 +148,7 @@ survCJSaj <- function(mArray, mArrayJ, model=list(phiA~1, phiJ~1, p~1), data=NUL
               beta = beta.mat,
               beta.vcv = varcov,
               real = plogis(lp.mat),
-              logLik = c(logLik=logLik, df=K, nobs=sum(mArray, mArrayJ)))
+              logLik = c(logLik=logLik, df=K, nobs=sum(marrayJ, marrayA)))
   class(out) <- c("wiqid", "list")
   return(out)
 }

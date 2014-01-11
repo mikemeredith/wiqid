@@ -1,5 +1,8 @@
-# Calculation of likelihood for m-array of recaptures 
 
+# Maximum likelihood estimation for Cormack-Jolly-Seber apparent-survival models
+#    of type phi(t) p(t) or with time covariates
+# Uses detection history matrix as input, not m-array.
+# Uses multinomial likelihood.
 
 qArray <- function(phi, p) {
   # Calculates the matrix of multinomial cell probabilities
@@ -21,36 +24,31 @@ qArray <- function(phi, p) {
 }
 # ..........................................................................
 
-survCJS <- function(mArray, model=list(phi~1, p~1), data=NULL, ci = 0.95) {
-  # phi(t) p(t) model or models with time covariates for Cormack-Joly-Seber
-  # estimation of apparent survival.
-  # ** mArray is capture-recapture data in m-array format, with zeros in the lower
-  #   triangle.
+survCJS <- function(DH, model=list(phi~1, p~1), data=NULL, freq=1, ci = 0.95) {
+  # ** DH is detection history matrix/data frame, animals x occasions.
+  # ** freq is vector of frequencies for each detection history
   # ** model is a list of 2-sided formulae for psi and p; can also be a single
   #   2-sided formula, eg, model = psi ~ habitat.
   # ** data a data frame with the covariates.
   # ** ci is required confidence interval.
 
-  # Sanity checks:
-  ni <- nrow(mArray)
-  if (ni < 2)
-    stop("More than one recapture occasion is needed")
-  if (ncol(mArray) != ni + 1 || any(mArray[lower.tri(mArray)] != 0))
-    stop("mArray is not a valid m-array format")
+  # Sanity checks:  for DH??
+  ni <- ncol(DH) - 1  # number of survival intervals and REcapture occasions
+  stopifnot(is.null(data) || nrow(data) == ni)
+  
   if(ci > 1 | ci < 0.5)
     stop("ci must be between 0.5 and 1")
   alf <- (1 - ci[1]) / 2
   crit <- qnorm(c(alf, 1 - alf))
 
+  # Convert detection history to m-array to facilitate use of multinomial likelihood
+  mArray <- ch2mArray(CH=DH, freq=freq)
+  
   # Standardise the model:
-  if(inherits(model, "formula"))
-    model <- list(model)
-  model <- stdform (model)
-  model0 <- list(phi=~1, p=~1)
-  model <- replace (model0, names(model), model)
+  model <- stdModel(model, defaultModel=list(phi=~1, p=~1))
 
-  data$time <- as.factor(1:ni)
-  ddf <- as.data.frame(data)
+  data$.time <- as.factor(1:ni)  # add .Time trend
+  ddf <- as.data.frame(data)  # Should standardise
   phiMat <- model.matrix(model$phi, ddf)
   phiK <- ncol(phiMat)
   pMat <- model.matrix(model$p, ddf)

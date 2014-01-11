@@ -6,9 +6,9 @@ importFrom(coda, effectiveSize)
 importFrom(secr, secr.fit)
 
 export(
-  survCJS, survCJSaj, ch2mArray,
+  survCJS, survCJSaj,
   closedCapM0, closedCapMh2, closedCapMhJK, closedCapMt, closedCapMtcov,
-  occSS0, occSS.t, occSS.T, occSS.T2, occSScov, occSScovSite, occSSrn, occSSautocorA,
+  occSS0, occSStime, occSScov, occSScovSite, occSSrn, occSSautocorA,
   occMS0, occMSseason, occMScov,
   BoccSS0, BsurvCJS, Bsecr0,
   richRarefy,
