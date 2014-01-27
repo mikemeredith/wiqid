@@ -1,12 +1,22 @@
 TODO
-  
+
   * Check that SE is returned for betas, not for reals. Also all MLE functions should report var-covar matrix or NULL if Hessian cannot be inverted.
   
-  * Use Gelman et al 2008 recommendations for priors for logistic coefficients. Do man page for priors. Also implement 0.5xSD scaling for all functions (not just Bayes).
+  * TRY using Gelman et al 2008 recommendations for priors for logistic coefficients. Update man page for priors. Also implement 0.5xSD scaling for all functions (not just Bayes).
   
   * Look at problem in occSSautocorA
   
   * Do test files for new functions
+  
+  * Add .Time covar (for time trend) to survCJS
+  
+CHANGES IN 2014-01-26 v.0.0.362
+
+  * Changed closedCap* functions so that all take a detection history matrix as first argument.
+
+  * The hdi generic gets methods for classes bugs, rjags and runjags.
+  
+  * New function postPriorOverlap calculates and displays the overlap between posterior and prior.
 
 CHANGES IN 2014-01-11 v.0.0.361
 

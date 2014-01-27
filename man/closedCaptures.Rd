@@ -12,26 +12,20 @@ Analysis of mark-recapture data for closed populations
 Functions to analyse the classical models for closed populations without individual covariates, ie. full likelihood models.
 }
 \usage{
-closedCapM0(freq, n.occ = length(freq), ci = 0.95, ciType=c("normal", "MARK"))
+closedCapM0(CH, ci = 0.95, ciType=c("normal", "MARK"))
 
 closedCapMt(CH, ci = 0.95, ciType=c("normal", "MARK"))
 
 closedCapMtcov(CH, model=list(p~1), data=NULL, ci = 0.95, ciType=c("normal", "MARK"))
 
-closedCapMh2(freq, n.occ = length(freq), ci = 0.95, ciType=c("normal", "MARK"))
+closedCapMh2(CH, ci = 0.95, ciType=c("normal", "MARK"))
 
-closedCapMhJK(freq, n.occ = length(freq), ci = 0.95)
+closedCapMhJK(CH, ci = 0.95)
 
 }
 \arguments{
-  \item{freq}{
-a vector of capture frequencies; trailing zeros are not required provided n.occ is given.
-}
-  \item{n.occ}{
-the total number of capture occasions.
-}
   \item{CH}{
-a 0/1 capture history matrix, animals x occasions; NAs not permitted.
+a 0/1 capture history matrix, animals x occasions; NAs not permitted. For functions \code{closedCapM0}, \code{closedCapMh2} and \code{closedCapMhJK}, \code{CH} can be a vector of capture frequencies of length equal to the number of occasions - trailing zeros are required.
 }
   \item{model}{
 a list of formulae symbolically defining a linear predictor for p in terms of covariates.
@@ -51,14 +45,14 @@ Model M0 assumes all animals have the same capture probability.
 
 Model Mh2 and the jackknife estimator allow for heterogeneity in capture probability.
 
-The likelihood maximization routine produces an estimate and standard error for beta = log(\emph{f0}), where \emph{f0} is the number of animals never captured. If ciType == "normal", a confidence interval for beta is calculated as beta +/- crit * SE.beta, where crit is the appropriate multiplier for the confidence interval required, 1.96 for a 95\% CI. This confidence interval is then back-transformed to the real scale and added to the number of animals captured (Ncap) to give estimates of N.
+The likelihood maximization routine produces an estimate and standard error for beta = log(\emph{f0}), where \emph{f0} is the number of animals never captured. If ciType == "normal", a confidence interval for beta is calculated as beta +/- crit * SE.beta, where crit is the appropriate multiplier for the confidence interval required, 1.96 for a 95\% CI. This confidence interval is then back-transformed to the real scale and added to the number of animals captured (M[t+1]) to give estimates of N.
 
-If ciType == "MARK", the method used by MARK to calculate confidence intervals used (see MARK help page for Closed Capture Models and Burnham et al (1987, p212). 
+If ciType == "MARK", the method used by MARK to calculate confidence intervals is used (see MARK help page for Closed Capture Models and Burnham et al (1987, p212). 
 The beta values are back-transformed with f0.hat = exp(beta) and SE.f0 = SE.beta * f0.hat, and hence CV = SE.f0 / f0.hat. The confidence limits are then
 
-Lower = f0.hat / C + Ncap
+Lower = f0.hat / C + M[t=1]
 
-Upper = f0.hat * C + Ncap
+Upper = f0.hat * C + M[t=1]
 
 where C = exp(crit * sqrt(log(1 + CV^2))).
 
@@ -96,7 +90,7 @@ Rexstad, E; K Burnham 1992. \emph{User's guide for interactive program CAPTURE}.
 
 Data sets in the examples are from:
 
-Edwards, W.R. and L.L. Eberhardt 1967. Estimating cottontail abundance from live trapping data. \emph{Journal of Wildlife Management} 31:87-96. 
+White et al, op. cit.
 
 Karanth, Nichols, Kumar, Link, Hines (2004) Tigers and their prey: Predicting carnivore densities from prey abundance. PNAS 101:4854-4858
 
@@ -113,19 +107,11 @@ closedCapM0(freq1, ci=0.8)
 closedCapMh2(freq1)
 closedCapMhJK(freq1)
 
-# Rabbit data from Edwards and Eberhart (1967)
-freq2 <- c(43, 16, 8, 6, 0, 2, 1) ; t2 <- 18 
-closedCapM0(freq2, t2)
-closedCapMh2(freq2, t2)
-closedCapMhJK(freq2, t2)
-
 # Kanha tiger data from Karanth et al (2004)
 data(KanhaTigers)
-freq3 <- table(rowSums(KanhaTigers))
-t3 <- ncol(KanhaTigers)
-closedCapM0(freq3, t3)
-closedCapMh2(freq3, t3)
-closedCapMhJK(freq3, t3)
+closedCapM0(KanhaTigers)
+closedCapMh2(KanhaTigers)
+closedCapMhJK(KanhaTigers)
 closedCapMt(KanhaTigers)
 # Generate some mythical covariates:
 covars <- data.frame(Temp = runif(ncol(KanhaTigers), 15, 25),

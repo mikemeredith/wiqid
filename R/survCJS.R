@@ -34,7 +34,8 @@ survCJS <- function(DH, model=list(phi~1, p~1), data=NULL, freq=1, ci = 0.95) {
 
   # Sanity checks:  for DH??
   ni <- ncol(DH) - 1  # number of survival intervals and REcapture occasions
-  stopifnot(is.null(data) || nrow(data) == ni)
+  if(!is.null(data) && nrow(data) != ni)
+    stop("The 'data' argument is not a valid data frame.")
   
   if(ci > 1 | ci < 0.5)
     stop("ci must be between 0.5 and 1")

@@ -11,14 +11,14 @@ fixNames <- function(x)
 getMARKci <- function(beta, SE.beta, ci) {
   f0.hat <- exp(beta)
   crit <- qnorm((1 - ci[1]) / 2, lower.tail=FALSE)
-  C <- exp(crit * sqrt(log(1 + SE.beta^2))) # See the Burnham et al reference!
+  C <- exp(crit * sqrt(log(1 + SE.beta^2))) # See the Burnham et al reference, p212!
   return(c(f0.hat, f0.hat/C, f0.hat*C))
 }
 
 # Creates a table from output of AIC or AICc
 # Exported
 
-AICtable <- function(x) {
+AICtable <- function(x, digits=3) {
   if(is.vector(x)) {
     name <- deparse(substitute(x))
     IC <- x
@@ -32,7 +32,7 @@ AICtable <- function(x) {
   Delta <- IC - min(IC, na.rm=TRUE)
   ModelLik <- exp( - Delta / 2)
   ModelWt <- ModelLik / sum(ModelLik, na.rm=TRUE)
-  out <- cbind(x, Delta, ModelLik, ModelWt)
+  out <- round(cbind(x, Delta, ModelLik, ModelWt), digits)
   if(!is.null(rownames(out))) { # only sort if rows are named
     ord <- order(IC)
     out <- out[ord, ]

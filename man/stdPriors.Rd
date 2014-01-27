@@ -38,7 +38,7 @@ We use independent Uniform(0, 1) priors for proababilities.
   
 Gelman, A. (2008) Scaling regression inputs by dividing by two standard deviations. \emph{Statistics in Medicine}, 27, 2865-2873
 
-Gelman, Jakulin, Pittau and Su (2008) A weakly informative default prior distribution for logistic and other regression models. \emph{Annals of Applid Statistics} 2, 1360-1383.
+Gelman, Jakulin, Pittau and Su (2008) A weakly informative default prior distribution for logistic and other regression models. \emph{Annals of Applied Statistics} 2, 1360-1383.
 
 }
 

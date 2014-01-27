@@ -7,11 +7,14 @@ Make a table for AIC or other criterion
 Takes the output from a call to AIC or AICc returns a data frame with model likelihoods and model weights.
 }
 \usage{
-AICtable(x)
+AICtable(x, digits=3)
 }
 \arguments{
   \item{x}{
 A data frame with the second column being AIC-type values, as returned by \code{AIC} or \code{AICc}.
+}
+  \item{digits}{
+integer indicating the number of decimal places to retain.
 }
 }
 \value{
@@ -31,12 +34,10 @@ Mike Meredith
 
 \examples{
 data(KanhaTigers)
-freq3 <- table(rowSums(KanhaTigers))
-t3 <- ncol(KanhaTigers)
 mods <- NULL
-mods$M0 <- closedCapM0(freq3, t3)
-mods$Mh2 <- closedCapMh2(freq3, t3)
-mods$MhJK <- closedCapMhJK(freq3, t3)
+mods$M0 <- closedCapM0(KanhaTigers)
+mods$Mh2 <- closedCapMh2(KanhaTigers)
+mods$MhJK <- closedCapMhJK(KanhaTigers)
 mods$Mt <- closedCapMt(KanhaTigers)
 AICc <- sapply(mods, AICc)
 AICtable(AICc)

@@ -40,7 +40,7 @@ number of steps to discard as burn-in at the beginning of the chain.
 
 }
 \value{
-Returns an object of class \code{Boccupancy}, which is a data frame with a column for each parameter in the model.
+Returns an object of class \code{Bwiqid}, which is a data frame with a column for each parameter in the model.
 
 
 There will eventually be \code{print} and \code{plot} methods for class \code{Boccupancy}.

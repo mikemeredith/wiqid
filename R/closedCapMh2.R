@@ -1,9 +1,18 @@
 closedCapMh2 <-
-function(freq, n.occ = length(freq), ci = 0.95, ciType=c("normal", "MARK")) {
-  # freq is a vector of capture frequencies.
-  freq <- c(freq, rep(0, n.occ-length(freq)))
-  # n.occ is the total number of capture occasions
+function(CH, ci = 0.95, ciType=c("normal", "MARK")) {
+  # CH is a 1/0 capture history matrix, animals x occasions, OR
+  #  a vector of capture frequencies of length equal to the number
+  #  of occasions - trailing zeros are required.
   # ci is the required confidence interval
+  
+  if (is.matrix(CH) || is.data.frame(CH)) {
+    n.occ <- ncol(CH)
+    freq <- tabulate(rowSums(CH), nbins=n.occ)
+  } else {
+    freq <- round(CH)
+    n.occ <- length(freq)
+  }
+
   if(ci > 1 | ci < 0.5)
     stop("ci must be between 0.5 and 1")
   alf <- (1 - ci[1]) / 2

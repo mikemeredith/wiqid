@@ -139,6 +139,7 @@ All of these functions produce distance measures (not similarity) on a scale of 
 \section{DATA SETS}{
 
   \tabular{ll}{
+  \code{\link{dippers}} \tab Capture-recapture data for European dippers \cr
   \code{\link{distTestData}} \tab artificial data set for distance measures \cr
   \code{\link{KanhaTigers}} \tab camera-trap data for tigers \cr
   \code{\link{KillarneyBirds}} \tab abundance of birds in Irish woodlands \cr
@@ -156,7 +157,8 @@ All of these functions produce distance measures (not similarity) on a scale of 
   \code{\link{AICtable}} \tab tabulate AIC for several models \cr
   \code{\link{allCombinations}} \tab model formulae for combinations of covariates \cr
   \code{\link{hdi}} \tab calculate Highest Density Intervals of a distribution \cr
-  \code{\link{plotPost}} \tab graphic display of a posterior distribution }
+  \code{\link{plotPost}} \tab graphic display of a posterior distribution \cr
+  \code{\link{postPriorOverlap}} \tab calculation and display of posterior/prior overlap }
 }
 
 \author{

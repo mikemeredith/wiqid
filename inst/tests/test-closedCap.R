@@ -8,9 +8,9 @@ context("Closed captures/frequency")
 
 test_that("closedCapM0 gives right answers",  {
   # Rabbit data from Edwards and Eberhart (1967)
-  freq2 <- c(43, 16, 8, 6, 0, 2, 1) ; t2 <- 18 
-  res <- closedCapM0(freq2, t2)
-  resM <- closedCapM0(freq2, t2, ciType='MARK')
+  freq2 <- c(43, 16, 8, 6, 0, 2, 1, rep(0, 11))
+  res <- closedCapM0(freq2)
+  resM <- closedCapM0(freq2, ciType='MARK')
   expect_that(class(res), equals(c("wiqid", "list"))) 
   expect_that(names(res), equals(c("call", "beta", "beta.vcv", "real", "logLik"))) 
   expect_that(colnames(res$real), equals(c("est", "lowCI", "uppCI")))
@@ -29,7 +29,7 @@ test_that("closedCapM0 gives right answers",  {
       # MARK gives 379.59414.
   expect_that(round(AIC(resM), 4),
       equals(round(AIC(res), 4)))
-  res <- closedCapM0(freq2, t2, ci=0.85)
+  res <- closedCapM0(freq2, ci=0.85)
   expect_that(round(as.vector(res$real), 4), 
       is_equivalent_to(c(96.2589, 0.0820, 88.4286, 0.0701, 109.0225, 0.0956)))
 
@@ -39,17 +39,17 @@ test_that("closedCapM0 gives right answers",  {
       is_equivalent_to(rep(NA_real_, 6)))
   expect_that(AIC(res), equals(NA_real_))
   # Lots of captures, no recaptures
-  res <- closedCapM0(30, 18)
+  res <- closedCapM0(c(30, rep(0, 17)))
   expect_that(as.vector(res$real), 
       is_equivalent_to(rep(NA_real_, 6)))
   expect_that(AIC(res), equals(NA_real_))
   # Just 1 animal recaptured
-  res <- closedCapM0(c(0,1), 18)
+  res <- closedCapM0(c(0,1, rep(0, 16)))
   expect_that(round(as.vector(res$real),4), 
       is_equivalent_to(c(1, 0.1111, rep(NA_real_, 4))))
   expect_that(AIC(res), equals(NA_real_))
   # Just 2 animals recaptured
-  res <- closedCapM0(c(0,2), 18)
+  res <- closedCapM0(c(0,2, rep(0, 16)))
   expect_that(signif(as.vector(res$real)[-5], 5), # 5th value is nonsense
       is_equivalent_to(c(2.0000e+00, 1.1111e-01,  2.0000e+00, 4.2336e-02,
           2.6114e-01)))
@@ -59,9 +59,9 @@ test_that("closedCapM0 gives right answers",  {
 
 test_that("closedCapMh2 gives right answers",  {
   # Rabbit data from Edwards and Eberhart (1967)
-  freq2 <- c(43, 16, 8, 6, 0, 2, 1) ; t2 <- 18 
-  res <- closedCapMh2(freq2, t2)
-  resM <- closedCapMh2(freq2, t2, ciType="MARK")
+  freq2 <- c(43, 16, 8, 6, 0, 2, 1, rep(0, 11))
+  res <- closedCapMh2(freq2)
+  resM <- closedCapMh2(freq2, ciType="MARK")
   expect_that(class(res), equals(c("wiqid", "list"))) 
   expect_that(names(res), equals(c("call", "beta",  "beta.vcv", "real", "logLik"))) 
   expect_that(colnames(res$real), equals(c("est", "lowCI", "uppCI")))
@@ -81,7 +81,7 @@ test_that("closedCapMh2 gives right answers",  {
     # Same as MARK
   expect_that(AIC(resM), equals(AIC(res)))
   # confidence interval != 0.95
-  res <- closedCapMh2(freq2, t2, 0.85)
+  res <- closedCapMh2(freq2, 0.85)
   expect_that(signif(as.vector(res$real), 4),
       is_equivalent_to(c(135.5,   0.1548,  0.1795,   0.03602, 100.6,   0.07179,   0.1197,
    0.01632, 220.0,  0.3024,   0.2604,   0.07765)))
@@ -91,17 +91,18 @@ test_that("closedCapMh2 gives right answers",  {
       is_equivalent_to(rep(NA_real_, 12)))
   expect_that(AIC(res), equals(NA_real_))
   # Lots of captures, no recaptures
-  res <- closedCapMh2(30, 18)
+  res <- closedCapMh2(c(30, rep(0, 17)))
   expect_that(as.vector(res$real), 
       is_equivalent_to(rep(NA_real_, 12)))
   expect_that(AIC(res), equals(NA_real_))
   # Just 1 animal recaptured
-  res <- closedCapMh2(c(0,1), 18)
+  res <- closedCapMh2(c(0,1, rep(0, 16)))
   expect_that(as.vector(res$real), 
       is_equivalent_to(rep(NA_real_, 12)))
   expect_that(AIC(res), equals(NA_real_))
   # Kanha tiger data
-  res <- closedCapMh2(c(10,6,6,2,2), 10)
+  data(KanhaTigers)
+  res <- closedCapMh2(KanhaTigers)
   expect_that(signif(as.vector(res$real), 4),
       is_equivalent_to(c(3.152e+01, 4.920e-01, 2.644e-01, 1.061e-01, 2.629e+01,
         1.477e-02, 1.130e-01, 5.821e-03, 1.294e+02, 9.843e-01, 5.036e-01, 7.066e-01)))
@@ -112,8 +113,8 @@ test_that("closedCapMh2 gives right answers",  {
 
 test_that("closedCapMhJK gives right answers",  {
   # Rabbit data from Edwards and Eberhart (1967)
-  freq2 <- c(43, 16, 8, 6, 0, 2, 1) ; t2 <- 18 
-  res <- closedCapMhJK(freq2, t2)
+  freq2 <- c(43, 16, 8, 6, 0, 2, 1, rep(0, 11))
+  res <- closedCapMhJK(freq2)
   expect_that(class(res), equals(c("wiqid", "list"))) 
   expect_that(names(res), equals(c("call", "real", "logLik"))) 
   expect_that(colnames(res$real), equals(c("est", "lowCI", "uppCI")))
@@ -122,7 +123,7 @@ test_that("closedCapMhJK gives right answers",  {
   expect_that(round(as.vector(res$real), 4), 
       is_equivalent_to(c(143.8743, 0.0548, 112.9113, 0.0393, 200.8106, 0.0699)))
       # These are almost the same as the rounded values returned by CAPTURE.
-  res <- closedCapMhJK(freq2, t2, 0.85)
+  res <- closedCapMhJK(freq2, 0.85)
   expect_that(round(as.vector(res$real), 4), 
       is_equivalent_to(c(143.8743, 0.0548, 119.3915, 0.0433, 182.1710, 0.0661)))
 
@@ -131,15 +132,15 @@ test_that("closedCapMhJK gives right answers",  {
   expect_that(as.vector(res$real), 
       is_equivalent_to(rep(NA_real_, 6)))
   # Lots of captures, no recaptures
-  res <- closedCapMhJK(30, 18)
+  res <- closedCapMhJK(c(30, rep(0, 17)))
   expect_that(as.vector(res$real), 
       is_equivalent_to(rep(NA_real_, 6)))
   # Just 1 animal recaptured
-  res <- closedCapMhJK(c(0,1), 18)
+  res <- closedCapMhJK(c(0,1, rep(0, 16)))
   expect_that(round(as.vector(res$real), 4),
       is_equivalent_to(c(1.0000, 0.1111, 1.0000, 0.1111, 1.0000, 0.1111)))
   # Kanha tiger data
-  res <- closedCapMhJK(c(10,6,6,2,2), 10)
+  res <- closedCapMhJK(KanhaTigers)
   expect_that(round(as.vector(res$real), 4), 
       is_equivalent_to(c(33.3188, 0.1741, 27.8792, 0.1064, 54.5044, 0.2080)))
 }  )

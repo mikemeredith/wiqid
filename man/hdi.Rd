@@ -5,6 +5,9 @@
 \alias{hdi.matrix}
 \alias{hdi.data.frame}
 \alias{hdi.mcmc.list}
+\alias{hdi.bugs}
+\alias{hdi.rjags}
+\alias{hdi.runjags}
 
 \title{
 Highest Density Interval
@@ -24,6 +27,12 @@ hdi(object, credMass = 0.95, ...)
 \method{hdi}{data.frame}(object, credMass = 0.95, ...)
 
 \method{hdi}{mcmc.list}(object, credMass = 0.95, ...)
+
+\method{hdi}{bugs}(object, credMass = 0.95, ...)
+
+\method{hdi}{rjags}(object, credMass = 0.95, ...)
+
+\method{hdi}{runjags}(object, credMass = 0.95, ...)
 
 }
 \arguments{

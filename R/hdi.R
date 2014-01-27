@@ -38,11 +38,14 @@ hdi.data.frame <- function(object, credMass=0.95, ...)
 hdi.mcmc.list <- function(object, credMass=0.95, ...) 
   hdi.matrix(as.matrix(object), credMass=credMass, ...)
 
-# hdi.bugs <- function(object, credMass=0.95, ...) 
-  # hdi.matrix(object$sims.matrix, credMass=credMass, ...)
+hdi.bugs <- function(object, credMass=0.95, ...) 
+  hdi.matrix(object$sims.matrix, credMass=credMass, ...)
 
-# hdi.rjags <- function(object, credMass=0.95, ...) 
-  # hdi.matrix(object$BUGSoutput$sims.matrix, credMass=credMass, ...)
+hdi.rjags <- function(object, credMass=0.95, ...) 
+  hdi.matrix(object$BUGSoutput$sims.matrix, credMass=credMass, ...)
+  
+hdi.runjags <- function(object, credMass=0.95, ...) 
+  hdi.mcmc.list(as.mcmc.list(object), credMass=credMass, ...)
 
 hdi.function <- function(object, credMass=0.95, tol, ...)  {
   if(is.na(credMass) || length(credMass) != 1 || credMass <= 0 || credMass >= 1)

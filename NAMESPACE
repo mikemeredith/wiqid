@@ -21,7 +21,7 @@ export(
   distChord, distJaccard, distMatching, distMorisitaHorn, distOchiai, distPreston,
   distRogersTanimoto, distSimRatio, distSorensen, distWhittaker,
   AICc, allCombinations, AICtable,
-  hdi, plotPost
+  hdi, plotPost, postPriorOverlap
 )
 
 S3method("print", "wiqid")
@@ -37,4 +37,7 @@ S3method("hdi", "matrix")
 S3method("hdi", "data.frame")
 S3method("hdi", "mcmc.list")
 S3method("hdi", "function")
+S3method("hdi", "bugs")
+S3method("hdi", "rjags")
+S3method("hdi", "runjags")
 
