@@ -48,7 +48,8 @@ survCJS <- function(DH, model=list(phi~1, p~1), data=NULL, freq=1, ci = 0.95) {
   # Standardise the model:
   model <- stdModel(model, defaultModel=list(phi=~1, p=~1))
 
-  data$.time <- as.factor(1:ni)  # add .Time trend
+  data$.time <- as.factor(1:ni) 
+  data$.Time <- scale(1:ni) / 2
   ddf <- as.data.frame(data)  # Should standardise
   phiMat <- model.matrix(model$phi, ddf)
   phiK <- ncol(phiMat)
@@ -67,6 +68,7 @@ survCJS <- function(DH, model=list(phi~1, p~1), data=NULL, freq=1, ci = 0.95) {
     paste("phi", 1:ni, sep=""),
     paste("p", 1:ni, sep=""))
   logLik <- NA_real_
+  varcov <- NULL
 
   nll <- function(param){
     phiBeta <- param[1:phiK]
@@ -83,12 +85,15 @@ survCJS <- function(DH, model=list(phi~1, p~1), data=NULL, freq=1, ci = 0.95) {
   # Run mle estimation with nlm:
   param <- rep(0, K)
   res <- nlm(nll, param, hessian=TRUE)
-  if(res$code < 3)  {  # exit code 1 or 2 is ok.
+  if (res$code > 3)  {
+    cat("Maximization failed; 'nlm' exit code", res$code, "\n")
+  } else {
     beta.mat[,1] <- res$estimate
     lp.mat[, 1] <- c(phiMat %*% beta.mat[1:phiK, 1],
                      pMat %*% beta.mat[(phiK+1):K, 1])
-    varcov <- try(solve(res$hessian), silent=TRUE)
-    if (!inherits(varcov, "try-error") && all(diag(varcov) > 0)) {
+    varcov0 <- try(solve(res$hessian), silent=TRUE)
+    if (!inherits(varcov0, "try-error") && all(diag(varcov0) > 0)) {
+      varcov <- varcov0
       SE <- sqrt(diag(varcov))
       beta.mat[, 2] <- SE
       beta.mat[, 3:4] <- sweep(outer(SE, crit), 1, res$estimate, "+")

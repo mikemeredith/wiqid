@@ -32,9 +32,9 @@ survCJSaj <- function(DHj, DHa=NULL, model=list(phiJ~1, phiA~1, p~1), data=NULL,
   # phi(t) p(t) model or models with time covariates for Cormack-Joly-Seber
   # estimation of apparent survival.
   # ** DHj is detection history matrix/data frame, animals x occasions, for animals marked as juveniles; DHa (optional) has detection histories for animals marked as adults.
-  # ** freqj and freq are vectors of frequencies for each detection history
-  # ** model is a list of 2-sided formulae for psi and p; can also be a single
-  #   2-sided formula, eg, model = psi ~ habitat.
+  # ** freqj and freqa are vectors of frequencies for each detection history
+  # ** model is a list of 2-sided formulae for psiJ, psiA and p; can also be a single
+  #   2-sided formula, eg, model = psiJ ~ habitat.
   # ** data a data frame with the covariates.
   # ** ci is required confidence interval.
 
@@ -43,7 +43,11 @@ survCJSaj <- function(DHj, DHa=NULL, model=list(phiJ~1, phiA~1, p~1), data=NULL,
   nocc <- ncol(DHj)
   ni <- nocc - 1  # number of survival intervals and REcapture occasions
   stopifnot(is.null(DHa) || ncol(DHa) == nocc)
-  
+  if (length(freqj == 1))
+    freqj <- rep(freqj, nrow(DHj))
+  # if (length(freqa == 1))
+    # freqa <- rep(freqa, nrow(DHa))  # Not needed
+    
   if(ci > 1 | ci < 0.5)
     stop("ci must be between 0.5 and 1")
   alf <- (1 - ci[1]) / 2
@@ -123,7 +127,9 @@ survCJSaj <- function(DHj, DHa=NULL, model=list(phiJ~1, phiA~1, p~1), data=NULL,
   # Run mle estimation with nlm:
   param <- rep(0, K)
   res <- nlm(nll, param, hessian=TRUE)
-  if(res$code < 3)  {  # exit code 1 or 2 is ok.
+  if (res$code > 3)  {
+    cat("Maximization failed; 'nlm' exit code", res$code, "\n")
+  } else {
     beta.mat[,1] <- res$estimate
     lp.mat[, 1] <- c(phiAMat %*% beta.mat[parID==1, 1],
                      phiJMat %*% beta.mat[parID==2, 1],

@@ -3,7 +3,7 @@
 # Bayesian version of CJS models
 
 BsurvCJS <- function(DH, model=list(phi~1, p~1), data=NULL, freq=1,
-    numSavedSteps=1e4, thinSteps=1, burnInSteps = 1e3) {
+    numSavedSteps=1e4, thinSteps=1, burnInSteps = 1e3, priorOnly=FALSE) {
   # phi(t) p(t) model or models with time covariates for Cormack-Joly-Seber
   # estimation of apparent survival.
   # ** DH is detection history matrix/data frame, animals x occasions.
@@ -14,6 +14,9 @@ BsurvCJS <- function(DH, model=list(phi~1, p~1), data=NULL, freq=1,
   # ** ci is required confidence interval.
 
   # Sanity checks:
+  if (priorOnly)
+    warning("The prior distributions will be produced, not the posterior distributions!")
+    
   ni <- ncol(DH) - 1  # number of survival intervals and REcapture occasions
   stopifnot(is.null(data) || nrow(data) == ni)
 
@@ -96,8 +99,11 @@ BsurvCJS <- function(DH, model=list(phi~1, p~1), data=NULL, freq=1,
   writeLines(modeltext, con=modelFile)
     
    # organise the data:
-  jagsData <- list(marr=mArray, nocc = ncol(mArray), rel=rowSums(mArray), 
+  jagsData <- list(nocc = ncol(mArray), rel=rowSums(mArray), 
                       pK = pK, phiK = phiK, pMat=pMat, phiMat=phiMat)
+  if(!priorOnly)
+      jagsData$marr <- mArray
+      
   inits <- function() {list(phiBeta = start[1:phiK], pBeta = start[(phiK+1):K])}
   wanted <- c("phi", "p")
   # Create the model and run:

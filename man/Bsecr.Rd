@@ -10,7 +10,7 @@ Functions to estimate density from mark-recapture data using MCMC methods and JA
 }
 \usage{
 Bsecr0(capthist, buffer = 100, start = NULL, nAug = NA,
-                 nChains = 3, numSavedSteps=1e4, thinSteps=1, burnInSteps = 0) 
+                 nChains = 3, numSavedSteps=1e4, thinSteps=1, burnInSteps = 0, priorOnly=FALSE) 
 }
 \arguments{
   \item{capthist}{
@@ -36,6 +36,9 @@ thinning rate. If set to n > 1, one value in n steps of the MCMC chain is return
   \item{burnInSteps}{
 number of steps to discard as burn-in at the beginning of the chain.
 }
+  \item{priorOnly}{
+if TRUE, the function produces random draws from the appropriate \emph{prior} distributions, with a warning.
+}
 }
 \details{
 \code{Bsecr0} implements an intercept-only model (D ~ 1, g0 ~ 1, sigma ~ 1). 
@@ -48,9 +51,9 @@ There are print and plot methods for \code{Bwiqid}.
 }
 
 \references{
-Efford ...
+Borchers & Efford (2008) Spatially explicit maximum likelihood methods for capture-recapture studies \emph{Biometrics} 64, 377-385
 
-Royle et al ...
+Royle & Dorazio (2008) \emph{Hierarchical modeling and inference in ecology}. Academic Press
 }
 
 \author{
@@ -65,7 +68,7 @@ The function \code{secr.fit} in package \code{secr}.
 require(secr)
 data(stoatDNA)
 tmp <- Bsecr0(stoatCH, buffer=1000)
-colMeans(tmp)
+plot(tmp)
 
 }
 }

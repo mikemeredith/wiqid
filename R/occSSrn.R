@@ -1,16 +1,16 @@
 occSSrn <-
-function(y, n, ci=0.95)  {
-  # y is a vector with the number of detections at each site.
-  # n is a vector with the number of occasions at each site.
+function(DH, ci=0.95)  {
+  # Royle-Nichols occupancy model, with abundance-induced heterogeneity in detection probability.
+  # ** DH is detection data in a 1/0/NA matrix or data frame, sites in rows, 
+  #    detection occasions in columns 
   # ci is the required confidence interval.
-  y <- round(y)
-  n <- round(n)
-  if(length(n) == 1)
-    n <- rep(n, length(y))
-  if(length(y) != length(n))
-    stop("y and n must have the same length")
-  if(any(y > n))
-    stop("y cannot be greater than n")
+  
+  if (is.matrix(DH) || is.data.frame(DH)) {
+    y <- rowSums(DH, na.rm=TRUE)
+    n <- rowSums(!is.na(DH))
+  } else {
+    stop("DH should be a detection history matrix (or data frame)")
+  }
   if(ci > 1 | ci < 0.5)
     stop("ci must be between 0.5 and 1")
   alf <- (1 - ci[1]) / 2

@@ -2,13 +2,13 @@
 # Bayes version of single-season occupancy model with no covariates
 
 BoccSS0 <-
-function(y, n, numSavedSteps=1e4, thinSteps=1, burnInSteps = 1e3) {
+function(y, n, numSavedSteps=1e4, thinSteps=1, burnInSteps = 1e3, priorOnly=FALSE) {
   # n is a vector with the number of occasions at each site.
   # y is a vector with the number of detections at each site.
   # ci is the required confidence interval.
   
-  # if(!require(rjags))
-    # stop("The rjags package was not found")
+  if (priorOnly)
+    warning("The prior distributions will be produced, not the posterior distributions!")
 
   # Call occSS0 to do sanity checks and get starting values
   start <- occSS0(y=y, n=n)$real[, 1]
@@ -33,7 +33,9 @@ function(y, n, numSavedSteps=1e4, thinSteps=1, burnInSteps = 1e3) {
   writeLines(model, con=modelFile)
 
   # Prepare the bits:
-  jagsData <- list(y=y, n=n, R=length(y))
+  jagsData <- list(n=n, R=length(y))
+  if(!priorOnly)
+    jagsData$y <- y
   inits <- list(psi=start[1], p=start[2], z=(y > 0)*1)
   wanted <- c("psi", "p")
   

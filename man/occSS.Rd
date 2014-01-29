@@ -10,33 +10,28 @@
 Single-season occupancy estimation
 }
 \description{
-Functions to estimate occupancy from detection/non-detection data for a single season. 
+Functions to estimate occupancy from detection/non-detection data for a single season. \code{occSScov} is the general-purpose function, \code{occSStime} provides plots of detection probability against time, \code{occSSautocorA} allows for autocorrelation among survey occasions, and \code{occSSrn} implements the Royle-Nichols model for abundance-induced heterogeneity in detection probability. \code{occSS0} and \code{occSScovSite} are faster functions for simpler models with summarized data.
 }
 \usage{
-occSS0(y, n, ci=0.95)
-
-occSSrn(y, n, ci=0.95)
+occSScov(DH, model=list(psi~1, p~1), data = NULL, ci=0.95)
 
 occSStime(DH, model=p~1, data=NULL, ci=0.95, plot=TRUE)
 
 occSSautocorA(DH, ci=0.95)
 
+occSSrn(DH, ci=0.95)
+
+occSS0(y, n, ci=0.95)
+
 occSScovSite(y, n, model=list(psi~1, p~1), data = NULL, ci=0.95)
 
-occSScov(DH, model=list(psi~1, p~1), data = NULL, ci=0.95)
 }
 \arguments{
-  \item{y}{
-a vector with the number of detections at each site.
-}
-  \item{n}{
-a scalar or vector with the number of visits (survey occasions) at each site.
+ \item{DH}{
+a 1/0/NA matrix (or data frame) of detection histories, sites x occasions.
 }
   \item{ci}{
 the confidence interval to use.
-}
- \item{DH}{
-a 1/0/NA matrix (or data frame) of detection histories, sites x occasions
 }
   \item{model}{
 a list of formulae symbolically defining a linear predictor for each parameter in terms of covariates.
@@ -47,17 +42,26 @@ a data frame containing the variables in the model. For \code{occSStime}, a data
   \item{plot}{
 if TRUE (default), draws a plot of probability of detection vs time.
 }
+  \item{y}{
+a vector with the number of detections at each site.
+}
+  \item{n}{
+a scalar or vector with the number of visits (survey occasions) at each site.
+}
 }
 \details{
-\code{occSS0} implements a simple model with one parameter for probability of occupancy and one for probability of detection, ie. a \code{psi(.) p(.)} model.
 
-\code{occSSrn} implements the Royle-Nichols method for estimation of site occupancy allowing for abundance-induced heterogeneity in detection probability.
+\code{occSScov} allows for psi or p to be modelled as a logistic function of site covariates or survey covariates. It includes a built in \code{.time} covariate which can be used for modelling p with time as a fixed effect, and \code{.Time} for a linear or quadratic trend.
 
 \code{occSStime} allows for a time-varying covariate that is the same across all sites, eg, moon-phase. A categorical time variable \code{.time} and a time trend \code{.Time} are built-in. A plot of detection probability vs time is produced if \code{plot=TRUE}.
 
+\code{occSSrn} implements the Royle-Nichols method (Royle \& Nichols 2003) for estimation of site occupancy allowing for abundance-induced heterogeneity in detection probability. Probability of detection is modelled as a function of the number of animals available for detection, \emph{n}, and the probability of detection of an individual animal, \emph{r}. Probability of occupancy is derived as the probability that \emph{n} > 0.
+
 \code{occSSautocorA} allows for autocorrelation among surveys: the probability of detection on a survey depends on detection/nondetection on the previous survey (Hines et al 2010, Appendix A).
 
-\code{occSScovSite} allows for psi or p to be modelled as a logistic function of site covariates, while \code{occSScov} extends this to allow for survey covariates to be included in the model for p. \code{occSScov} has a built in \code{.time} covariate which can be used for modelling p with time as a fixed effect, and \code{.Time} for a linear or quadratic trend.
+\code{occSS0} implements a simple model with one parameter for probability of occupancy and one for probability of detection, ie. a \code{psi(.) p(.)} model.
+
+\code{occSScovSite} allows for site covariates but not for occasion or survey covariates.
 
 Numeric covariates in \code{data} are standardised to facilitate convergence. This applies to binary covariates coded as 1/0; if this is not what you want, code these as TRUE/FALSE or as factors. 
 
@@ -87,6 +91,7 @@ Hines, J. E. (2006). PRESENCE - Software to estimate patch occupancy and related
 
 Hines, J.E., Nichols, J.D., Royle, J.A., MacKenzie, D.I., Gopalaswamy, A.M., Kumar, N.S., Karanth, K.U. (2010) Tigers on trails: occupancy modeling for cluster sampling. \emph{Ecological Applications}, 20, 1456-1466.
 
+Royle, J. A., Nichols, J. D. (2003) Estimating abundance from repeated presence-absence data or point counts. \emph{Ecology} 84(3) 777-790.
 }
 
 \author{
@@ -98,11 +103,14 @@ See the examples for the \code{\link{weta}} data set.
 \examples{
 # The blue ridge salamanders data from MacKenzie et al (2006) p99:
 data(salamanders)
-y <- rowSums(salamanders)
-n <- rowSums(!is.na(salamanders))
-
-occSS0(y, n)
-occSSrn(y, n)
+occSSrn(salamanders)
 occSStime(salamanders, p ~ .time)  # time as a fixed effect
 occSStime(salamanders, p ~ .Time + I(.Time^2))  # a quadratic time effect
+
+# or use the fast functions with y, n format:
+y <- rowSums(salamanders)
+n <- rowSums(!is.na(salamanders))
+occSS0(y, n)
+occSScovSite(y, n)
+
 }

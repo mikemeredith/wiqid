@@ -15,7 +15,7 @@ survCJSaj(DHj, DHa=NULL, model=list(phiJ~1, phiA~1, p~1), data=NULL,
     freqj=1, freqa=1, ci = 0.95)
 
 BsurvCJS(DH, model=list(phi~1, p~1), data = NULL, freq=1,
-    numSavedSteps=1e4, thinSteps=1, burnInSteps = 1e3) 
+    numSavedSteps=1e4, thinSteps=1, burnInSteps = 1e3, priorOnly=FALSE) 
 }
 \arguments{
   \item{DH}{
@@ -47,6 +47,9 @@ thinning rate. If set to n > 1, one value in n steps of the MCMC chain is return
 }
   \item{burnInSteps}{
 number of steps to discard as burn-in at the beginning of the chain.
+}
+  \item{priorOnly}{
+if TRUE, the function produces random draws from the appropriate \emph{prior} distributions, with a warning.
 }
 }
 

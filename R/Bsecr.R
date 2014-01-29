@@ -2,9 +2,12 @@
 # Bayesian version of secr to work with stoats data
 
 Bsecr0 <- function(capthist, buffer = 100, start=NULL, nAug = NA,
-                    nChains=3, numSavedSteps=1e4, thinSteps=1, burnInSteps = 0) {
+                    nChains=3, numSavedSteps=1e4, thinSteps=1, burnInSteps = 0,
+                    priorOnly=FALSE) {
   stopifnot(inherits(capthist, "capthist"))
-  
+  if (priorOnly)
+    warning("The prior distributions will be produced, not the posterior distributions!")
+
   traps <- traps(capthist)
   J <- nrow(traps)
   xl <- min(traps$x) - buffer
@@ -77,7 +80,9 @@ Bsecr0 <- function(capthist, buffer = 100, start=NULL, nAug = NA,
 
    # organise the data:
   jagsData <- list(M = nAug, xl=xl, xu=xu, yl=yl, yu=yu, J=J, trapmat=traps, K=nOcc,
-                    y=yMat, A = A, maxSig2 = maxSig2)
+                    A = A, maxSig2 = maxSig2)
+  if (!priorOnly)
+    jagsData$y <- yMat
   inits <- function() {list(z=rep(1, nAug), 
                         SX=c(SX, runif(nAug-nInd, xl, xu)),
                         SY=c(SY, runif(nAug-nInd, yl, yu)),

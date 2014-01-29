@@ -3,7 +3,7 @@
 \alias{wiqid}
 \docType{package}
 \title{
-Estimation functions for wildlife parameters
+Estimation functions for wildlife population models
 }
 \description{
 Quick and dirty functions to estimate occupancy, survival, abundance, species richness and diversity, etc. for wildlife populations.

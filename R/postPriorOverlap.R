@@ -11,11 +11,11 @@ function( paramSampleVec, prior, ..., yaxt="n", ylab="",
 
   oldpar <- par(xpd=NA) ; on.exit(par(oldpar))
 
-  # get breaks.
-  if ( is.null(breaks) ) {
-    by <- as.numeric(diff(hdi(paramSampleVec))/18)
-    breaks0 <- seq(from=min(paramSampleVec), to=max(paramSampleVec), by=by)
-    breaks <- c(breaks0, breaks0[length(breaks0)] + by)
+  # get breaks: a sensible number over the hdi; cover the full range (and no more);
+  #   equal spacing.
+  if (is.null(breaks)) {
+    nbreaks <- ceiling(diff(range(paramSampleVec)) / as.numeric(diff(hdi(paramSampleVec))/18))
+    breaks <- seq(from=min(paramSampleVec), to=max(paramSampleVec), length.out=nbreaks)
   }
   # plot posterior histogram.
   histinfo <- hist(paramSampleVec, xlab=xlab, yaxt=yaxt, ylab=ylab,

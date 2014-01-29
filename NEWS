@@ -8,8 +8,16 @@ TODO
   
   * Do test files for new functions
   
-  * Add .Time covar (for time trend) to survCJS
+CHANGES IN 2014-01-28 v.0.0.363
+
+  * Changed occSSrn to take a detection history matrix as first argument.
   
+  * fixed bugs in postPriorOverlap, survCJSaj.
+  
+  * added priorOnly argument to Bayesian functions (useful for postPriorOverlap),
+  
+  * Added .Time covar (for time trend) to survCJS
+
 CHANGES IN 2014-01-26 v.0.0.362
 
   * Changed closedCap* functions so that all take a detection history matrix as first argument.
