@@ -141,6 +141,8 @@ occMSseason <- function(DH, occsPerSeason,
 
 Prh1A <- function(dhp, p, PHI0, PHIt, seasonID) {
   last <- dhp[1]
+  if (is.na(last))  # occurs if all observations are NA
+    return(1)
   dh <- dhp[-1]
   pvec <- p * dh + (1-p)*(1-dh)
   res <- PHI0

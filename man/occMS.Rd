@@ -2,12 +2,13 @@
 \alias{occMS0}
 \alias{occMSseason}
 \alias{occMScov}
+\alias{occMScovSite}
 
 \title{
 Multi-season occupancy estimation
 }
 \description{
-Functions to estimate occupancy from detection/non-detection data for multiple seasons. 
+Functions to estimate occupancy from detection/non-detection data for multiple seasons. \code{occMScov} is the general purpose function; it allows for site-, season- and survey-level covariates, but it is slow. \code{occMScovSite} excludes survey-level covariates, but is fast. \code{occMSseason} and \code{occMS0} are simpler and faster.
 }
 \usage{
 occMS0(DH, occsPerSeason, ci=0.95)
@@ -17,6 +18,10 @@ occMSseason(DH, occsPerSeason,
              data=NULL, ci=0.95)
 
 occMScov(DH, occsPerSeason,
+             model=list(psi1~1, gamma~1, epsilon~1, p~1),
+             data=NULL, ci=0.95)
+             
+occMScovSite(DH, occsPerSeason,
              model=list(psi1~1, gamma~1, epsilon~1, p~1),
              data=NULL, ci=0.95)
 }
@@ -31,9 +36,8 @@ the number of survey occasions per season; either a scalar if the number of surv
 a list of formulae symbolically defining a linear predictor for each parameter in terms of covariates.
 }
   \item{data}{
-a data frame containing the variables in the model: one row for each season or between-season period for \code{occMSseason} and one for each site for \code{occMScov}.
+a data frame containing the variables in the model: one row for each season or between-season period for \code{occMSseason} and one for each site for \code{occMScovSite}. Each survey covariate has one column for each occasion, and the column name must end with the occasion number (without leading zeros); eg, \code{Cov1, Cov2, ..., Cov15}.
 }
-
   \item{ci}{
 the confidence interval to use.
 }
@@ -43,8 +47,9 @@ the confidence interval to use.
 
 \code{occMSseason} allows for between-season differences in colonisation, local extinction, and probability of detection, either with covariates given in \code{data} or the in-built covariate \code{season}.
 
-\code{occMScove} allows for between-season differences in colonisation, local extinction, and probability of detection with the in-built covariate \code{season} and for beteen-site differences with covariates defined in \code{data}.
+\code{occMScovSite} allows for between-season differences in colonisation, local extinction, and probability of detection with the in-built covariate \code{season} and for between-site differences with covariates defined in \code{data}.
 
+\code{occMScov} allows for survey-level covariates in addition to the above, and separate covariates for between-season colonisation and local extinction.
 }
 \value{
 Returns an object of class \code{wiqid}, which is a list with the following elements:

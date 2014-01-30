@@ -37,7 +37,8 @@ The functions are listed by topic below.
   \bold{Multi-season occupancy}
   
   \tabular{ll}{
-  \code{\link{occMScov}} \tab general-purpose function; parameters depend on covariates \cr
+  \code{\link{occMScov}} \tab general-purpose function; parameters depend on covariates; slow \cr
+  \code{\link{occMScovSite}} \tab smaller range of covariate options \cr
   \code{\link{occMS0}} \tab a simple multi-season model with four parameters; faster \cr
   \code{\link{occMSseason}} \tab parameters vary by season; faster  } 
 }
@@ -141,6 +142,7 @@ All of these functions produce distance measures (not similarity) on a scale of 
   \tabular{ll}{
   \code{\link{dippers}} \tab Capture-recapture data for European dippers \cr
   \code{\link{distTestData}} \tab artificial data set for distance measures \cr
+  \code{\link{GrandSkinks}} \tab multi-season occupancy data \cr
   \code{\link{KanhaTigers}} \tab camera-trap data for tigers \cr
   \code{\link{KillarneyBirds}} \tab abundance of birds in Irish woodlands \cr
   \code{\link{salamanders}} \tab detection/non-detection data for salamanders \cr

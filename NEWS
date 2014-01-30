@@ -8,6 +8,10 @@ TODO
   
   * Do test files for new functions
   
+CHANGES IN 2014-01-30 v.0.0.364
+
+  * expanded occMScov to take survey covariates; that is slow, as it calculates a different probability of detection for each site x occasion. So retianed the old function under the name occMScovSite.
+
 CHANGES IN 2014-01-28 v.0.0.363
 
   * Changed occSSrn to take a detection history matrix as first argument.

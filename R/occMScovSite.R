@@ -1,13 +1,14 @@
 
-# Multiseason occupancy - version cov2
-# This version allows for 
-#  1. site covars for psi1
-#  2. site and site x interval covars (including a fixed interval effect) for gamma and epsilon
-#  3. site and site x survey occasion covars for probability of detection.
+# Multiseason occupancy
+# This version allows for site covars and season differences,
+#   but not (yet) seasonal covariates
+#   eg psi(hab) gamma(hab+season) ...
 
 # See MacKenzie et al (2006) "Occupancy..." p194ff
 
-occMScov <- function(DH, occsPerSeason,
+# function Prh1A is defined in the file occMSseason.R
+
+occMScovSite <- function(DH, occsPerSeason,
              model=list(psi1~1, gamma~1, epsilon~1, p~1),
              data=NULL, ci=0.95) {    
   # ** DH is detection data in a 1/0/NA matrix or data frame, sites in rows, 
@@ -19,6 +20,15 @@ occMScov <- function(DH, occsPerSeason,
     stop("ci must be between 0.5 and 1")
   alf <- (1 - ci[1]) / 2
   crit <- qnorm(c(alf, 1 - alf))
+
+  # Check for all-NA rows (eg, Grand Skinks data set!)
+  #  remove them (alternative would be to flag up with, say, last=0 below.
+  # allNA <- rowSums(!is.na(DH)) == 0
+  # if(any(allNA))  {
+    # DH <- DH[!allNA, ]
+    # if (!is.null(data))
+      # data <- data[!allNA, ]
+  # }
 
   # Deal with occsPerSeason
   nOcc <- ncol(DH)
@@ -37,14 +47,8 @@ occMScov <- function(DH, occsPerSeason,
     }
   }
   last <- as.vector(apply((!is.na(DH))*1, 1, getLast, grp=factor(seasonID)))
-  # DHplus <- as.matrix(cbind(last, DH))
+  DHplus <- as.matrix(cbind(last, DH))
 
-  # Extract info on surveys done, ie, 1 or 0 in the DH
-  survey.done <- !is.na(as.vector(DH))
-  DHvec <- as.vector(DH)[survey.done]
-  siteID <- row(DH)[survey.done]
-  survID <- col(DH)[survey.done]
-  
   # Standardise the model:
   model <- stdModel(model, defaultModel=list(psi1=~1, gamma=~1, epsilon=~1, p=~1))
 
@@ -55,39 +59,33 @@ occMScov <- function(DH, occsPerSeason,
     siteNames <- rownames(data)
   if (is.null(siteNames))
     siteNames <- 1:nSites 
-    
+
   if(!is.null(data)) {
     if(nrow(data) != nSites)
       stop("data must have a row for each site")
-    rownames(data) <- NULL  # rownames cause problems when the data frame is recast
+    rownames(data) <- NULL
+  } else {
+    data <- data.frame(.dummy = rep(NA, nSites))
   }
-  dataList <- stddata(data, c(nOcc, nseas - 1), 0.5)
-  # add built-in covars
-  interval <- rep(1:(nseas-1), each=nSites)
-  dataList$.interval <- as.factor(interval)
-  occasion <- rep(1:nOcc, each=nSites)
-  dataList$.occasion <- as.factor(occasion)
-  
   cat("Preparing design matrices...") ; flush.console()
-  psi1df <- selectCovars(model$psi1, dataList, nSites)
-  psi1Mat <- model.matrix(model$psi1, psi1df)
+  GEseason <- rep(1:(nseas-1), each=nSites)
+  ddfGE <- as.data.frame(cbind(data, season=as.factor(GEseason)))
+  Pseason <- rep(1:nseas, each=nSites)
+  ddfP <- as.data.frame(cbind(data, season=as.factor(Pseason)))
+
+  # Build model matrices  
+  psi1Mat <- model.matrix(model$psi1, as.data.frame(data))
   psi1K <- ncol(psi1Mat)
-  gamDf <- selectCovars(model$gamma, dataList, nSites*(nseas-1))
-  gamMat <- model.matrix(model$gamma, gamDf)
+  gamMat <- model.matrix(model$gamma, ddfGE)
   gamK <- ncol(gamMat)
-  epsDf <- selectCovars(model$epsilon, dataList, nSites*(nseas-1))
-  epsMat <- model.matrix(model$epsilon, epsDf)
+  epsMat <- model.matrix(model$epsilon, ddfGE)
   epsK <- ncol(epsMat)
-  pDfNA <- selectCovars(model$p, dataList, nSites*nOcc)
-  pDf <- pDfNA[survey.done, , drop=FALSE]
-  pMat <- model.matrix(model$p, pDf)  # model.matrix removes any NAs
-  if (nrow(pMat) != sum(survey.done))
-    stop("Missing survey covars not allowed when a survey was done.")
+  pMat <- model.matrix(model$p, ddfP)
   pK <- ncol(pMat)
   K <- psi1K + gamK + epsK + pK
   parID <- rep(1:4, c(psi1K, gamK, epsK, pK))
   
-  # objects to hold the output
+  
   beta.mat <- matrix(NA_real_, K, 4)
   colnames(beta.mat) <- c("est", "SE", "lowCI", "uppCI")
   rownames(beta.mat) <- c(
@@ -95,17 +93,16 @@ occMScov <- function(DH, occsPerSeason,
     paste("gam:", colnames(gamMat)),
     paste("eps:", colnames(epsMat)),
     paste("p:", colnames(pMat)))
-  lp.mat <- matrix(NA_real_, nSites*(nseas*2 - 1) + sum(survey.done), 3)
+  lp.mat <- matrix(NA_real_, nSites*(3*nseas-1), 3)
   colnames(lp.mat) <- c("est", "lowCI", "uppCI")
   rownames(lp.mat) <- c(
     paste0("psi:", siteNames),
-    paste0("gamma:", siteNames, ",", interval),
-    paste0("epsilon:", siteNames, ",", interval),
-    paste0("p:", siteNames[siteID], ",", survID))
+    paste0("gamma:", siteNames, ",", GEseason),
+    paste0("epsilon:", siteNames, ",", GEseason),
+    paste0("p:", siteNames, ",", Pseason))
   logLik <- NA_real_
   varcov <- NULL
   
-  # negative log likelihood function
   nll <- function(param){
     psi1Beta <- param[parID==1]
     gamBeta <- param[parID==2]
@@ -114,41 +111,26 @@ occMScov <- function(DH, occsPerSeason,
     psi1Prob <- plogis(psi1Mat %*% psi1Beta)
     gamProb <- matrix(plogis(gamMat %*% gamBeta), nrow=nSites)
     epsProb <- matrix(plogis(epsMat %*% epsBeta), nrow=nSites)
-    pProb <- plogis(pMat %*% pBeta)
-    Prh <- rep(1, nSites)
+    pProb <- matrix(plogis(pMat %*% pBeta), nrow=nSites)
+    Prh <- numeric(nSites)
     for(i in 1:nSites) {
-      if (is.na(last[i]))
-        next
-      res <- c(psi1Prob[i], 1-psi1Prob[i]) # aka PHIO
+      PHI0 <- c(psi1Prob[i], 1-psi1Prob[i])
       PHIt <- array(0, c(2, 2, nseas-1))
       PHIt[1, 1, ] <- 1 - epsProb[i, ]
       PHIt[1, 2, ] <- epsProb[i, ]
       PHIt[2, 1, ] <- gamProb[i, ]
       PHIt[2, 2, ] <- 1 - gamProb[i, ]
-      p <- pProb[siteID == i]
-      dh <- DH[i, survID[siteID == i]]
-      pvec <- p * dh + (1-p)*(1-dh)
-      whichSeas <- seasonID[survID[siteID == i]]
-      if(last[i] > 1)
-        for(t in 1:(last[i]-1)) {
-          if(any(whichSeas == t))  {
-            D <- diag(c(prod(pvec[whichSeas==t]), 1-max(dh[whichSeas==t])))
-            res <- res %*% D
-          }
-          res <- res %*% PHIt[, , t]
-        }
-      PT <- c(prod(pvec[whichSeas==last[i]]), 1-max(dh[whichSeas==last[i]]))
-      Prh[i] <- res %*% PT
+      p <- pProb[i, seasonID]
+      Prh[i] <- Prh1A(DHplus[i, ], p=p, PHI0=PHI0, PHIt=PHIt, seasonID)
     }
     return(min(-sum(log(Prh)), .Machine$double.xmax))
   }
+
   cat("done\n")
-  
   cat("Maximizing likelihood...") ; flush.console()
   start <- rep(0, K)
   res <- nlm(nll, start, hessian=TRUE)
   cat("done\n")
-  
   cat("Organizing output...") ; flush.console()
   if(res$code > 2)   # exit code 1 or 2 is ok.
     warning(paste("Convergence may not have been reached (code", res$code, ")"))
