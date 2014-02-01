@@ -48,6 +48,8 @@ stdform <- function (flist) {
 
 # New version:
 stdModel <- function (model1, defaultModel) {
+  if(is.null(model1))
+    return(defaultModel)
   if(inherits(model1, "formula"))
     model1 <- list(model1)
   stopifnot(is.list(model1))
@@ -116,7 +118,12 @@ stddata <- function(df, nocc=NULL, scaleBy=0.5)  {
   }
   ## Standardize numeric variables to mean = 0 and sd = scaleBy
   if (!is.null(scaleBy)) {
-    
+    doScale <- function(x) {
+      if (is.numeric(x))
+        x <- as.vector(scale(x) * scaleBy)
+      return(x)
+    }
+    dataList <- lapply(dataList, doScale)
   }
   return(dataList)
 }

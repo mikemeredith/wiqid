@@ -1,16 +1,20 @@
 TODO
 
-  * Check that SE is returned for betas, not for reals. Also all MLE functions should report var-covar matrix or NULL if Hessian cannot be inverted.
-  
   * TRY using Gelman et al 2008 recommendations for priors for logistic coefficients. Update man page for priors. Also implement 0.5xSD scaling for all functions (not just Bayes).
   
-  * Look at problem in occSSautocorA
-  
-  * Do test files for new functions
-  
+CHANGES IN 2014-02-01 v.0.0.365
+
+  * Lots of small fixes.
+
+  * Removed occSSautocorA; occSScov gains a built-in .b covariate which does the same thing.
+
+  * Added test files for occMS* functions. Speed up occMScov.
+
 CHANGES IN 2014-01-30 v.0.0.364
 
-  * expanded occMScov to take survey covariates; that is slow, as it calculates a different probability of detection for each site x occasion. So retianed the old function under the name occMScovSite.
+  * added grand skinks data set.
+
+  * expanded occMScov to take survey covariates; that is slow, as it calculates a different probability of detection for each site x occasion. So retained the old function under the name occMScovSite.
 
 CHANGES IN 2014-01-28 v.0.0.363
 

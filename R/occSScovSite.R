@@ -22,26 +22,21 @@ occSScovSite <- function(y, n, model=list(psi~1, p~1), data=NULL, ci=0.95) {
   crit <- qnorm(c(alf, 1 - alf))
   
   # Standardise the model:
-  if(inherits(model, "formula"))
-    model <- list(model)
-  model <- stdform (model)
-  model0 <- list(psi=~1, p=~1)
-  model <- replace (model0, names(model), model)
+  model <- stdModel(model, list(psi=~1, p=~1))
 
+  # Convert the covariate data frame into a list
   nSites <- length(y)
-  if(!is.null(data))  {
-    data <- lapply(data, function(x) if(is.numeric(x)) scale(x) else x)
-    ddf <- as.data.frame(data)
-    if(nrow(ddf) != nSites)
-      stop("'data' must have a row for each site.")
-  } else {
-    ddf <- data.frame(.dummy = rep(NA, nSites))
-    # model.matrix needs a data frame, NULL won't do.
-  }
+  dataList <- stddata(data, nocc=NULL)
 
-  psiModMat <- model.matrix(model$psi, ddf)
+  psiDf <- selectCovars(model$psi, dataList, nSites)
+  if (nrow(psiDf) != nSites)
+    stop("Number of site covars doesn't match sites.")
+  psiModMat <- model.matrix(model$psi, psiDf)
   psiK <- ncol(psiModMat)
-  pModMat <- model.matrix(model$p, ddf)
+  pDf <- selectCovars(model$p, dataList, nSites)
+  if (nrow(pDf) != nSites)
+    stop("Number of site covars doesn't match sites.")
+  pModMat <- model.matrix(model$p, pDf)
   pK <- ncol(pModMat)
   K <- psiK + pK
   # model.matrix removes rows with NAs:

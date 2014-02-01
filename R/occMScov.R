@@ -19,6 +19,8 @@ occMScov <- function(DH, occsPerSeason,
     stop("ci must be between 0.5 and 1")
   alf <- (1 - ci[1]) / 2
   crit <- qnorm(c(alf, 1 - alf))
+  
+  DH <- as.matrix(DH)
 
   # Deal with occsPerSeason
   nOcc <- ncol(DH)
@@ -68,7 +70,7 @@ occMScov <- function(DH, occsPerSeason,
   occasion <- rep(1:nOcc, each=nSites)
   dataList$.occasion <- as.factor(occasion)
   
-  cat("Preparing design matrices...") ; flush.console()
+  # cat("Preparing design matrices...") ; flush.console()
   psi1df <- selectCovars(model$psi1, dataList, nSites)
   psi1Mat <- model.matrix(model$psi1, psi1df)
   psi1K <- ncol(psi1Mat)
@@ -91,7 +93,7 @@ occMScov <- function(DH, occsPerSeason,
   beta.mat <- matrix(NA_real_, K, 4)
   colnames(beta.mat) <- c("est", "SE", "lowCI", "uppCI")
   rownames(beta.mat) <- c(
-    paste("ps1:", colnames(psi1Mat)),
+    paste("psi1:", colnames(psi1Mat)),
     paste("gam:", colnames(gamMat)),
     paste("eps:", colnames(epsMat)),
     paste("p:", colnames(pMat)))
@@ -142,14 +144,14 @@ occMScov <- function(DH, occsPerSeason,
     }
     return(min(-sum(log(Prh)), .Machine$double.xmax))
   }
-  cat("done\n")
+  # cat("done\n")
   
-  cat("Maximizing likelihood...") ; flush.console()
+  # cat("Maximizing likelihood...") ; flush.console()
   start <- rep(0, K)
   res <- nlm(nll, start, hessian=TRUE)
-  cat("done\n")
+  # cat("done\n")
   
-  cat("Organizing output...") ; flush.console()
+  # cat("Organizing output...") ; flush.console()
   if(res$code > 2)   # exit code 1 or 2 is ok.
     warning(paste("Convergence may not have been reached (code", res$code, ")"))
   beta.mat[,1] <- res$estimate
@@ -174,7 +176,7 @@ occMScov <- function(DH, occsPerSeason,
       logLik <- -res$minimum
     }
   }
-  cat("done\n") ; flush.console()
+  # cat("done\n") ; flush.console()
 
   out <- list(call = match.call(),
               beta = beta.mat,

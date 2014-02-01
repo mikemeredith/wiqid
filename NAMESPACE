@@ -8,7 +8,7 @@ importFrom(secr, secr.fit)
 export(
   survCJS, survCJSaj,
   closedCapM0, closedCapMh2, closedCapMhJK, closedCapMt, closedCapMtcov,
-  occSS0, occSStime, occSScov, occSScovSite, occSSrn, occSSautocorA,
+  occSS0, occSStime, occSScov, occSScovSite, occSSrn, 
   occMS0, occMSseason, occMScovSite, occMScov,
   BoccSS0, BsurvCJS, Bsecr0,
   richRarefy,

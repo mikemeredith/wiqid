@@ -63,8 +63,8 @@ Returns an object of class \code{wiqid}, which is a list with the following elem
 There are \code{print}, \code{logLik}, and \code{nobs} methods for class \code{wiqid}.
 }
 
-%%%%\section{Benchmarks}{Output has been checked against output from PRESENCE (Hines 2006) v.5.5 for the \code{\link{salamanders}} and \code{\link{weta}} data sets. Real values are mostly the same to 4 decimal places, though there is occasionally a discrepancy of 0.0001. AICs are the same.
-%%}
+\section{Benchmarks}{Output has been checked against output from PRESENCE (Hines 2006) v.5.5 for the \code{\link{GrandSkinks}} data set. Real values are mostly the same to 4 decimal places, though there is occasionally a discrepancy of 0.0001. AICs are the same.
+}
 
 \references{
 MacKenzie, D I; J D Nichols; G B Lachman; S Droege; J A Royle; C A Langtimm. 2002. Estimating site occupancy rates when detection probabilities are less than one. \emph{Ecology} 83:2248-2255.
@@ -82,5 +82,14 @@ Mike Meredith
 }
 
 \examples{
-# TODO Need a suitable data set
+data(GrandSkinks)
+DH <- GrandSkinks[, 1:15]
+
+occMS0(DH, 3)
+occMSseason(DH, 3, list(gamma ~ season, epsilon~1, p~season))
+occMScovSite(DH, 3,
+   model=list(psi1~habitat, gamma ~ habitat, epsilon~habitat),
+   data=GrandSkinks)
+   
+   
 }

@@ -78,6 +78,11 @@ Output of \code{survCJS} has been checked against program MARK with the dipper d
 }
 
 \examples{
-# New examples to do; need a suitable data set, or add dippers to wiqid.
+data(dippers)
+
+DH <- dippers[1:7]  # Extract the detection histories
+survCJS(DH)  # the phi(.) p(.) model
+survCJS(DH, phi ~ .time)  # the phi(t) p(.) model
+
 
 }

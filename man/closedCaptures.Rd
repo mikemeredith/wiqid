@@ -113,6 +113,7 @@ closedCapM0(KanhaTigers)
 closedCapMh2(KanhaTigers)
 closedCapMhJK(KanhaTigers)
 closedCapMt(KanhaTigers)
+closedCapMtcov(KanhaTigers, p~.Time)
 # Generate some mythical covariates:
 covars <- data.frame(Temp = runif(ncol(KanhaTigers), 15, 25),
   Cloud = sample(0:8, ncol(KanhaTigers), replace=TRUE))

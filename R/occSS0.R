@@ -14,8 +14,8 @@ function(y, n, ci=0.95) {
   alf <- (1 - ci[1]) / 2
   crit <- qnorm(c(alf, 1 - alf))
 
-  beta.mat <- matrix(NA_real_, 2, 3)
-  colnames(beta.mat) <- c("est", "lowCI", "uppCI")
+  beta.mat <- matrix(NA_real_, 2, 4)
+  colnames(beta.mat) <- c("est", "SE", "lowCI", "uppCI")
   rownames(beta.mat) <- c("psiHat", "pHat")
   logLik <- NA_real_
   varcov <- NULL
@@ -31,10 +31,11 @@ function(y, n, ci=0.95) {
     res <- nlm(nll, params, hessian=TRUE)
     if(res$code < 3)  {  # exit code 1 or 2 is ok.
       beta.mat[,1] <- res$estimate
-      varcov <- try(solve(res$hessian), silent=TRUE)
-      if (!inherits(varcov, "try-error") && all(diag(varcov) > 0)) {
-        SE <- sqrt(diag(varcov))
-        beta.mat[, 2:3] <- sweep(outer(SE, crit), 1, res$estimate, "+")
+      varcov0 <- try(solve(res$hessian), silent=TRUE)
+      if (!inherits(varcov0, "try-error") && all(diag(varcov0) > 0)) {
+        varcov <- varcov0
+        beta.mat[, 2] <- sqrt(diag(varcov))
+        beta.mat[, 3:4] <- sweep(outer(beta.mat[, 2], crit), 1, res$estimate, "+")
         logLik <- -res$minimum
       }
     }
@@ -42,7 +43,7 @@ function(y, n, ci=0.95) {
   out <- list(call = match.call(),
               beta = beta.mat,
               beta.vcv = varcov,
-              real = plogis(beta.mat),
+              real = plogis(beta.mat[, -2]),
               logLik = c(logLik=logLik, df=2, nobs=length(y)))
   class(out) <- c("wiqid", "list")
   return(out)

@@ -12,26 +12,19 @@ function(CH, model=list(p~1), data=NULL, ci = 0.95, ciType=c("normal", "MARK")) 
   ciType <- match.arg(ciType)
 
   # Standardise the model:
-  if(inherits(model, "formula"))
-    model <- list(model)
-  model <- stdform (model)
-  model0 <- list(psi=~1, p=~1)
-  model <- replace (model0, names(model), model)
+  model <- stdModel(model, list(p=~1))
 
   CH <- round(as.matrix(CH))
   nocc <- ncol(CH)    # number of capture occasions
   N.cap <- nrow(CH)   # total number of individual animals captured
   n <- colSums(CH)    # vector of number of captures on each occasion
 
-  if(!is.null(data)) {
-    stopifnot(nrow(data) == nocc)
-    stopifnot(sum(is.na(data)) == 0)
-    data <- lapply(data, function(x) if(is.numeric(x)) scale(x) else x)
-    ddf <- as.data.frame(data)
-  } else {
-    ddf <- data.frame(.dummy = rep(NA, nocc))
-    # model.matrix needs a data frame, NULL won't do.
-  }
+  # Convert the covariate data frame into a list
+  dataList <- stddata(data, nocc)
+  dataList$.Time <- scale(1:nocc)
+  dataList$.time <- as.factor(1:nocc)
+  ddf <- as.data.frame(dataList)
+
   pModMat <- model.matrix(model$p, ddf)
   K <- ncol(pModMat)
 
@@ -42,6 +35,8 @@ function(CH, model=list(p~1), data=NULL, ci = 0.95, ciType=c("normal", "MARK")) 
   colnames(lp.mat) <- c("est", "lowCI", "uppCI")
   rownames(lp.mat) <- paste0("p", 1:nocc)
   logLik <- NA_real_
+  varcov <- NULL
+  
   if(N.cap > 0)  {
     nll <- function(params) {
       N <- min(exp(params[1]) + N.cap, 1e+300, .Machine$double.xmax)
@@ -53,19 +48,20 @@ function(CH, model=list(p~1), data=NULL, ci = 0.95, ciType=c("normal", "MARK")) 
     }
     params <- c(log(5), rep(0, K))
     res <- nlm(nll, params, hessian=TRUE, iterlim=1000)
-    if(res$code < 3)  {  # exit code 1 or 2 is ok.
-      beta.mat[,1] <- res$estimate
-      lp.mat[, 1] <- pModMat %*% beta.mat[-1, 1]
-      varcov <- try(solve(res$hessian), silent=TRUE)
-      if (!inherits(varcov, "try-error") && all(diag(varcov) > 0)) {
-        beta.mat[, 2] <- sqrt(diag(varcov))
-        beta.mat[, 3:4] <- sweep(outer(beta.mat[, 2], crit), 1, res$estimate, "+")
-        temp <- diag(pModMat %*% varcov[-1, -1] %*% t(pModMat))
-        if(all(temp >= 0))  {
-          SElp <- sqrt(temp)
-          lp.mat[, 2:3] <- sweep(outer(SElp, crit), 1, lp.mat[, 1], "+")
-          logLik <- -res$minimum
-        }
+    if(res$code > 2)   # exit code 1 or 2 is ok.
+      warning(paste("Convergence may not have been reached (code", res$code, ")"))
+    beta.mat[,1] <- res$estimate
+    lp.mat[, 1] <- pModMat %*% beta.mat[-1, 1]
+    varcov0 <- try(solve(res$hessian), silent=TRUE)
+    if (!inherits(varcov0, "try-error") && all(diag(varcov0) > 0)) {
+      varcov <- varcov0
+      beta.mat[, 2] <- sqrt(diag(varcov))
+      beta.mat[, 3:4] <- sweep(outer(beta.mat[, 2], crit), 1, res$estimate, "+")
+      temp <- diag(pModMat %*% varcov[-1, -1] %*% t(pModMat))
+      if(all(temp >= 0))  {
+        SElp <- sqrt(temp)
+        lp.mat[, 2:3] <- sweep(outer(SElp, crit), 1, lp.mat[, 1], "+")
+        logLik <- -res$minimum
       }
     }
   }

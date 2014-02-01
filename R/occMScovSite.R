@@ -67,7 +67,7 @@ occMScovSite <- function(DH, occsPerSeason,
   } else {
     data <- data.frame(.dummy = rep(NA, nSites))
   }
-  cat("Preparing design matrices...") ; flush.console()
+  # cat("Preparing design matrices...") ; flush.console()
   GEseason <- rep(1:(nseas-1), each=nSites)
   ddfGE <- as.data.frame(cbind(data, season=as.factor(GEseason)))
   Pseason <- rep(1:nseas, each=nSites)
@@ -89,7 +89,7 @@ occMScovSite <- function(DH, occsPerSeason,
   beta.mat <- matrix(NA_real_, K, 4)
   colnames(beta.mat) <- c("est", "SE", "lowCI", "uppCI")
   rownames(beta.mat) <- c(
-    paste("ps1:", colnames(psi1Mat)),
+    paste("psi1:", colnames(psi1Mat)),
     paste("gam:", colnames(gamMat)),
     paste("eps:", colnames(epsMat)),
     paste("p:", colnames(pMat)))
@@ -126,12 +126,12 @@ occMScovSite <- function(DH, occsPerSeason,
     return(min(-sum(log(Prh)), .Machine$double.xmax))
   }
 
-  cat("done\n")
-  cat("Maximizing likelihood...") ; flush.console()
+  # cat("done\n")
+  # cat("Maximizing likelihood...") ; flush.console()
   start <- rep(0, K)
   res <- nlm(nll, start, hessian=TRUE)
-  cat("done\n")
-  cat("Organizing output...") ; flush.console()
+  # cat("done\n")
+  # cat("Organizing output...") ; flush.console()
   if(res$code > 2)   # exit code 1 or 2 is ok.
     warning(paste("Convergence may not have been reached (code", res$code, ")"))
   beta.mat[,1] <- res$estimate
@@ -156,7 +156,7 @@ occMScovSite <- function(DH, occsPerSeason,
       logLik <- -res$minimum
     }
   }
-  cat("done\n") ; flush.console()
+  # cat("done\n") ; flush.console()
 
   out <- list(call = match.call(),
               beta = beta.mat,
