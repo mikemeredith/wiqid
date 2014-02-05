@@ -67,23 +67,25 @@ occSScovSite <- function(y, n, model=list(psi~1, p~1), data=NULL, ci=0.95) {
   # Run mle estimation with nlm:
   param <- rep(0, K)
   res <- nlm(nll, param, hessian=TRUE)
-  if(res$code < 4)  {  # exit code 1 or 2 is ok, 3 doubtful.
-    beta.mat[,1] <- res$estimate
-    lp.mat[, 1] <- c(psiModMat %*% beta.mat[1:psiK, 1],
-                     pModMat %*% beta.mat[(psiK+1):K, 1])
-    varcov <- try(solve(res$hessian), silent=TRUE)
-    if (!inherits(varcov, "try-error") && 
-        all(diag(varcov) > 0)) {
-      SE <- sqrt(diag(varcov))
-      beta.mat[, 2] <- SE
-      beta.mat[, 3:4] <- sweep(outer(SE, crit), 1, res$estimate, "+")
-      temp <- c(diag(psiModMat %*% varcov[1:psiK, 1:psiK] %*% t(psiModMat)),
-                diag(pModMat %*% varcov[(psiK+1):K, (psiK+1):K] %*% t(pModMat)))
-      if(all(temp >= 0))  {
-        SElp <- sqrt(temp)
-        lp.mat[, 2:3] <- sweep(outer(SElp, crit), 1, lp.mat[, 1], "+")
-        logLik <- -res$minimum
-      }
+  if(res$code > 2)   # exit code 1 or 2 is ok.
+    warning(paste("Convergence may not have been reached (code", res$code, ")"))
+
+  # Process output
+  beta.mat[,1] <- res$estimate
+  lp.mat[, 1] <- c(psiModMat %*% beta.mat[1:psiK, 1],
+                   pModMat %*% beta.mat[(psiK+1):K, 1])
+  varcov <- try(solve(res$hessian), silent=TRUE)
+  if (!inherits(varcov, "try-error") && 
+      all(diag(varcov) > 0)) {
+    SE <- sqrt(diag(varcov))
+    beta.mat[, 2] <- SE
+    beta.mat[, 3:4] <- sweep(outer(SE, crit), 1, res$estimate, "+")
+    temp <- c(diag(psiModMat %*% varcov[1:psiK, 1:psiK] %*% t(psiModMat)),
+              diag(pModMat %*% varcov[(psiK+1):K, (psiK+1):K] %*% t(pModMat)))
+    if(all(temp >= 0))  {
+      SElp <- sqrt(temp)
+      lp.mat[, 2:3] <- sweep(outer(SElp, crit), 1, lp.mat[, 1], "+")
+      logLik <- -res$minimum
     }
   }
   out <- list(call = match.call(),

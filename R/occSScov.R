@@ -36,7 +36,7 @@ occSScov <- function(DH, model=NULL, data=NULL, ci=0.95) {
   # Convert the covariate data frame into a list
   dataList <- stddata(data, nSurv)
   time <- rep(1:nSurv, each=nSites)
-  dataList$.Time <- scale(time)
+  dataList$.Time <- as.vector(scale(time)) /2
   dataList$.time <- as.factor(time)
   before <- cbind(0L, DH[, 1:(nSurv - 1)]) # 1 if animal seen on previous occasion
   dataList$.b <- as.vector(before)
@@ -91,22 +91,22 @@ occSScov <- function(DH, model=NULL, data=NULL, ci=0.95) {
   # Run mle estimation with nlm:
   param <- rep(0, K)
   res <- nlm(nll, param, hessian=TRUE)
-  if(res$code < 4)  {  # exit code 1 or 2 is ok, 3 dodgy but...
-    beta.mat[,1] <- res$estimate
-    lp.mat[, 1] <- c(psiModMat %*% beta.mat[1:psiK, 1],
-                     pModMat %*% beta.mat[(psiK+1):K, 1])
-    if(res$code < 3) # Keep NA if in doubt
-      logLik <- -res$minimum
-    varcov0 <- try(solve(res$hessian), silent=TRUE)
-    if (!inherits(varcov0, "try-error") && all(diag(varcov0) > 0)) {
-      varcov <- varcov0
-      SE <- sqrt(diag(varcov))
-      beta.mat[, 2] <- SE
-      beta.mat[, 3:4] <- sweep(outer(SE, crit), 1, res$estimate, "+")
-      SElp <- c(sqrt(diag(psiModMat %*% varcov[1:psiK, 1:psiK] %*% t(psiModMat))),
-                sqrt(diag(pModMat %*% varcov[(psiK+1):K, (psiK+1):K] %*% t(pModMat))))
-      lp.mat[, 2:3] <- sweep(outer(SElp, crit), 1, lp.mat[, 1], "+")
-    }
+  if(res$code > 2)   # exit code 1 or 2 is ok.
+    warning(paste("Convergence may not have been reached (code", res$code, ")"))
+  beta.mat[,1] <- res$estimate
+  lp.mat[, 1] <- c(psiModMat %*% beta.mat[1:psiK, 1],
+                   pModMat %*% beta.mat[(psiK+1):K, 1])
+  if(res$code < 3) # Keep NA if in doubt
+    logLik <- -res$minimum
+  varcov0 <- try(solve(res$hessian), silent=TRUE)
+  if (!inherits(varcov0, "try-error") && all(diag(varcov0) > 0)) {
+    varcov <- varcov0
+    SE <- sqrt(diag(varcov))
+    beta.mat[, 2] <- SE
+    beta.mat[, 3:4] <- sweep(outer(SE, crit), 1, res$estimate, "+")
+    SElp <- c(sqrt(diag(psiModMat %*% varcov[1:psiK, 1:psiK] %*% t(psiModMat))),
+              sqrt(diag(pModMat %*% varcov[(psiK+1):K, (psiK+1):K] %*% t(pModMat))))
+    lp.mat[, 2:3] <- sweep(outer(SElp, crit), 1, lp.mat[, 1], "+")
   }
   out <- list(call = match.call(),
               beta = beta.mat,

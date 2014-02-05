@@ -78,7 +78,7 @@ test_that("occMSseason gives right answers",  {
   expect_that(round(AIC(res1), 4), 
       equals(1775.0155))
   expect_that(    
-    res2 <- occMSseason(DH, 3, list(gamma ~ season, epsilon~season, p~season)),
+    res2 <- occMSseason(DH, 3, list(gamma ~ .interval, epsilon~.interval, p~.season)),
     takes_less_than(20))
 
   expect_that(dim(res2$beta), equals(c(14, 4)))

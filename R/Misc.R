@@ -1,6 +1,8 @@
 
-# This file contains utilities used in several places in the code and not exported:
+# This file contains utilities used in several places in the code
+#   and NOT exported:
 
+# fixCI : Calculate critical values for CI.
 # fixNames : Tidy up the column names in MCMC output: remove [] and ,
 # getMARKci : Calculate MARK-style confidence intervals for N
 # stdModel : Regularize a list of formulae, ensuring it is a named list of one-sided formulae.
@@ -9,6 +11,15 @@
 
 # AICtable moved to file AICc.R
 # ...............................................................................
+
+# Deal with confidence interval specification:
+fixCI <- function(ci) {
+  if(ci > 1 | ci < 0.5)
+    stop("ci must be between 0.5 and 1")
+  alf <- (1 - ci[1]) / 2
+  return(qnorm(c(alf, 1 - alf)))
+}
+# .....................................................................
 
 # Tidy up the column names in MCMC output: remove [] and ,
 fixNames <- function(x)

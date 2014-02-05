@@ -21,15 +21,6 @@ occMScovSite <- function(DH, occsPerSeason,
   alf <- (1 - ci[1]) / 2
   crit <- qnorm(c(alf, 1 - alf))
 
-  # Check for all-NA rows (eg, Grand Skinks data set!)
-  #  remove them (alternative would be to flag up with, say, last=0 below.
-  # allNA <- rowSums(!is.na(DH)) == 0
-  # if(any(allNA))  {
-    # DH <- DH[!allNA, ]
-    # if (!is.null(data))
-      # data <- data[!allNA, ]
-  # }
-
   # Deal with occsPerSeason
   nOcc <- ncol(DH)
   if(length(occsPerSeason) == 1)
@@ -64,27 +55,38 @@ occMScovSite <- function(DH, occsPerSeason,
     if(nrow(data) != nSites)
       stop("data must have a row for each site")
     rownames(data) <- NULL
-  } else {
-    data <- data.frame(.dummy = rep(NA, nSites))
   }
+  # else {
+    # data <- data.frame(.dummy = rep(NA, nSites))
+  # }
   # cat("Preparing design matrices...") ; flush.console()
-  GEseason <- rep(1:(nseas-1), each=nSites)
-  ddfGE <- as.data.frame(cbind(data, season=as.factor(GEseason)))
-  Pseason <- rep(1:nseas, each=nSites)
-  ddfP <- as.data.frame(cbind(data, season=as.factor(Pseason)))
+  dataList <- stddata(data, NULL, 0.5)
+  dataList$.interval <- as.factor(rep(1:(nseas-1), each=nSites))
+  dataList$.season <- as.factor(rep(1:nseas, each=nSites))
 
   # Build model matrices  
-  psi1Mat <- model.matrix(model$psi1, as.data.frame(data))
+  psi1df <- selectCovars(model$psi1, dataList, nSites)
+  if (nrow(psi1df) != nSites)
+    stop("Covariate for psi1 is wrong length.")
+  psi1Mat <- model.matrix(model$psi1, psi1df)
+  if (nrow(psi1Mat) != nSites)
+    stop("Missing values not allowed in site covariates.")
   psi1K <- ncol(psi1Mat)
-  gamMat <- model.matrix(model$gamma, ddfGE)
+  gamDf <- selectCovars(model$gamma, dataList, nSites*(nseas-1))
+  gamMat <- model.matrix(model$gamma, gamDf)
+  if (nrow(gamMat) !=  nSites*(nseas-1))
+    stop("Missing values not allowed in site covariates.")
   gamK <- ncol(gamMat)
-  epsMat <- model.matrix(model$epsilon, ddfGE)
+  epsDf <- selectCovars(model$epsilon, dataList, nSites*(nseas-1))
+  epsMat <- model.matrix(model$epsilon, epsDf)
+  if (nrow(epsMat) !=  nSites*(nseas-1))
+    stop("Missing values not allowed in site covariates.")
   epsK <- ncol(epsMat)
-  pMat <- model.matrix(model$p, ddfP)
+  pDf <- selectCovars(model$p, dataList, nSites*nseas)
+  pMat <- model.matrix(model$p, pDf)
   pK <- ncol(pMat)
   K <- psi1K + gamK + epsK + pK
   parID <- rep(1:4, c(psi1K, gamK, epsK, pK))
-  
   
   beta.mat <- matrix(NA_real_, K, 4)
   colnames(beta.mat) <- c("est", "SE", "lowCI", "uppCI")
@@ -97,9 +99,9 @@ occMScovSite <- function(DH, occsPerSeason,
   colnames(lp.mat) <- c("est", "lowCI", "uppCI")
   rownames(lp.mat) <- c(
     paste0("psi:", siteNames),
-    paste0("gamma:", siteNames, ",", GEseason),
-    paste0("epsilon:", siteNames, ",", GEseason),
-    paste0("p:", siteNames, ",", Pseason))
+    paste0("gamma:", siteNames, ",", dataList$.interval),
+    paste0("epsilon:", siteNames, ",", dataList$.interval),
+    paste0("p:", siteNames, ",", dataList$.season))
   logLik <- NA_real_
   varcov <- NULL
   

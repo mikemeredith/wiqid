@@ -39,17 +39,17 @@ function(DH, ci=0.95)  {
       return(min(-llh, .Machine$double.xmax)) # min(..) stops Inf being returned
     }
     res <- nlm(nll, params, hessian=TRUE)
-    if(res$code < 3)  {  # exit code 1 or 2 is ok.
-      beta.mat[,1] <- res$estimate
-      varcov0 <- try(solve(res$hessian), silent=TRUE)
-      if (!inherits(varcov0, "try-error") && all(diag(varcov0) > 0)) {
-        varcov <- varcov0
-        SE <- sqrt(diag(varcov))
-        beta.mat[, 2] <- SE
-        beta.mat[, 3:4] <- sweep(outer(SE, crit), 1, res$estimate, "+")
-        logLik <- -res$minimum
-      } 
-    }
+    if(res$code > 2)   # exit code 1 or 2 is ok.
+      warning(paste("Convergence may not have been reached (code", res$code, ")"))
+    beta.mat[,1] <- res$estimate
+    varcov0 <- try(solve(res$hessian), silent=TRUE)
+    if (!inherits(varcov0, "try-error") && all(diag(varcov0) > 0)) {
+      varcov <- varcov0
+      SE <- sqrt(diag(varcov))
+      beta.mat[, 2] <- SE
+      beta.mat[, 3:4] <- sweep(outer(SE, crit), 1, res$estimate, "+")
+      logLik <- -res$minimum
+    } 
   }
 	lambda <- exp(beta.mat[1, -2])
 	real <- rbind(1-dpois(0, lambda), lambda, plogis(beta.mat[2, -2]))

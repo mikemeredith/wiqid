@@ -2,8 +2,10 @@
 
 importFrom(stats, nobs, logLik, update)
 importFrom(rjags, jags.model, coda.samples)
+importFrom(runjags, autorun.jags)
 importFrom(coda, effectiveSize)
 importFrom(secr, secr.fit)
+importFrom(parallel, detectCores)
 
 export(
   survCJS, survCJSaj,
@@ -11,6 +13,7 @@ export(
   occSS0, occSStime, occSScov, occSScovSite, occSSrn, 
   occMS0, occMSseason, occMScovSite, occMScov,
   BoccSS0, BsurvCJS, Bsecr0,
+  BsurvCJSautorun,
   richRarefy,
   richACE, richICE, richChao1, richChao2, richJack1, richJack2, richBoot, richMM,
   richJackA1, richJackA2, richRenLau,
@@ -40,4 +43,6 @@ S3method("hdi", "function")
 S3method("hdi", "bugs")
 S3method("hdi", "rjags")
 S3method("hdi", "runjags")
+
+S3method("as.data.frame", "runjags")
 

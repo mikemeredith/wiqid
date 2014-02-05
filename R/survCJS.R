@@ -37,10 +37,7 @@ survCJS <- function(DH, model=list(phi~1, p~1), data=NULL, freq=1, ci = 0.95) {
   if(!is.null(data) && nrow(data) != ni)
     stop("The 'data' argument is not a valid data frame.")
   
-  if(ci > 1 | ci < 0.5)
-    stop("ci must be between 0.5 and 1")
-  alf <- (1 - ci[1]) / 2
-  crit <- qnorm(c(alf, 1 - alf))
+  crit <- fixCI(ci)
 
   # Convert detection history to m-array to facilitate use of multinomial likelihood
   mArray <- ch2mArray(CH=DH, freq=freq)
@@ -48,15 +45,23 @@ survCJS <- function(DH, model=list(phi~1, p~1), data=NULL, freq=1, ci = 0.95) {
   # Standardise the model:
   model <- stdModel(model, defaultModel=list(phi=~1, p=~1))
 
-  data$.time <- as.factor(1:ni) 
-  data$.Time <- scale(1:ni) / 2
-  ddf <- as.data.frame(data)  # Should standardise
-  phiMat <- model.matrix(model$phi, ddf)
+  # Standardize the data
+  dataList <- stddata(data, NULL)
+  dataList$.Time <- as.vector(scale(1:ni)) /2
+  dataList$.time <- as.factor(1:ni)
+
+  # Set up model matrices
+  phiDf <- selectCovars(model$phi, dataList, ni)
+  phiMat <- model.matrix(model$phi, phiDf)
   phiK <- ncol(phiMat)
-  pMat <- model.matrix(model$p, ddf)
+  pDf <- selectCovars(model$p, dataList, ni)
+  pMat <- model.matrix(model$p, pDf)
   pK <- ncol(pMat)
   K <- phiK + pK
+  if(nrow(phiMat) != ni || nrow(pMat) != ni)
+    stop("Missing values not allowed in covariates.")
 
+  # Set up objects to hold output
   beta.mat <- matrix(NA_real_, K, 4)
   colnames(beta.mat) <- c("est", "SE", "lowCI", "uppCI")
   rownames(beta.mat) <- c(
@@ -70,6 +75,7 @@ survCJS <- function(DH, model=list(phi~1, p~1), data=NULL, freq=1, ci = 0.95) {
   logLik <- NA_real_
   varcov <- NULL
 
+  # Log likelihood function
   nll <- function(param){
     phiBeta <- param[1:phiK]
     pBeta <- param[(phiK+1):K]
@@ -85,24 +91,26 @@ survCJS <- function(DH, model=list(phi~1, p~1), data=NULL, freq=1, ci = 0.95) {
   # Run mle estimation with nlm:
   param <- rep(0, K)
   res <- nlm(nll, param, hessian=TRUE)
-  if (res$code > 3)  {
-    cat("Maximization failed; 'nlm' exit code", res$code, "\n")
-  } else {
-    beta.mat[,1] <- res$estimate
-    lp.mat[, 1] <- c(phiMat %*% beta.mat[1:phiK, 1],
-                     pMat %*% beta.mat[(phiK+1):K, 1])
-    varcov0 <- try(solve(res$hessian), silent=TRUE)
-    if (!inherits(varcov0, "try-error") && all(diag(varcov0) > 0)) {
-      varcov <- varcov0
-      SE <- sqrt(diag(varcov))
-      beta.mat[, 2] <- SE
-      beta.mat[, 3:4] <- sweep(outer(SE, crit), 1, res$estimate, "+")
-      SElp <- c(sqrt(diag(phiMat %*% varcov[1:phiK, 1:phiK] %*% t(phiMat))),
-                sqrt(diag(pMat %*% varcov[(phiK+1):K, (phiK+1):K] %*% t(pMat))))
-      lp.mat[, 2:3] <- sweep(outer(SElp, crit), 1, lp.mat[, 1], "+")
-      logLik <- -res$minimum
-    }
+  if(res$code > 2)   # exit code 1 or 2 is ok.
+    warning(paste("Convergence may not have been reached (code", res$code, ")"))
+
+  # Process the output
+  beta.mat[,1] <- res$estimate
+  lp.mat[, 1] <- c(phiMat %*% beta.mat[1:phiK, 1],
+                   pMat %*% beta.mat[(phiK+1):K, 1])
+  varcov0 <- try(solve(res$hessian), silent=TRUE)
+  if (!inherits(varcov0, "try-error") && all(diag(varcov0) > 0)) {
+    varcov <- varcov0
+    SE <- sqrt(diag(varcov))
+    beta.mat[, 2] <- SE
+    beta.mat[, 3:4] <- sweep(outer(SE, crit), 1, res$estimate, "+")
+    SElp <- c(sqrt(diag(phiMat %*% varcov[1:phiK, 1:phiK] %*% t(phiMat))),
+              sqrt(diag(pMat %*% varcov[(phiK+1):K, (phiK+1):K] %*% t(pMat))))
+    lp.mat[, 2:3] <- sweep(outer(SElp, crit), 1, lp.mat[, 1], "+")
+    logLik <- -res$minimum
   }
+  
+  # Put it all together and return
   out <- list(call = match.call(),
               beta = beta.mat,
               beta.vcv = varcov,

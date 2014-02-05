@@ -24,10 +24,10 @@ function(DH, model=p~1, data=NULL, ci=0.95, plot=TRUE)  {
   model <- stdModel(model, defaultModel=list(p=~1))
 
   # Add built-in covars to the data frame
-  data$.time <- as.factor(1:nocc)
-  data$.Time <- 1:nocc
-  pDf <- as.data.frame(data)
-  # Standardise!!
+  dataList <- stddata(data, NULL, 0.5)
+  dataList$.time <- as.factor(1:nocc)
+  dataList$.Time <- as.vector(scale(1:nocc)) * 0.5
+  pDf <- as.data.frame(dataList)
   
   # Do the model matrix for p:
   pModMat <- model.matrix(model$p, pDf)
@@ -57,21 +57,22 @@ function(DH, model=p~1, data=NULL, ci=0.95, plot=TRUE)  {
     }
     params <- rep(0, K)
     res <- nlm(nll, params, hessian=TRUE)
-    if(res$code < 3)  {  # exit code 1 or 2 is ok.
-      beta.mat[,1] <- res$estimate
-      lp.mat[, 1] <- c(beta.mat[1], pModMat %*% beta.mat[-1,1])
-      varcov0 <- try(solve(res$hessian), silent=TRUE)
-      if (!inherits(varcov0, "try-error") && all(diag(varcov0) > 0)) {
-        varcov <- varcov0
-        SE <- sqrt(diag(varcov))
-        beta.mat[, 2] <- SE
-        beta.mat[, 3:4] <- sweep(outer(SE, crit), 1, res$estimate, "+")
-        SElp <- c(sqrt(varcov[1,1]),
-                sqrt(diag(pModMat %*% varcov[-1,-1] %*% t(pModMat))))
-        lp.mat[, 2:3] <- sweep(outer(SElp, crit), 1, lp.mat[, 1], "+")
-        logLik <- -res$minimum
-      }
+    if(res$code > 2)   # exit code 1 or 2 is ok.
+      warning(paste("Convergence may not have been reached (code", res$code, ")"))
+    beta.mat[,1] <- res$estimate
+    lp.mat[, 1] <- c(beta.mat[1], pModMat %*% beta.mat[-1,1])
+    varcov0 <- try(solve(res$hessian), silent=TRUE)
+    if (!inherits(varcov0, "try-error") && all(diag(varcov0) > 0)) {
+      varcov <- varcov0
+      SE <- sqrt(diag(varcov))
+      beta.mat[, 2] <- SE
+      beta.mat[, 3:4] <- sweep(outer(SE, crit), 1, res$estimate, "+")
+      SElp <- c(sqrt(varcov[1,1]),
+              sqrt(diag(pModMat %*% varcov[-1,-1] %*% t(pModMat))))
+      lp.mat[, 2:3] <- sweep(outer(SElp, crit), 1, lp.mat[, 1], "+")
+      logLik <- -res$minimum
     }
+
     # Do the plot
     if(plot) {
       real.p <- plogis(lp.mat[-1, ])

@@ -86,10 +86,8 @@ data(GrandSkinks)
 DH <- GrandSkinks[, 1:15]
 
 occMS0(DH, 3)
-occMSseason(DH, 3, list(gamma ~ season, epsilon~1, p~season))
+occMSseason(DH, 3, model=list(gamma ~ .interval, epsilon~1, p~.season))
 occMScovSite(DH, 3,
-   model=list(psi1~habitat, gamma ~ habitat, epsilon~habitat),
+   model=list(psi1~habitat, gamma ~ .interval, epsilon~habitat, p~.season),
    data=GrandSkinks)
-   
-   
 }

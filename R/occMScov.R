@@ -151,9 +151,9 @@ occMScov <- function(DH, occsPerSeason,
   res <- nlm(nll, start, hessian=TRUE)
   # cat("done\n")
   
-  # cat("Organizing output...") ; flush.console()
   if(res$code > 2)   # exit code 1 or 2 is ok.
     warning(paste("Convergence may not have been reached (code", res$code, ")"))
+  # cat("Organizing output...") ; flush.console()
   beta.mat[,1] <- res$estimate
   lp.mat[, 1] <- c(psi1Mat %*% beta.mat[parID==1, 1],
                    gamMat %*% beta.mat[parID==2, 1],

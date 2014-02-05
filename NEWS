@@ -1,7 +1,15 @@
 TODO
 
-  * TRY using Gelman et al 2008 recommendations for priors for logistic coefficients. Update man page for priors. Also implement 0.5xSD scaling for all functions (not just Bayes).
+  * TRY using Gelman et al 2008 recommendations for priors for logistic coefficients. Update man page for priors.
   
+CHANGES IN 2014-02-05 v.0.0.366
+
+  * New function BsurvCJSautorun, which uses the runjags::autorun.jags function. 'wiqid' now depends on runjags. Experimental: may have to roll back if runjags does not work for everyone.
+  
+  * Implemented 0.5xSD scaling for all functions.
+  
+  * 'nlm' codes > 2 now produce warning and continue.
+
 CHANGES IN 2014-02-01 v.0.0.365
 
   * Lots of small fixes.

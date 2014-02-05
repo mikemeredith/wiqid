@@ -43,9 +43,9 @@ survCJSaj <- function(DHj, DHa=NULL, model=list(phiJ~1, phiA~1, p~1), data=NULL,
   nocc <- ncol(DHj)
   ni <- nocc - 1  # number of survival intervals and REcapture occasions
   stopifnot(is.null(DHa) || ncol(DHa) == nocc)
-  if (length(freqj == 1))
+  if (length(freqj) == 1)
     freqj <- rep(freqj, nrow(DHj))
-  # if (length(freqa == 1))
+  # if (length(freqa) == 1)
     # freqa <- rep(freqa, nrow(DHa))  # Not needed
     
   if(ci > 1 | ci < 0.5)
@@ -62,7 +62,7 @@ survCJSaj <- function(DHj, DHa=NULL, model=list(phiJ~1, phiA~1, p~1), data=NULL,
     grown[i, first[i]] <- 0
   marrayA <- ch2mArray(grown, freqj)
   
-  # Do m-array for juveniles
+  # Do m-array for juvenile juveniles
   ma <- matrix(0, nocc, nocc+1)
   for(i in 1:nrow(DHj)) {
     cht <- which(DHj[i, ] != 0) # When was animal caught?
@@ -83,17 +83,27 @@ survCJSaj <- function(DHj, DHa=NULL, model=list(phiJ~1, phiA~1, p~1), data=NULL,
   # Standardise the model:
   model <- stdModel(model, defaultModel=list(phiJ=~1, phiA=~1, p=~1))
   
-  data$.time <- as.factor(1:ni)  # add .Time trend
-  ddf <- as.data.frame(data)  # Should standardise
-  phiAMat <- model.matrix(model$phiA, ddf)
+  # Standardize the data
+  dataList <- stddata(data, NULL)
+  dataList$.Time <- as.vector(scale(1:ni)) /2
+  dataList$.time <- as.factor(1:ni)
+
+  # Set up model matrices
+  phiADf <- selectCovars(model$phiA, dataList, ni)
+  phiAMat <- model.matrix(model$phiA, phiADf)
   phiAK <- ncol(phiAMat)
-  phiJMat <- model.matrix(model$phiJ, ddf)
+  phiJDf <- selectCovars(model$phiJ, dataList, ni)
+  phiJMat <- model.matrix(model$phiJ, phiJDf)
   phiJK <- ncol(phiJMat)
-  pMat <- model.matrix(model$p, ddf)
+  pDf <- selectCovars(model$p, dataList, ni)
+  pMat <- model.matrix(model$p, pDf)
   pK <- ncol(pMat)
   K <- phiAK + phiJK + pK
   parID <- rep(1:3, c(phiAK, phiJK, pK))
+  if(nrow(phiAMat) != ni || nrow(phiJMat) != ni || nrow(pMat) != ni)
+    stop("Missing values not allowed in covariates.")
 
+  # Objects to hold results
   beta.mat <- matrix(NA_real_, K, 4)
   colnames(beta.mat) <- c("est", "SE", "lowCI", "uppCI")
   rownames(beta.mat) <- c(
@@ -127,27 +137,27 @@ survCJSaj <- function(DHj, DHa=NULL, model=list(phiJ~1, phiA~1, p~1), data=NULL,
   # Run mle estimation with nlm:
   param <- rep(0, K)
   res <- nlm(nll, param, hessian=TRUE)
-  if (res$code > 3)  {
-    cat("Maximization failed; 'nlm' exit code", res$code, "\n")
-  } else {
-    beta.mat[,1] <- res$estimate
-    lp.mat[, 1] <- c(phiAMat %*% beta.mat[parID==1, 1],
-                     phiJMat %*% beta.mat[parID==2, 1],
-                     pMat %*% beta.mat[parID==3, 1])
-    varc <- try(solve(res$hessian), silent=TRUE)
-    if (!inherits(varc, "try-error") && all(diag(varc) > 0)) {
-      varcov <- varc
-      SE <- sqrt(diag(varcov))
-      beta.mat[, 2] <- SE
-      beta.mat[, 3:4] <- sweep(outer(SE, crit), 1, res$estimate, "+")
-      temp <- c(sqrt(diag(phiAMat %*% varcov[parID==1, parID==1] %*% t(phiAMat))),
-               sqrt(diag(phiJMat %*% varcov[parID==2, parID==2] %*% t(phiJMat))),
-               sqrt(diag(pMat %*% varcov[parID==3, parID==3] %*% t(pMat))))
-      if(all(temp >= 0))  {
-        SElp <- sqrt(temp)
-        lp.mat[, 2:3] <- sweep(outer(SElp, crit), 1, lp.mat[, 1], "+")
-        logLik <- -res$minimum
-      }
+  if(res$code > 2)   # exit code 1 or 2 is ok.
+    warning(paste("Convergence may not have been reached (code", res$code, ")"))
+
+  # Organise the output
+  beta.mat[,1] <- res$estimate
+  lp.mat[, 1] <- c(phiAMat %*% beta.mat[parID==1, 1],
+                   phiJMat %*% beta.mat[parID==2, 1],
+                   pMat %*% beta.mat[parID==3, 1])
+  varc <- try(solve(res$hessian), silent=TRUE)
+  if (!inherits(varc, "try-error") && all(diag(varc) > 0)) {
+    varcov <- varc
+    SE <- sqrt(diag(varcov))
+    beta.mat[, 2] <- SE
+    beta.mat[, 3:4] <- sweep(outer(SE, crit), 1, res$estimate, "+")
+    temp <- c(sqrt(diag(phiAMat %*% varcov[parID==1, parID==1] %*% t(phiAMat))),
+             sqrt(diag(phiJMat %*% varcov[parID==2, parID==2] %*% t(phiJMat))),
+             sqrt(diag(pMat %*% varcov[parID==3, parID==3] %*% t(pMat))))
+    if(all(temp >= 0))  {
+      SElp <- sqrt(temp)
+      lp.mat[, 2:3] <- sweep(outer(SElp, crit), 1, lp.mat[, 1], "+")
+      logLik <- -res$minimum
     }
   }
   out <- list(call = match.call(),

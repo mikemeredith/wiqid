@@ -17,11 +17,6 @@ occMSseason <- function(DH, occsPerSeason,
   alf <- (1 - ci[1]) / 2
   crit <- qnorm(c(alf, 1 - alf))
 
-  # Check for all-NA rows (eg, Grand Skinks data set!)
-  allNA <- rowSums(!is.na(DH)) == 0
-  if(any(allNA))
-    DH <- DH[!allNA, ]
-    
   # Deal with occsPerSeason
   nOcc <- ncol(DH)
   if(length(occsPerSeason) == 1)
@@ -31,31 +26,35 @@ occMSseason <- function(DH, occsPerSeason,
   nseas <- length(occsPerSeason)
   seasonID <- rep(1:nseas, occsPerSeason)
   # find last season with data
-  getLast <- function(dh, grp) max(which(rowsum(dh, grp) > 0))
+  getLast <- function(dh, grp) {
+    if(all(dh==0)) {  # Check for all-NA rows (eg, Grand Skinks data set!)
+      return(NA)
+    } else {
+      return(max(which(rowsum(dh, grp) > 0)))
+    }
+  }
   last <- as.vector(apply((!is.na(DH))*1, 1, getLast, grp=factor(seasonID)))
   DHplus <- as.matrix(cbind(last, DH))
-
 
   # Standardise the model:
   model <- stdModel(model, defaultModel=list(gamma=~1, epsilon=~1, p=~1))
 
   # Check data file
-  datGE <- datP <- data
-  datGE$season <- as.factor(1:(nseas-1))
-  datP$season <- as.factor(1:nseas)
-  ddfGE <- as.data.frame(datGE)#[-nseas, ]
-  ddfP <- as.data.frame(datP)#[1:nseas, ]
+  dataList <- stddata(data, NULL, 0.5)
+  dataList$.interval <- as.factor(c(rep(1:(nseas-1)), NA))
+  dataList$.season <- as.factor(rep(1:nseas))
 
-  # stopifnot(nrow(data) == nseas)
-  gamMat <- model.matrix(model$gamma, ddfGE)
+  gamDf <- selectCovars(model$gamma, dataList, nseas)[-nseas, , drop=FALSE]
+  gamMat <- model.matrix(model$gamma, gamDf)
   gamK <- ncol(gamMat)
-  epsMat <- model.matrix(model$epsilon, ddfGE)
+  epsDf <- selectCovars(model$epsilon, dataList, nseas)[-nseas, , drop=FALSE]
+  epsMat <- model.matrix(model$epsilon, epsDf)
   epsK <- ncol(epsMat)
-  pMat <- model.matrix(model$p, ddfP)
+  pDf <- selectCovars(model$p, dataList, nseas)
+  pMat <- model.matrix(model$p, pDf)
   pK <- ncol(pMat)
   K <- 1 + gamK + epsK + pK
   parID <- rep(1:4, c(1, gamK, epsK, pK))
-  
   
   beta.mat <- matrix(NA_real_, K, 4)
   colnames(beta.mat) <- c("est", "SE", "lowCI", "uppCI")
@@ -70,7 +69,8 @@ occMSseason <- function(DH, occsPerSeason,
     paste0("eps", 1:(nseas-1)),
     paste0("p", 1:nseas))
   logLik <- NA_real_
-
+  varcov <- NULL
+  
   nll <- function(param){
     psi1 <- plogis(param[1])
     gamBeta <- param[parID==2]
@@ -87,31 +87,31 @@ occMSseason <- function(DH, occsPerSeason,
     PHIt[2, 2, ] <- 1 - gamProb
     Prh <- apply(DHplus, 1, Prh1A, p=pProb, PHI0=PHI0, PHIt=PHIt, seasonID)
     return(min(-sum(log(Prh)), .Machine$double.xmax))
-    # return(min(-sum(log(Prh)), .Machine$double.xmax, na.rm=TRUE))
   }
 
   start <- rep(0, K)
   res <- nlm(nll, start, hessian=TRUE)
-  if(res$code < 3)  {  # exit code 1 or 2 is ok.
-    beta.mat[,1] <- res$estimate
-    lp.mat[, 1] <- c(beta.mat[1, 1],
-                     gamMat %*% beta.mat[parID==2, 1],
-                     epsMat %*% beta.mat[parID==3, 1],
-                     pMat %*% beta.mat[parID==4, 1])
-    varcov <- try(solve(res$hessian), silent=TRUE)
-    if (!inherits(varcov, "try-error") && all(diag(varcov) > 0)) {
-      SE <- sqrt(diag(varcov))
-      beta.mat[, 2] <- SE  # tidy later
-      beta.mat[, 3:4] <- sweep(outer(SE, crit), 1, res$estimate, "+")
-      temp <- c(varcov[1, 1],
-         diag(gamMat %*% varcov[parID==2, parID==2] %*% t(gamMat)),
-         diag(epsMat %*% varcov[parID==3, parID==3] %*% t(epsMat)),
-         diag(pMat %*% varcov[parID==4, parID==4] %*% t(pMat)))
-      if(all(temp >= 0))  {
-        SElp <- sqrt(temp)
-        lp.mat[, 2:3] <- sweep(outer(SElp, crit), 1, lp.mat[, 1], "+")
-        logLik <- -res$minimum
-      }
+  if(res$code > 2)   # exit code 1 or 2 is ok.
+    warning(paste("Convergence may not have been reached (code", res$code, ")"))
+  beta.mat[,1] <- res$estimate
+  lp.mat[, 1] <- c(beta.mat[1, 1],
+                   gamMat %*% beta.mat[parID==2, 1],
+                   epsMat %*% beta.mat[parID==3, 1],
+                   pMat %*% beta.mat[parID==4, 1])
+  varcov0 <- try(solve(res$hessian), silent=TRUE)
+  if (!inherits(varcov0, "try-error") && all(diag(varcov0) > 0)) {
+    varcov <- varcov0
+    SE <- sqrt(diag(varcov))
+    beta.mat[, 2] <- SE  # tidy later
+    beta.mat[, 3:4] <- sweep(outer(SE, crit), 1, res$estimate, "+")
+    temp <- c(varcov[1, 1],
+       diag(gamMat %*% varcov[parID==2, parID==2] %*% t(gamMat)),
+       diag(epsMat %*% varcov[parID==3, parID==3] %*% t(epsMat)),
+       diag(pMat %*% varcov[parID==4, parID==4] %*% t(pMat)))
+    if(all(temp >= 0))  {
+      SElp <- sqrt(temp)
+      lp.mat[, 2:3] <- sweep(outer(SElp, crit), 1, lp.mat[, 1], "+")
+      logLik <- -res$minimum
     }
   }
   
