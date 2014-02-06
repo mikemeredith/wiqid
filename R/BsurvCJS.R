@@ -119,19 +119,8 @@ BsurvCJS <- function(DH, model=list(phi~1, p~1), data=NULL, freq=1,
   update(jm, n.iter=burnInSteps)
   codaSamples <- coda.samples(jm, variable.names=wanted, 
                         n.iter= numSavedSteps * thinSteps, thin=thinSteps)
-  # gelman.diag(codaSamples)
-  # effectiveSize(codaSamples)
-
-  out <- as.data.frame(as.matrix(codaSamples))
-  names(out) <- fixNames(names(out))
-  class(out) <- c("Bwiqid", class(out))
-  attr(out, "n.eff") <- effectiveSize(codaSamples)
-  # attr(out, "data") <- mArray ###### ???
-  if(is.na(match("phi", colnames(out)))) {
-    attr(out, "defaultPlot") <- "phi1"
-  } else {
-    attr(out, "defaultPlot") <- "phi"
-  }
-  return(out)
+  return(as.Bwiqid(codaSamples, 
+      header = "Model fitted in JAGS with rjags",
+      defaultPlot = "phi1"))
 }
 

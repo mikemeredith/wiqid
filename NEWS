@@ -2,6 +2,12 @@ TODO
 
   * TRY using Gelman et al 2008 recommendations for priors for logistic coefficients. Update man page for priors.
   
+CHANGES IN 2014-02-07 v.0.0.367
+
+  * Added as.Bwiqid generic and methods for mcmc.list, bugs, rjags, runjags.
+  
+  * Fixed bug in plot.Bwiqid.
+
 CHANGES IN 2014-02-05 v.0.0.366
 
   * New function BsurvCJSautorun, which uses the runjags::autorun.jags function. 'wiqid' now depends on runjags. Experimental: may have to roll back if runjags does not work for everyone.

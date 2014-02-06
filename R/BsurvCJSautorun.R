@@ -125,21 +125,9 @@ BsurvCJSautorun <- function(DH, model=list(phi~1, p~1), data=NULL, freq=1,
   
   # Create the model and run:
   resB <- autorun.jags(modeltext, wanted, jagsData, n.chains=3, inits, ...)
-  codaSamples <- as.mcmc.list(resB)
-  
-  out <- as.data.frame(as.matrix(codaSamples))
-  names(out) <- fixNames(names(out))
-  class(out) <- c("Bwiqid", class(out))
-  attr(out, "header") <- "Model fitted in JAGS with runjags::autorun.jags"
-  attr(out, "n.eff") <- as.data.frame(unclass(resB$mcse))$sseff
-  attr(out, "MCerror") <- as.data.frame(unclass(resB$mcse))$mcse
-  attr(out, "Rhat") <- resB$psrf$psrf[, 1]
-  if(is.na(match("phi", colnames(out)))) {
-    attr(out, "defaultPlot") <- "phi1"
-  } else {
-    attr(out, "defaultPlot") <- "phi"
-  }
-  attr(out, "timing") <- c(start=startTime, end=Sys.time())
-  return(out)
+    
+  return(as.Bwiqid(resB, 
+      header = "Model fitted in JAGS with runjags::autorun.jags",
+      defaultPlot = "phi1"))
 }
 

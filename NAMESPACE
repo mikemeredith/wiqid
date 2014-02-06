@@ -24,7 +24,7 @@ export(
   distChord, distJaccard, distMatching, distMorisitaHorn, distOchiai, distPreston,
   distRogersTanimoto, distSimRatio, distSorensen, distWhittaker,
   AICc, allCombinations, AICtable,
-  hdi, plotPost, postPriorOverlap
+  hdi, plotPost, postPriorOverlap, as.Bwiqid
 )
 
 S3method("print", "wiqid")
@@ -44,5 +44,9 @@ S3method("hdi", "bugs")
 S3method("hdi", "rjags")
 S3method("hdi", "runjags")
 
-S3method("as.data.frame", "runjags")
+S3method("as.Bwiqid", "default")
+S3method("as.Bwiqid", "mcmc.list")
+S3method("as.Bwiqid", "bugs")
+S3method("as.Bwiqid", "rjags")
+S3method("as.Bwiqid", "runjags")
 

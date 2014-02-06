@@ -7,7 +7,7 @@ print.Bwiqid <- function(x, digits=4, ...)  {
   MCerror <- attr(x, "MCerror")
   Rhat <- attr(x, "Rhat")
   n.eff <- attr(x, "n.eff")
-  timing <- attr(x, "timing")
+  timetaken <- attr(x, "timetaken")
 
   toPrint <- cbind(
     mean = colMeans(x),
@@ -38,9 +38,9 @@ print.Bwiqid <- function(x, digits=4, ...)  {
     cat("'Rhat' is the potential scale reduction factor (at convergence, Rhat=1).\n")
   if(!is.null(n.eff))
     cat("'n.eff' is a crude measure of effective sample size.\n")
-  if(!is.null(timing)) {
-    took <- format(round(diff(timing), 1))
-    cat("Run completed at ", format(timing[2]), ", took ", took, ".\n", sep="")
+  if(!is.null(timetaken)) {
+    took <- format(round(timetaken, 1))
+    cat("MCMC sample generation:", took, "\n")
   }
 }
 # .........................................................
@@ -63,17 +63,18 @@ function(x, which=NULL, credMass=0.95,
   if(!inherits(x, "data.frame"))
     stop("x is not a valid Bwiqid object")
 
-  if(is.null(which) && !is.null(attr(x, "defaultPlot")))
+  if(is.null(which)) # && !is.null(attr(x, "defaultPlot")))
       which <- attr(x, "defaultPlot")
-  if(is.na(match(which, colnames(x)))) {
-    warning(paste("Could not find", which, "in the output"))
+  if(is.null(which))
     which <- colnames(x)[1]
-  }   
+  if(is.na(match(which, colnames(x))))
+    warning(paste("Could not find", which, "in the output"))  
 
   # Plot posterior distribution of selected item:
-  plotPost(x[[which]], col="skyblue", credMass=credMass, ROPE=ROPE, showCurve=showCurve,
-                  xlab=which , cex.lab = 1.75 , showMode=FALSE,
-                  compVal=compVal, main=which, ...) 
+  plotPost(x[[which]], col="skyblue", credMass=credMass, ROPE=ROPE,
+                  showCurve=showCurve,
+                  xlab=which, cex.lab = 1.75, showMode=FALSE,
+                  compVal=compVal, ...) 
 
   return(invisible(NULL))
 }
