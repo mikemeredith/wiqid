@@ -14,10 +14,14 @@ function( paramSampleVec, credMass=0.95, compVal=NULL, ROPE=NULL,
   oldpar <- par(xpd=NA) ; on.exit(par(oldpar))
 
   # Plot histogram.
-  if ( is.null(breaks) ) {
-    by <- diff(hdi(paramSampleVec))/18
-    breaks <- unique(c( seq( from=min(paramSampleVec), to=max(paramSampleVec),
-                   by=by), max(paramSampleVec) ))
+  if (is.null(breaks)) {
+    if (all(paramSampleVec == round(paramSampleVec))) {
+      breaks <- seq(min(paramSampleVec), max(paramSampleVec) + 1) - 0.5 
+    } else {
+      by <- diff(hdi(paramSampleVec))/18
+      breaks <- unique(c( seq( from=min(paramSampleVec), to=max(paramSampleVec),
+                     by=by), max(paramSampleVec) ))
+    }
   }
   if ( !showCurve ) {
     histinfo <- hist( paramSampleVec, xlab=xlab, yaxt=yaxt, ylab=ylab,

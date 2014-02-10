@@ -96,4 +96,7 @@ plotPost(tst, col='wheat', border='magenta')
 plotPost(tst, credMass=0.8, ROPE=c(-1,1), xlab="Response variable")
 plotPost(tst, showMode=TRUE, showCurve=TRUE, compVal=5.5)
 
+# For integers:
+tst <- rpois(1e5, 12)
+plotPost(tst)
 }

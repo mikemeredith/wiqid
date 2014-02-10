@@ -2,6 +2,10 @@ TODO
 
   * TRY using Gelman et al 2008 recommendations for priors for logistic coefficients. Update man page for priors.
   
+CHANGES IN 2014-02-10 v.0.0.368
+
+  * plotPost deals properly with a vector of integers.
+  
 CHANGES IN 2014-02-07 v.0.0.367
 
   * Added as.Bwiqid generic and methods for mcmc.list, bugs, rjags, runjags.
