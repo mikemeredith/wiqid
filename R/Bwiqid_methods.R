@@ -47,7 +47,7 @@ print.Bwiqid <- function(x, digits=4, ...)  {
 
 plot.Bwiqid <-
 function(x, which=NULL, credMass=0.95,
-                    ROPE=NULL, compVal=NULL, showCurve=FALSE, ...) {
+           ROPE=NULL, compVal=NULL, showCurve=FALSE,  showMode=FALSE, ...) {
   # This function plots the posterior distribution for one selected item. 
   # Description of arguments:
   # x is mcmc.list object of the type returned by B* functions in 'wiqid'.
@@ -62,20 +62,24 @@ function(x, which=NULL, credMass=0.95,
   # Sanity checks:
   if(!inherits(x, "data.frame"))
     stop("x is not a valid Bwiqid object")
+    
+  # Deal with ... argument
+  dots <- list(...)
+  if(length(dots) == 1 && class(dots[[1]]) == "list")
+    dots <- dots[[1]]
 
   if(is.null(which)) # && !is.null(attr(x, "defaultPlot")))
       which <- attr(x, "defaultPlot")
   if(is.null(which))
     which <- colnames(x)[1]
   if(is.na(match(which, colnames(x))))
-    warning(paste("Could not find", which, "in the output"))  
-
+    stop(paste("Could not find", which, "in the output"))  
+  if(is.null(dots$xlab))
+    dots$xlab <- which
   # Plot posterior distribution of selected item:
-  plotPost(x[[which]], col="skyblue", credMass=credMass, ROPE=ROPE,
-                  showCurve=showCurve,
-                  xlab=which, cex.lab = 1.75, showMode=FALSE,
-                  compVal=compVal, ...) 
+  out <- plotPost(x[[which]], credMass=credMass, ROPE=ROPE, compVal=compVal,
+                  showCurve=showCurve, showMode=showMode, pars=dots)
 
-  return(invisible(NULL))
+  return(invisible(out))
 }
 

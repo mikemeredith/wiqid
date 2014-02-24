@@ -14,7 +14,7 @@ There are a number of sophisticated programs for the analysis of wildlife data, 
 
 We now use \pkg{wiqid} in basic wildlife study design and data analysis workshops, where we want to focus on the concepts behind occupancy, mark-recapture, survival, etc. and study design issues. Participants have used \code{lm}, \code{glm} and functions in the \code{secr} and \code{BEST} packages. So  \pkg{wiqid} tries to match the look and feel of these functions.
 
-All functions use standard data frames or matrices for data input. ML estimation function return objects of class \code{wiqid} with parameter estimates on the transformed scale(usually logit functions), variance-covariance matrix, and back-transformed `real' values; there are \code{print} and \code{logLik} methods. Bayesian functions (distinguished by an initial "B") return class \code{Bwiqid} objects, a data frame with a column of MCMC observations for each parameter, plus attributes for \code{sampleSize}; there are \code{print} and \code{plot} methods.
+All functions use standard data frames or matrices for data input. ML estimation functions return objects of class \code{wiqid} with parameter estimates on the transformed scale(usually logit functions), variance-covariance matrix, and back-transformed `real' values; there are \code{print} and \code{logLik} methods. Bayesian functions (distinguished by an initial "B") return class \code{Bwiqid} objects, a data frame with a column of MCMC observations for each parameter, plus attributes for MCMC diagnostics; there are \code{print} and \code{plot} methods.
 
 Simulations and bootstraps often generate weird data sets, eg. capture histories with no captures. These functions do not throw errors or give warnings if the data are weird, but return NAs if estimates cannot be calculated. Errors may still occur if the data are impossible, eg. 6 detections in 5 occasions.
 
@@ -159,7 +159,8 @@ All of these functions produce distance measures (not similarity) on a scale of 
   \code{\link{allCombinations}} \tab model formulae for combinations of covariates \cr
   \code{\link{hdi}} \tab calculate Highest Density Intervals of a distribution \cr
   \code{\link{plotPost}} \tab graphic display of a posterior distribution \cr
-  \code{\link{postPriorOverlap}} \tab calculation and display of posterior/prior overlap }
+  \code{\link{postPriorOverlap}} \tab calculation and display of posterior/prior overlap \cr
+  \code{\link{as.Bwiqid}} \tab converts a range of classes of MCMC output to class \code{Bwiqid} so that code[wiqid]'s print and plot functions can be used. }
 }
 
 \author{

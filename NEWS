@@ -2,6 +2,12 @@ TODO
 
   * TRY using Gelman et al 2008 recommendations for priors for logistic coefficients. Update man page for priors.
   
+  * switch to runjags::autorun.jags
+  
+CHANGES IN 2014-02-24 v.0.0.369
+
+  * plotPost and the plot.Bwiqid method now make full use of the ... argument for additional graphical parameters. They also return an object of class 'histogram'. 
+
 CHANGES IN 2014-02-10 v.0.0.368
 
   * plotPost deals properly with a vector of integers.
