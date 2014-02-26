@@ -47,7 +47,7 @@ Several R packages provide interfaces with WinBUGS, OpenBUGS or JAGS, and have t
 
 }
 \value{
-An object of class \code{Bwiqid}. This is a data frame with a column for the MCMC chain for each parameter. Column names are stripped of square brackets and commas are replaced with dots, so (eg) \code{p[1, 1]} becomes \code{p1.1}.
+An object of class \code{Bwiqid}. This is a data frame with a column for the MCMC chain for each parameter. Column names are stripped of square brackets, and commas are replaced with dots, so (eg) \code{p[1, 1]} becomes \code{p1.1}.
 
 Any of the following attributes may be present:
 

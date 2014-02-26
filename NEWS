@@ -4,7 +4,11 @@ TODO
   
   * switch to runjags::autorun.jags
   
+CHANGES IN 2014-02-26 v.0.0.371
+  
   * Enhancements to plots: credMass = NULL to suppress plotting. Show discontinuous HDI in showCurve = TRUE plots.
+  
+  * help pages for print.Bwiqid and plot.Bwiqid added.
   
 CHANGES IN 2014-02-24 v.0.0.370
 

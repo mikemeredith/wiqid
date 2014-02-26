@@ -46,6 +46,18 @@ function( paramSampleVec, credMass=0.95, compVal=NULL, ROPE=NULL,
     plotArgs$y <- densCurve$y
     plotArgs$type <- "l"
     do.call(plot, plotArgs)
+    abline(h=0, col='grey')
+    # Display the HDI.
+    if(!is.null(credMass)) {
+      HDI <- hdi(densCurve, credMass, combine=FALSE)
+      ht <- attr(HDI, "height")
+      segments(HDI[, 1], ht, HDI[, 2], ht, lwd=4, lend='butt')
+      segments(HDI, 0, HDI, ht, lty=2)
+      text( mean(HDI), ht, bquote(.(100*credMass) * "% HDI" ),
+            adj=c(.5,-1.7), cex=useArgs$cex )
+      text( HDI, ht, bquote(.(signif(HDI, 3))),
+            pos=3, cex=useArgs$cex )
+    }
   } else {
     selPlot <- names(useArgs) %in%
       c(names(as.list(args(graphics:::plot.histogram))),
@@ -54,12 +66,21 @@ function( paramSampleVec, credMass=0.95, compVal=NULL, ROPE=NULL,
     plotArgs$lwd <- 1
     plotArgs$x <- histinfo
     do.call(plot, plotArgs)
+    # Display the HDI.
+    if(!is.null(credMass)) {
+      HDI <- hdi( paramSampleVec, credMass )
+      lines(HDI, c(0,0), lwd=4, lend='butt')
+      text( mean(HDI), 0, bquote(.(100*credMass) * "% HDI" ),
+            adj=c(.5,-1.7), cex=useArgs$cex )
+      text( HDI[1], 0, bquote(.(signif(HDI[1],3))),
+            adj=c(HDItextPlace,-0.5), cex=useArgs$cex )
+      text( HDI[2], 0, bquote(.(signif(HDI[2],3))),
+            adj=c(1.0-HDItextPlace,-0.5), cex=useArgs$cex )
+    }
   }
 
-  cenTendHt <- 0.9*max(histinfo$density)
-  cvHt <- 0.7*max(histinfo$density)
-  ROPEtextHt <- 0.55*max(histinfo$density)
   # Display mean or mode:
+  cenTendHt <- 0.9 * max(histinfo$density)
   if ( showMode==FALSE ) {
       meanParam <- mean( paramSampleVec )
       text( meanParam, cenTendHt,
@@ -72,6 +93,7 @@ function( paramSampleVec, credMass=0.95, compVal=NULL, ROPE=NULL,
   }
   # Display the comparison value.
   if ( !is.null( compVal ) ) {
+    cvHt <- 0.7 * max(histinfo$density)
     cvCol <- "darkgreen"
     pcgtCompVal <- round( 100 * sum( paramSampleVec > compVal )
                           / length( paramSampleVec ) , 1 )
@@ -85,6 +107,7 @@ function( paramSampleVec, credMass=0.95, compVal=NULL, ROPE=NULL,
   }
   # Display the ROPE.
   if ( !is.null( ROPE ) ) {
+    ROPEtextHt <- 0.55 * max(histinfo$density)
     ropeCol <- "darkred"
      pcInROPE <- ( sum( paramSampleVec > ROPE[1] & paramSampleVec < ROPE[2] )
                           / length( paramSampleVec ) )
@@ -96,15 +119,6 @@ function( paramSampleVec, credMass=0.95, compVal=NULL, ROPE=NULL,
            bquote( .(round(100*pcInROPE))*"% in ROPE" ),
            adj=c(.5,0), cex=1, col=ropeCol )
   }
-  # Display the HDI.
-  HDI <- hdi( paramSampleVec, credMass )
-  lines(HDI, c(0,0), lwd=4, lend='butt')
-  text( mean(HDI), 0, bquote(.(100*credMass) * "% HDI" ),
-        adj=c(.5,-1.7), cex=useArgs$cex )
-  text( HDI[1], 0, bquote(.(signif(HDI[1],3))),
-        adj=c(HDItextPlace,-0.5), cex=useArgs$cex )
-  text( HDI[2], 0, bquote(.(signif(HDI[2],3))),
-        adj=c(1.0-HDItextPlace,-0.5), cex=useArgs$cex )
 
   return(invisible(histinfo))
 }

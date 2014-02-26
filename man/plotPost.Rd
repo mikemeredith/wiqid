@@ -15,7 +15,7 @@ plotPost(paramSampleVec, credMass = 0.95, compVal = NULL, ROPE = NULL,
 A vector of samples drawn from the target distribution.
 }
   \item{credMass}{
-the probability mass to include in credible intervals.
+the probability mass to include in credible intervals; set to NULL to suppress plotting of credible intervals.
 }
   \item{compVal}{
 a value for comparison with those plotted.
@@ -66,4 +66,11 @@ plotPost(tst, showMode=TRUE, showCurve=TRUE, compVal=5.5)
 # For integers:
 tst <- rpois(1e5, 12)
 plotPost(tst)
+
+# A severely bimodal distribution:
+tst2 <- c(rnorm(1e5), rnorm(5e4, 7))
+plotPost(tst2)                  # A valid 95% CrI, but not HDI
+plotPost(tst2, showCurve=TRUE)  # Correct 95% HDI
+
 }
+\keyword{hplot}
