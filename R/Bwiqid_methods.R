@@ -1,4 +1,4 @@
-# Print method for class Bwiqid, ie. MCMC output
+# Print and plot methods for class Bwiqid, ie. MCMC output
 
 print.Bwiqid <- function(x, digits=4, ...)  {
   if(!inherits(x, "data.frame"))
@@ -47,7 +47,8 @@ print.Bwiqid <- function(x, digits=4, ...)  {
 
 plot.Bwiqid <-
 function(x, which=NULL, credMass=0.95,
-           ROPE=NULL, compVal=NULL, showCurve=FALSE,  showMode=FALSE, ...) {
+          ROPE=NULL, compVal=NULL, showCurve=FALSE,  showMode=FALSE,
+          shadeHDI=NULL, ...) {
   # This function plots the posterior distribution for one selected item. 
   # Description of arguments:
   # x is mcmc.list object of the type returned by B* functions in 'wiqid'.
@@ -78,7 +79,8 @@ function(x, which=NULL, credMass=0.95,
     dots$xlab <- which
   # Plot posterior distribution of selected item:
   out <- plotPost(x[[which]], credMass=credMass, ROPE=ROPE, compVal=compVal,
-                  showCurve=showCurve, showMode=showMode, pars=dots)
+                  showCurve=showCurve, showMode=showMode, shadeHDI=shadeHDI,
+                  graphicPars=dots)
 
   return(invisible(out))
 }

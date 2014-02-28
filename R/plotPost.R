@@ -1,9 +1,10 @@
 # Function taken from package BEST, original code by John Kruschke.
-# Modified by Mike to make best use of ... argument
+# Modified by Mike to make best use of ... argument and various other enhancements.
 
 plotPost <-
 function( paramSampleVec, credMass=0.95, compVal=NULL, ROPE=NULL, 
-           HDItextPlace=0.7, showMode=FALSE, showCurve=FALSE, ... ) {
+           HDItextPlace=0.7, showMode=FALSE, showCurve=FALSE,
+           shadeHDI=NULL, ... ) {
 
   # Does a plot for a single parameter. Called by plot.Bwiqid but also exported. 
   # Returns a histogram object invisibly.
@@ -49,19 +50,31 @@ function( paramSampleVec, credMass=0.95, compVal=NULL, ROPE=NULL,
     abline(h=0, col='grey')
     # Display the HDI.
     if(!is.null(credMass)) {
-      HDI <- hdi(densCurve, credMass, combine=FALSE)
+      HDI <- hdi(densCurve, credMass, allowSplit=TRUE)
       ht <- attr(HDI, "height")
+      if(!is.null(shadeHDI))  {
+        for (i in 1:nrow(HDI)) {
+          inHDI <- which(densCurve$x >= HDI[i, 1] & densCurve$x <= HDI[i, 2])
+          polyx <- c(HDI[i, 1], densCurve$x[inHDI], HDI[i, 2])
+          polyy <- c(0, densCurve$y[inHDI], 0)
+          polygon(polyx, polyy, border=NA, col=shadeHDI)
+        }
+      } else {
+        segments(HDI, 0, HDI, ht, lty=2)
+      }
+      do.call(lines, plotArgs)
       segments(HDI[, 1], ht, HDI[, 2], ht, lwd=4, lend='butt')
-      segments(HDI, 0, HDI, ht, lty=2)
       text( mean(HDI), ht, bquote(.(100*credMass) * "% HDI" ),
             adj=c(.5,-1.7), cex=useArgs$cex )
       text( HDI, ht, bquote(.(signif(HDI, 3))),
             pos=3, cex=useArgs$cex )
     }
   } else {
+    plot.histogram.args.names <- c("freq", "density", "angle", "border",
+      "main", "sub", "xlab", "ylab", "xlim", "ylim", "axes", "labels", 
+      "add") # plot.histogram not exported, so need to cheat!
     selPlot <- names(useArgs) %in%
-      c(names(as.list(args(graphics:::plot.histogram))),
-          names(par(no.readonly=TRUE)))
+      c(plot.histogram.args.names, names(par(no.readonly=TRUE)))
     plotArgs <- useArgs[selPlot]
     plotArgs$lwd <- 1
     plotArgs$x <- histinfo

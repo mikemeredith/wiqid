@@ -4,9 +4,15 @@ TODO
   
   * switch to runjags::autorun.jags
   
+CHANGES IN 2014-02-28 v.0.0.372
+
+  * Density plot functions gain an argument shadeHDI to shade the area under the
+  curve corresponding to the HDI.
+
 CHANGES IN 2014-02-26 v.0.0.371
   
-  * Enhancements to plots: credMass = NULL to suppress plotting. Show discontinuous HDI in showCurve = TRUE plots.
+  * Enhancements to plots: credMass = NULL to suppress plotting. Show
+  discontinuous HDI in showCurve = TRUE plots.
   
   * help pages for print.Bwiqid and plot.Bwiqid added.
   

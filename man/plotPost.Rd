@@ -8,7 +8,7 @@ Plot the posterior probability distribution for a single parameter from a vector
 }
 \usage{
 plotPost(paramSampleVec, credMass = 0.95, compVal = NULL, ROPE = NULL,
-  HDItextPlace = 0.7, showMode = FALSE, showCurve = FALSE, ...)
+  HDItextPlace = 0.7, showMode = FALSE, showCurve = FALSE, shadeHDI = NULL, ...)
 }
 \arguments{
   \item{paramSampleVec}{
@@ -31,6 +31,9 @@ logical: if TRUE, the mode is displayed instead of the mean.
 }
   \item{showCurve}{
 logical: if TRUE, the posterior density will be represented by a kernel density function instead of a histogram.
+}
+  \item{shadeHDI}{
+specifies a colour to shade the area under the curve corresponding to the HDI; NULL for no shading. Ignored if \code{showCurve = FALSE}. Use\code{colours()} to see a list of possible colours.
 }
   \item{\dots}{
 graphical parameters and the \code{breaks} parameter for the histogram.
@@ -71,6 +74,7 @@ plotPost(tst)
 tst2 <- c(rnorm(1e5), rnorm(5e4, 7))
 plotPost(tst2)                  # A valid 95% CrI, but not HDI
 plotPost(tst2, showCurve=TRUE)  # Correct 95% HDI
+plotPost(tst2, showCurve=TRUE, shadeHDI='pink') 
 
 }
 \keyword{hplot}

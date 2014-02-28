@@ -9,7 +9,8 @@ Method to display a plot showing the posterior probability distribution of one o
 \usage{
    
 \method{plot}{Bwiqid}(x, which=NULL, credMass=0.95,
-           ROPE=NULL, compVal=NULL, showCurve=FALSE,  showMode=FALSE, ...)
+           ROPE=NULL, compVal=NULL, showCurve=FALSE,
+           showMode=FALSE, shadeHDI=NULL,  ...)
 }
 \arguments{
   \item{x}{
@@ -32,6 +33,9 @@ logical: if TRUE, the posterior density will be represented by a kernel density 
 }
   \item{showMode}{
 logical: if TRUE, the mode of the posterior density will be shown instead of the mean.
+}
+  \item{shadeHDI}{
+specifies a colour to shade the area under the curve corresponding to the HDI; NULL for no shading. Ignored if \code{showCurve = FALSE}. Use\code{colours()} to see a list of possible colours.
 }
   \item{...}{
 other graphical parameters.
