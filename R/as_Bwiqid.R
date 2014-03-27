@@ -15,6 +15,7 @@ as.Bwiqid.mcmc.list <- function(object, header, defaultPlot, ...) {
   class(out) <- c("Bwiqid", class(out))
   if(!missing(header))
     attr(out, "header") <- header
+  attr(out, "n.chains") <- length(object)
   attr(out, "n.eff") <- effectiveSize(object)
   attr(out, "Rhat") <- gelman.diag(object, multivariate=FALSE)$psrf[, 1]
   if(!missing("defaultPlot"))
@@ -30,6 +31,7 @@ as.Bwiqid.bugs <- function(object, header, defaultPlot, ...) {
   if(missing(header))
     header <- paste("Model fitted in", object$program)
   attr(out, "header") <- header
+  attr(out, "n.chains") <- object$n.chains
   attr(out, "n.eff") <- object$summary[, 'n.eff']
   attr(out, "Rhat") <- object$summary[, 'Rhat']
   if(!missing("defaultPlot"))
@@ -45,6 +47,7 @@ as.Bwiqid.rjags <- function(object, header, defaultPlot, ...) {
   if(missing(header))
     header <- "Model fitted in JAGS with R2jags"
   attr(out, "header") <- header
+  attr(out, "n.chains") <- object$BUGSoutput$n.chains
   attr(out, "n.eff") <- object$BUGSoutput$summary[, 'n.eff']
   attr(out, "Rhat") <- object$BUGSoutput$summary[, 'Rhat']
   if(!missing("defaultPlot"))
@@ -60,6 +63,7 @@ as.Bwiqid.runjags <- function(object, header, defaultPlot, ...) {
   if(missing(header))
     header <- "Model fitted in JAGS with runjags"
   attr(out, "header") <- header
+  attr(out, "n.chains") <- length(object$mcmc)
   attr(out, "n.eff") <- as.data.frame(unclass(object$mcse))$sseff
   attr(out, "MCerror") <- as.data.frame(unclass(object$mcse))$mcse
   attr(out, "Rhat") <- object$psrf$psrf[, 1]

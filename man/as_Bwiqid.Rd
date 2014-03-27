@@ -53,6 +53,7 @@ Any of the following attributes may be present:
 
   \tabular{ll}{
   \code{header} \tab text to be displayed as the first line when the object is printed. \cr
+  \code{n.chains} \tab  the number of chains. \cr
   \code{n.eff} \tab  a vector of effective sample sizes for the parameters. \cr
   \code{MCerror} \tab a vector with Monte Carlo errors for the parameters. \cr
   \code{Rhat} \tab a vector with potential scale reduction factors for the parameters. \cr
