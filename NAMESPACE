@@ -24,7 +24,7 @@ export(
   distChord, distJaccard, distMatching, distMorisitaHorn, distOchiai, distPreston,
   distRogersTanimoto, distSimRatio, distSorensen, distWhittaker,
   AICc, allCombinations, AICtable,
-  hdi, plotPost, postPriorOverlap, as.Bwiqid
+  hdi, plotPost, postPriorOverlap, as.Bwiqid, tracePlot, densityPlot, acfPlot
 )
 
 S3method("print", "wiqid")
