@@ -4,10 +4,14 @@ TODO
   
   * switch to runjags::autorun.jags
   
+CHANGES IN 2014-03-01 v.0.0.373
+
+  * bug fix in postPlot
+
 CHANGES IN 2014-02-28 v.0.0.372
 
   * Density plot functions gain an argument shadeHDI to shade the area under the
-  curve corresponding to the HDI.
+  curve corresponding to the HDI (wish of Joshua Pandong).
 
 CHANGES IN 2014-02-26 v.0.0.371
   

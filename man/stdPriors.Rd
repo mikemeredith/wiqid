@@ -1,6 +1,7 @@
 \name{Priors}
 \alias{Priors}
 \alias{Standardisation}
+\alias{Standardization}
 
 \title{ Standardisation and priors }
 
