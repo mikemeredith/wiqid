@@ -1,4 +1,4 @@
-# Print and plot methods for class Bwiqid, ie. MCMC output
+# Print, plot and window methods for class Bwiqid, ie. MCMC output
 
 print.Bwiqid <- function(x, digits=4, ...)  {
   if(!inherits(x, "data.frame"))
@@ -85,3 +85,36 @@ function(x, which=NULL, credMass=0.95,
   return(invisible(out))
 }
 
+# .........................................................
+
+window.Bwiqid <- function(x, start=NULL, end=NULL, thin=1, ...)  {
+  if(!inherits(x, "Bwiqid"))
+    stop("x is not a valid Bwiqid object")
+  n.chains <- attr(x, "n.chains")
+  if(is.null(n.chains) || nrow(x) %% n.chains != 0)
+    stop("n.chains attribute of x is missing or invalid.")
+  chain.length <- nrow(x) / n.chains
+  if(is.null(start) || start > chain.length)
+    start <- 1
+  if(is.null(end) || end > chain.length || end <= start)
+    end <- chain.length
+  if(start < 1 || end < 1 || thin < 1)
+    stop("Arguments start, end, and thin must be integers > 1")
+
+  x_new <- vector('list', ncol(x))
+  for( i in 1:ncol(x)) {
+    mat <- matrix(x[, i], ncol=n.chains)
+    mat_new <- mat[seq(start, end, by=thin), ]
+    x_new[[i]] <- as.vector(mat_new)
+  }
+  names(x_new) <- colnames(x)
+  x_df <- as.data.frame(x_new)
+  rownames(x_df) <- NULL
+  class(x_df) <- class(x)
+  attr(x_df, "header") <- attr(x, "header")
+  attr(x_df, "n.chains") <- attr(x, "n.chains") 
+  attr(x_df, "defaultPlot") <- attr(x, "defaultPlot")
+  attr(x_df, "timetaken") <- attr(x, "timetaken")
+
+  return(x_df)
+}

@@ -1,6 +1,6 @@
 # NAMESPACE for package 'wiqid'
 
-importFrom(stats, nobs, logLik, update)
+importFrom(stats, nobs, logLik, update, window)
 importFrom(rjags, jags.model, coda.samples)
 importFrom(runjags, autorun.jags)
 importFrom(coda, effectiveSize)
@@ -34,6 +34,7 @@ S3method("AICc", "default")
 
 S3method("print", "Bwiqid")
 S3method("plot", "Bwiqid")
+S3method("window", "Bwiqid")
 
 S3method("hdi", "default")
 S3method("hdi", "matrix")

@@ -6,9 +6,11 @@ TODO
   
   * check that character strings used as models are coerced to formulae internally.
   
-CHANGES IN 2014-03-27 v.0.0.374
+CHANGES IN 2014-03-28 v.0.0.374
   
   * new diagnostic plots for Bwiqid objects: tracePlot, densityPlot and acfPlot; class Bwiqid objects get an attribute 'n.chains' to enable this.
+  
+  * window.Bwiqid added.
   
 CHANGES IN 2014-03-01 v.0.0.373
 

@@ -31,8 +31,7 @@ Maximum lag at which to calculate the acf; see \code{\link{acf}}.
 Additional graphical parameters.
 }
 }
-\details{
-}
+
 \value{
 Return NULL invisibly. Used for their plotting side-effects.
 }
