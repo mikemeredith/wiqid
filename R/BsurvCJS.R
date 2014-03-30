@@ -2,8 +2,10 @@
 
 # Bayesian version of CJS models
 
+# This uses runjags
+
 BsurvCJS <- function(DH, model=list(phi~1, p~1), data=NULL, freq=1,
-    numSavedSteps=1e4, thinSteps=1, burnInSteps = 1e3, priorOnly=FALSE) {
+    priorOnly=FALSE, ...) {
   # phi(t) p(t) model or models with time covariates for Cormack-Joly-Seber
   # estimation of apparent survival.
   # ** DH is detection history matrix/data frame, animals x occasions.
@@ -13,6 +15,11 @@ BsurvCJS <- function(DH, model=list(phi~1, p~1), data=NULL, freq=1,
   # ** data a data frame with the covariates.
   # ** ci is required confidence interval.
 
+  stopifnot(testjags(silent=TRUE)$JAGS.found)
+  if (detectCores() > 3)
+    runjags.options("method"="parallel")
+
+  
   # Sanity checks:
   if (priorOnly)
     warning("The prior distributions will be produced, not the posterior distributions!")
@@ -63,8 +70,6 @@ BsurvCJS <- function(DH, model=list(phi~1, p~1), data=NULL, freq=1,
   start <- res$estimate
 
   # Do the model:
-  modelFile <- tempfile(pattern = "model", tmpdir = tempdir(), fileext = ".txt")
-  # modelFile <- "model.txt"
   modeltext <- "
     model{
       # priors for beta parameters
@@ -103,7 +108,6 @@ BsurvCJS <- function(DH, model=list(phi~1, p~1), data=NULL, freq=1,
       }
     }
   "
-  writeLines(modeltext, con=modelFile)
     
    # organise the data:
   jagsData <- list(nocc = ncol(mArray), rel=rowSums(mArray), 
@@ -113,14 +117,12 @@ BsurvCJS <- function(DH, model=list(phi~1, p~1), data=NULL, freq=1,
       
   inits <- function() {list(phiBeta = start[1:phiK], pBeta = start[(phiK+1):K])}
   wanted <- c("phi", "p")
-  # Create the model and run:
-  jm <-jags.model(modelFile, jagsData, inits,
-            n.chains = 3, n.adapt=1000, quiet=FALSE)
-  update(jm, n.iter=burnInSteps)
-  codaSamples <- coda.samples(jm, variable.names=wanted, 
-                        n.iter= numSavedSteps * thinSteps, thin=thinSteps)
-  return(as.Bwiqid(codaSamples, 
-      header = "Model fitted in JAGS with rjags",
+  
+  # Run the model:
+  resB <- autorun.jags(modeltext, wanted, jagsData, n.chains=3, inits, ...)
+    
+  return(as.Bwiqid(resB, 
+      header = "Model fitted in JAGS with runjags::autorun.jags",
       defaultPlot = "phi1"))
 }
 

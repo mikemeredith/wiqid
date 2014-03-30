@@ -43,7 +43,15 @@ Mike Meredith
 \code{\link{plotPost}} for a histogram and summary statistics.
 }
 \examples{
-# TO DO. Need a data set which is Bwiqid output
+# Create a fake Bwiqid object:
+fake <- data.frame(mu = rnorm(3000), sigma=rlnorm(3000))
+class(fake) <- c("Bwiqid", "data.frame")
+attr(fake, "n.chains") <- 3
+fake
+
+tracePlot(fake)
+densityPlot(fake, col=1:5, lwd=2)
+acfPlot(fake, lag.max=10)
 
 }
 \keyword{hplot}

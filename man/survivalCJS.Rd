@@ -2,12 +2,11 @@
 \alias{survCJS}
 \alias{survCJSaj}
 \alias{BsurvCJS}
-\alias{BsurvCJSautorun}
 \title{
 Survival from recapture data
 }
 \description{
-Calculation of apparent survival (accounting for recapture probability) from mark-recapture data, with time-dependent phi or p, possibly with covariates. Function \code{survCHSaj} allows for different survival parameters for juveniles and adults. \code{BsurvCJS} is a Bayesian version, while \code{BsurvCJSautorun} is an experimental function using \code{runjags::autorun.jags}.
+Calculation of apparent survival (accounting for recapture probability) from mark-recapture data, with time-dependent phi or p, possibly with covariates. Function \code{survCHSaj} allows for different survival parameters for juveniles and adults. \code{BsurvCJS} is a Bayesian version.
 }
 \usage{
 survCJS(DH, model=list(phi~1, p~1), data=NULL, freq=1, ci = 0.95)
@@ -16,9 +15,6 @@ survCJSaj(DHj, DHa=NULL, model=list(phiJ~1, phiA~1, p~1), data=NULL,
     freqj=1, freqa=1, ci = 0.95)
 
 BsurvCJS(DH, model=list(phi~1, p~1), data = NULL, freq=1,
-    numSavedSteps=1e4, thinSteps=1, burnInSteps = 1e3, priorOnly=FALSE) 
-    
-BsurvCJSautorun(DH, model=list(phi~1, p~1), data = NULL, freq=1,
     priorOnly=FALSE, ...) 
 
 }
@@ -44,15 +40,6 @@ frequencies of each detection history in DHj and DHa; freqa is ignored if DHa = 
   \item{ci}{
 the required confidence interval.
 }
-  \item{numSavedSteps}{
-the number of MCMC observations to be returned.
-}
-  \item{thinSteps}{
-thinning rate. If set to n > 1, one value in n steps of the MCMC chain is returned. This is useful if autocorrelation is high.
-}
-  \item{burnInSteps}{
-number of steps to discard as burn-in at the beginning of the chain.
-}
   \item{priorOnly}{
 if TRUE, the function produces random draws from the appropriate \emph{prior} distributions, with a warning.
 }
@@ -72,7 +59,7 @@ further arguments passed to \code{\link{autorun.jags}}.
   
 There are \code{print}, \code{logLik}, and \code{nobs} methods for class \code{wiqid}.
 
-\code{BsurvCJS} and \code{BsurvCJSautorun} return an object of class \code{Bwiqid}, a data frame with columns for each p and psi value containing the series of MCMC samples, and attributes for details of the MCMC run.
+\code{BsurvCJS} returns an object of class \code{Bwiqid}, a data frame with columns for each p and psi value containing the series of MCMC samples, and attributes for details of the MCMC run.
 }
 \references{
 Lebreton, J-D; K P Burnham; J Clobert; D R Anderson. 1992. Modeling survival and testing biological hypotheses using marked animals: a unified approach with case studies. \emph{Ecological Monographs} 62:67-118.

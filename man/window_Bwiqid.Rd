@@ -4,9 +4,7 @@
 Time windows for 'Bwiqid' objects
 }
 \description{
-\code{window.Bwiqid} is a method for \code{Bwiqid} objects for the \code{window} generic function.
-
-It extracts the subset of the observations between \code{start} and \code{end}. Setting \code{thin = k} selects every \code{k}th observation starting from \code{start}.
+\code{window.Bwiqid} is a method for \code{Bwiqid} objects for the \code{window} generic function. It extracts the subset of the observations between \code{start} and \code{end}. Setting \code{thin = k} selects every \code{k}th observation starting from \code{start}.
 }
 \usage{
 \method{window}{Bwiqid}(x, start=NULL, end=NULL, thin=1, ...)
@@ -40,6 +38,14 @@ Mike Meredith.
 }
 
 \examples{
-# TO DO
+# Create a fake Bwiqid object:
+fake <- data.frame(mu = rnorm(3000), sigma=rlnorm(3000))
+class(fake) <- c("Bwiqid", "data.frame")
+attr(fake, "n.chains") <- 3
+fake
+
+new <- window(fake, start=501, thin=10)
+dim(new)
+new
 }
 \keyword{methods}

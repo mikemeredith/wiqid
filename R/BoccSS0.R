@@ -2,11 +2,15 @@
 # Bayes version of single-season occupancy model with no covariates
 
 BoccSS0 <-
-function(y, n, numSavedSteps=1e4, thinSteps=1, burnInSteps = 1e3, priorOnly=FALSE) {
+function(y, n, priorOnly=FALSE, ...) {
   # n is a vector with the number of occasions at each site.
   # y is a vector with the number of detections at each site.
   # ci is the required confidence interval.
   
+  stopifnot(testjags(silent=TRUE)$JAGS.found)
+  if (detectCores() > 3)
+    runjags.options("method"="parallel")
+
   if (priorOnly)
     warning("The prior distributions will be produced, not the posterior distributions!")
 
@@ -16,8 +20,7 @@ function(y, n, numSavedSteps=1e4, thinSteps=1, burnInSteps = 1e3, priorOnly=FALS
     n <- rep(n, length(y))
 
   # Define the model
-  modelFile <- tempfile(pattern = "model", tmpdir = tempdir(), fileext = ".txt")
-  model <- "
+  modeltext <- "
     model {
 
       # Priors
@@ -30,7 +33,6 @@ function(y, n, numSavedSteps=1e4, thinSteps=1, burnInSteps = 1e3, priorOnly=FALS
         y[i] ~ dbinom(z[i] * p, n[i])
       }
     } "
-  writeLines(model, con=modelFile)
 
   # Prepare the bits:
   jagsData <- list(n=n, R=length(y))
@@ -39,17 +41,10 @@ function(y, n, numSavedSteps=1e4, thinSteps=1, burnInSteps = 1e3, priorOnly=FALS
   inits <- list(psi=start[1], p=start[2], z=(y > 0)*1)
   wanted <- c("psi", "p")
   
-  # Create the model and run:
-  jm <-jags.model(modelFile, jagsData, inits,
-            n.chains = 1, n.adapt=1000, quiet=FALSE)
-  update(jm, n.iter=burnInSteps)
-  codaSamples <- coda.samples(jm, variable.names=wanted, 
-                        n.iter= numSavedSteps * thinSteps, thin=thinSteps)
+  # Run the model:
+  resB <- autorun.jags(modeltext, wanted, jagsData, n.chains=3, inits, ...)
   
-  out <- as.data.frame(as.matrix(codaSamples))
-  class(out) <- c("Bwiqid", class(out))
-  attr(out, "n.eff") <- effectiveSize(codaSamples)
-  attr(out, "data") <- list(y = y, n = n)
-  attr(out, "defaultPlot") <- "psi"
-  return(out)
+  return(as.Bwiqid(resB, 
+      header = "Model fitted in JAGS with runjags::autorun.jags",
+      defaultPlot = "psi"))
 }

@@ -160,7 +160,9 @@ All of these functions produce distance measures (not similarity) on a scale of 
   \code{\link{hdi}} \tab calculate Highest Density Intervals of a distribution \cr
   \code{\link{plotPost}} \tab graphic display of a posterior distribution \cr
   \code{\link{postPriorOverlap}} \tab calculation and display of posterior/prior overlap \cr
-  \code{\link{as.Bwiqid}} \tab converts a range of classes of MCMC output to class \code{Bwiqid} so that \code{wiqid}'s print and plot functions can be used. }
+  \code{\link{as.Bwiqid}} \tab converts a range of classes of MCMC output to class \code{Bwiqid} so that \code{wiqid}'s print and plot functions can be used. \cr
+  \code{\link{diagnostic plots}} \tab trace, density, and auto-correlation plots for MCMC output.
+  }
 }
 
 \author{

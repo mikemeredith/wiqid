@@ -15,7 +15,7 @@ Single-season occupancy estimation using MCMC
 Functions to estimate occupancy from detection/non-detection data for a single season using MCMC methods and JAGS. 
 }
 \usage{
-BoccSS0(y, n, numSavedSteps=1e4, thinSteps=1, burnInSteps = 1e3, priorOnly=FALSE)
+BoccSS0(y, n, priorOnly=FALSE, ...)
 
 }
 \arguments{
@@ -25,17 +25,11 @@ a vector with the number of detections at each site.
   \item{n}{
 a scalar or vector with the number of visits (survey occasions) at each site.
 }
-  \item{numSavedSteps}{
-the number of MCMC observations to be returned.
-}
-  \item{thinSteps}{
-thinning rate. If set to n > 1, one value in n steps of the MCMC chain is returned. This is useful if autocorrelation is high.
-}
-  \item{burnInSteps}{
-number of steps to discard as burn-in at the beginning of the chain.
-}
   \item{priorOnly}{
 if TRUE, the function produces random draws from the appropriate \emph{prior} distributions, with a warning.
+}
+  \item{...}{
+further arguments passed to \code{\link{autorun.jags}}.
 }
 }
 \details{

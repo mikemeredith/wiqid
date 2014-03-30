@@ -2,15 +2,15 @@ TODO
 
   * TRY using Gelman et al 2008 recommendations for priors for logistic coefficients. Update man page for priors.
   
-  * switch to runjags::autorun.jags.
-  
   * check that character strings used as models are coerced to formulae internally.
   
-CHANGES IN 2014-03-28 v.0.0.374
+CHANGES IN 2014-03-30 v.0.0.374
   
   * new diagnostic plots for Bwiqid objects: tracePlot, densityPlot and acfPlot; class Bwiqid objects get an attribute 'n.chains' to enable this.
   
   * window.Bwiqid added.
+  
+  * BsurvCJSautorun removed. All B* functions now use runjags package.
   
 CHANGES IN 2014-03-01 v.0.0.373
 
