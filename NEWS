@@ -4,6 +4,13 @@ TODO
   
   * check that character strings used as models are coerced to formulae internally.
   
+  * add as.Bwiqid method for coda class 'mcmc' (in addition to 'mcmc.list'); allow as.Bwiqid to handle a single chain without throwing an error for gelman.diag.
+  
+CHANGES IN 2014-04-16 v.0.0.375
+
+  * postPlot with showCurve=TRUE, show the same HDI as the histograms when the 
+  HDI is not split.
+  
 CHANGES IN 2014-03-30 v.0.0.374
   
   * new diagnostic plots for Bwiqid objects: tracePlot, densityPlot and acfPlot; class Bwiqid objects get an attribute 'n.chains' to enable this.

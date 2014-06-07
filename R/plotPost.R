@@ -1,5 +1,6 @@
 # Function taken from package BEST, original code by John Kruschke.
-# Modified by Mike to make best use of ... argument and various other enhancements.
+# Modified by Mike to make best use of ... argument and various other
+#  enhancements, including shading of the HDI in showCurve=TRUE plots.
 
 plotPost <-
 function( paramSampleVec, credMass=0.95, compVal=NULL, ROPE=NULL, 
@@ -13,8 +14,6 @@ function( paramSampleVec, credMass=0.95, compVal=NULL, ROPE=NULL,
   #   xlim=range(compVal, paramSampleVec), col="skyblue", border="white", 
   #   breaks=NULL 
 
-  # oldpar <- par(xpd=NA) ; on.exit(par(oldpar))
-  
   # Deal with ... argument:
   dots <- list(...)
   if(length(dots) == 1 && class(dots[[1]]) == "list")
@@ -52,11 +51,13 @@ function( paramSampleVec, credMass=0.95, compVal=NULL, ROPE=NULL,
     if(!is.null(credMass)) {
       HDI <- hdi(densCurve, credMass, allowSplit=TRUE)
       ht <- attr(HDI, "height")
+      if(nrow(HDI) == 1)  # hdi is not split
+        HDI <- matrix(hdi(paramSampleVec, credMass), nrow=1)
       if(!is.null(shadeHDI))  {
         for (i in 1:nrow(HDI)) {
           inHDI <- which(densCurve$x >= HDI[i, 1] & densCurve$x <= HDI[i, 2])
-          polyx <- c(HDI[i, 1], densCurve$x[inHDI], HDI[i, 2])
-          polyy <- c(0, densCurve$y[inHDI], 0)
+          polyx <- c(HDI[i, 1], HDI[i, 1], densCurve$x[inHDI], HDI[i, 2], HDI[i, 2])
+          polyy <- c(0, ht, densCurve$y[inHDI], ht, 0)
           polygon(polyx, polyy, border=NA, col=shadeHDI)
         }
       } else {
