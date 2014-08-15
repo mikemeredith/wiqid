@@ -7,20 +7,34 @@
 
 # See MacKenzie et al (2006) "Occupancy..." p194ff
 
-occMScov <- function(DH, occsPerSeason,
-             model=list(psi1~1, gamma~1, epsilon~1, p~1),
+occMScov <- function(DH=NULL, occsPerSeason=NULL,
+             model=NULL,
+             data=NULL, ci=0.95)
+  cat("occMScov has been renamed occMS.\n\n")
+
+occMS <- function(DH, occsPerSeason,
+             model=NULL,
              data=NULL, ci=0.95) {    
   # ** DH is detection data in a 1/0/NA matrix or data frame, sites in rows, 
   #    detection occasions in columns..
   # ** occsPerSeason is a scalar or vector with the number of occasions per season
   # ci is the required confidence interval.
              
-  if(ci > 1 | ci < 0.5)
-    stop("ci must be between 0.5 and 1")
-  alf <- (1 - ci[1]) / 2
-  crit <- qnorm(c(alf, 1 - alf))
+  # Check for simple models:
+  if(is.null(model))
+    return(occMS0(DH=DH, occsPerSeason=occsPerSeason, ci=ci))
+  if(is.null(data))
+    return(occMStime(DH=DH, occsPerSeason=occsPerSeason, model=model, data=NULL, ci=ci))
+  
+  crit <- fixCI(ci)
   
   DH <- as.matrix(DH)
+  # Check for all-NA rows (eg, Grand Skinks data set!)
+  allNA <- rowSums(!is.na(DH)) == 0
+  if(any(allNA))  {
+    DH <- DH[!allNA, ]
+    data <- data[!allNA, ]
+  }
 
   # Deal with occsPerSeason
   nOcc <- ncol(DH)
@@ -69,6 +83,8 @@ occMScov <- function(DH, occsPerSeason,
   dataList$.interval <- as.factor(interval)
   occasion <- rep(1:nOcc, each=nSites)
   dataList$.occasion <- as.factor(occasion)
+  season <- rep.int(1:nseas, nSites*occsPerSeason)
+  dataList$.season <- as.factor(season)
   
   # cat("Preparing design matrices...") ; flush.console()
   psi1df <- selectCovars(model$psi1, dataList, nSites)

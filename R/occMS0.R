@@ -10,10 +10,7 @@ occMS0 <- function(DH, occsPerSeason, ci=0.95) {
   # ** occsPerSeason is a scalar or vector with the number of occasions per season
   # ci is the required confidence interval.
              
-  if(ci > 1 | ci < 0.5)
-    stop("ci must be between 0.5 and 1")
-  alf <- (1 - ci[1]) / 2
-  crit <- qnorm(c(alf, 1 - alf))
+  crit <- fixCI(ci)
 
   # Check for all-NA rows (eg, Grand Skinks data set!)
   allNA <- rowSums(!is.na(DH)) == 0

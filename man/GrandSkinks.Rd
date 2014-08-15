@@ -11,8 +11,8 @@ Results of an occupancy survey of 352 rocky outcrops ("tors") looking for grand 
 \format{
   A data frame with 352 observations on the following 16 variables.
   \describe{
-    \item{\code{A1, A2, A3, B1, B2, B3, C1, C2, C3, D1, D2, D3, E1, E2, E3}}{an array of observations of detection (1) or nondetection (0) of skinks for each of 3 occasions in 3 years. NA indicates occasions when a tor was not visited. }
-    \item{\code{habitat}}{a factor indicating the type of grassland surronding the tor.}
+    \item{\code{A1, A2, A3, B1, B2, B3, C1, C2, C3, D1, D2, D3, E1, E2, E3}}{an array of observations of detection (1) or nondetection (0) of skinks for each of 3 occasions in 5 years. NA indicates occasions when a tor was not visited. }
+    \item{\code{habitat}}{a factor indicating the type of grassland surrounding the tor.}
   }
 }
 \details{

@@ -2,7 +2,7 @@
 
 # 'model' argument added 2013-12-02
 
-occSScovSite <- function(y, n, model=list(psi~1, p~1), data=NULL, ci=0.95) {
+occSScovSite <- function(y, n, model=NULL, data=NULL, ci=0.95) {
   # single-season occupancy models with site-specific covatiates
   # new version with y/n input; much faster!
   # y is a vector with the number of detections at each site.
@@ -16,10 +16,8 @@ occSScovSite <- function(y, n, model=list(psi~1, p~1), data=NULL, ci=0.95) {
     stop("y and n must have the same length")
   if(any(y > n))
     stop("y cannot be greater than n")
-  if(ci > 1 | ci < 0.5)
-    stop("ci must be between 0.5 and 1")
-  alf <- (1 - ci[1]) / 2
-  crit <- qnorm(c(alf, 1 - alf))
+
+  crit <- fixCI(ci)
   
   # Standardise the model:
   model <- stdModel(model, list(psi=~1, p=~1))

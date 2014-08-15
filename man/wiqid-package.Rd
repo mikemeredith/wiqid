@@ -26,7 +26,7 @@ The functions are listed by topic below.
   \bold{Single-season occupancy}
   
   \tabular{ll}{
-  \code{\link{occSScov}} \tab general-purpose function; allows site- and survey-specific covariates \cr
+  \code{\link{occSS}} \tab general-purpose function; allows site- and survey-specific covariates \cr
   \code{\link{occSS0}} \tab a basic psi(.) p(.) model, faster if this is all you need \cr
   \code{\link{BoccSS0}} \tab a Bayesian implementation of the psi(.) p(.) model \cr
   \code{\link{occSSrn}} \tab Royle-Nichols method \cr
@@ -36,10 +36,10 @@ The functions are listed by topic below.
   \bold{Multi-season occupancy}
   
   \tabular{ll}{
-  \code{\link{occMScov}} \tab general-purpose function; parameters depend on covariates; slow \cr
+  \code{\link{occMS}} \tab general-purpose function; parameters depend on covariates; slow \cr
   \code{\link{occMScovSite}} \tab smaller range of covariate options \cr
   \code{\link{occMS0}} \tab a simple multi-season model with four parameters; faster \cr
-  \code{\link{occMSseason}} \tab parameters vary by season; faster  } 
+  \code{\link{occMStime}} \tab parameters vary by season; faster  } 
 }
 
 \section{DENSITY from spatial capture-recapture data}{

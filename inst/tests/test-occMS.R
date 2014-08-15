@@ -29,6 +29,7 @@ test_that("occMS0 gives right answers",  {
   expect_that(dim(res1$real), equals(c(4, 3)))
   expect_that(colnames(res1$real),
     equals(c("est", "lowCI", "uppCI")))
+
   # Check against PRESENCE results:
   expect_that(round(as.vector(res1$real), 4), 
       equals(c(0.3945, 0.0683, 0.1, 0.6892, 0.3348, 0.0484, 0.0695,
@@ -42,11 +43,11 @@ test_that("occMS0 gives right answers",  {
         0.655, 0.4406, 0.0875, 0.1295, 0.7214)))
 })
 
-test_that("occMSseason gives right answers",  {
+test_that("occMStime gives right answers",  {
   require(wiqid)
   data(GrandSkinks)
   DH <- GrandSkinks[, 1:15]
-  res1 <- occMSseason(DH, 3)
+  res1 <- occMStime(DH, 3)
 
   expect_that(class(res1), equals(c("wiqid", "list"))) 
   expect_that(names(res1),
@@ -78,7 +79,7 @@ test_that("occMSseason gives right answers",  {
   expect_that(round(AIC(res1), 4), 
       equals(1775.0155))
   expect_that(    
-    res2 <- occMSseason(DH, 3, list(gamma ~ .interval, epsilon~.interval, p~.season)),
+    res2 <- occMStime(DH, 3, list(gamma ~ .interval, epsilon~.interval, p~.season)),
     takes_less_than(20))
 
   expect_that(dim(res2$beta), equals(c(14, 4)))
@@ -100,13 +101,13 @@ test_that("occMSseason gives right answers",  {
 })
 
 
-test_that("occMScov gives right answers",  {
+test_that("occMS gives right answers",  {
   require(wiqid)
   data(GrandSkinks)
   DH <- GrandSkinks[, 1:15]
   
-  if(FALSE)  {  # Don't do this regularly, too slow
-    res1 <- occMScov(DH, 3)
+  if(TRUE)  {  # Don't do this regularly, too slow
+    res1 <- occMS(DH, 3)
     expect_that(class(res1), equals(c("wiqid", "list"))) 
     expect_that(names(res1),
       equals(c("call", "beta", "beta.vcv", "real", "logLik"))) 
@@ -116,13 +117,13 @@ test_that("occMScov gives right answers",  {
     expect_that(colnames(res1$beta),
       equals(c("est", "SE",  "lowCI", "uppCI")))
     expect_that(rownames(res1$beta),
-      # equals(c("ps1: (Intercept)", "gam: (Intercept)", "eps: (Intercept)", "p: (Intercept)" )))
-      equals(c("psi1: (Intercept)", "gam: (Intercept)", "eps: (Intercept)", "p: (Intercept)" )))
+      equals(c("psi1", "gamma", "epsilon", "p" )))
+      # equals(c("psi1: (Intercept)", "gam: (Intercept)", "eps: (Intercept)", "p: (Intercept)" )))
     expect_that(round(as.vector(res1$beta), 4), 
         equals(c(-0.4284, -2.6133, -2.1971,  0.7962,  0.1318,  0.1865,  0.2029,
           0.1077, -0.6868, -2.9788, -2.5947,  0.5850, -0.1701, -2.2478,
           -1.7995,  1.0073)))
-    expect_that(dim(res1$real), equals(c(14, 3)))
+    expect_that(dim(res1$real), equals(c(4, 3)))
     expect_that(colnames(res1$real),
       equals(c("est", "lowCI", "uppCI")))
     # Check against PRESENCE results:
@@ -136,13 +137,13 @@ test_that("occMScov gives right answers",  {
   }  # if FALSE    
       
   expect_that(    
-    res2 <- occMScov(DH, 3,
+    res2 <- occMS(DH, 3,
        model=list(psi1~habitat, gamma ~ habitat, epsilon~habitat),
        data=GrandSkinks),
     takes_less_than(300))
 
   expect_that(dim(res2$beta), equals(c(7, 4)))
-  expect_that(dim(res2$real), equals(c(5479, 3)))
+  expect_that(dim(res2$real), equals(c(5353, 3)))
   # Check against PRESENCE results:
     expect_that(as.vector(t(round(unique(res2$real), 4))), 
         equals(c(0.2315, 0.1601, 0.3224,

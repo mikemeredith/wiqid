@@ -1,6 +1,10 @@
 # Single season occupancy with site and survey covariates.
 
-occSScov <- function(DH, model=NULL, data=NULL, ci=0.95) {
+occSScov <- function(DH=NULL, model=NULL, data=NULL, ci=0.95) {
+  cat("occSScov has been renamed occSS.\n")
+}
+
+occSS <- function(DH, model=NULL, data=NULL, ci=0.95) {
   # single-season occupancy models with site and survey covatiates
   # ** DH is detection data in a 1/0/NA matrix or data frame, sites in rows, 
   #    detection occasions in columns..

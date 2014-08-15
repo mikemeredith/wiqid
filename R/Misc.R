@@ -42,6 +42,7 @@ getMARKci <- function(beta, SE.beta, ci) {
 
 # Old version, to be phased out
 stdform <- function (flist) {
+  warning("stdform is deprecated. Use stdModel instead.")
     LHS <- function (form) {
         trms <- as.character (form)
         if (length(trms)==2) '' else trms[2]
@@ -143,6 +144,9 @@ stddata <- function(df, nocc=NULL, scaleBy=0.5)  {
 # Pull the covars needed for a model matrix into a specific data frame
 selectCovars <- function(formula, dataList, minrows)  {
   wanted <- rownames(attr(terms(formula), "factors"))
+  found <- wanted %in% names(dataList)
+  if(any(!found))
+    stop("Can't find variable(s): ", paste(wanted[!found], collapse=", "))
   if (length(wanted) > 0)  {
     df <- as.data.frame(dataList[wanted])
     df <- cbind(df, .dummy = rep(NA, minrows))

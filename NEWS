@@ -6,6 +6,17 @@ TODO
   
   * add as.Bwiqid method for coda class 'mcmc' (in addition to 'mcmc.list'); allow as.Bwiqid to handle a single chain without throwing an error for gelman.diag.
   
+  * stop unnecessary warnings from runjags getting to user.
+  
+CHANGES in 2014-08-14 v.0.0.376
+
+  * renaming of some functions: occMSseason -> occMStime, occMScov -> occMS,
+      occSScov -> occSS.
+
+  * fixed bug in occMScov with .season covariate; improved error messages.
+
+  * fixed bug in biodSimpson et al
+  
 CHANGES IN 2014-04-16 v.0.0.375
 
   * postPlot with showCurve=TRUE, show the same HDI as the histograms when the 

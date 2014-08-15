@@ -12,7 +12,7 @@ biodSimpson <- function(abVec, correct=TRUE) {
   # correct: if TRUE, small sample correction is applied, cf Hurlbert,
   #   rather than Hill's N2.
   # Sanity check:
-  if(any(abVec) < 0)
+  if(any(abVec < 0))
     stop("Negative abundances are not recognised.")
   # Convert a matrix into a vector and round: 
   if(correct)
@@ -35,7 +35,7 @@ biodShannon <- function(abVec) {
   # abVec = vector of measures of abundance,
   #   eg biomass or counts, one element per species.
   # Sanity check:
-  if(any(abVec) < 0)
+  if(any(abVec < 0))
     stop("Negative abundances are not recognised.")
 
   # Convert a matrix into a vector: 
@@ -53,7 +53,7 @@ biodBerger <- function(abVec) {
   # abVec = vector of measures of abundance,
   #   eg biomass or counts, one element per species.
   # Sanity check:
-  if(any(abVec) < 0)
+  if(any(abVec < 0))
     stop("Negative abundances are not recognised.")
 
   # Convert a matrix into a vector: 
@@ -69,7 +69,7 @@ biodBerger <- function(abVec) {
 biodBrillouin <- function(cntVec) {
   # cntVec = vector of counts, one element per species.
   # Sanity check:
-  if(any(cntVec) < 0)
+  if(any(cntVec < 0))
     stop("Negative abundances are not recognised.")
   # Convert a matrix into a vector: 
   if(is.matrix(cntVec) || is.data.frame(cntVec))

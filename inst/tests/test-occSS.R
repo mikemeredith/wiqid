@@ -1,232 +1,192 @@
 
-# test_that code for occSS series of functions
+# More test_that code for occSS series of functions
 
-# library(testthat)
-# test_file("test-occSS.R")
-# test_file("wiqid/inst/tests/test-occSS.R")
+context("Single-season occupancy + covars")
 
-context("Single-season occupancy")
-
-test_that("occSS0 gives right answers",  {
-  # Data set (Blue Ridge Salamanders)
+test_that("occSScovSite gives right answers",  {
+  # Data set (weta)
   require(wiqid)
-  data(salamanders)
-  BRS <- salamanders
-  n <- rowSums(!is.na(BRS))
-  y <- rowSums(BRS > 0, na.rm=TRUE)
-  brs1 <- occSS0(y, n)
-  expect_that(class(brs1), equals(c("wiqid", "list")))
-  expect_that(names(brs1), equals(c("call", "beta", "beta.vcv", "real", "logLik")))
-  expect_that(is.call(brs1$call), is_true())
-  expect_that(colnames(brs1$real), equals(c("est", "lowCI", "uppCI")))
-  expect_that(rownames(brs1$real), equals(c("psiHat", "pHat")))
-  expect_that(round(as.vector(brs1$real), 4), 
-      equals(c(0.5946, 0.2587, 0.3512, 0.1622, 0.7990, 0.3863)))
-  expect_that(round(AIC(brs1), 4), equals(165.7586))
-  brs1a <- occSS0(y, n, 0.85)
-  expect_that(round(as.vector(brs1a$real), 4), 
-      equals(c(0.5946, 0.2587, 0.4136, 0.1846, 0.7531, 0.3499)))
+  data(weta)
+  DH <- weta[, 1:5]
+  y <- rowSums(DH, na.rm=TRUE)
+  n <- rowSums(!is.na(DH))
+  weta.covs <- weta[, 6, drop=FALSE]
+  weta1 <- occSScovSite(y, n)
 
-      # These are the values returned by PRESENCE
-  # Put in some NAs
-  BRS[c(6,167,130,123,89,154,32,120,127,147)] <- NA
-  n <- rowSums(!is.na(BRS))
-  y <- rowSums(BRS > 0, na.rm=TRUE)
-  brs2 <-  occSS0(y, n)
-  expect_that(round(as.vector(brs2$real), 4), 
-      equals(c(0.5861, 0.2445, 0.3238, 0.1422, 0.8073, 0.3872)))
-  expect_that(round(AIC(brs2), 4), equals(149.7430))
-  # Put in a row of NAs
-  BRS[3,] <- NA
-  n <- rowSums(!is.na(BRS))
-  y <- rowSums(BRS > 0, na.rm=TRUE)
-  brs3 <- occSS0(y, n)
-  expect_that(round(as.vector(brs3$real), 4), 
-      equals(c(0.5558, 0.2531, 0.3095, 0.1475, 0.7775, 0.3989)))
-  expect_that(round(AIC(brs3), 4), equals(144.1232))
-  # Put in a column of NAs
-  BRS[, 3] <- NA
-  n <- rowSums(!is.na(BRS))
-  y <- rowSums(BRS > 0, na.rm=TRUE)
-  brs4 <-  occSS0(y, n)
-  expect_that(round(as.vector(brs4$real), 4), 
-      equals(c(0.3798, 0.3160, 0.1918, 0.1644, 0.6124, 0.5204)))
-  expect_that(round(AIC(brs4), 4), equals(101.1297))
-  # All ones:
-  brs5 <- occSS0(n, n)
-  expect_that(round(as.vector(brs5$real), 4), 
-      equals(c(1, 1, NA_real_, NA_real_, NA_real_, NA_real_)))
-  expect_that(AIC(brs5), equals(NA_real_))
-  # All zeros:
-  brs6 <- occSS0(rep(0, length(n)), n)
-  expect_that(round(as.vector(brs6$real), 4), 
-      equals(c(0.0000, 0.0078, 0.0000, 0.0000, 1.0000, 1.0000)))
-  expect_that(round(AIC(brs6), 4), equals(4))
-  # All NAs:
-  brs7 <- occSS0(rep(0, length(n)), rep(0, length(n)))
-  expect_that(as.vector(brs7$real), 
-      equals(rep(NA_real_, 6)))
-  expect_that(AIC(brs7), equals(NA_real_))
-}  )
-# .........................................................................
+  expect_that(class(weta1), equals(c("wiqid", "list"))) 
+  expect_that(names(weta1), equals(c("call", "beta", "beta.vcv", "real", "logLik"))) 
+  expect_that(is.call(weta1$call), is_true())
+
+  expect_that(dim(weta1$beta), equals(c(2, 4)))
+  expect_that(colnames(weta1$beta),
+    equals(c("est", "SE",  "lowCI", "uppCI")))
+  expect_that(rownames(weta1$beta),
+    equals(c("psi: (Intercept)", "p: (Intercept)")))
+  expect_that(round(as.vector(weta1$beta), 4), 
+      equals(c(0.4751, -0.6218,  0.3746,  0.2364, -0.2590, -1.0851,  1.2093, -0.1585)))
+
+  expect_that(dim(weta1$real), equals(c(144, 3)))
+  expect_that(colnames(weta1$real),
+    equals(c("est", "lowCI", "uppCI")))
+  # Check against PRESENCE results:
+  expect_that(round(as.vector(weta1$real[1, ]), 4), 
+      equals(c(0.6166, 0.4356, 0.7702)))
+  expect_that(round(as.vector(weta1$real[73, ]), 4), 
+      equals(c(0.3494, 0.2525, 0.4604)))
+  expect_that(round(AIC(weta1), 4), 
+      equals(265.7872))
+
+  weta1a <- occSScovSite(y, n, ci=0.85)
+  expect_that(round(as.vector(weta1a$real[1, ]), 4), 
+      equals(c(0.6166, 0.4840, 0.7339)))
+  expect_that(round(as.vector(weta1a$real[73, ]), 4), 
+      equals(c(0.3494, 0.2765, 0.4301)))
+
+  weta2 <- occSScovSite(y, n, psi ~ Browsed, data=weta.covs)
+
+  expect_that(names(weta2), equals(c("call", "beta", "beta.vcv", "real", "logLik"))) 
+
+  expect_that(dim(weta2$beta), equals(c(3, 4)))
+  expect_that(colnames(weta2$beta),
+    equals(c("est", "SE",  "lowCI", "uppCI")))
+  expect_that(rownames(weta2$beta),
+    equals(c("psi: (Intercept)", "psi: BrowsedTRUE", "p: (Intercept)")))
+  # expect_that(round(as.vector(weta2$beta), 4), 
+      # equals(c(0.5196, 0.6167, -0.6223,  0.4188,  0.3627,  0.2367, -0.3012,
+              # -0.0942, -1.0861, 1.3403,  1.3276, -0.1584)))
+
+  expect_that(dim(weta2$real), equals(c(144, 3)))
+  expect_that(colnames(weta2$real),
+    equals(c("est", "lowCI", "uppCI")))
+  # Check against PRESENCE results:
+  expect_that(round(as.vector(weta2$real[1, ]), 4), 
+      equals(c(0.7594, 0.4660, 0.9194)))
+  expect_that(round(as.vector(weta2$real[4, ]), 4), 
+      equals(c(0.4810, 0.2843, 0.6837)))
+  expect_that(round(as.vector(weta2$real[73, ]), 4), 
+      equals(c(0.3493,  0.2524, 0.4605)))
+  expect_that(round(AIC(weta2), 4), 
+      equals(264.2643))
+
+  weta3 <- occSScovSite(y, n, list(psi ~ Browsed, p ~ Browsed), data=weta.covs)
+
+  expect_that(names(weta3), equals(c("call", "beta", "beta.vcv", "real", "logLik"))) 
+
+  expect_that(dim(weta3$beta), equals(c(4, 4)))
+  expect_that(colnames(weta3$beta),
+    equals(c("est", "SE",  "lowCI", "uppCI")))
+  expect_that(rownames(weta3$beta),
+    equals(c("psi: (Intercept)", "psi: BrowsedTRUE", "p: (Intercept)", "p: BrowsedTRUE")))
+  # expect_that(round(as.vector(weta3$beta), 4), 
+      # equals(c( 0.5180,  0.6030, -0.6260,  0.0149,  0.4168,  0.4236,  0.2446,
+                # 0.2446, -0.2989, -0.2273, -1.1054, -0.4645,  1.3349,  1.4333,
+               # -0.1465,  0.4943)))
+  expect_that(dim(weta3$real), equals(c(144, 3)))
+  expect_that(colnames(weta3$real),
+    equals(c("est", "lowCI", "uppCI")))
+  # Check against PRESENCE results:
+  expect_that(round(as.vector(weta3$real[1, ]), 4), 
+      equals(c(0.7565, 0.4438, 0.9237))) # PRESENCE last value is 0.9236
+  expect_that(round(as.vector(weta3$real[4, ]), 4), 
+      equals(c(0.4839, 0.2691, 0.7048))) 
+  expect_that(round(as.vector(weta3$real[73, ]), 4), 
+      equals(c(0.3519, 0.2309, 0.4954)))
+  expect_that(round(as.vector(weta3$real[76, ]), 4), 
+      equals(c(0.3452, 0.2000, 0.5264))) # PRESENCE last value is 0.5263
+  expect_that(round(AIC(weta3), 4), 
+      equals(266.2606))
+})
 
 
-test_that("occSStime gives right answers",  {
-  # Data set (Blue Ridge Salamanders)
+test_that("occSS gives right answers",  {
+  # Data set (weta)
   require(wiqid)
-  data(salamanders)
-  BRS <- salamanders
-  res <- occSStime(BRS, p~.time, plot=FALSE)
-  expect_that(class(res), equals(c("wiqid", "list")))
-  expect_that(names(res), equals(c("call", "beta", "beta.vcv", "real", "logLik")))
-  expect_that(is.call(res$call), is_true())
-  expect_that(colnames(res$real), equals(c("est", "lowCI", "uppCI")))
-  expect_that(rownames(res$real),
-       equals(c("psi", "p1", "p2", "p3", "p4", "p5")))
-  expect_that(round(as.vector(res$real), 4), 
-      equals(c(0.5799, 0.1769, 0.1327, 0.3980, 0.3537, 0.2653, 0.3490,
-          0.0644, 0.0415, 0.1998, 0.1712, 0.1156, 0.7804, 0.4013, 0.3506, 0.6364,
-          0.5920, 0.4993)))
-  expect_that(round(AIC(res), 4), equals(167.7144))
-      # These are the values returned by PRESENCE
-  res <- occSStime(BRS, p~.time, ci=0.85, plot=FALSE)
-  expect_that(round(as.vector(res$real), 4), 
-      equals(c(0.5799, 0.1769, 0.1327, 0.3980, 0.3537, 0.2653,
-               0.4079, 0.0852, 0.0571, 0.2443, 0.2111, 0.1462,
-               0.7344, 0.3314, 0.2786, 0.5747, 0.5283, 0.4323)))
-  # Put in some NAs
-  BRS[c(6,167,130,123,89,154,32,120,127,147)] <- NA
-  res <- occSStime(BRS, p~.time, plot=FALSE)
-  expect_that(round(as.vector(res$real), 4), 
-      equals(c(0.5637, 0.1930, 0.1365, 0.3812, 0.3450, 0.2383, 0.3223,
-        0.0690, 0.0421, 0.1773, 0.1424, 0.0938, 0.7783, 0.4354, 0.3621, 0.6378,
-        0.6257, 0.4861)))
-  expect_that(round(AIC(res), 4), equals(153.1581))
-  # Put in a row of NAs
-  BRS[3,] <- NA
-  res <- occSStime(BRS, p~.time, plot=FALSE)
-  expect_that(round(as.vector(res$real), 4), 
-      equals(c(0.5316, 0.2107, 0.0990, 0.4166, 0.3596, 0.2604, 0.3067,
-        0.0758, 0.0238, 0.1952, 0.1514, 0.1031, 0.7444, 0.4650, 0.3308, 0.6778,
-        0.6387, 0.5188)))
-  expect_that(round(AIC(res), 4), equals(145.6360))
-  # Put in a column of NAs
-  BRS[, 3] <- NA
-  res <- occSStime(BRS, p~.time, plot=FALSE)
-  expect_that(round(res$real[, 1], 4), 
-      is_equivalent_to(c(0.3579, 0.3017, 0.1471,0.3017, 0.5434, 0.3969)))
-  expect_that(as.vector(res$real[, 2:3]), 
-      is_equivalent_to(rep(NA_real_, 12)))
-  expect_that(round(AIC(res), 4), equals(NA_real_))
-  # All ones:
-  tst <- matrix(1, 39, 5)
-  res <- occSStime(tst, p~.time, plot=FALSE)
-  expect_that(round(as.vector(res$real[,1]), 4), 
-      is_equivalent_to(rep(1, 6)))
-  expect_that(as.vector(res$real[, 2:3]), 
-      is_equivalent_to(rep(NA_real_, 12)))
-  expect_that(round(AIC(res), 4), equals(NA_real_))
-  # All zeros:
-  tst <- matrix(0, 39, 5)
-  res <- occSStime(tst, p~.time, plot=FALSE)
-  expect_that(as.vector(res$real), 
-      is_equivalent_to(rep(NA_real_, 18)))
-  expect_that(AIC(res), equals(NA_real_))
-  # All NAs:
-  tst <- matrix(NA, 39, 5)
-  res <- occSStime(tst, p~.time, plot=FALSE)
-  expect_that(as.vector(res$real), 
-      is_equivalent_to(rep(NA_real_, 18)))
-  expect_that(AIC(res),
-      equals(NA_real_))
-  
-  # Linear trend
-  BRS <- salamanders
-  res <- occSStime(BRS, p~.Time, plot=FALSE)
-  # Values returned by PRESENCE:
-  expect_that(round(as.vector(t(res$real)), 4), 
-      equals(c( 0.5899, 0.3505, 0.7931,
-                0.1865, 0.0881, 0.3523,
-                0.2197, 0.1251, 0.3566,
-                0.2569, 0.1604, 0.3849,
-                0.2981, 0.1811, 0.4493,
-                0.3428, 0.1860, 0.5436)))
-  expect_that(round(AIC(res), 4), equals(165.9228))
+  data(weta)
+  DH <- weta[, 1:5]
+  weta.covs <- weta[, 6:11]
 
-  # Quadratic trend
-  res <- occSStime(BRS, p~.Time + I(.Time^2), plot=FALSE)
-  # Values returned by PRESENCE to within 0.0001
-  expect_that(round(as.vector(t(res$real)), 4), 
-      equals(c( 0.5870, 0.3502, 0.7894,
-                0.1321, 0.0461, 0.3242,
-                0.2404, 0.1335, 0.3940,
-                0.3210, 0.1801, 0.5043,
-                0.3364, 0.1995, 0.5075,
-                0.2807, 0.1304, 0.5039)))
-  expect_that(round(AIC(res), 4), equals(166.3525))
-}  )
+  weta4 <- occSS(DH)
+  expect_that(class(weta4), equals(c("wiqid", "list"))) 
+  expect_that(names(weta4), equals(c("call", "beta", "beta.vcv", "real", "logLik")))
+  expect_that(is.call(weta4$call), is_true())
+  expect_that(dim(weta4$beta), equals(c(2, 4)))
+  expect_that(colnames(weta4$beta),
+    equals(c("est", "SE",  "lowCI", "uppCI")))
+  expect_that(rownames(weta4$beta),
+    equals(c("psiHat", "pHat")))
+  expect_that(round(as.vector(weta4$beta), 4), 
+      equals(c(0.4751, -0.6218,  0.3746,  0.2364, -0.2590, -1.0851,  1.2093, -0.1585)))
 
-# .............................................
+  expect_that(dim(weta4$real), equals(c(2, 3)))
+  expect_that(colnames(weta4$real),
+    equals(c("est", "lowCI", "uppCI")))
+  # Check against PRESENCE results:
+  expect_that(round(as.vector(weta4$real[1, ]), 4), 
+      equals(c(0.6166, 0.4356, 0.7702)))
+  expect_that(round(as.vector(weta4$real[2, ]), 4), 
+      equals(c(0.3494, 0.2525, 0.4604)))
+  expect_that(round(AIC(weta4), 4), 
+      equals(265.7872))
+  weta4a <- occSS(DH, ci=0.85)
+  expect_that(round(as.vector(weta4a$real[1, ]), 4), 
+      equals(c(0.6166, 0.4840, 0.7339)))
+  expect_that(round(as.vector(weta4a$real[2, ]), 4), 
+      equals(c(0.3494, 0.2765, 0.4301)))
 
-test_that("occSSnr gives right answers",  {
-  # Data set (Blue Ridge Salamanders)
-  require(wiqid)
-  data(salamanders)
-  BRS <- salamanders
-  res <- occSSrn(BRS)
+  weta5 <- occSS(DH, psi ~ Browsed, data=weta.covs)
+  expect_that(names(weta5), equals(c("call", "beta", "beta.vcv", "real", "logLik"))) 
+  expect_that(dim(weta5$beta), equals(c(3, 4)))
+  expect_that(colnames(weta5$beta),
+    equals(c("est", "SE",  "lowCI", "uppCI")))
+  expect_that(rownames(weta5$beta),
+    equals(c("psi: (Intercept)", "psi: BrowsedTRUE", "p: (Intercept)")))
+  # Standardisation changed; leave this out for now
+  # expect_that(round(as.vector(weta5$beta), 4), 
+      # equals(c( 0.5196,  0.6167, -0.6223,  0.4188,  0.3627,  0.2367, -0.3012,
+               # -0.0942, -1.0861,  1.3403,  1.3276, -0.1584)))
+  expect_that(dim(weta5$real), equals(c(334, 3)))
+  expect_that(colnames(weta5$real),
+    equals(c("est", "lowCI", "uppCI")))
+  # Check against PRESENCE results:
+  expect_that(round(as.vector(weta5$real[1, ]), 4), 
+      equals(c(0.7594, 0.4660, 0.9194)))
+  expect_that(round(as.vector(weta5$real[4, ]), 4), 
+      equals(c(0.4810, 0.2843, 0.6837)))
+  expect_that(round(as.vector(weta5$real[73, ]), 4), 
+      equals(c(0.3493,  0.2524, 0.4605)))
+  expect_that(round(as.vector(weta5$real[334, ]), 4), 
+      equals(c(0.3493,  0.2524, 0.4605)))
+  expect_that(round(AIC(weta5), 4), 
+      equals(264.2643))
 
-  expect_that(class(res), equals(c("wiqid", "list")))
-  expect_that(names(res), equals(c("call", "beta", "beta.vcv", "real", "logLik")))
-  expect_that(is.call(res$call), is_true())
-  expect_that(colnames(res$real), equals(c("est", "lowCI", "uppCI")))
-  expect_that(rownames(res$real),
-       equals(c("psiHat", "lambdaHat", "rHat")))
-  expect_that(round(as.vector(res$real), 4), 
-      is_equivalent_to(c(0.6810, 1.1425, 0.1475, 0.3772, 0.4735, 0.0581, 0.9365,
-          2.7568, 0.3266)))
-  expect_that(round(AIC(res), 4), equals(164.0016))
-      # These are the values returned by PRESENCE
-  res <- occSSrn(BRS, 0.85)
-  expect_that(round(as.vector(res$real), 4), 
-      is_equivalent_to(c(0.6810, 1.1425, 0.1475, 0.4502, 0.5983, 0.0750,
-                         0.8872, 2.1819, 0.2695)))
-  # Put in some NAs
-  BRS[c(6,167,130,123,89,154,32,120,127,147)] <- NA
-  res <- occSSrn(BRS)
-  expect_that(round(as.vector(res$real), 4), 
-      is_equivalent_to(c(0.6739, 1.1204, 0.1383, 0.3402, 0.4159, 0.0473, 0.9511,
-          3.0186, 0.3414)))
-  expect_that(round(AIC(res), 4), equals(148.5542))
-  # Put in a row of NAs
-  BRS[3,] <- NA
-  res <- occSSrn(BRS)
-  expect_that(round(as.vector(res$real), 4), 
-      is_equivalent_to(c(0.6349, 1.0076, 0.1510, 0.3244, 0.3922, 0.0545, 0.9249,
-          2.5884, 0.3540)))
-  expect_that(round(AIC(res), 4), equals(142.9799))
-  # Put in a column of NAs
-  BRS[, 3] <- NA
-  res <- occSSrn(BRS)
-  expect_that(round(as.vector(res$real), 4), 
-      is_equivalent_to(c(0.4030, 0.5158, 0.2464, 0.1915, 0.2126, 0.0957, 0.7139,
-          1.2513, 0.5026)))
-  expect_that(round(AIC(res), 4), equals(101.3649))
-  # All ones:
-  res <- occSSrn(matrix(1, 39, 5))
-  expect_that(as.vector(res$real), 
-      is_equivalent_to(rep(NA_real_, 9)))
-  expect_that(AIC(res), equals(NA_real_))
-  # All zeros:
-  res <- occSSrn(matrix(0, 39, 5))
-  expect_that(as.vector(res$real), 
-      is_equivalent_to(rep(NA_real_, 9)))
-  expect_that(AIC(res), equals(NA_real_))
-  # All NAs:
-  res <- occSSrn(matrix(NA, 39, 5))
-  expect_that(as.vector(res$real), 
-      is_equivalent_to(rep(NA_real_, 9)))
-  expect_that(AIC(res),
-      equals(NA_real_))
-}  )
-# ....................................................................
+  weta6 <- occSS(DH, list(psi ~ Browsed, p ~ ObsD), data=weta.covs)
+  expect_that(names(weta6), equals(c("call", "beta", "beta.vcv", "real", "logLik"))) 
+  expect_that(dim(weta6$beta), equals(c(5, 4)))
+  expect_that(colnames(weta6$beta),
+    equals(c("est", "SE",  "lowCI", "uppCI")))
+  expect_that(rownames(weta6$beta),
+    equals(c("psi: (Intercept)", "psi: BrowsedTRUE", "p: (Intercept)", 
+             "p: ObsDB",  "p: ObsDC")))
+  # Standardisation changed; leave this out for now
+  # expect_that(round(as.vector(weta6$beta), 4), 
+      # equals(c( 0.5119,  0.5935, -1.2453,  0.7498,  1.0294,  0.4061,  0.3532,
+                # 0.3615,  0.4427,  0.4324, -0.2841, -0.0988, -1.9537, -0.1179,
+                # 0.1819,  1.3079,  1.2858, -0.5368,  1.6175,  1.8770)))
+  expect_that(dim(weta6$real), equals(c(334, 3)))
+  expect_that(colnames(weta6$real),
+    equals(c("est", "lowCI", "uppCI")))
+  # Check against PRESENCE results:
+  expect_that(round(as.vector(weta6$real[1, ]), 4), 
+      equals(c(0.7536, 0.4723, 0.9127)))
+  expect_that(round(as.vector(weta6$real[4, ]), 4), 
+      equals(c(0.4847, 0.2865, 0.6877)))
+  expect_that(round(as.vector(weta6$real[73, ]), 4), 
+      equals(c(0.2235, 0.1241, 0.3689))) # PRESENCE 2nd value is 0.1242
+  expect_that(round(as.vector(weta6$real[94, ]), 4), 
+      equals(c(0.3786, 0.2383, 0.5426)))
+  expect_that(round(as.vector(weta6$real[334, ]), 4), 
+      equals(c(0.4462, 0.2980, 0.6047)))
+  expect_that(round(AIC(weta6), 4), 
+      equals(262.0421))
+})
 

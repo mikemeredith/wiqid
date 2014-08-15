@@ -1,29 +1,23 @@
 \name{Occupancy Multi-Season}
 \alias{occMS0}
-\alias{occMSseason}
-\alias{occMScov}
+\alias{occMStime}
+\alias{occMS}
 \alias{occMScovSite}
 
 \title{
 Multi-season occupancy estimation
 }
 \description{
-Functions to estimate occupancy from detection/non-detection data for multiple seasons. \code{occMScov} is the general purpose function; it allows for site-, season- and survey-level covariates, but it is slow. \code{occMScovSite} excludes survey-level covariates, but is fast. \code{occMSseason} and \code{occMS0} are simpler and faster.
+Functions to estimate occupancy from detection/non-detection data for multiple seasons. \code{occMS} is the general purpose function; it allows for site-, season- and survey-level covariates, but it is slow. \code{occMScovSite} excludes survey-level covariates, but is fast. \code{occMStime} and \code{occMS0} are simpler and faster.
 }
 \usage{
 occMS0(DH, occsPerSeason, ci=0.95)
 
-occMSseason(DH, occsPerSeason,
-             model=list(gamma~1, epsilon~1, p~1),
-             data=NULL, ci=0.95)
+occMStime(DH, occsPerSeason, model=NULL, data=NULL, ci=0.95)
 
-occMScov(DH, occsPerSeason,
-             model=list(psi1~1, gamma~1, epsilon~1, p~1),
-             data=NULL, ci=0.95)
+occMS(DH, occsPerSeason, model=NULL, data=NULL, ci=0.95)
              
-occMScovSite(DH, occsPerSeason,
-             model=list(psi1~1, gamma~1, epsilon~1, p~1),
-             data=NULL, ci=0.95)
+occMScovSite(DH, occsPerSeason, model=NULL, data=NULL, ci=0.95)
 }
 \arguments{
  \item{DH}{
@@ -33,10 +27,10 @@ a 1/0/NA matrix (or data frame) of detection histories, sites x occasions
 the number of survey occasions per season; either a scalar if the number of surveys is constant, or a vector with one element for each season.
 }
   \item{model}{
-a list of formulae symbolically defining a linear predictor for each parameter in terms of covariates.
+a list of formulae symbolically defining a linear predictor for each parameter in terms of covariates. The default corresponds to an intercept-only model.
 }
   \item{data}{
-a data frame containing the variables in the model: one row for each season or between-season period for \code{occMSseason} and one for each site for \code{occMScovSite}. Each survey covariate has one column for each occasion, and the column name must end with the occasion number (without leading zeros); eg, \code{Cov1, Cov2, ..., Cov15}.
+a data frame containing the variables in the model: one row for each season or between-season period for \code{occMStime} and one for each site for \code{occMScovSite}. Each survey covariate has one column for each occasion, and the column name must end with the occasion number (without leading zeros); eg, \code{Cov1, Cov2, ..., Cov15}.
 }
   \item{ci}{
 the confidence interval to use.
@@ -45,11 +39,11 @@ the confidence interval to use.
 \details{
 \code{occMS0} implements a simple multi-season model with one parameter each for initial occupancy, colonisation, local extinction, and probability of detection, ie. a \code{psi1(.) gamma(.) epsilon(.) p(.)} model.
 
-\code{occMSseason} allows for between-season differences in colonisation, local extinction, and probability of detection, either with covariates given in \code{data} or the in-built covariate \code{season}.
+\code{occMStime} allows for between-season differences in colonisation, local extinction, and probability of detection, either with covariates given in \code{data} or the in-built covariates \code{.interval} (for colonisation or extinction, or \code{.season} (for detection).
 
-\code{occMScovSite} allows for between-season differences in colonisation, local extinction, and probability of detection with the in-built covariate \code{season} and for between-site differences with covariates defined in \code{data}.
+\code{occMScovSite} allows for between-season differences in colonisation, local extinction, and probability of detection with the in-built covariate \code{.season} and for between-site differences with covariates defined in \code{data}.
 
-\code{occMScov} allows for survey-level covariates in addition to the above, and separate covariates for between-season colonisation and local extinction.
+\code{occMS} allows for survey-level covariates in addition to the above, and separate covariates for between-season colonisation and local extinction.
 }
 \value{
 Returns an object of class \code{wiqid}, which is a list with the following elements:
@@ -86,7 +80,7 @@ data(GrandSkinks)
 DH <- GrandSkinks[, 1:15]
 
 occMS0(DH, 3)
-occMSseason(DH, 3, model=list(gamma ~ .interval, epsilon~1, p~.season))
+occMStime(DH, 3, model=list(gamma ~ .interval, epsilon~1, p~.season))
 occMScovSite(DH, 3,
    model=list(psi1~habitat, gamma ~ .interval, epsilon~habitat, p~.season),
    data=GrandSkinks)

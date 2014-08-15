@@ -1,8 +1,8 @@
 Package: wiqid
 Type: Package
 Title: Quick and Dirty estimates for Wildlife simulations
-Version: 0.0.375
-Date: 2014-04-16
+Version: 0.0.376
+Date: 2014-07-27
 Imports: stats, secr
 Depends: coda, runjags
 Author: Mike Meredith

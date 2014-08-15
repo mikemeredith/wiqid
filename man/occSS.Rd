@@ -3,16 +3,16 @@
 \alias{occSSrn}
 \alias{occSStime}
 \alias{occSScovSite}
-\alias{occSScov}
+\alias{occSS}
 
 \title{
 Single-season occupancy estimation
 }
 \description{
-Functions to estimate occupancy from detection/non-detection data for a single season. \code{occSScov} is the general-purpose function, \code{occSStime} provides plots of detection probability against time, and \code{occSSrn} implements the Royle-Nichols model for abundance-induced heterogeneity in detection probability. \code{occSS0} and \code{occSScovSite} are faster functions for simpler models with summarized data.
+Functions to estimate occupancy from detection/non-detection data for a single season. \code{occSS} is the general-purpose function, \code{occSStime} provides plots of detection probability against time, and \code{occSSrn} implements the Royle-Nichols model for abundance-induced heterogeneity in detection probability. \code{occSS0} and \code{occSScovSite} are faster functions for simpler models with summarized data.
 }
 \usage{
-occSScov(DH, model=NULL, data = NULL, ci=0.95)
+occSS(DH, model=NULL, data = NULL, ci=0.95)
 
 occSStime(DH, model=p~1, data=NULL, ci=0.95, plot=TRUE)
 
@@ -20,7 +20,7 @@ occSSrn(DH, ci=0.95)
 
 occSS0(y, n, ci=0.95)
 
-occSScovSite(y, n, model=list(psi~1, p~1), data = NULL, ci=0.95)
+occSScovSite(y, n, model=NULL, data = NULL, ci=0.95)
 
 }
 \arguments{
@@ -48,7 +48,7 @@ a scalar or vector with the number of visits (survey occasions) at each site.
 }
 \details{
 
-\code{occSScov} allows for psi or p to be modelled as a logistic function of site covariates or survey covariates, as specified by \code{model}. It includes a built in \code{.time} covariate which can be used for modelling p with time as a fixed effect, and \code{.Time} for a linear or quadratic trend. A built-in \code{.b} covariate corresponds to a behavioural effect, where detection depends on whether the species was detected on the previous occasion or not.
+\code{occSS} allows for psi or p to be modelled as a logistic function of site covariates or survey covariates, as specified by \code{model}. It includes a built in \code{.time} covariate which can be used for modelling p with time as a fixed effect, and \code{.Time} for a linear or quadratic trend. A built-in \code{.b} covariate corresponds to a behavioural effect, where detection depends on whether the species was detected on the previous occasion or not.
 
 \code{occSStime} allows for time-varying covariates that are the same across all sites, eg, moon-phase. A categorical time variable \code{.time} and a time trend \code{.Time} are built-in. A plot of detection probability vs time is produced if \code{plot=TRUE}.
 
@@ -60,7 +60,7 @@ a scalar or vector with the number of visits (survey occasions) at each site.
 
 Numeric covariates in \code{data} are standardised to facilitate convergence. This applies to binary covariates coded as 1/0; if this is not what you want, code these as TRUE/FALSE or as factors. 
 
-For speed, use the simplest function which will cope with your model. For example, you can run psi(.) p(.) models in \code{occSScovSite} or \code{occSScov}, but \code{occSS0} is much faster.
+For speed, use the simplest function which will cope with your model. For example, you can run psi(.) p(.) models in \code{occSScovSite} or \code{occSS}, but \code{occSS0} is much faster.
 }
 \value{
 Returns an object of class \code{wiqid}, which is a list with the following elements:
@@ -96,11 +96,11 @@ See the examples for the \code{\link{weta}} data set.
 \examples{
 # The blue ridge salamanders data from MacKenzie et al (2006) p99:
 data(salamanders)
-occSScov(salamanders)
+occSS(salamanders)
 occSSrn(salamanders)
 occSStime(salamanders, p ~ .time)  # time as a fixed effect
 occSStime(salamanders, p ~ .Time + I(.Time^2))  # a quadratic time effect
-occSScov(salamanders, p ~ .b)
+occSS(salamanders, p ~ .b)
 
 # or use the fast functions with y, n format:
 y <- rowSums(salamanders)

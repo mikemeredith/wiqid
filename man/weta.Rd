@@ -29,11 +29,11 @@ MacKenzie, D I; J D Nichols; A J Royle; K H Pollock; L L Bailey; J E Hines 2006.
 data(weta)
 
 DH <- weta[, 1:5]  # extract the detection history:
-occSScov(DH)
+occSS(DH)
 occSStime(DH, p~.time)
 # With covariates
-occSScov(DH, list(psi ~ Browsed, p ~ ObsD), data=weta)
-occSScov(DH, list(psi ~ Browsed, p ~ Browsed), data=weta)
+occSS(DH, list(psi ~ Browsed, p ~ ObsD), data=weta)
+occSS(DH, list(psi ~ Browsed, p ~ Browsed), data=weta)
 
 }
 \keyword{datasets}

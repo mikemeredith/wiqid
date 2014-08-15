@@ -1,5 +1,6 @@
 # NAMESPACE for package 'wiqid'
 
+importFrom(utils, packageVersion)
 importFrom(stats, nobs, logLik, update, window)
 # importFrom(rjags, jags.model, coda.samples)
 importFrom(runjags, autorun.jags)
@@ -10,8 +11,9 @@ importFrom(parallel, detectCores)
 export(
   survCJS, survCJSaj,
   closedCapM0, closedCapMh2, closedCapMhJK, closedCapMt, closedCapMtcov,
-  occSS0, occSStime, occSScov, occSScovSite, occSSrn, 
-  occMS0, occMSseason, occMScovSite, occMScov,
+  occSS0, occSStime, occSS, occSScovSite, occSSrn, 
+  occMS0, occMStime, occMScovSite, occMS,
+  occMScov, occMSseason, occSScov, # These 3 deprecated.
   BoccSS0, BsurvCJS, Bsecr0,
   richRarefy,
   richACE, richICE, richChao1, richChao2, richJack1, richJack2, richBoot, richMM,

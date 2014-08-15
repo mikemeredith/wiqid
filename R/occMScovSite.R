@@ -2,14 +2,14 @@
 # Multiseason occupancy
 # This version allows for site covars and season differences,
 #   but not (yet) seasonal covariates
-#   eg psi(hab) gamma(hab+season) ...
+#   eg psi(hab) gamma(hab+.season) ...
 
 # See MacKenzie et al (2006) "Occupancy..." p194ff
 
 # function Prh1A is defined in the file occMSseason.R
 
 occMScovSite <- function(DH, occsPerSeason,
-             model=list(psi1~1, gamma~1, epsilon~1, p~1),
+             model=NULL,
              data=NULL, ci=0.95) {    
   # ** DH is detection data in a 1/0/NA matrix or data frame, sites in rows, 
   #    detection occasions in columns..
