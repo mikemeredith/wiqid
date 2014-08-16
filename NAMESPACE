@@ -49,6 +49,7 @@ S3method("hdi", "runjags")
 
 S3method("as.Bwiqid", "default")
 S3method("as.Bwiqid", "mcmc.list")
+S3method("as.Bwiqid", "mcmc")
 S3method("as.Bwiqid", "bugs")
 S3method("as.Bwiqid", "rjags")
 S3method("as.Bwiqid", "runjags")

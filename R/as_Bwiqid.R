@@ -17,7 +17,21 @@ as.Bwiqid.mcmc.list <- function(object, header, defaultPlot, ...) {
     attr(out, "header") <- header
   attr(out, "n.chains") <- length(object)
   attr(out, "n.eff") <- effectiveSize(object)
-  attr(out, "Rhat") <- gelman.diag(object, multivariate=FALSE)$psrf[, 1]
+  if(length(object) > 1)
+    attr(out, "Rhat") <- gelman.diag(object, multivariate=FALSE)$psrf[, 1]
+  if(!missing("defaultPlot"))
+    attr(out, "defaultPlot") <- defaultPlot
+  return(out)
+}
+# Class mcmc
+as.Bwiqid.mcmc <- function(object, header, defaultPlot, ...) {
+  out <- as.data.frame(as.matrix(object))
+  names(out) <- fixNames(names(out))
+  class(out) <- c("Bwiqid", class(out))
+  if(!missing(header))
+    attr(out, "header") <- header
+  attr(out, "n.chains") <- 1
+  attr(out, "n.eff") <- effectiveSize(object)
   if(!missing("defaultPlot"))
     attr(out, "defaultPlot") <- defaultPlot
   return(out)

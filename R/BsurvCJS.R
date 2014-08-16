@@ -18,7 +18,7 @@ BsurvCJS <- function(DH, model=list(phi~1, p~1), data=NULL, freq=1,
   stopifnot(testjags(silent=TRUE)$JAGS.found)
   if (detectCores() > 3)
     runjags.options("method"="parallel")
-
+  runjags.options("rng.warning"=FALSE)
   
   # Sanity checks:
   if (priorOnly)
@@ -115,7 +115,10 @@ BsurvCJS <- function(DH, model=list(phi~1, p~1), data=NULL, freq=1,
   if(!priorOnly)
       jagsData$marr <- mArray
       
-  inits <- function() {list(phiBeta = start[1:phiK], pBeta = start[(phiK+1):K])}
+  inits <- function() {
+    start1 <- start * runif(K, 0.9, 1.1)
+    list(phiBeta = start1[1:phiK], pBeta = start1[(phiK+1):K])
+  }
   wanted <- c("phi", "p")
   
   # Run the model:

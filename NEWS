@@ -4,16 +4,16 @@ TODO
   
   * check that character strings used as models are coerced to formulae internally.
   
-  * add as.Bwiqid method for coda class 'mcmc' (in addition to 'mcmc.list'); allow as.Bwiqid to handle a single chain without throwing an error for gelman.diag.
-  
-  * stop unnecessary warnings from runjags getting to user.
+  * add functions for Pollock's robust design.
   
 CHANGES in 2014-08-14 v.0.0.376
+
+  * added as.Bwiqid method for coda class 'mcmc'.
 
   * renaming of some functions: occMSseason -> occMStime, occMScov -> occMS,
       occSScov -> occSS.
 
-  * fixed bug in occMScov with .season covariate; improved error messages.
+  * fixed bug in occMS(cov) with .season covariate; improved error messages.
 
   * fixed bug in biodSimpson et al
   

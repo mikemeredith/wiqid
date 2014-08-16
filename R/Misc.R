@@ -145,8 +145,7 @@ stddata <- function(df, nocc=NULL, scaleBy=0.5)  {
 selectCovars <- function(formula, dataList, minrows)  {
   wanted <- rownames(attr(terms(formula), "factors"))
   found <- wanted %in% names(dataList)
-  if(any(!found))
-    stop("Can't find variable(s): ", paste(wanted[!found], collapse=", "))
+  wanted <- wanted[found]
   if (length(wanted) > 0)  {
     df <- as.data.frame(dataList[wanted])
     df <- cbind(df, .dummy = rep(NA, minrows))
