@@ -11,8 +11,8 @@ A data set that accompanies Program MARK and is included in the \code{RMark} pac
 \format{
   A data frame with 294 observations on the following 8 variables.
   \describe{
-    \item{\code{Y1, Y2, Y3, Y4, Y5, Y6, Y7}}{detection histories for 294 dippers over 7 years: '1' if captured, '0' if not captured.}
-    \item{\code{sex}}{sex of each bird captured.}
+    \item{Y1, Y2, Y3, Y4, Y5, Y6, Y7}{detection histories for 294 dippers over 7 years: '1' if captured, '0' if not captured.}
+    \item{sex}{sex of each bird captured.}
   }
 }
 \source{

@@ -3,7 +3,7 @@
 \alias{survCJSaj}
 \alias{BsurvCJS}
 \title{
-Survival from recapture data
+Survival from recapture data with CJS model
 }
 \description{
 Calculation of apparent survival (accounting for recapture probability) from mark-recapture data, with time-dependent phi or p, possibly with covariates. Function \code{survCHSaj} allows for different survival parameters for juveniles and adults. \code{BsurvCJS} is a Bayesian version.
@@ -29,7 +29,7 @@ a list of formulae symbolically defining a linear predictor for each parameter i
 a data frame with a row for each survival interval / recapture occasion and columns for each of the covariates used to estimate phi or p.
 }
   \item{freq}{
-a scalar or a vector of length \code{nrow(DH)} with the frequency of each detection history.
+a scalar or a vector of length \code{nrow(DH)} with the frequency of each detection history. Negative values indicate trap losses.
 }
   \item{DHj, DHa}{
 detection history matrices for animals marked a juveniles and adults respectively; DHa should be NULL if no animals were marked as adults.

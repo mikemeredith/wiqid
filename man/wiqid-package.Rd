@@ -70,8 +70,14 @@ Although data for genuinely closed populations are rare, this is an important co
   \code{\link{survCJS}} \tab model with time-varying covariates \cr
   \code{\link{BsurvCJS}} \tab a Bayesian implementation of the above \cr
   \code{\link{survCJSaj}} \tab allows for different survival for adults and juveniles }
+
+  \bold{Pollock's robust design}
   
-Functions for Pollock's robust method are planned.
+  \tabular{ll}{
+  \code{\link{survRDah}} \tab 2-stage estimation of survival and recruitment \cr
+  \code{\link{survRD}} \tab single stage maximum likelihood estimation }
+  
+Note that the RD functions are preliminary attempts at coding these models and have not been fully tested or benchmarked.
 }
 
 \section{SPECIES RICHNESS from species x sample matrices}{
@@ -144,6 +150,7 @@ All of these functions produce distance measures (not similarity) on a scale of 
   \code{\link{GrandSkinks}} \tab multi-season occupancy data \cr
   \code{\link{KanhaTigers}} \tab camera-trap data for tigers \cr
   \code{\link{KillarneyBirds}} \tab abundance of birds in Irish woodlands \cr
+  \code{\link{MeadowVoles}} \tab mark-recapture data from a robust design study \cr
   \code{\link{salamanders}} \tab detection/non-detection data for salamanders \cr
   \code{\link{seedbank}} \tab number of seeds germinating from samples of soil \cr
   \code{\link{Temburong}} \tab counts of tree species in a 1ha plot in Brunei \cr

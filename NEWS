@@ -2,11 +2,13 @@ TODO
 
   * TRY using Gelman et al 2008 recommendations for priors for logistic coefficients. Update man page for priors.
   
-  * check that character strings used as models are coerced to formulae internally.
+  * Improve survRD* functions!
   
-  * add functions for Pollock's robust design.
+CHANGES in 2014-09-06 v.0.0.377
   
-  * allow trap losses in survCJS functions
+  * added preliminary versions of functions for Pollock's robust design.
+  
+  * trap losses allowed in survCJS functions.
   
 CHANGES in 2014-08-14 v.0.0.376
 
@@ -15,7 +17,7 @@ CHANGES in 2014-08-14 v.0.0.376
   * renaming of some functions: occMSseason -> occMStime, occMScov -> occMS,
       occSScov -> occSS.
 
-  * fixed bug in occMS(cov) with .season covariate; improved error messages.
+  * fixed bug in occMS(cov) with .season covariate.
 
   * fixed bug in biodSimpson et al
   
