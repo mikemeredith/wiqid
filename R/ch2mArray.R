@@ -10,9 +10,17 @@ ch2mArray <- function(CH, freq=1){
   if(length(freq) == 1)
     freq <- rep(freq, nrow(CH))
   stopifnot(length(freq) == nrow(CH))
-  if(any(freq < 0))
-    stop("Sorry, I cannot deal with trap losses (yet).")
   nocc <- ncol(CH)
+  if(any(freq < 0)) {
+    # When did the loss occur?
+    getLast <- function(x)
+      max(which(x > 0))
+    last <- apply(CH[freq < 0, ], 1, getLast)
+    lost <- tabulate(last, nbins=nocc)
+    freq <- abs(freq)
+  } else {
+    lost <- rep(0, nocc)
+  }
   ma <- matrix(0, nocc, nocc+1)
     # First column and last row will be removed later
     # Last col is for number never-seen-again
@@ -24,7 +32,7 @@ ch2mArray <- function(CH, freq=1){
   }
   # Marked animals never seen again:
   totCH <- sweep(CH, 1, freq, "*")
-  ma[, nocc+1] <- colSums(totCH) - rowSums(ma)
+  ma[, nocc+1] <- colSums(totCH) - rowSums(ma) - lost
   # Remove 1st col (REcaptures on 1st occasion = all zeros) 
   #  and last row (releases  on last occasion will never be recaptured).
   return(ma[-nocc, -1])

@@ -6,6 +6,8 @@ TODO
   
   * add functions for Pollock's robust design.
   
+  * allow trap losses in survCJS functions
+  
 CHANGES in 2014-08-14 v.0.0.376
 
   * added as.Bwiqid method for coda class 'mcmc'.
