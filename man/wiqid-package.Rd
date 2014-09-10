@@ -31,7 +31,8 @@ The functions are listed by topic below.
   \code{\link{BoccSS0}} \tab a Bayesian implementation of the psi(.) p(.) model \cr
   \code{\link{occSSrn}} \tab Royle-Nichols method \cr
   \code{\link{occSStime}} \tab faster if you have only time effects, also does a plot \cr
-  \code{\link{occSScovSite}} \tab faster if you only have site-specific covariates }
+  \code{\link{occSScovSite}} \tab faster if you only have site-specific covariates \cr
+  \code{\link{occ2sps}} \tab single-season two-species models   }
 
   \bold{Multi-season occupancy}
   

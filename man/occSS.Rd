@@ -91,7 +91,7 @@ Royle, J. A., Nichols, J. D. (2003) Estimating abundance from repeated presence-
 Mike Meredith
 }
 \seealso{
-See the examples for the \code{\link{weta}} data set.
+See the examples for the \code{\link{weta}} data set. See \code{\link{occ2sps}} for single-season two-species models and \code{\link{occMS}} for multi-season models.
 }
 \examples{
 # The blue ridge salamanders data from MacKenzie et al (2006) p99:

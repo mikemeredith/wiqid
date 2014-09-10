@@ -4,7 +4,11 @@ TODO
   
   * Improve survRD* functions!
   
-CHANGES in 2014-09-06 v.0.0.377
+  * test files for occ2sps and survRD* functions
+  
+CHANGES in 2014-09-10 v.0.0.377
+
+  * added single-season two-species occupancy model.
   
   * added preliminary versions of functions for Pollock's robust design.
   
