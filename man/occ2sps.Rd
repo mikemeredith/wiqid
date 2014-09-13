@@ -46,6 +46,9 @@ Returns an object of class \code{wiqid}, which is a list with the following elem
   \item{logLik}{a vector with elements for log(likelihood), number of parameters, and effective sample size. If parameters \emph{and their SEs} cannot be estimated, the first element should be \code{NA}.}
 }
 
+\section{Benchmarks}{Output has been checked against output from PRESENCE (Hines 2006) v.5.5 for the \code{\link{railSims}} data set. Real values are  the same to 4 decimal places, and AICs are the same.
+}
+
 \references{
 
 Richmond, Hines, Bessinger (2010) Two-species occupancy models: a new parameterization applied to co-occurrence of secretive rails. \emph{Ecological Applications} 20(7):2036-2046

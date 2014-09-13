@@ -152,6 +152,7 @@ All of these functions produce distance measures (not similarity) on a scale of 
   \code{\link{KanhaTigers}} \tab camera-trap data for tigers \cr
   \code{\link{KillarneyBirds}} \tab abundance of birds in Irish woodlands \cr
   \code{\link{MeadowVoles}} \tab mark-recapture data from a robust design study \cr
+  \code{\link{railSims}} \tab simulated detection/non-detection data for two species of rails \cr
   \code{\link{salamanders}} \tab detection/non-detection data for salamanders \cr
   \code{\link{seedbank}} \tab number of seeds germinating from samples of soil \cr
   \code{\link{Temburong}} \tab counts of tree species in a 1ha plot in Brunei \cr

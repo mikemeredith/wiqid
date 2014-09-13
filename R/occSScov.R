@@ -19,10 +19,7 @@ occSS <- function(DH, model=NULL, data=NULL, ci=0.95) {
     return(occSS0(y, n, ci=ci))
   }
   
-  if(ci > 1 | ci < 0.5)
-    stop("ci must be between 0.5 and 1")
-  alf <- (1 - ci[1]) / 2
-  crit <- qnorm(c(alf, 1 - alf))
+  crit <- fixCI(ci)
 
   # Standardise the model:
   model <- stdModel(model, list(psi=~1, p=~1))

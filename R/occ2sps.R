@@ -14,7 +14,8 @@
   #   2: pB != rBA = rBa, 3: pB = rBa != rBA, 4: pB != rBA != rBa)
 
 occ2sps <- function(DHA, DHB, modelSpec=111, ci=0.95)  {
-
+  DHA <- as.matrix(DHA)
+  DHB <- as.matrix(DHB)
   # Check that the NAs match up
   stopifnot(all.equal(is.na(DHA), is.na(DHB), check.attributes=FALSE))
   # Check for rows with all NAs ### this probably doesn't matter
