@@ -2,10 +2,16 @@ TODO
 
   * TRY using Gelman et al 2008 recommendations for priors for logistic coefficients. Update man page for priors.
   
-  * Improve survRD* functions!
+  * Try using optim instead of nlm for functions where estimation near boundaries is a problem.
   
-  * test files for occ2sps and survRD* functions
+  * Improve survRD* functions! Add test files.
   
+  * Add survey covars to occSSrn.
+  
+CHANGES in 2014-09-14 v.0.0.378
+  
+  * Added occSSrnSite which allows site specific covariates.
+ 
 CHANGES in 2014-09-10 v.0.0.377
 
   * added single-season two-species occupancy model.
