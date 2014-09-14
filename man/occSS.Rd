@@ -1,6 +1,5 @@
 \name{Occupancy Single Season}
 \alias{occSS0}
-\alias{occSSrn}
 \alias{occSStime}
 \alias{occSScovSite}
 \alias{occSS}
@@ -9,14 +8,12 @@
 Single-season occupancy estimation
 }
 \description{
-Functions to estimate occupancy from detection/non-detection data for a single season. \code{occSS} is the general-purpose function, \code{occSStime} provides plots of detection probability against time, and \code{occSSrn} implements the Royle-Nichols model for abundance-induced heterogeneity in detection probability. \code{occSS0} and \code{occSScovSite} are faster functions for simpler models with summarized data.
+Functions to estimate occupancy from detection/non-detection data for a single season. \code{occSS} is the general-purpose function, and \code{occSStime} provides plots of detection probability against time. \code{occSS0} and \code{occSScovSite} are faster functions for simpler models with summarized data. See \code{occSSrn} for the Royle-Nichols model for abundance-induced heterogeneity in detection probability. 
 }
 \usage{
 occSS(DH, model=NULL, data = NULL, ci=0.95)
 
 occSStime(DH, model=p~1, data=NULL, ci=0.95, plot=TRUE)
-
-occSSrn(DH, ci=0.95)
 
 occSS0(y, n, ci=0.95)
 
@@ -52,8 +49,6 @@ a scalar or vector with the number of visits (survey occasions) at each site.
 
 \code{occSStime} allows for time-varying covariates that are the same across all sites, eg, moon-phase. A categorical time variable \code{.time} and a time trend \code{.Time} are built-in. A plot of detection probability vs time is produced if \code{plot=TRUE}.
 
-\code{occSSrn} implements the Royle-Nichols method (Royle \& Nichols 2003) for estimation of site occupancy allowing for abundance-induced heterogeneity in detection probability. Probability of detection is modelled as a function of the number of animals available for detection, \emph{n}, and the probability of detection of an individual animal, \emph{r}. Probability of occupancy is derived as the probability that \emph{n} > 0.
-
 \code{occSS0} implements a simple model with one parameter for probability of occupancy and one for probability of detection, ie. a \code{psi(.) p(.)} model.
 
 \code{occSScovSite} allows for site covariates but not for occasion or survey covariates.
@@ -68,7 +63,7 @@ Returns an object of class \code{wiqid}, which is a list with the following elem
   \item{call}{The call used to produce the results}
   \item{beta}{Values of the coefficients of the terms in the linear predictors, with standard errors and confidence intervals.}
   \item{beta.vcv }{The variance-covariance matrix for the beta estimates.}
-  \item{real}{Estimates of occupancy and probability of detection on the real scale, with confidence intervals; \code{occSSrn} gives occupancy, lambda and r.}
+  \item{real}{Estimates of occupancy and probability of detection on the real scale, with confidence intervals.}
   \item{logLik}{a vector with elements for log(likelihood), number of parameters, and effective sample size. If parameters \emph{and their SEs} cannot be estimated, the first element should be \code{NA}.}
 
 There are \code{print}, \code{logLik}, and \code{nobs} methods for class \code{wiqid}.
@@ -84,7 +79,6 @@ MacKenzie, D I; J D Nichols; A J Royle; K H Pollock; L L Bailey; J E Hines 2006.
 
 Hines, J. E. (2006). PRESENCE - Software to estimate patch occupancy and related parameters. SGS-PWRC. http://www.mbr-pwrc.usgs.gov/software/presence.html.
 
-Royle, J. A., Nichols, J. D. (2003) Estimating abundance from repeated presence-absence data or point counts. \emph{Ecology} 84(3) 777-790.
 }
 
 \author{
@@ -97,7 +91,6 @@ See the examples for the \code{\link{weta}} data set. See \code{\link{occ2sps}} 
 # The blue ridge salamanders data from MacKenzie et al (2006) p99:
 data(salamanders)
 occSS(salamanders)
-occSSrn(salamanders)
 occSStime(salamanders, p ~ .time)  # time as a fixed effect
 occSStime(salamanders, p ~ .Time + I(.Time^2))  # a quadratic time effect
 occSS(salamanders, p ~ .b)

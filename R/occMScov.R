@@ -7,10 +7,10 @@
 
 # See MacKenzie et al (2006) "Occupancy..." p194ff
 
-occMScov <- function(DH=NULL, occsPerSeason=NULL,
-             model=NULL,
-             data=NULL, ci=0.95)
+occMScov <- function(...) {
   cat("occMScov has been renamed occMS.\n\n")
+  occMS(...)
+}
 
 occMS <- function(DH, occsPerSeason,
              model=NULL,

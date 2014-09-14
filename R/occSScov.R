@@ -1,7 +1,8 @@
 # Single season occupancy with site and survey covariates.
 
-occSScov <- function(DH=NULL, model=NULL, data=NULL, ci=0.95) {
+occSScov <- function(...) {
   cat("occSScov has been renamed occSS.\n")
+  occSS(...)
 }
 
 occSS <- function(DH, model=NULL, data=NULL, ci=0.95) {

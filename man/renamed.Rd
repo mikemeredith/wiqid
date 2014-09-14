@@ -15,27 +15,17 @@ Functions which have been renamed
 \code{occMSseason} is replaced by \code{occMStime}
 }
 \usage{
-occSScov(DH=NULL, model=NULL, data = NULL, ci=0.95)
+occSScov(...)
 
-occMSseason(DH=NULL, occsPerSeason=NULL, model=NULL,
-             data=NULL, ci=0.95)
+occMSseason(...)
 
-occMScov(DH=NULL, occsPerSeason=NULL, model=NULL,
-             data=NULL, ci=0.95)
+occMScov(...)
              
 }
 \arguments{
- \item{DH}{
+ \item{\dots}{Arguments passed to the new functions.
 }
-  \item{occsPerSeason}{
-}
-  \item{model}{
-}
-  \item{data}{
-}
-  \item{ci}{
-}
-}
+ }
 \details{
 All these functions display text with the new function name.
 }

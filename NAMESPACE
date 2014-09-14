@@ -12,7 +12,8 @@ export(
   survCJS, survCJSaj,
   survRD, survRDah,
   closedCapM0, closedCapMh2, closedCapMhJK, closedCapMt, closedCapMtcov,
-  occSS0, occSStime, occSS, occSScovSite, occSSrn, 
+  occSS0, occSStime, occSS, occSScovSite,
+  occSSrn, occSSrnSite,
   occ2sps,
   occMS0, occMStime, occMScovSite, occMS,
   occMScov, occMSseason, occSScov, # These 3 deprecated.

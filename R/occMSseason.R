@@ -3,10 +3,10 @@
 
 # See MacKenzie et al (2006) "Occupancy..." p194ff
 
-occMSseason <- function(DH=NULL, occsPerSeason=NULL,
-             model=NULL,
-             data=NULL, ci=0.95)
+occMSseason <- function(...) {
   cat("occMSseason has been renamed occMStime.\n\n")
+  occMStime(...)
+}
 
 occMStime <- function(DH, occsPerSeason,
              model=NULL,
