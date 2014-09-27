@@ -47,6 +47,9 @@ hdi.rjags <- function(object, credMass=0.95, ...)
 hdi.runjags <- function(object, credMass=0.95, ...) 
   hdi.mcmc.list(as.mcmc.list(object), credMass=credMass, ...)
 
+hdi.jagsUI <- function(object, credMass=0.95, ...) 
+  hdi.mcmc.list(object$samples, credMass=credMass, ...)
+
 hdi.function <- function(object, credMass=0.95, tol, ...)  {
   if(is.na(credMass) || length(credMass) != 1 || credMass <= 0 || credMass >= 1)
     stop("credMass must be in 0 < credMass < 1")

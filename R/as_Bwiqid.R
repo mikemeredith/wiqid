@@ -69,6 +69,24 @@ as.Bwiqid.rjags <- function(object, header, defaultPlot, ...) {
   return(out)
 }
 
+# Class jagsUI from jagsUI package
+as.Bwiqid.jagsUI <- function(object, header, defaultPlot, ...) {
+  stopifnot(class(object$samples) == "mcmc.list")
+  out <- as.data.frame(as.matrix(object$samples))
+  names(out) <- fixNames(names(out))
+  class(out) <- c("Bwiqid", class(out))
+  if(missing(header))
+    header <- "Model fitted in JAGS with jagsUI"
+  attr(out, "header") <- header
+  attr(out, "n.chains") <- length(object$samples)
+  attr(out, "n.eff") <- unlist(object$n.eff)
+  if(length(object) > 1)
+    attr(out, "Rhat") <- unlist(object$Rhat)
+  if(!missing("defaultPlot"))
+    attr(out, "defaultPlot") <- defaultPlot
+  return(out)
+}
+
 # Class runjags from runjags package
 as.Bwiqid.runjags <- function(object, header, defaultPlot, ...) {
   out <- as.data.frame(as.matrix(as.mcmc.list(object)))

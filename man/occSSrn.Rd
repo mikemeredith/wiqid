@@ -1,5 +1,6 @@
 \name{Royle-Nichols occupancy model}
 \alias{occSSrn}
+\alias{occSSrn0}
 \alias{occSSrnSite}
 
 \title{
@@ -8,12 +9,13 @@ Royle-Nichols model for single-season occupancy estimation
 \description{
 These functions implement the Royle-Nichols method (Royle & Nichols 2003) for estimation of site occupancy allowing for abundance-induced heterogeneity in detection probability. Probability of detection is modelled as a function of the number of animals available for detection, \emph{n}, and the probability of detection of an individual animal, \emph{r}. Probability of occupancy is derived as the probability that \emph{n} > 0.
 
-Function \code{occSSrnSite} allows for site-specific covariates to be included in the model.
-
+Function \code{occSSrn} allows for site-specific covariates to be included in the model. \code{occSSrnSite} and \code{occSSrn0} are fast alternatives that do not require a full detection history matrix.
 }
 \usage{
 
 occSSrn(DH, model=NULL, data = NULL, ci=0.95)
+
+occSSrn0(y, n, ci=0.95)
 
 occSSrnSite(y, n, model=NULL, data = NULL, ci=0.95)
 

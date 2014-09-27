@@ -12,8 +12,8 @@ export(
   survCJS, survCJSaj,
   survRD, survRDah,
   closedCapM0, closedCapMh2, closedCapMhJK, closedCapMt, closedCapMtcov,
-  occSS0, occSStime, occSS, occSScovSite,
-  occSSrn, occSSrnSite,
+  occSS, occSStime, occSS0, occSScovSite,
+  occSSrn, occSSrn0, occSSrnSite,
   occ2sps,
   occMS0, occMStime, occMScovSite, occMS,
   occMScov, occMSseason, occSScov, # These 3 deprecated.
@@ -49,6 +49,7 @@ S3method("hdi", "function")
 S3method("hdi", "bugs")
 S3method("hdi", "rjags")
 S3method("hdi", "runjags")
+S3method("hdi", "jagsUI")
 
 S3method("as.Bwiqid", "default")
 S3method("as.Bwiqid", "mcmc.list")
@@ -56,4 +57,5 @@ S3method("as.Bwiqid", "mcmc")
 S3method("as.Bwiqid", "bugs")
 S3method("as.Bwiqid", "rjags")
 S3method("as.Bwiqid", "runjags")
+S3method("as.Bwiqid", "jagsUI")
 
