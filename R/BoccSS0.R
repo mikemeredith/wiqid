@@ -1,52 +1,53 @@
 
 # Bayes version of single-season occupancy model with no covariates
 
-BoccSS0 <-
-function(y, n, priorOnly=FALSE, ...) {
-  # n is a vector with the number of occasions at each site.
-  # y is a vector with the number of detections at each site.
-  # ci is the required confidence interval.
-  
-  stopifnot(testjags(silent=TRUE)$JAGS.found)
-  if (detectCores() > 3)
-    runjags.options("method"="parallel")
-  runjags.options("rng.warning"=FALSE)
+# This version uses a Gibbs sampler coded in R
 
-  if (priorOnly)
-    warning("The prior distributions will be produced, not the posterior distributions!")
-
+BoccSS0 <- function(y, n, psiPrior=c(1,1), pPrior=c(1,1), 
+                    n.chains=3, n.iter=10100, n.burnin=100) {
+  startTime <- Sys.time()
+  nSites <- length(y)
   if(length(n) == 1)
-    n <- rep(n, length(y))
+    n <- rep(n, nSites)
+  stopifnot(length(n) == length(y))
+  stopifnot(all(n >= y))
+  known <- y > 0  # sites known to be occupied
+  detected <- sum(y)
 
-  # Define the model
-  modeltext <- "
-    model {
-
-      # Priors
-      psi ~ dunif(0, 1)
-      p ~ dunif(0, 1)
-
-      # Likelihood
-      for (i in 1:R) {
-        z[i] ~ dbern(psi)
-        y[i] ~ dbinom(z[i] * p, n[i])
-      }
-    } "
-
-  # Prepare the bits:
-  jagsData <- list(n=n, R=length(y))
-  if(!priorOnly)
-    jagsData$y <- y
-  inits <- function() 
-              list(psi=runif(1, 0.1, 0.9), 
-                p=runif(1, 0.1, 0.9),
-                z=(rbinom(length(y), 1, 0.5) | (y > 0))*1)
-  wanted <- c("psi", "p")
+  # talk <- round(n.iter / 10)
+  chain <- matrix(nrow=n.iter, ncol=2)
+  colnames(chain) <- c("psi", "p")
+  chain[1, ] <- rep(0.5, 2)
+  out <- vector('list', n.chains)
+  for(ch in 1:n.chains)  {
+    # cat("\nRunning chain", ch)
+    for(i in 2:n.iter) {
+      # if(i %% talk == 0)
+        # cat(".") ; flush.console()
+      # 1. Calculate prob(occupied | y = 0), draw new z vector
+      psi.y0 <- (chain[i-1,1] * (1 - chain[i-1,2])^n) /
+                    (chain[i-1,1] * (1 - chain[i-1,2])^n + (1 - chain[i-1,1]))
+      z <- ifelse(known, 1, rbinom(nSites, 1, psi.y0))
+      # 2. Update psi from beta(occupied+1, unoccupied+1)
+      chain[i,1] <- rbeta(1, sum(z) + psiPrior[1], sum(z == 0) + psiPrior[2])
+      # 3. Update p from beta(detected+1, undetected+1) for occupied sites only.
+      chain[i,2] <- rbeta(1, detected + pPrior[1], sum(n[z == 1]) - detected + pPrior[2])
+    }
+    out[[ch]] <- mcmc(chain[(n.burnin+1):n.iter, ], start=n.burnin+1, end=n.iter)
+  }
+  # cat("\nDone.\n")
+  # Diagnostics
+  out2 <- mcmc.list(out)
+  Rhat <- try(gelman.diag(out2, autoburnin=FALSE)$psrf[, 1], silent=TRUE)
+  if(inherits(Rhat, "try-error") || !is.finite(Rhat))
+    Rhat <- NULL
   
-  # Run the model:
-  resB <- autorun.jags(modeltext, wanted, jagsData, n.chains=3, inits, ...)
-  
-  return(as.Bwiqid(resB, 
-      header = "Model fitted in JAGS with runjags::autorun.jags",
-      defaultPlot = "psi"))
+  out3 <- as.Bwiqid(out2,
+      header = "Model fitted in R with a Gibbs sampler",
+      defaultPlot = "psi")
+  attr(out3, "n.chains") <- n.chains
+  attr(out3, "n.eff") <- effectiveSize(out2)
+  attr(out3, "Rhat") <- Rhat
+  attr(out3, "timetaken") <- Sys.time() - startTime
+  return(out3)
 }

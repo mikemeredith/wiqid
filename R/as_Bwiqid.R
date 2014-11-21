@@ -8,6 +8,16 @@ as.Bwiqid.default <- function(object, ...) {
     stop(paste("No applicable method for class", class(object)))
 }
 
+# Class Bwiqid (catches errors and allows header, defaultPlot to be changed)
+as.Bwiqid.Bwiqid <- function(object, header, defaultPlot, ...) {
+  out <- object
+  if(!missing(header))
+    attr(out, "header") <- header
+  if(!missing("defaultPlot"))
+    attr(out, "defaultPlot") <- defaultPlot
+  return(out)
+}
+
 # Class mcmc.list from (inter alia) rjags package
 as.Bwiqid.mcmc.list <- function(object, header, defaultPlot, ...) {
   out <- as.data.frame(as.matrix(object))

@@ -1,21 +1,19 @@
 \name{Bayesian Occupancy Single Season}
 \alias{BoccSS0}
-%%\alias{occSSrn}
-%%\alias{occSS.t}
-%%\alias{occSS.T}
-%%\alias{occSS.T2}
-%%\alias{occSScovSite}
-%%\alias{occSScov}
-%%\alias{occSSautocorA}
+\alias{BoccSS0_JAGS}
+
 
 \title{
 Single-season occupancy estimation using MCMC
 }
 \description{
-Functions to estimate occupancy from detection/non-detection data for a single season using MCMC methods and JAGS. 
+Functions to estimate occupancy from detection/non-detection data for a single season using a Gibbs sampler coded in R or JAGS. 
 }
 \usage{
-BoccSS0(y, n, priorOnly=FALSE, ...)
+BoccSS0(y, n, psiPrior=c(1,1), pPrior=c(1,1), 
+                    n.chains=3, n.iter=10100, n.burnin=100)
+ 
+BoccSS0_JAGS(y, n, priorOnly=FALSE, ...)
 
 }
 \arguments{
@@ -25,6 +23,18 @@ a vector with the number of detections at each site.
   \item{n}{
 a scalar or vector with the number of visits (survey occasions) at each site.
 }
+  \item{psiPrior, pPrior}{
+parameters for beta distributions to be used as priors for psi and p.
+}
+  \item{n.chains}{
+number of MCMC chains to run.
+}
+  \item{n.iter}{
+number of values per chain, including burn-in.
+}
+  \item{n.burnin}{
+number of values per chain to discard as burn-in.
+}
   \item{priorOnly}{
 if TRUE, the function produces random draws from the appropriate \emph{prior} distributions, with a warning.
 }
@@ -33,14 +43,14 @@ further arguments passed to \code{\link{autorun.jags}}.
 }
 }
 \details{
-\code{BoccSS0} implements a simple model with one parameter for probability of occupancy and one for probability of detection, ie. a \code{psi(.) p(.)} model.
+\code{BoccSS0} and \code{BoccSS0_JAGS} implement a simple model with one parameter for probability of occupancy and one for probability of detection, ie. a \code{psi(.) p(.)} model. The first uses a Gibbs sampler encoded in R, the second calls JAGS.
 
 }
 \value{
 Returns an object of class \code{Bwiqid}, which is a data frame with a column for each parameter in the model.
 
 
-There will eventually be \code{print} and \code{plot} methods for class \code{Boccupancy}.
+There are \code{print} and \code{plot} methods for class \code{Bwiqid}.
 }
 
 \references{
