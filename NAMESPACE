@@ -7,6 +7,9 @@ importFrom(runjags, testjags, runjags.options, autorun.jags)
 importFrom(coda, mcmc, mcmc.list, as.mcmc.list, gelman.diag, effectiveSize)
 importFrom(secr, secr.fit)
 importFrom(parallel, detectCores)
+importFrom(MASS, mvrnorm)
+importFrom(truncnorm, rtruncnorm)
+
 
 export(
   survCJS, survCJSaj,
@@ -17,7 +20,7 @@ export(
   occ2sps,
   occMS0, occMStime, occMScovSite, occMS,
   occMScov, occMSseason, occSScov, # These 3 deprecated.
-  BoccSS0, BoccSS0_JAGS, BsurvCJS, Bsecr0,
+  BoccSS0, BoccSS0_JAGS, BoccSS, BsurvCJS, Bsecr0,
   richRarefy,
   richACE, richICE, richChao1, richChao2, richJack1, richJack2, richBoot, richMM,
   richJackA1, richJackA2, richRenLau,

@@ -1,0 +1,213 @@
+# Single season occupancy with site and survey covariates.
+
+# Bayesian version, using Dorazio & Rodriguez (2011) algorithm
+
+BoccSS <- function(DH, model=NULL, data=NULL, priors=list(),
+                    n.chains=3, n.iter=10100, n.burnin=100) {
+  # single-season occupancy models with site and survey covariates
+  # ** DH is detection data in a 1/0/NA matrix or data frame, sites in rows,
+  #    detection occasions in columns..
+  # ** model is a list of 2-sided formulae for psi and p; can also be a single
+  #   2-sided formula, eg, model = psi ~ habitat.
+  # ** data is a DATA FRAME with single columns for site covariates and a column for each survey occasion for each survey covariate.
+  # ** priors is a list with elements for prior mean and variance for coefficients.
+  startTime <- Sys.time()
+
+  # Standardise the model:
+  model <- stdModel(model, list(psi=~1, p=~1))
+
+  # Summarize detection history
+  site.names <- rownames(DH)
+  DH <- as.matrix(DH)
+  nSites <- nrow(DH)
+  nSurv <- ncol(DH)
+  if (nSurv < 2)
+    stop("More than one survey occasion is needed")
+  if(is.null(site.names))
+    site.names <- 1:nSites
+
+  # Convert the covariate data frame into a list
+  dataList <- stddata(data, nSurv, scaleBy = 1)
+  time <- rep(1:nSurv, each=nSites)
+  dataList$.Time <- as.vector(scale(time)) /2
+  dataList$.time <- as.factor(time)
+  before <- cbind(0L, DH[, 1:(nSurv - 1)]) # 1 if species seen on previous occasion
+  dataList$.b <- as.vector(before)
+
+  survey.done <- !is.na(as.vector(DH))
+  DHvec <- as.vector(DH)[survey.done]
+  siteID <- row(DH)[survey.done]  # need both numeric vector
+  siteIDfac <- as.factor(siteID)  #    and factor (for tapply)
+  # survID <- col(DH)[survey.done]
+
+  psiDf <- selectCovars(model$psi, dataList, nSites)
+  if (nrow(psiDf) != nSites)
+    stop("Number of site covars doesn't match sites.\nAre you using survey covars?")
+  psiModMat <- model.matrix(model$psi, psiDf)
+  if(nrow(psiModMat) != nrow(psiDf))
+      stop("Missing site covariates are not allowed.")
+  psiK <- ncol(psiModMat)
+  pDf0 <- selectCovars(model$p, dataList, nSites*nSurv)
+  pDf <- pDf0[survey.done, , drop=FALSE]
+  pModMat <- model.matrix(model$p, pDf)
+  if(nrow(pModMat) != nrow(pDf))
+      stop("Missing survey covariates are not allowed when a survey was done.")
+  pK <- ncol(pModMat)
+  K <- psiK + pK
+
+  # Organise and check priors
+  if(!is.null(priors))  {
+    priorErrorFlag <- FALSE
+    priorsDefault <- list(muPsi=0, sigmaPsi=100, muP=0, sigmaP=100)
+    priors <- replace (priorsDefault, names(priors), priors)
+    ### TODO ### check for NAs and sigma <= 0
+    muPsi <- priors$muPsi
+    if(length(muPsi) == 1)
+      muPsi <- rep(muPsi, psiK)
+    if(length(muPsi) != psiK) {
+      cat("Wrong length for priors$muPsi, should have values for:\n")
+      print(colnames(psiModMat))
+      priorErrorFlag <- TRUE
+    }
+    sigmaPsi <- priors$sigmaPsi
+    if(!is.matrix(sigmaPsi)) {
+      if(length(sigmaPsi) == 1)
+        sigmaPsi <- rep(sigmaPsi, psiK)
+      sigmaPsi <- diag(sigmaPsi, nrow=psiK)
+    }
+    if(ncol(sigmaPsi) != psiK || nrow(sigmaPsi) != psiK) {
+      cat("Wrong dimensions for priors$sigmaPsi, should have values for:\n")
+      print(colnames(psiModMat))
+      priorErrorFlag <- TRUE
+    }
+    muP <- priors$muP
+    if(length(muP) == 1)
+      muP <- rep(muP, pK)
+    if(length(muP) != pK) {
+      cat("Wrong length for priors$muP, should have values for:\n")
+      print(colnames(pModMat))
+      priorErrorFlag <- TRUE
+    }
+    sigmaP <- priors$sigmaP
+    if(!is.matrix(sigmaP)) {
+      if(length(sigmaP) == 1)
+        sigmaP <- rep(sigmaP, pK)
+      sigmaP <- diag(sigmaP, nrow=pK)
+    }
+    if(ncol(sigmaP) != pK || nrow(sigmaP) != pK) {
+      cat("Wrong dimensions for priors$sigmaP, should have values for:\n")
+      print(colnames(pModMat))
+      priorErrorFlag <- TRUE
+    }
+    if(priorErrorFlag)
+      stop("Invalid prior specification")
+  }
+
+  # Run MLE to get starting values
+  # Negative log likelihood function
+  nll <- function(param){
+    psiBeta <- param[1:psiK]
+    pBeta <- param[(psiK+1):K]
+    psiProb <- as.vector(pnorm(psiModMat %*% psiBeta))
+    pProb <- pnorm(pModMat %*% pBeta)
+    Lik1 <- DHvec*pProb + (1-DHvec) * (1-pProb)
+    Lik2 <- tapply(Lik1, siteIDfac, prod)
+    llh <- sum(log(psiProb * Lik2 +
+          (1 - psiProb) * (rowSums(DH, na.rm=TRUE) == 0)))
+    return(min(-llh, .Machine$double.xmax))
+  }
+
+  # Run mle estimation with nlm:
+  param <- rep(0, K)
+  mle <- nlm(nll, param)$estimate
+
+  # Gibbs sampler
+  XprimeX <- t(psiModMat) %*% psiModMat
+  if(is.null(priors)) {
+    V.beta <- chol2inv(chol(XprimeX))
+    ScaledMuPsi <- 0
+    SigmaInvP <- 0
+    ScaledMuP <- 0
+  } else {
+    SigmaInvPsi = chol2inv(chol(sigmaPsi))
+    V.beta = chol2inv(chol(SigmaInvPsi + XprimeX)) # prior here
+    ScaledMuPsi = SigmaInvPsi %*% muPsi
+    SigmaInvP = chol2inv(chol(sigmaP))
+    ScaledMuP = SigmaInvP %*% muP
+  }
+  # Starting values - use MLEs
+  beta <- matrix(mle[1:psiK], ncol=1)  # why matrix?
+  alpha <- matrix(mle[-(1:psiK)], ncol=1)
+  y <- rowSums(DH, na.rm=TRUE)
+  z <- as.integer(y > 0)  ## (Starting value for) occupancy state
+
+  chainList <- vector('list', n.chains)
+  chain <- matrix(nrow=n.iter, ncol=K) # to hold MCMC chains
+  colnames(chain) <- c(paste("psi", colnames(psiModMat), sep="_"),
+                        paste("p", colnames(pModMat), sep="_"))
+  progress <- floor(n.iter/5)
+
+  v <- rep(NA, psiK)
+
+  cat("Starting MCMC run for", n.chains, "chains with", n.iter, "iterations.\n")
+  for(ch in 1:n.chains)  {
+    cat("  Chain", ch) ; flush.console()
+    for (draw in 1:n.iter) {
+      if(draw %% progress == 0)
+        cat(".")
+      #  draw z for sites with y = 0, using conditional (on data) prob of occupancy
+      psi <- as.vector(pnorm(psiModMat %*% beta))
+      q <- 1 - as.vector(pnorm(pModMat %*% alpha))
+      pMissed <- tapply(q, siteIDfac, prod)
+      z.prob <- pmin(psi * pMissed / (psi * pMissed  + 1 - psi), 1)
+         # if psi close to 1, z.prob comes out to > 1.
+      z <- ifelse(y, 1, rbinom(length(y), size=1, prob=z.prob))
+      present <- z == 1
+
+      # draw v and beta ## coefficients for psi
+      vmean <- as.vector(psiModMat %*% beta) # same as 'psi' above
+      v[present]  <- rtruncnorm(sum(present),  a=0, mean=vmean[present], sd=1)
+      if(!all(present))
+        v[!present] <- rtruncnorm(sum(!present), b=0, mean=vmean[!present], sd=1)
+      betaMean = V.beta %*% (ScaledMuPsi + (t(psiModMat) %*% v) ) # prior here
+      beta <- matrix(mvrnorm(1, betaMean, V.beta), ncol=1)
+
+      # draw u and alpha ## coefficients for p
+      ## This section ONLY needs data from occupied sites, ie, z == 1, present == TRUE
+      needed <- present[siteID]
+      DHneeded <- DHvec[needed]
+      Wmat <- pModMat[needed, , drop=FALSE]
+      umean <- as.vector(Wmat %*% alpha)
+      u <- rep(NA, nrow(Wmat))
+      ind.y <- DHneeded == 1
+      u[ind.y]  <- rtruncnorm(sum(ind.y), a=0, mean=umean[ind.y], sd=1)
+      u[!ind.y] <- rtruncnorm(sum(!ind.y), b=0, mean=umean[!ind.y], sd=1)
+
+      WprimeW <- t(Wmat) %*% Wmat
+      V.alpha = chol2inv(chol(SigmaInvP + WprimeW)) # prior here
+
+      alphaMean = V.alpha %*% (ScaledMuP + (t(Wmat) %*% u) ) # prior here
+      alpha <- matrix(mvrnorm(1, alphaMean, V.alpha), ncol=1)
+
+      chain[draw, ] <- c(beta, alpha)
+    }
+    chainList[[ch]] <- mcmc(chain[(n.burnin+1):n.iter, ])
+  }
+  cat("\nMCMC run complete.\n")
+  # Diagnostics
+  MCMC <- mcmc.list(chainList)
+  Rhat <- try(gelman.diag(MCMC, autoburnin=FALSE)$psrf[, 1], silent=TRUE)
+  if(inherits(Rhat, "try-error") || !all(is.finite(Rhat)))
+    Rhat <- NULL
+  
+  out <- as.Bwiqid(MCMC,
+      header = "Model fitted in R with a Gibbs sampler",
+      defaultPlot = names(MCMC)[1])
+  attr(out, "call") <- match.call()
+  attr(out, "n.chains") <- n.chains
+  attr(out, "n.eff") <- effectiveSize(MCMC)
+  attr(out, "Rhat") <- Rhat
+  attr(out, "timetaken") <- Sys.time() - startTime
+  return(out)
+}
+

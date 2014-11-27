@@ -14,11 +14,11 @@ BoccSS0 <- function(y, n, psiPrior=c(1,1), pPrior=c(1,1),
   known <- y > 0  # sites known to be occupied
   detected <- sum(y)
 
-  # talk <- round(n.iter / 10)
+  # talk <- round(n.iter / 10) ### 'talk'ing increased time by a factor of 10!
   chain <- matrix(nrow=n.iter, ncol=2)
   colnames(chain) <- c("psi", "p")
   chain[1, ] <- rep(0.5, 2)
-  out <- vector('list', n.chains)
+  chainList <- vector('list', n.chains)
   for(ch in 1:n.chains)  {
     # cat("\nRunning chain", ch)
     for(i in 2:n.iter) {
@@ -33,21 +33,21 @@ BoccSS0 <- function(y, n, psiPrior=c(1,1), pPrior=c(1,1),
       # 3. Update p from beta(detected+1, undetected+1) for occupied sites only.
       chain[i,2] <- rbeta(1, detected + pPrior[1], sum(n[z == 1]) - detected + pPrior[2])
     }
-    out[[ch]] <- mcmc(chain[(n.burnin+1):n.iter, ], start=n.burnin+1, end=n.iter)
+    chainList[[ch]] <- mcmc(chain[(n.burnin+1):n.iter, ], start=n.burnin+1, end=n.iter)
   }
   # cat("\nDone.\n")
   # Diagnostics
-  out2 <- mcmc.list(out)
-  Rhat <- try(gelman.diag(out2, autoburnin=FALSE)$psrf[, 1], silent=TRUE)
+  MCMC <- mcmc.list(chainList)
+  Rhat <- try(gelman.diag(MCMC, autoburnin=FALSE)$psrf[, 1], silent=TRUE)
   if(inherits(Rhat, "try-error") || !is.finite(Rhat))
     Rhat <- NULL
   
-  out3 <- as.Bwiqid(out2,
+  out <- as.Bwiqid(MCMC,
       header = "Model fitted in R with a Gibbs sampler",
       defaultPlot = "psi")
-  attr(out3, "n.chains") <- n.chains
-  attr(out3, "n.eff") <- effectiveSize(out2)
-  attr(out3, "Rhat") <- Rhat
-  attr(out3, "timetaken") <- Sys.time() - startTime
-  return(out3)
+  attr(out, "n.chains") <- n.chains
+  attr(out, "n.eff") <- effectiveSize(MCMC)
+  attr(out, "Rhat") <- Rhat
+  attr(out, "timetaken") <- Sys.time() - startTime
+  return(out)
 }

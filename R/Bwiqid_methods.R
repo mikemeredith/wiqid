@@ -3,6 +3,7 @@
 print.Bwiqid <- function(x, digits=4, ...)  {
   if(!inherits(x, "data.frame"))
     stop("x is not a valid Bwiqid object")
+  call <- attr(x, "call")
   header <- attr(x, "header")
   MCerror <- attr(x, "MCerror")
   Rhat <- attr(x, "Rhat")
@@ -24,6 +25,8 @@ print.Bwiqid <- function(x, digits=4, ...)  {
 
   toPrint0 <- unique(toPrint)
     
+  # if(!is.null(call))
+    # cat("Call:", call, "\n")
   if(is.null(header))
     header <- "MCMC fit results:"
   cat(header, "\n")
