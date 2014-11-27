@@ -26,7 +26,8 @@ The functions are listed by topic below.
   \bold{Single-season occupancy}
   
   \tabular{ll}{
-  \code{\link{occSS}} \tab general-purpose function; allows site- and survey-specific covariates \cr
+  \code{\link{occSS}} \tab general-purpose ML function; allows site- and survey-specific covariates \cr
+  \code{\link{BoccSS}} \tab general-purpose Bayesian implementation of the above \cr
   \code{\link{occSS0}} \tab a basic psi(.) p(.) model, faster if this is all you need \cr
   \code{\link{BoccSS0}} \tab a Bayesian implementation of the psi(.) p(.) model \cr
   \code{\link{occSSrn}} \tab Royle-Nichols method \cr

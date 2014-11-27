@@ -67,15 +67,18 @@ further arguments passed to \code{\link{autorun.jags}}.
 
 Independent beta distributions are used as priors for \code{BoccSS0}, as specified by \code{psiPrior} and \code{pPrior}. The defaults, \code{c(1, 1)}, correspond to uniform priors on the probabilities of occupancy and detection.
 
-\code{BoccSS} uses a probit link to model occupancy and detection as a function of covariates (Dorazio and Rodriguez 2011); most software uses a logistic (logit) link, as shown in the plot below. Coefficients on the probit scale are about half the size of the equivalent on the logit scale.
+\code{BoccSS} uses a probit link to model occupancy and detection as a function of covariates (Dorazio and Rodriguez 2011); most software uses a logistic (logit) link.
+%%%%%%%%%, as shown in the plot below. %% Maybe do a page for probit vs logit
+Coefficients on the probit scale are about half the size of the equivalent on the logit scale.
 
 Priors for \code{BoccSS} are listed in the \code{priors} argument, which may contain elements:
 
-\code{muPsi} and \code{muP}, the means for occupancy and detection coefficients respectively. This may be a vector with one value for each coefficient, including the intercept, or a scalar, which will be used for all. The default is 0.
+  \tabular{ll}{
+\code{muPsi} and \code{muP} \tab the means for occupancy and detection coefficients respectively. This may be a vector with one value for each coefficient, including the intercept, or a scalar, which will be used for all. The default is 0. \cr
+\code{sigmaPsi} and \code{sigmaP} \tab the (co)variance for occupancy and detection coefficients respectively. This may be (1) a vector with one value for each coefficient, including the intercept, which represents the variance, assuming independence, or (2) a scalar, which will be used for all, or (3) a variance-covariance matrix. The default is 100.
+}
 
-\code{sigmaPsi} and \code{sigmaP}, the (co)variance for occupancy and detection coefficients respectively. This may be (1) a vector with one value for each coefficient, including the intercept, which represents the variance, assuming independence, or (2) a scalar, which will be used for all, or (3) a variance-covariance matrix. The default is 100.
-
-When specifying priors, note that numerical covariates are standardized internally before fitting the model. For an intercept-only model, a prior of Normal(0, 1) on the probit scale implies a prior of Uniform(0, 1) or Beta(1, 1) on the probability scale.
+When specifying priors, note that numerical covariates are standardized internally before fitting the model. For an intercept-only model, a prior of Normal(0, 1) on the probit scale implies a Uniform(0, 1) or Beta(1, 1) prior on the probability scale.
 
 If you are unsure of the order of predictors, do a short run and check the output, or pass unusable values (eg, \code{muPsi=numeric(100)}) and check the error message.
 }
@@ -88,18 +91,14 @@ There are \code{print} and \code{plot} methods for class \code{Bwiqid}, as well 
 }
 
 \references{
-MacKenzie, D I; J D Nichols; G B Lachman; S Droege; J A Royle; C A Langtimm. 2002. Estimating site occupancy rates when detection probabilities are less than one. \emph{Ecology} 83:2248-2255.
 
 MacKenzie, D I; J D Nichols; A J Royle; K H Pollock; L L Bailey; J E Hines 2006. \emph{Occupancy estimation and modeling : inferring patterns and dynamics of species occurrence}. Elsevier Publishing.
 
-Hines, J. E. (2006). PRESENCE - Software to estimate patch occupancy and related parameters. SGS-PWRC. http://www.mbr-pwrc.usgs.gov/software/presence.html.
-
-Hines, J.E., Nichols, J.D., Royle, J.A., MacKenzie, D.I., Gopalaswamy, A.M., Kumar, N.S., Karanth, K.U. (2010) Tigers on trails: occupancy modeling for cluster sampling. \emph{Ecological Applications}, 20, 1456-1466.
-
+Dorazio and Rodriguez. 2012. A Gibbs sampler for Bayesian analysis of site-occupancy data. \emph{Methods in Ecology and Evolution}, 3, 1093-1098
 }
 
 \author{
-Mike Meredith
+Mike Meredith. \code{BoccSS} uses the Gibbs sampler described by Dorazio and Rodriguez (2012).
 }
 \seealso{
 See the examples for the \code{\link{weta}} data set.

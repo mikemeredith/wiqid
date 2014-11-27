@@ -10,6 +10,12 @@ TODO
   
   * Have BoccSS run in parallel; do test files for this and BoccSS0
   
+  * Do a help page on probit vs logit links; add probit link option to MLE functions.
+  
+CHANGES in 2014-11-27 v.0.0.380
+
+  * Minor corrections to help files.
+
 CHANGES in 2014-11-26 v.0.0.379
 
   * Use Gibbs sampler for BoccSS0; old function using JAGS retained as BoccSS0_JAGS.
