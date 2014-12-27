@@ -1,6 +1,6 @@
 TODO
 
-  * TRY using Gelman et al 2008 recommendations for priors for logistic coefficients. Update man page for priors.
+  * TRY using Gelman et al 2008 recommendations for priors for logistic coefficients. Update man page for priors. Maybe more important, allow user to choose priors.
   
   * Try using optim instead of nlm for functions where estimation near boundaries is a problem.
   
@@ -8,10 +8,16 @@ TODO
   
   * Add survey covars to occSSrn.
   
+  * Add individual covars to survCJS.
+  
   * Have BoccSS run in parallel; do test files for this and BoccSS0
   
   * Do a help page on probit vs logit links; add probit link option to MLE functions.
   
+CHANGES in 2014-12-27 v.0.0.381
+
+  * Added Bnormal function.
+
 CHANGES in 2014-11-27 v.0.0.380
 
   * Minor corrections to help files.
@@ -20,7 +26,7 @@ CHANGES in 2014-11-26 v.0.0.379
 
   * Use Gibbs sampler for BoccSS0; old function using JAGS retained as BoccSS0_JAGS.
   
-  * Function BoccSS uses Gibbs sampler for singel season occupancy with
+  * Function BoccSS uses Gibbs sampler for single season occupancy with
   covariates.
 
   CHANGES in 2014-09-27 v.0.0.378

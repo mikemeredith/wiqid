@@ -3,7 +3,7 @@
 \alias{survCJSaj}
 \alias{BsurvCJS}
 \title{
-Survival from recapture data with CJS model
+Survival from recapture data with Cormack-Jolly-Seber (CJS) model
 }
 \description{
 Calculation of apparent survival (accounting for recapture probability) from mark-recapture data, with time-dependent phi or p, possibly with covariates. Function \code{survCHSaj} allows for different survival parameters for juveniles and adults. \code{BsurvCJS} is a Bayesian version.
