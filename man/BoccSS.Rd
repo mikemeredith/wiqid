@@ -73,10 +73,10 @@ Coefficients on the probit scale are about half the size of the equivalent on th
 
 Priors for \code{BoccSS} are listed in the \code{priors} argument, which may contain elements:
 
-  \tabular{ll}{
-\code{muPsi} and \code{muP} \tab the means for occupancy and detection coefficients respectively. This may be a vector with one value for each coefficient, including the intercept, or a scalar, which will be used for all. The default is 0. \cr
-\code{sigmaPsi} and \code{sigmaP} \tab the (co)variance for occupancy and detection coefficients respectively. This may be (1) a vector with one value for each coefficient, including the intercept, which represents the variance, assuming independence, or (2) a scalar, which will be used for all, or (3) a variance-covariance matrix. The default is 100.
-}
+\code{muPsi} and \code{muP} : the means for occupancy and detection coefficients respectively. This may be a vector with one value for each coefficient, including the intercept, or a scalar, which will be used for all. The default is 0.
+
+\code{sigmaPsi} and \code{sigmaP} : the (co)variance for occupancy and detection coefficients respectively. This may be (1) a vector with one value for each coefficient, including the intercept, which represents the variance, assuming independence, or (2) a scalar, which will be used for all, or (3) a variance-covariance matrix. The default is 100.
+
 
 When specifying priors, note that numerical covariates are standardized internally before fitting the model. For an intercept-only model, a prior of Normal(0, 1) on the probit scale implies a Uniform(0, 1) or Beta(1, 1) prior on the probability scale.
 

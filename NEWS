@@ -10,7 +10,7 @@ TODO
   
   * Add individual covars to survCJS.
   
-  * Have BoccSS run in parallel; do test files for this and BoccSS0
+  * Have BoccSS run in parallel.
   
   * Do a help page on probit vs logit links; add probit link option to MLE functions.
   

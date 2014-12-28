@@ -45,6 +45,7 @@ BoccSS0 <- function(y, n, psiPrior=c(1,1), pPrior=c(1,1),
   out <- as.Bwiqid(MCMC,
       header = "Model fitted in R with a Gibbs sampler",
       defaultPlot = "psi")
+  attr(out, "call") <- match.call()
   attr(out, "n.chains") <- n.chains
   attr(out, "n.eff") <- effectiveSize(MCMC)
   attr(out, "Rhat") <- Rhat
