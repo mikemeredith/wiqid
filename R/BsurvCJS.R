@@ -19,11 +19,11 @@ BsurvCJS <- function(DH, model=list(phi~1, p~1), data=NULL, freq=1,
   if (detectCores() > 3)
     runjags.options("method"="parallel")
   runjags.options("rng.warning"=FALSE)
-  
+
   # Sanity checks:
   if (priorOnly)
     warning("The prior distributions will be produced, not the posterior distributions!")
-    
+
   ni <- ncol(DH) - 1  # number of survival intervals and REcapture occasions
   stopifnot(is.null(data) || nrow(data) == ni)
 
@@ -108,23 +108,23 @@ BsurvCJS <- function(DH, model=list(phi~1, p~1), data=NULL, freq=1,
       }
     }
   "
-    
+
    # organise the data:
-  jagsData <- list(nocc = ncol(mArray), rel=rowSums(mArray), 
+  jagsData <- list(nocc = ncol(mArray), rel=rowSums(mArray),
                       pK = pK, phiK = phiK, pMat=pMat, phiMat=phiMat)
   if(!priorOnly)
       jagsData$marr <- mArray
-      
+
   inits <- function() {
     start1 <- start * runif(K, 0.9, 1.1)
     list(phiBeta = start1[1:phiK], pBeta = start1[(phiK+1):K])
   }
   wanted <- c("phi", "p")
-  
+
   # Run the model:
   resB <- autorun.jags(modeltext, wanted, jagsData, n.chains=3, inits, ...)
-    
-  return(as.Bwiqid(resB, 
+
+  return(as.Bwiqid(resB,
       header = "Model fitted in JAGS with runjags::autorun.jags",
       defaultPlot = "phi1"))
 }

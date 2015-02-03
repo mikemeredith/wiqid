@@ -1,4 +1,4 @@
-# Print, plot and window methods for class Bwiqid, ie. MCMC output
+# Print, plot, window, head and tail methods for class Bwiqid, ie. MCMC output
 
 print.Bwiqid <- function(x, digits=4, ...)  {
   if(!inherits(x, "data.frame"))
@@ -13,7 +13,7 @@ print.Bwiqid <- function(x, digits=4, ...)  {
   toPrint <- cbind(
     mean = colMeans(x),
     sd = apply(x, 2, sd),
-    median = apply(x, 2, median), 
+    median = apply(x, 2, median),
     t(hdi(x)))
   colnames(toPrint)[4:5] <- c("HDIlo", "HDIup")
   if(!is.null(MCerror))
@@ -24,7 +24,7 @@ print.Bwiqid <- function(x, digits=4, ...)  {
     toPrint <- cbind(toPrint, n.eff = round(n.eff))
 
   toPrint0 <- unique(toPrint)
-    
+
   # if(!is.null(call))
     # cat("Call:", call, "\n")
   if(is.null(header))
@@ -52,7 +52,7 @@ plot.Bwiqid <-
 function(x, which=NULL, credMass=0.95,
           ROPE=NULL, compVal=NULL, showCurve=FALSE,  showMode=FALSE,
           shadeHDI=NULL, ...) {
-  # This function plots the posterior distribution for one selected item. 
+  # This function plots the posterior distribution for one selected item.
   # Description of arguments:
   # x is mcmc.list object of the type returned by B* functions in 'wiqid'.
   # which indicates which item should be displayed; if NULL, looks for a 'toPlot' attribute in x; if missing does first column.
@@ -66,7 +66,7 @@ function(x, which=NULL, credMass=0.95,
   # Sanity checks:
   if(!inherits(x, "data.frame"))
     stop("x is not a valid Bwiqid object")
-    
+
   # Deal with ... argument
   dots <- list(...)
   if(length(dots) == 1 && class(dots[[1]]) == "list")
@@ -77,7 +77,7 @@ function(x, which=NULL, credMass=0.95,
   if(is.null(which))
     which <- colnames(x)[1]
   if(is.na(match(which, colnames(x))))
-    stop(paste("Could not find", which, "in the output"))  
+    stop(paste("Could not find", which, "in the output"))
   if(is.null(dots$xlab))
     dots$xlab <- which
   # Plot posterior distribution of selected item:
@@ -115,9 +115,21 @@ window.Bwiqid <- function(x, start=NULL, end=NULL, thin=1, ...)  {
   rownames(x_df) <- NULL
   class(x_df) <- class(x)
   attr(x_df, "header") <- attr(x, "header")
-  attr(x_df, "n.chains") <- attr(x, "n.chains") 
+  attr(x_df, "n.chains") <- attr(x, "n.chains")
   attr(x_df, "defaultPlot") <- attr(x, "defaultPlot")
   attr(x_df, "timetaken") <- attr(x, "timetaken")
 
   return(x_df)
 }
+
+# .........................................................
+
+head.Bwiqid <- function(x, n=6L, ...) {
+  head(as.data.frame(x), n=n, ...)
+}
+
+tail.Bwiqid <- function(x, n=6L, ...) {
+  tail(as.data.frame(x), n=n, ...)
+}
+
+

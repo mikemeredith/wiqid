@@ -14,11 +14,19 @@ TODO
   
   * Do a help page on probit vs logit links; add probit link option to MLE functions.
   
+  * Try to do all MCMC chains in R, dispense with JAGS.
+  
+CHANGES in 2015-02-03 v.0.0.383
+
+  * Added closedCapMb model. (Tests to do.)
+
+  * Added head and tail methods for Bwiqid class.
+
 CHANGES in 2015-01-09 v.0.0.382
 
   * Added tests for Bnormal and BoccSS functions.
 
-  CHANGES in 2014-12-27 v.0.0.381
+CHANGES in 2014-12-27 v.0.0.381
 
   * Added Bnormal function.
 
@@ -33,7 +41,7 @@ CHANGES in 2014-11-26 v.0.0.379
   * Function BoccSS uses Gibbs sampler for single season occupancy with
   covariates.
 
-  CHANGES in 2014-09-27 v.0.0.378
+CHANGES in 2014-09-27 v.0.0.378
 
   * Added as.Bwiqid and hdi methods for class jagsUI in jagsUI package.
   

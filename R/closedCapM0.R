@@ -13,10 +13,7 @@ function(CH, ci = 0.95, ciType=c("normal", "MARK")) {
     freq <- round(CH)
     n.occ <- length(freq)
   }
-  if(ci > 1 | ci < 0.5)
-    stop("ci must be between 0.5 and 1")
-  alf <- (1 - ci[1]) / 2
-  crit <- qnorm(c(alf, 1 - alf))
+  crit <- fixCI(ci)
   ciType <- match.arg(ciType)
 
   N.cap <- sum(freq)  # Number of individual animals captured

@@ -9,17 +9,14 @@ function(y, n, ci=0.95) {
     stop("y and n must have the same length")
   if(any(y > n))
     stop("y cannot be greater than n")
-  if(ci > 1 | ci < 0.5)
-    stop("ci must be between 0.5 and 1")
-  alf <- (1 - ci[1]) / 2
-  crit <- qnorm(c(alf, 1 - alf))
+  crit <- fixCI(ci)
 
   beta.mat <- matrix(NA_real_, 2, 4)
   colnames(beta.mat) <- c("est", "SE", "lowCI", "uppCI")
   rownames(beta.mat) <- c("psiHat", "pHat")
   logLik <- NA_real_
   varcov <- NULL
-  
+
   if(sum(n) > 0) {    # If all n's are 0, no data available.
     nll <- function(params) {
        psi <- plogis(params[1])
