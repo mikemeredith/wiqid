@@ -58,6 +58,7 @@ Although data for genuinely closed populations are rare, this is an important co
 
   \tabular{ll}{
   \code{\link{closedCapM0}} \tab simple model with constant capture probability \cr
+  \code{\link{closedCapMb}} \tab permanent behavioural response to first capture \cr
   \code{\link{closedCapMt}} \tab capture probability varies with time \cr
   \code{\link{closedCapMtcov}} \tab allows for time-varying covariates \cr
   \code{\link{closedCapMh2}} \tab heterogenity with 2-mixture model \cr

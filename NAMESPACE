@@ -14,7 +14,7 @@ importFrom(truncnorm, rtruncnorm)
 export(
   survCJS, survCJSaj,
   survRD, survRDah,
-  closedCapM0, closedCapMh2, closedCapMhJK, closedCapMt, closedCapMtcov,
+  closedCapM0, closedCapMb, closedCapMh2, closedCapMhJK, closedCapMt, closedCapMtcov,
   occSS, occSStime, occSS0, occSScovSite,
   occSSrn, occSSrn0, occSSrnSite,
   occ2sps,

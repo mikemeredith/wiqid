@@ -18,7 +18,7 @@ TODO
   
 CHANGES in 2015-02-03 v.0.0.383
 
-  * Added closedCapMb model. (Tests to do.)
+  * Added closedCapMb model.
 
   * Added head and tail methods for Bwiqid class.
 

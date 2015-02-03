@@ -6,6 +6,36 @@
 
 context("Closed captures/CHmatrix")
 
+test_that("closedCapMb gives right answers",  {
+  data(KanhaTigers)
+  res <- closedCapMb(KanhaTigers)
+  resM <- closedCapMb(KanhaTigers, ciType='MARK')
+  expect_that(class(res), equals(c("wiqid", "list"))) 
+  expect_that(names(res), equals(c("call", "beta", "beta.vcv", "real", "logLik"))) 
+  expect_that(colnames(res$real), equals(c("est", "lowCI", "uppCI")))
+  expect_that(rownames(res$real), equals(c("Nhat", "phat", "chat")))
+  expect_that(rownames(resM$real), equals(c("Nhat", "phat", "chat")))
+  expect_that(round(as.vector(res$real[1, ]), 3), 
+      is_equivalent_to(c(26.939, 26.021, 67.957)))
+  expect_that(round(as.vector(resM$real[1, ]), 3), 
+      is_equivalent_to(c(26.939, 26.081, 36.858)))
+      # MARK gives 36.861 for the upper limit
+  expect_that(round(as.vector(res$real[-1, ]), 4), 
+      is_equivalent_to(c(0.2539, 0.1916, 0.1515, 0.1388, 0.3935, 0.2584)))
+      # same values as MARK
+  expect_that(resM$real[-1, ], equals(res$real[-1, ]))
+  expect_that(round(AIC(res), 4), equals(156.4496))
+      # Same as MARK.
+  expect_that(AIC(resM), equals(AIC(res)))
+
+  res <- closedCapMb(KanhaTigers, ci=0.85)
+  resM <- closedCapMb(KanhaTigers, ci=0.85, ciType='MARK')
+  expect_that(round(as.vector(res$real[ ,2]), 4), 
+      is_equivalent_to(c(26.0576, 0.1749, 0.1515)))
+  expect_that(round(as.vector(resM$real[1, ]), 3), 
+      is_equivalent_to(c(26.939, 26.156, 31.668)))
+} )
+
 test_that("closedCapMt gives right answers",  {
   data(KanhaTigers)
   res <- closedCapMt(KanhaTigers)

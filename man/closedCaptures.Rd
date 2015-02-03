@@ -1,5 +1,6 @@
 \name{Closed Captures}
 \alias{closedCapM0}
+\alias{closedCapMb}
 \alias{closedCapMt}
 \alias{closedCapMtcov}
 \alias{closedCapMh2}
@@ -13,6 +14,8 @@ Functions to analyse the classical models for closed populations without individ
 }
 \usage{
 closedCapM0(CH, ci = 0.95, ciType=c("normal", "MARK"))
+
+closedCapMb(CH, ci = 0.95, ciType=c("normal", "MARK"))
 
 closedCapMt(CH, ci = 0.95, ciType=c("normal", "MARK"))
 
@@ -42,6 +45,8 @@ the method used to calculate the confidence interval for population size (N); se
 }
 \details{
 Model M0 assumes all animals have the same capture probability.
+
+Model Mb allows for a permanent behavioural response: capture probability is different for animals that have already been captured at least once.
 
 Model Mh2 and the jackknife estimator allow for heterogeneity in capture probability.
 
@@ -110,6 +115,7 @@ closedCapMhJK(freq1)
 # Kanha tiger data from Karanth et al (2004)
 data(KanhaTigers)
 closedCapM0(KanhaTigers)
+closedCapMb(KanhaTigers)
 closedCapMh2(KanhaTigers)
 closedCapMhJK(KanhaTigers)
 closedCapMt(KanhaTigers)

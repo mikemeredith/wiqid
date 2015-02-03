@@ -9,8 +9,7 @@ function(CH, ci = 0.95, ciType=c("normal", "MARK")) {
   if(length(dim(CH)) != 2)
     stop("CH should be a matrix, animals x occasions, or a data frame.")
   CH <- CH[rowSums(CH) > 0, ]  # remove any all-zero capture histories
-  # crit <- fixCI(ci)
-  crit <- wiqid:::fixCI(ci)
+  crit <- fixCI(ci)
   ciType <- match.arg(ciType)
 
   nOcc <- ncol(CH)    # number of capture occasions
@@ -54,8 +53,7 @@ function(CH, ci = 0.95, ciType=c("normal", "MARK")) {
   if(ciType == "normal") {
     Nhat <- exp(beta.mat[1, -2]) + N.cap
   } else {
-    # Nhat <- getMARKci(beta.mat[1, 1], beta.mat[1, 2], ci) + N.cap
-    Nhat <- wiqid:::getMARKci(beta.mat[1, 1], beta.mat[1, 2], ci) + N.cap
+    Nhat <- getMARKci(beta.mat[1, 1], beta.mat[1, 2], ci) + N.cap
   }
   out <- list(call = match.call(),
           beta = beta.mat,
