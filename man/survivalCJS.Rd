@@ -6,16 +6,16 @@
 Survival from recapture data with Cormack-Jolly-Seber (CJS) model
 }
 \description{
-Calculation of apparent survival (accounting for recapture probability) from mark-recapture data, with time-dependent phi or p, possibly with covariates. Function \code{survCHSaj} allows for different survival parameters for juveniles and adults. \code{BsurvCJS} is a Bayesian version.
+Calculation of apparent survival (accounting for recapture probability) from mark-recapture data, with time-dependent phi or p, possibly with covariates. Function \code{survCHSaj} allows for different survival parameters for juveniles and adults; juveniles are assumed to become adults after the first interval. \code{BsurvCJS} is a Bayesian version.
 }
 \usage{
-survCJS(DH, model=list(phi~1, p~1), data=NULL, freq=1, ci = 0.95)
+survCJS(DH, model=list(phi~1, p~1), data=NULL, freq=1, group, ci = 0.95)
 
 survCJSaj(DHj, DHa=NULL, model=list(phiJ~1, phiA~1, p~1), data=NULL,
     freqj=1, freqa=1, ci = 0.95)
 
 BsurvCJS(DH, model=list(phi~1, p~1), data = NULL, freq=1,
-    priorOnly=FALSE, ...) 
+    priorOnly=FALSE, ...)
 
 }
 \arguments{
@@ -29,10 +29,13 @@ a list of formulae symbolically defining a linear predictor for each parameter i
 a data frame with a row for each survival interval / recapture occasion and columns for each of the covariates used to estimate phi or p.
 }
   \item{freq}{
-a scalar or a vector of length \code{nrow(DH)} with the frequency of each detection history. Negative values indicate trap losses.
+a scalar or a vector of length \code{nrows(DH)} with the frequency of each detection history. Negative values indicate trap losses.
+}
+  \item{group}{
+an optional factor of length \code{nrows(DH)}; if provided, \code{group} can be included in the model definition, see Examples.
 }
   \item{DHj, DHa}{
-detection history matrices for animals marked a juveniles and adults respectively; DHa should be NULL if no animals were marked as adults.
+detection history matrices for animals marked as juveniles and adults respectively; DHa should be NULL if no animals were marked as adults.
 }
   \item{freqj, freqa}{
 frequencies of each detection history in DHj and DHa; freqa is ignored if DHa = NULL.
@@ -56,7 +59,7 @@ further arguments passed to \code{\link{autorun.jags}}.
   \item{beta.vcv }{The variance-covariance matrix for the beta estimates.}
   \item{real }{Back-transformed estimates of phi and p for each interval / occasion. }
   \item{logLik}{a vector with elements for log(likelihood), number of parameters, and effective sample size. If parameters \emph{and their SEs} cannot be estimated, the first element should be \code{NA}.}
-  
+
 There are \code{print}, \code{logLik}, and \code{nobs} methods for class \code{wiqid}.
 
 \code{BsurvCJS} returns an object of class \code{Bwiqid}, a data frame with columns for each p and psi value containing the series of MCMC samples, and attributes for details of the MCMC run.
@@ -78,8 +81,10 @@ data(dippers)
 DH <- dippers[1:7]  # Extract the detection histories
 survCJS(DH)  # the phi(.) p(.) model
 survCJS(DH, phi ~ .time)  # the phi(t) p(.) model
-flood <- c(FALSE, TRUE, TRUE, FALSE, FALSE, FALSE)
-survCJS(DH, phi ~ flood, data=data.frame(flood=flood))  # the phi(flood) p(.) model
+df <- data.frame(flood = c(FALSE, TRUE, TRUE, FALSE, FALSE, FALSE))
+survCJS(DH, phi ~ flood, data=df)  # the phi(flood) p(.) model
+# Including a grouping factor:
+survCJS(DH, phi ~ flood*group, data=df, group=dippers$sex)
 
 # See also the examples in the dippers help file.
 }

@@ -8,8 +8,6 @@ TODO
   
   * Add survey covars to occSSrn.
   
-  * Add individual covars to survCJS.
-  
   * Have BoccSS run in parallel.
   
   * Do a help page on probit vs logit links; add probit link option to MLE functions.
@@ -17,6 +15,10 @@ TODO
   * Try to do all MCMC chains in R, dispense with JAGS.
   
 CHANGES in 2015-02-03 v.0.0.383
+
+  * survCJS gains a group argument.
+
+  * Added hdi method for class mcmc.
 
   * Added closedCapMb model.
 

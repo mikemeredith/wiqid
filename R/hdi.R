@@ -31,23 +31,26 @@ hdi.matrix <- function(object, credMass=0.95, ...) {
   return(result)
 }
 
-hdi.data.frame <- function(object, credMass=0.95, ...) 
+hdi.data.frame <- function(object, credMass=0.95, ...)
   hdi.matrix(as.matrix(object), credMass=credMass, ...)
 
 
-hdi.mcmc.list <- function(object, credMass=0.95, ...) 
+hdi.mcmc.list <- function(object, credMass=0.95, ...)
   hdi.matrix(as.matrix(object), credMass=credMass, ...)
 
-hdi.bugs <- function(object, credMass=0.95, ...) 
+hdi.mcmc <- function(object, credMass=0.95, ...)
+  hdi.matrix(as.matrix(object), credMass=credMass, ...)
+
+hdi.bugs <- function(object, credMass=0.95, ...)
   hdi.matrix(object$sims.matrix, credMass=credMass, ...)
 
-hdi.rjags <- function(object, credMass=0.95, ...) 
+hdi.rjags <- function(object, credMass=0.95, ...)
   hdi.matrix(object$BUGSoutput$sims.matrix, credMass=credMass, ...)
-  
-hdi.runjags <- function(object, credMass=0.95, ...) 
+
+hdi.runjags <- function(object, credMass=0.95, ...)
   hdi.mcmc.list(as.mcmc.list(object), credMass=credMass, ...)
 
-hdi.jagsUI <- function(object, credMass=0.95, ...) 
+hdi.jagsUI <- function(object, credMass=0.95, ...)
   hdi.mcmc.list(object$samples, credMass=credMass, ...)
 
 hdi.function <- function(object, credMass=0.95, tol, ...)  {
