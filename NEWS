@@ -14,7 +14,9 @@ TODO
   
   * Try to do all MCMC chains in R, dispense with JAGS.
   
-CHANGES in 2015-02-03 v.0.0.383
+CHANGES in 2015-02-07 v.0.0.383
+
+  * Added Bregress and Blogit, wrappers for MCMCpack's MCMC* functions.
 
   * survCJS and BsurvCJS gain a group argument.
 
