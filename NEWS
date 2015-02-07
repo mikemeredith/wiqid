@@ -16,7 +16,7 @@ TODO
   
 CHANGES in 2015-02-03 v.0.0.383
 
-  * survCJS gains a group argument.
+  * survCJS and BsurvCJS gain a group argument.
 
   * Added hdi method for class mcmc.
 
