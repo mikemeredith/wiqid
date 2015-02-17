@@ -67,7 +67,8 @@ function( paramSampleVec, credMass=0.95, compVal=NULL, ROPE=NULL,
       segments(HDI[, 1], ht, HDI[, 2], ht, lwd=4, lend='butt')
       text( mean(HDI), ht, bquote(.(100*credMass) * "% HDI" ),
             adj=c(.5,-1.7), cex=useArgs$cex, xpd=TRUE )
-      text( HDI, ht, bquote(.(signif(HDI, 3))),
+      # text( HDI, ht, bquote(.(signif(HDI, 3))),
+      text( HDI, ht, signifish(HDI, 3),
             pos=3, cex=useArgs$cex, xpd=TRUE )
     }
   } else {
@@ -86,9 +87,9 @@ function( paramSampleVec, credMass=0.95, compVal=NULL, ROPE=NULL,
       lines(HDI, c(0,0), lwd=4, lend='butt')
       text( mean(HDI), 0, bquote(.(100*credMass) * "% HDI" ),
             adj=c(.5,-1.7), cex=useArgs$cex, xpd=TRUE )
-      text( HDI[1], 0, bquote(.(signif(HDI[1],3))),
+      text( HDI[1], 0, signifish(HDI[1],3),
             adj=c(HDItextPlace,-0.5), cex=useArgs$cex, xpd=TRUE )
-      text( HDI[2], 0, bquote(.(signif(HDI[2],3))),
+      text( HDI[2], 0, signifish(HDI[2],3),
             adj=c(1.0-HDItextPlace,-0.5), cex=useArgs$cex, xpd=TRUE )
     }
   }
@@ -98,12 +99,12 @@ function( paramSampleVec, credMass=0.95, compVal=NULL, ROPE=NULL,
   if ( showMode==FALSE ) {
       meanParam <- mean( paramSampleVec )
       text( meanParam, cenTendHt,
-            bquote(mean==.(signif(meanParam,3))), adj=c(.5,0), cex=useArgs$cex, xpd=TRUE )
+            bquote(mean==.(signifish(meanParam,3))), adj=c(.5,0), cex=useArgs$cex, xpd=TRUE )
   } else {
       dres <- density( paramSampleVec )
       modeParam <- dres$x[which.max(dres$y)]
       text( modeParam, cenTendHt,
-            bquote(mode==.(signif(modeParam,3))), adj=c(.5,0), cex=useArgs$cex, xpd=TRUE )
+            bquote(mode==.(signifish(modeParam,3))), adj=c(.5,0), cex=useArgs$cex, xpd=TRUE )
   }
   # Display the comparison value.
   if ( !is.null( compVal ) ) {
@@ -116,7 +117,7 @@ function( paramSampleVec, credMass=0.95, compVal=NULL, ROPE=NULL,
             lty="dotted", lwd=1, col=cvCol )
      text( compVal, cvHt,
            bquote( .(pcltCompVal)*"% < " *
-                   .(signif(compVal,3)) * " < "*.(pcgtCompVal)*"%" ),
+                   .(signifish(compVal,3)) * " < "*.(pcgtCompVal)*"%" ),
            adj=c(pcltCompVal/100,0), cex=0.8*useArgs$cex, col=cvCol, xpd=TRUE )
   }
   # Display the ROPE.

@@ -1,6 +1,6 @@
 TODO
 
-  * TRY using Gelman et al 2008 recommendations for priors for logistic coefficients. Update man page for priors. Maybe more important, allow user to choose priors.
+  * (TRY using Gelman et al 2008 recommendations for priors for logistic coefficients. Update man page for priors.) Maybe more important, allow user to choose priors.
   
   * Try using optim instead of nlm for functions where estimation near boundaries is a problem.
   
@@ -10,11 +10,15 @@ TODO
   
   * Have BoccSS run in parallel.
   
-  * Do a help page on probit vs logit links; add probit link option to MLE functions.
+  * Add probit link option to MLE functions.
   
-  * Try to do all MCMC chains in R, dispense with JAGS.
+  * Try to do all MCMC chains in R, dispense with JAGS. (Might be difficult!)
   
-CHANGES in 2015-02-07 v.0.0.383
+CHANGES in 2015-02-10 v.0.0.383
+
+  * Added help page on logit and probit links
+
+  * Fixed rounding of numbers displayed on plots.
 
   * Added Bregress and Blogit, wrappers for MCMCpack's MCMC* functions.
 
