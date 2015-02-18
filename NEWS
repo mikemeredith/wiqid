@@ -1,20 +1,20 @@
 TODO
 
   * (TRY using Gelman et al 2008 recommendations for priors for logistic coefficients. Update man page for priors.) Maybe more important, allow user to choose priors.
-  
+
   * Try using optim instead of nlm for functions where estimation near boundaries is a problem.
-  
+
   * Improve survRD* functions! Add test files.
-  
+
   * Add survey covars to occSSrn.
-  
-  * Have BoccSS run in parallel.
-  
+
   * Add probit link option to MLE functions.
-  
+
   * Try to do all MCMC chains in R, dispense with JAGS. (Might be difficult!)
-  
-CHANGES in 2015-02-10 v.0.0.383
+
+CHANGES in 2015-02-18 v.0.0.383
+
+  * BoccSS gains arguments parallel and seed
 
   * Added help page on logit and probit links
 
@@ -45,24 +45,24 @@ CHANGES in 2014-11-27 v.0.0.380
 CHANGES in 2014-11-26 v.0.0.379
 
   * Use Gibbs sampler for BoccSS0; old function using JAGS retained as BoccSS0_JAGS.
-  
+
   * Function BoccSS uses Gibbs sampler for single season occupancy with
   covariates.
 
 CHANGES in 2014-09-27 v.0.0.378
 
   * Added as.Bwiqid and hdi methods for class jagsUI in jagsUI package.
-  
+
   * Added occSSrnSite which allows site specific covariates.
- 
+
 CHANGES in 2014-09-10 v.0.0.377
 
   * added single-season two-species occupancy model.
-  
+
   * added preliminary versions of functions for Pollock's robust design.
-  
+
   * trap losses allowed in survCJS functions.
-  
+
 CHANGES in 2014-08-14 v.0.0.376
 
   * added as.Bwiqid method for coda class 'mcmc'.
@@ -73,20 +73,20 @@ CHANGES in 2014-08-14 v.0.0.376
   * fixed bug in occMS(cov) with .season covariate.
 
   * fixed bug in biodSimpson et al
-  
+
 CHANGES IN 2014-04-16 v.0.0.375
 
-  * postPlot with showCurve=TRUE, show the same HDI as the histograms when the 
+  * postPlot with showCurve=TRUE, show the same HDI as the histograms when the
   HDI is not split.
-  
+
 CHANGES IN 2014-03-30 v.0.0.374
-  
+
   * new diagnostic plots for Bwiqid objects: tracePlot, densityPlot and acfPlot; class Bwiqid objects get an attribute 'n.chains' to enable this.
-  
+
   * window.Bwiqid added.
-  
+
   * BsurvCJSautorun removed. All B* functions now use runjags package.
-  
+
 CHANGES IN 2014-03-01 v.0.0.373
 
   * bug fix in postPlot
@@ -97,36 +97,36 @@ CHANGES IN 2014-02-28 v.0.0.372
   curve corresponding to the HDI (wish of Joshua Pandong).
 
 CHANGES IN 2014-02-26 v.0.0.371
-  
+
   * Enhancements to plots: credMass = NULL to suppress plotting. Show
   discontinuous HDI in showCurve = TRUE plots.
-  
+
   * help pages for print.Bwiqid and plot.Bwiqid added.
-  
+
 CHANGES IN 2014-02-24 v.0.0.370
 
   * hdi gains a density method, which can handle discontinuous HDIs.
-  
+
 CHANGES IN 2014-02-24 v.0.0.369
 
-  * plotPost and the plot.Bwiqid method now make full use of the ... argument for additional graphical parameters. Default xlim now based on 99% HDI (not range). They return an object of class 'histogram'. 
+  * plotPost and the plot.Bwiqid method now make full use of the ... argument for additional graphical parameters. Default xlim now based on 99% HDI (not range). They return an object of class 'histogram'.
 
 CHANGES IN 2014-02-10 v.0.0.368
 
   * plotPost deals properly with a vector of integers.
-  
+
 CHANGES IN 2014-02-07 v.0.0.367
 
   * Added as.Bwiqid generic and methods for mcmc.list, bugs, rjags, runjags.
-  
+
   * Fixed bug in plot.Bwiqid.
 
 CHANGES IN 2014-02-05 v.0.0.366
 
   * New function BsurvCJSautorun, which uses the runjags::autorun.jags function. 'wiqid' now depends on runjags. Experimental: may have to roll back if runjags does not work for everyone.
-  
+
   * Implemented 0.5xSD scaling for all functions.
-  
+
   * 'nlm' codes > 2 now produce warning and continue.
 
 CHANGES IN 2014-02-01 v.0.0.365
@@ -146,11 +146,11 @@ CHANGES IN 2014-01-30 v.0.0.364
 CHANGES IN 2014-01-28 v.0.0.363
 
   * Changed occSSrn to take a detection history matrix as first argument.
-  
+
   * fixed bugs in postPriorOverlap, survCJSaj.
-  
+
   * added priorOnly argument to Bayesian functions (useful for postPriorOverlap),
-  
+
   * Added .Time covar (for time trend) to survCJS
 
 CHANGES IN 2014-01-26 v.0.0.362
@@ -158,39 +158,39 @@ CHANGES IN 2014-01-26 v.0.0.362
   * Changed closedCap* functions so that all take a detection history matrix as first argument.
 
   * The hdi generic gets methods for classes bugs, rjags and runjags.
-  
+
   * New function postPriorOverlap calculates and displays the overlap between posterior and prior.
 
 CHANGES IN 2014-01-11 v.0.0.361
 
   * Multi-season occupancy functions (occMS*) tidied up to deal with sites with surveys in first season only.
-  
+
   * Fixed bug in Bsecr0 - prior for sigma was too constrained.
- 
+
   * Changed survival functions to use ordinary detection history matrix instead of m-array; conversion to m-array is done internally.
-  
+
   * Added dippers data set.
-  
+
   * Functions occSS.t, occSS.T and occSS.T2 replaced with a single function, occSStime, which can also accept time-varying covariates for probability of detection.
- 
+
 CHANGES IN 2014-01-05
 
-  * Version number system changed as CRAN doesn't like leading zeros. Version 0.0359 followed by version 0.0.360. 
-  
+  * Version number system changed as CRAN doesn't like leading zeros. Version 0.0359 followed by version 0.0.360.
+
 CHANGES IN 2013-12-24
 
   * wiqid-package man page gives a list of all functions by type, with links to man pages.
 
   * Functions cjsTime and BcjsTime renamed as survCJS and BsurvCJS.
-  
+
   * New function survCJSaj for data sets for adults and juveniles, eg sociable lapwings.
-  
+
   * New class 'wiqid' replaces classes 'occupancy' and 'closedCap' and is used for survCJS output.
-  
+
 CHANGES IN 2013-12-16
 
   * New functions occMSseason and occMScov do covariate versions of multiple season occupancy.
-  
+
 CHANGES IN 2013-12-14
 
   * New function Bsecr0 does Bayesian version of simple secr fit.
@@ -200,22 +200,22 @@ CHANGES IN 2013-12-14
   * New function BcjsTime does Bayesian version of survival.
 
   * cjs0 removed; use cjsTime for phi(.) p(.) model
-  
+
   * Argument 'model' now used in occSScov and occSScovSite.
-  
+
   * Covariate data for occSScovSite now a data frame, not a list.
-  
+
   * New function occSS.T2 does quadratic model for probabilitiy of detection. occSS.T and occSS.T2 do a plot of p vs time.
-  
+
   * New function BoccSS0 does Bayesian modelling with JAGS.
-  
+
   * new function occSSautocorA does autocorrelation in detection probability.
 
   * occSScovSite was throwing error if variables not in the model contained NAs.
   TODO check other functions are not doing this too!
-  
+
   * added .Time and .Time2 built-in covars to occSScov
-  
+
   * added AICtable utility function.
 
 CHANGES IN BUILD 2013-11-04
@@ -223,7 +223,7 @@ CHANGES IN BUILD 2013-11-04
   * closedCap* functions now return an object of class closedCap, for which there are print, logLik and nobs methods.
 
   * added ciType argument to closedCap* functions. ciType = "MARK" calculates CI for N as in Program MARK. Test files modified to match.
-  
+
   * add closedCapMt and closedCapMtcov
 
 CHANGES IN BUILD 2013-10-04
@@ -289,4 +289,3 @@ CHANGES IN BUILD 2013-03-16
   * Added distance (beta diversity) measures
 
   * Added species richness estimation as in EstimateS
-  

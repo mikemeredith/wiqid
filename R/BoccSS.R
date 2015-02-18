@@ -3,7 +3,7 @@
 # Bayesian version, using Dorazio & Rodriguez (2011) algorithm
 
 BoccSS <- function(DH, model=NULL, data=NULL, priors=list(),
-                    n.chains=3, n.iter=10100, n.burnin=100) {
+                    n.chains=3, n.iter=11000, n.burnin=1000, parallel, seed=NULL) {
   # single-season occupancy models with site and survey covariates
   # ** DH is detection data in a 1/0/NA matrix or data frame, sites in rows,
   #    detection occasions in columns..
@@ -12,6 +12,30 @@ BoccSS <- function(DH, model=NULL, data=NULL, priors=list(),
   # ** data is a DATA FRAME with single columns for site covariates and a column for each survey occasion for each survey covariate.
   # ** priors is a list with elements for prior mean and variance for coefficients.
   startTime <- Sys.time()
+
+  # Check DH:
+  tst <- try(range(DH, na.rm=TRUE), silent=TRUE)
+  if(inherits(tst, "try-error") || tst[1] < 0 || tst[2] > 1)
+    stop("DH is not a valid detection history matrix (or data frame).")
+
+  # Deal with parallel (order of the if statements is important!)
+  if(n.chains == 1)
+    parallel <- FALSE
+  if(missing(parallel))
+    parallel <- n.chains < detectCores()
+  if(parallel) {
+    coresToUse <- min(n.chains, detectCores() - 1)
+    if(coresToUse < 2) {
+      warning("Multiple cores not available; running chains sequentially.")
+      parallel <- FALSE
+    }
+  }
+  if(parallel) {
+    if(n.chains > coresToUse)
+      warning(paste("Running", n.chains, "chains on", coresToUse, "cores."))
+    cl <- makeCluster(coresToUse)
+    on.exit(stopCluster(cl))
+  }
 
   # Standardise the model:
   model <- stdModel(model, list(psi=~1, p=~1))
@@ -121,7 +145,7 @@ BoccSS <- function(DH, model=NULL, data=NULL, priors=list(),
   param <- rep(0, K)
   mle <- nlm(nll, param)$estimate
 
-  # Gibbs sampler
+  # Gibbs sampler variables
   XprimeX <- t(psiModMat) %*% psiModMat
   if(is.null(priors)) {
     V.beta <- chol2inv(chol(XprimeX))
@@ -136,25 +160,25 @@ BoccSS <- function(DH, model=NULL, data=NULL, priors=list(),
     ScaledMuP = SigmaInvP %*% muP
   }
   # Starting values - use MLEs
-  beta <- matrix(mle[1:psiK], ncol=1)  # why matrix?
-  alpha <- matrix(mle[-(1:psiK)], ncol=1)
+  set.seed(seed)
+  starters <- vector('list', n.chains)
+  for(i in 1:n.chains)
+    starters[[i]] <- mle * runif(K, 0.95, 1.05) #####
   y <- rowSums(DH, na.rm=TRUE)
   z <- as.integer(y > 0)  ## (Starting value for) occupancy state
 
-  chainList <- vector('list', n.chains)
-  chain <- matrix(nrow=n.iter, ncol=K) # to hold MCMC chains
-  colnames(chain) <- c(paste("psi", colnames(psiModMat), sep="_"),
-                        paste("p", colnames(pModMat), sep="_"))
-  progress <- floor(n.iter/5)
-
-  v <- rep(NA, psiK)
-
   cat("Starting MCMC run for", n.chains, "chains with", n.iter, "iterations.\n")
-  for(ch in 1:n.chains)  {
-    cat("  Chain", ch) ; flush.console()
+  flush.console()
+
+  # Function to do 1 chain
+  run1chain <- function(start) {
+    beta <- matrix(start[1:psiK], ncol=1)  # why matrix?
+    alpha <- matrix(start[-(1:psiK)], ncol=1)
+    chain <- matrix(nrow=n.iter, ncol=K) # to hold MCMC chains
+    colnames(chain) <- c(paste("psi", colnames(psiModMat), sep="_"),
+                        paste("p", colnames(pModMat), sep="_"))
+    v <- rep(NA, psiK)
     for (draw in 1:n.iter) {
-      if(draw %% progress == 0)
-        cat(".")
       #  draw z for sites with y = 0, using conditional (on data) prob of occupancy
       psi <- as.vector(pnorm(psiModMat %*% beta))
       q <- 1 - as.vector(pnorm(pModMat %*% alpha))
@@ -166,11 +190,11 @@ BoccSS <- function(DH, model=NULL, data=NULL, priors=list(),
 
       # draw v and beta ## coefficients for psi
       vmean <- as.vector(psiModMat %*% beta) # same as 'psi' above
-      v[present]  <- rtruncnorm(sum(present),  a=0, mean=vmean[present], sd=1)
+      v[present]  <- truncnorm::rtruncnorm(sum(present),  a=0, mean=vmean[present], sd=1)
       if(!all(present))
-        v[!present] <- rtruncnorm(sum(!present), b=0, mean=vmean[!present], sd=1)
+        v[!present] <- truncnorm::rtruncnorm(sum(!present), b=0, mean=vmean[!present], sd=1)
       betaMean = V.beta %*% (ScaledMuPsi + (t(psiModMat) %*% v) ) # prior here
-      beta <- matrix(mvrnorm(1, betaMean, V.beta), ncol=1)
+      beta <- matrix(MASS::mvrnorm(1, betaMean, V.beta), ncol=1)
 
       # draw u and alpha ## coefficients for p
       ## This section ONLY needs data from occupied sites, ie, z == 1, present == TRUE
@@ -180,18 +204,29 @@ BoccSS <- function(DH, model=NULL, data=NULL, priors=list(),
       umean <- as.vector(Wmat %*% alpha)
       u <- rep(NA, nrow(Wmat))
       ind.y <- DHneeded == 1
-      u[ind.y]  <- rtruncnorm(sum(ind.y), a=0, mean=umean[ind.y], sd=1)
-      u[!ind.y] <- rtruncnorm(sum(!ind.y), b=0, mean=umean[!ind.y], sd=1)
+      u[ind.y]  <- truncnorm::rtruncnorm(sum(ind.y), a=0, mean=umean[ind.y], sd=1)
+      u[!ind.y] <- truncnorm::rtruncnorm(sum(!ind.y), b=0, mean=umean[!ind.y], sd=1)
 
       WprimeW <- t(Wmat) %*% Wmat
       V.alpha = chol2inv(chol(SigmaInvP + WprimeW)) # prior here
 
       alphaMean = V.alpha %*% (ScaledMuP + (t(Wmat) %*% u) ) # prior here
-      alpha <- matrix(mvrnorm(1, alphaMean, V.alpha), ncol=1)
+      alpha <- matrix(MASS::mvrnorm(1, alphaMean, V.alpha), ncol=1)
 
       chain[draw, ] <- c(beta, alpha)
     }
-    chainList[[ch]] <- mcmc(chain[(n.burnin+1):n.iter, ])
+    return(coda::mcmc(chain[(n.burnin+1):n.iter, ]))
+  }
+
+  if(parallel) {
+    clusterExport(cl, c("K", "psiK", "n.iter", "n.burnin",
+        "psiModMat", "pModMat", "siteID", "siteIDfac", "y", "DHvec",
+        "ScaledMuPsi", "V.beta", "SigmaInvP", "ScaledMuP"),
+        envir=environment())
+    clusterSetRNGStream(cl, seed)
+    chainList <- parLapply(cl, starters, run1chain)
+  } else {
+    chainList <- lapply(starters, run1chain)
   }
   cat("\nMCMC run complete.\n")
   # Diagnostics
@@ -199,7 +234,7 @@ BoccSS <- function(DH, model=NULL, data=NULL, priors=list(),
   Rhat <- try(gelman.diag(MCMC, autoburnin=FALSE)$psrf[, 1], silent=TRUE)
   if(inherits(Rhat, "try-error") || !all(is.finite(Rhat)))
     Rhat <- NULL
-  
+
   out <- as.Bwiqid(MCMC,
       header = "Model fitted in R with a Gibbs sampler",
       defaultPlot = names(MCMC)[1])

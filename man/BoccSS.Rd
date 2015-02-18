@@ -15,13 +15,13 @@ Functions to estimate occupancy from detection/non-detection data for a single s
 \code{BoccSS} runs a model in R allowing for covariates, using a probit link and conjugate normal priors, which can be specified as mean and covariance.
 }
 \usage{
-BoccSS0(y, n, psiPrior=c(1,1), pPrior=c(1,1), 
+BoccSS0(y, n, psiPrior=c(1,1), pPrior=c(1,1),
                     n.chains=3, n.iter=10100, n.burnin=100)
- 
+
 BoccSS0_JAGS(y, n, priorOnly=FALSE, ...)
 
 BoccSS(DH, model=NULL, data=NULL, priors=list(),
-                    n.chains=3, n.iter=10100, n.burnin=100)
+                    n.chains=3, n.iter=11000, n.burnin=1000, parallel, seed=NULL)
 }
 \arguments{
   \item{y}{
@@ -54,6 +54,12 @@ number of values per chain, including burn-in.
   \item{n.burnin}{
 number of values per chain to discard as burn-in.
 }
+  \item{parallel}{
+logical; if TRUE \emph{and} \code{n.chains} > 1 \emph{and} available cores (as returned by \code{parallel::detectCores}) > 2, chains will be run in parallel. If missing, chains will be run in parallel if \code{n.chains} < available cores.
+}
+  \item{seed}{
+for reproducible results; note that parallel and sequential methods use different random number generators, so will give different results with the same seed.
+}
 
   \item{priorOnly}{
 if TRUE, the function produces random draws from the appropriate \emph{prior} distributions, with a warning.
@@ -68,7 +74,7 @@ further arguments passed to \code{\link{autorun.jags}}.
 Independent beta distributions are used as priors for \code{BoccSS0}, as specified by \code{psiPrior} and \code{pPrior}. The defaults, \code{c(1, 1)}, correspond to uniform priors on the probabilities of occupancy and detection.
 
 \code{BoccSS} uses a probit link to model occupancy and detection as a function of covariates (Dorazio and Rodriguez 2011); most software uses a logistic (logit) link.
-%%%%%%%%%, as shown in the plot below. %% Maybe do a page for probit vs logit
+See \link{Links}.
 Coefficients on the probit scale are about half the size of the equivalent on the logit scale.
 
 Priors for \code{BoccSS} are listed in the \code{priors} argument, which may contain elements:

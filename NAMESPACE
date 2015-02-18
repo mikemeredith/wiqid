@@ -7,7 +7,8 @@ importFrom(runjags, testjags, runjags.options, autorun.jags)
 importFrom(coda, mcmc, mcmc.list, as.mcmc.list,
   geweke.diag, gelman.diag, effectiveSize)
 importFrom(secr, secr.fit)
-importFrom(parallel, detectCores)
+importFrom(parallel, detectCores, makeCluster, stopCluster,
+  clusterExport, clusterSetRNGStream, parLapply)
 importFrom(MASS, mvrnorm)
 importFrom(truncnorm, rtruncnorm)
 importFrom(MCMCpack, MCMCregress, MCMClogit)
