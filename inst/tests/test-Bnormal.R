@@ -24,7 +24,7 @@ test_that("Bnormal gives same answers",  {
   expect_equivalent(round(c(hdi(Bout)), 4), c(0.9083, 1.1122, 0.0906, 0.2419))
   xx <- x * 1000
   expect_warning(Bout <- Bnormal(xx),
-      "Sample mean is outside the prior range mMean ± sMean.")
+      "Sample mean is outside the prior range")
   set.seed(345)
   Bout <- Bnormal(xx, priors=NULL)  # flat priors
   expect_equivalent(round(colMeans(Bout), 1), c(1010.5, 156.3))
