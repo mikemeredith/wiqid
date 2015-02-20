@@ -1,26 +1,33 @@
 # Single season occupancy with site and survey covariates.
 
+# 'link' argument added 2015-02-20
+
 occSScov <- function(...) {
   cat("occSScov has been renamed occSS.\n")
   occSS(...)
 }
 
-occSS <- function(DH, model=NULL, data=NULL, ci=0.95) {
+occSS <- function(DH, model=NULL, data=NULL, ci=0.95, link=c("logit", "probit")) {
   # single-season occupancy models with site and survey covatiates
-  # ** DH is detection data in a 1/0/NA matrix or data frame, sites in rows, 
+  # ** DH is detection data in a 1/0/NA matrix or data frame, sites in rows,
   #    detection occasions in columns..
   # ** model is a list of 2-sided formulae for psi and p; can also be a single
   #   2-sided formula, eg, model = psi ~ habitat.
   # ** data is a DATA FRAME with single columns for site covariates and a column for each survey occasion for each survey covariate.
   # ci is the required confidence interval.
-  
+
   if(is.null(model)) {
     y <- rowSums(DH, na.rm=TRUE)
     n <- rowSums(!is.na(DH))
-    return(occSS0(y, n, ci=ci))
+    return(occSS0(y, n, ci=ci, link=link))
   }
-  
   crit <- fixCI(ci)
+
+  if(match.arg(link) == "logit") {
+    plink <- plogis
+  } else {
+    plink <- pnorm
+  }
 
   # Standardise the model:
   model <- stdModel(model, list(psi=~1, p=~1))
@@ -81,11 +88,11 @@ occSS <- function(DH, model=NULL, data=NULL, ci=0.95) {
   nll <- function(param){
     psiBeta <- param[1:psiK]
     pBeta <- param[(psiK+1):K]
-    psiProb <- as.vector(plogis(psiModMat %*% psiBeta))
-    pProb <- plogis(pModMat %*% pBeta)
+    psiProb <- as.vector(plink(psiModMat %*% psiBeta))
+    pProb <- plink(pModMat %*% pBeta)
     Lik1 <- DHvec*pProb + (1-DHvec) * (1-pProb)
     Lik2 <- tapply(Lik1, siteID, prod)
-    llh <- sum(log(psiProb * Lik2 + 
+    llh <- sum(log(psiProb * Lik2 +
           (1 - psiProb) * (rowSums(DH, na.rm=TRUE) == 0)))
     return(min(-llh, .Machine$double.xmax))
   }
@@ -111,9 +118,10 @@ occSS <- function(DH, model=NULL, data=NULL, ci=0.95) {
     lp.mat[, 2:3] <- sweep(outer(SElp, crit), 1, lp.mat[, 1], "+")
   }
   out <- list(call = match.call(),
+              link = match.arg(link),
               beta = beta.mat,
               beta.vcv = varcov,
-              real = plogis(lp.mat),
+              real = plink(lp.mat),
               logLik = c(logLik=logLik, df=K, nobs=nrow(DH)))
   class(out) <- c("wiqid", "list")
   return(out)

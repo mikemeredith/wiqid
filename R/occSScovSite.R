@@ -1,8 +1,10 @@
 # Single season occupancy with site covariates (not survey covariates)
 
 # 'model' argument added 2013-12-02
+# 'link' argument added 2015-02-20
 
-occSScovSite <- function(y, n, model=NULL, data=NULL, ci=0.95) {
+occSScovSite <- function(y, n, model=NULL, data=NULL,
+    ci=0.95, link=c("logit", "probit")) {
   # single-season occupancy models with site-specific covatiates
   # new version with y/n input; much faster!
   # y is a vector with the number of detections at each site.
@@ -16,9 +18,14 @@ occSScovSite <- function(y, n, model=NULL, data=NULL, ci=0.95) {
     stop("y and n must have the same length")
   if(any(y > n))
     stop("y cannot be greater than n")
-
   crit <- fixCI(ci)
-  
+
+  if(match.arg(link) == "logit") {
+    plink <- plogis
+  } else {
+    plink <- pnorm
+  }
+
   # Standardise the model:
   model <- stdModel(model, list(psi=~1, p=~1))
 
@@ -56,8 +63,8 @@ occSScovSite <- function(y, n, model=NULL, data=NULL, ci=0.95) {
   nll <- function(param){
     psiBeta <- param[1:psiK]
     pBeta <- param[(psiK+1):K]
-    psiProb <- as.vector(plogis(psiModMat %*% psiBeta))
-    pProb <- as.vector(plogis(pModMat %*% pBeta))
+    psiProb <- as.vector(plink(psiModMat %*% psiBeta))
+    pProb <- as.vector(plink(pModMat %*% pBeta))
     prob <- psiProb * pProb^y * (1-pProb)^(n - y) + (1 - psiProb) * (y==0)
     return(min(-sum(log(prob)), .Machine$double.xmax))
   }
@@ -73,7 +80,7 @@ occSScovSite <- function(y, n, model=NULL, data=NULL, ci=0.95) {
   lp.mat[, 1] <- c(psiModMat %*% beta.mat[1:psiK, 1],
                    pModMat %*% beta.mat[(psiK+1):K, 1])
   varcov <- try(solve(res$hessian), silent=TRUE)
-  if (!inherits(varcov, "try-error") && 
+  if (!inherits(varcov, "try-error") &&
       all(diag(varcov) > 0)) {
     SE <- sqrt(diag(varcov))
     beta.mat[, 2] <- SE
@@ -87,9 +94,10 @@ occSScovSite <- function(y, n, model=NULL, data=NULL, ci=0.95) {
     }
   }
   out <- list(call = match.call(),
+              link = match.arg(link),
               beta = beta.mat,
               beta.vcv = varcov,
-              real = plogis(lp.mat),
+              real = plink(lp.mat),
               logLik = c(logLik=logLik, df=K, nobs=length(y)))
   class(out) <- c("wiqid", "list")
   return(out)

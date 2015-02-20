@@ -8,11 +8,13 @@ TODO
 
   * Add survey covars to occSSrn.
 
-  * Add probit link option to MLE functions.
+  * Add probit link option to remaining MLE functions.
 
   * Try to do all MCMC chains in R, dispense with JAGS. (Might be difficult!)
 
-CHANGES in 2015-02-18 v.0.0.383
+CHANGES in 2015-02-20 v.0.0.383
+
+  * occSS* functions gain a 'link' argument and optional probit link.
 
   * BoccSS gains arguments parallel and seed
 

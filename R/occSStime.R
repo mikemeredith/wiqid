@@ -1,8 +1,11 @@
 
 # New verion 2013-02-27 without the time argument (no time=FALSE option)
 
+# 'link' argument added 2015-02-20
+
 occSStime <-
-function(DH, model=p~1, data=NULL, ci=0.95, plot=TRUE)  {
+function(DH, model=p~1, data=NULL, ci=0.95,
+    plot=TRUE, link=c("logit", "probit"))  {
   # DH is a 1/0 matrix of detection histories, sites x occasions
   # model is a 2-sided formula for probability of detection, eg, model = p ~ habitat.
   # data is a DATA FRAME with a row for each capture occasion and columns for time covariates.
@@ -14,11 +17,13 @@ function(DH, model=p~1, data=NULL, ci=0.95, plot=TRUE)  {
   if (nocc < 2)
     stop("More than one survey occasion is needed")
   stopifnot(is.null(data) || nrow(data) == nocc)
-  
-  if(ci > 1 | ci < 0.5)
-    stop("ci must be between 0.5 and 1")
-  alf <- (1 - ci[1]) / 2
-  crit <- qnorm(c(alf, 1 - alf))
+  crit <- fixCI(ci)
+
+  if(match.arg(link) == "logit") {
+    plink <- plogis
+  } else {
+    plink <- pnorm
+  }
 
   # Standardise the model:
   model <- stdModel(model, defaultModel=list(p=~1))
@@ -28,12 +33,12 @@ function(DH, model=p~1, data=NULL, ci=0.95, plot=TRUE)  {
   dataList$.time <- as.factor(1:nocc)
   dataList$.Time <- as.vector(scale(1:nocc)) * 0.5
   pDf <- as.data.frame(dataList)
-  
+
   # Do the model matrix for p:
   pModMat <- model.matrix(model$p, pDf)
   pK <- ncol(pModMat)
   K <- pK + 1
-  
+
   beta.mat <- matrix(NA_real_, K, 4)
   colnames(beta.mat) <- c("est", "SE", "lowCI", "uppCI")
   rownames(beta.mat) <- c("psi",
@@ -43,15 +48,15 @@ function(DH, model=p~1, data=NULL, ci=0.95, plot=TRUE)  {
   rownames(lp.mat) <- c("psi", paste0("p", 1:nocc))
   logLik <- NA_real_
   varcov <- NULL    # ????
-  
+
   if(ncol(DH) > 1 && sum(DH, na.rm=TRUE) > 0)  {
     # Negative log-likelihood function:
     nll <- function(params) {
-      psi <- plogis(params[1])
+      psi <- plink(params[1])
       pBeta <- params[-1]
-      p <- plogis(pModMat %*% pBeta)
+      p <- plink(pModMat %*% pBeta)
       p.DH <- sweep(DH, 2, p, "*") + sweep((1-DH), 2, (1-p), "*")
-      llh <- sum(log(psi * apply(p.DH, 1, prod, na.rm=TRUE) + 
+      llh <- sum(log(psi * apply(p.DH, 1, prod, na.rm=TRUE) +
           (1 - psi) * (rowSums(DH, na.rm=TRUE) == 0)))
       return(min(-llh, .Machine$double.xmax)) # min(..) stops Inf being returned
     }
@@ -75,7 +80,7 @@ function(DH, model=p~1, data=NULL, ci=0.95, plot=TRUE)  {
 
     # Do the plot
     if(plot) {
-      real.p <- plogis(lp.mat[-1, ])
+      real.p <- plink(lp.mat[-1, ])
       ylim <- range(0, real.p, na.rm=TRUE)
       plot(1:nocc, real.p[, 1], type='l', ylim=ylim,
         xlab="Time", ylab="Probability of detection")
@@ -84,9 +89,10 @@ function(DH, model=p~1, data=NULL, ci=0.95, plot=TRUE)  {
     }
   }
   out <- list(call = match.call(),
+              link=match.arg(link),
               beta = beta.mat,
               beta.vcv = varcov,
-              real = plogis(lp.mat),
+              real = plink(lp.mat),
               logLik=c(logLik=logLik, df=K, nobs=nrow(DH)))
   class(out) <- c("wiqid", "list")
   return(out)

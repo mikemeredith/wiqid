@@ -13,11 +13,11 @@ Function \code{occSSrn} allows for site-specific covariates to be included in th
 }
 \usage{
 
-occSSrn(DH, model=NULL, data = NULL, ci=0.95)
+occSSrn(DH, model=NULL, data = NULL, ci=0.95, link=c("logit", "probit"))
 
-occSSrn0(y, n, ci=0.95)
+occSSrn0(y, n, ci=0.95, link=c("logit", "probit"))
 
-occSSrnSite(y, n, model=NULL, data = NULL, ci=0.95)
+occSSrnSite(y, n, model=NULL, data = NULL, ci=0.95, link=c("logit", "probit"))
 
 }
 \arguments{
@@ -35,7 +35,9 @@ Note: currently only site covariates can be handled.
   \item{ci}{
 the confidence interval to use.
 }
-
+  \item{link}{
+the link function to use, either logit or probit; see \link{Links}.
+}
   \item{y}{
 a vector with the number of detections at each site.
 }
@@ -46,7 +48,7 @@ a scalar or vector with the number of visits (survey occasions) at each site.
 }
 \details{
 
-Numeric covariates in \code{data} are standardised to facilitate convergence. This applies to binary covariates coded as 1/0; if this is not what you want, code these as TRUE/FALSE or as factors. 
+Numeric covariates in \code{data} are standardised to facilitate convergence. This applies to binary covariates coded as 1/0; if this is not what you want, code these as TRUE/FALSE or as factors.
 
 }
 \value{

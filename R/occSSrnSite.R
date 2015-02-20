@@ -1,8 +1,11 @@
-# Single-season Royle-Nichols occupancy models, with abundance-induced 
+# Single-season Royle-Nichols occupancy models, with abundance-induced
 #   heterogeneity in detection probability, with site covariates
 #   (not survey covariates)
 
-occSSrnSite <- function(y, n, model=NULL, data=NULL, ci=0.95) {
+# 'link' argument added 2015-02-20
+
+occSSrnSite <- function(y, n, model=NULL, data=NULL,
+    ci=0.95, link=c("logit", "probit")) {
   # single-season occupancy models with site-specific covatiates
   # y is a vector with the number of detections at each site.
   # n is a vector with the number of occasions at each site.
@@ -15,9 +18,14 @@ occSSrnSite <- function(y, n, model=NULL, data=NULL, ci=0.95) {
     stop("y and n must have the same length")
   if(any(y > n))
     stop("y cannot be greater than n")
-
   crit <- fixCI(ci)
-  
+
+  if(match.arg(link) == "logit") {
+    plink <- plogis
+  } else {
+    plink <- pnorm
+  }
+
   # Standardise the model:
   model <- stdModel(model, list(lambda=~1, r=~1))
 
@@ -57,7 +65,7 @@ occSSrnSite <- function(y, n, model=NULL, data=NULL, ci=0.95) {
     lamBeta <- param[1:lamK]
     rBeta <- param[(lamK+1):K]
     lambda <- as.vector(exp(lamModMat %*% lamBeta))
-    s <- 1 - as.vector(plogis(rModMat %*% rBeta)) # s = 1 - r
+    s <- 1 - as.vector(plink(rModMat %*% rBeta)) # s = 1 - r
     llh <- numeric(nSites)
     for(i in 1:nSites) {
       rpart <- s[i]^(0:Nmax)
@@ -93,11 +101,12 @@ occSSrnSite <- function(y, n, model=NULL, data=NULL, ci=0.95) {
     }
   }
   realLam <- exp(lp.mat[1:nSites, ])
-  realR <- plogis(lp.mat[(nSites+1):(nSites*2), ])
+  realR <- plink(lp.mat[(nSites+1):(nSites*2), ])
   realPsi <- 1-dpois(0, realLam)
   rownames(realPsi) <- paste("psi:", 1:nSites, sep="")
-  
+
   out <- list(call = match.call(),
+              link = match.arg(link),
               beta = beta.mat,
               beta.vcv = varcov,
               real = rbind(realPsi, realLam, realR),

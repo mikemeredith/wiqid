@@ -8,16 +8,16 @@
 Single-season occupancy estimation
 }
 \description{
-Functions to estimate occupancy from detection/non-detection data for a single season. \code{occSS} is the general-purpose function, and \code{occSStime} provides plots of detection probability against time. \code{occSS0} and \code{occSScovSite} are faster functions for simpler models with summarized data. See \code{occSSrn} for the Royle-Nichols model for abundance-induced heterogeneity in detection probability. 
+Functions to estimate occupancy from detection/non-detection data for a single season. \code{occSS} is the general-purpose function, and \code{occSStime} provides plots of detection probability against time. \code{occSS0} and \code{occSScovSite} are faster functions for simpler models with summarized data. See \code{occSSrn} for the Royle-Nichols model for abundance-induced heterogeneity in detection probability.
 }
 \usage{
-occSS(DH, model=NULL, data = NULL, ci=0.95)
+occSS(DH, model=NULL, data = NULL, ci=0.95, link=c("logit", "probit"))
 
-occSStime(DH, model=p~1, data=NULL, ci=0.95, plot=TRUE)
+occSStime(DH, model=p~1, data=NULL, ci=0.95, plot=TRUE, link=c("logit", "probit"))
 
-occSS0(y, n, ci=0.95)
+occSS0(y, n, ci=0.95, link=c("logit", "probit"))
 
-occSScovSite(y, n, model=NULL, data = NULL, ci=0.95)
+occSScovSite(y, n, model=NULL, data = NULL, ci=0.95, link=c("logit", "probit"))
 
 }
 \arguments{
@@ -32,6 +32,9 @@ the confidence interval to use.
 }
   \item{data}{
 a data frame containing the variables in the model. For \code{occSStime}, a data frame with a row for each survey occasion; otherwise, a row for each site. Each site covariate has one column. Each survey covariate has one column for each occasion, and the column name must end with the occasion number (without leading zeros); eg, \code{Cov1, Cov2, ..., Cov15}. All covariates should be included in \code{data}, otherwise they will be sought in enclosing environments, which may not produce what you want -- and they won't be standardised.
+}
+  \item{link}{
+the link function to use, either logit or probit; see \link{Links}.
 }
   \item{plot}{
 if TRUE (default), draws a plot of probability of detection vs time.
@@ -53,7 +56,7 @@ a scalar or vector with the number of visits (survey occasions) at each site.
 
 \code{occSScovSite} allows for site covariates but not for occasion or survey covariates.
 
-Numeric covariates in \code{data} are standardised to facilitate convergence. This applies to binary covariates coded as 1/0; if this is not what you want, code these as TRUE/FALSE or as factors. 
+Numeric covariates in \code{data} are standardised to facilitate convergence. This applies to binary covariates coded as 1/0; if this is not what you want, code these as TRUE/FALSE or as factors.
 
 For speed, use the simplest function which will cope with your model. For example, you can run psi(.) p(.) models in \code{occSScovSite} or \code{occSS}, but \code{occSS0} is much faster.
 }
