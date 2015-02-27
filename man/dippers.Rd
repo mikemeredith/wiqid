@@ -33,14 +33,17 @@ survCJS(DH)  # the phi(.) p(.) model
 survCJS(DH, phi ~ .time)  # the phi(t) p(.) model
 
 # Floods affected the 2nd and 3rd intervals
-fd <- data.frame(flood = c(FALSE, TRUE, TRUE, FALSE, FALSE, FALSE))
-survCJS(DH, phi ~ flood, data=fd)
+df <- data.frame(flood = c(FALSE, TRUE, TRUE, FALSE, FALSE, FALSE))
+survCJS(DH, phi ~ flood, data=df)
+
+# Including a grouping factor:
+survCJS(DH, phi ~ flood * group, data=df, group=dippers$sex)
 
 # Bayesian estimation:
 
 Bdip <- BsurvCJS(DH)
 plot(Bdip)
-BdipFlood <- BsurvCJS(DH, list(phi ~ flood, p ~ .time), data=fd)
+BdipFlood <- BsurvCJS(DH, list(phi ~ flood, p ~ .time), data=df)
 BdipFlood
 op <- par(mfrow=2:1)
 plot(BdipFlood, "phi1.1", xlim=c(0.3, 0.75), main="No flood")
