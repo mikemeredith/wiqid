@@ -136,7 +136,7 @@ survCJSaj <- function(DHj, DHa=NULL, model=list(phiJ~1, phiA~1, p~1), data=NULL,
 
   # Run mle estimation with nlm:
   param <- rep(0, K)
-  res <- nlm(nll, param, hessian=TRUE)
+  res <- nlm(nll, param, hessian=TRUE, stepmax=10) # 2015-03-01
   if(res$code > 2)   # exit code 1 or 2 is ok.
     warning(paste("Convergence may not have been reached (code", res$code, ")"))
 

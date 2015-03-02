@@ -50,7 +50,7 @@ controls the histogram break points or the number of bars; see \code{\link{hist}
 Returns the overlap, the area lying under the lower of the two density curves.
 }
 \references{
-Gimenez, Morgan and Brooks (2009) Weak idedentifiability in models for mark-recapture-recovery data. pp.1055-1068 in Thomson, Cooch and Conroy (eds) \emph{Modeling demographic processes in marked populations} Springer
+Gimenez, Morgan and Brooks (2009) Weak identifiability in models for mark-recapture-recovery data. pp.1055-1068 in Thomson, Cooch and Conroy (eds) \emph{Modeling demographic processes in marked populations} Springer
 }
 \author{
 Mike Meredith

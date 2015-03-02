@@ -47,7 +47,7 @@ test_that("survCJS gives right answers",  {
 
   res <- survCJS(DH, phi ~ flood, data=dd, ci=0.85)
   expect_that(round(as.vector(t(res$real[c(1,2,7),])), 4),
-      equals(c(0.6071, 0.5618, 0.6506,
+      equals(c(0.6071, 0.5618, 0.6507,
                0.4688, 0.4074, 0.5312,
                0.8998, 0.8491, 0.9348)))
   expect_that(round(AIC(res), 4), equals(666.1028)) # MARK output
