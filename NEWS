@@ -12,6 +12,10 @@ TODO
 
   * Try to do all MCMC chains in R, dispense with JAGS. (Might be difficult!)
 
+CHANGES in 2015-05-14 v.0.0.385
+
+  * Changed default priors for Bnormal to match BEST::BESTmcmc.
+  
 CHANGES in 2015-03-02 v.0.0.384
 
   * fixed convergence issues of survCJS with large samples

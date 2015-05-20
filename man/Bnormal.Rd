@@ -6,37 +6,55 @@
 Bayesian modelling of a normal (Gaussian) distribution
 }
 \description{
-Bayesian estimation of mean and standard deviation of a normal distribution based on a sample using Gibbs sampling implemented in R.
+Bayesian estimation of mean and standard deviation of a normal distribution based on a sample using JAGS.
 
 }
 \usage{
-Bnormal(x, priors=list(), n.chains=3, n.iter=10100, n.burnin=100)
+Bnormal(y, priors=NULL, doPriorsOnly=FALSE,
+    numSavedSteps=1e5, thinSteps=1, burnInSteps = 1000,
+    verbose=TRUE, rnd.seed=NULL, parallel=NULL)
  
 }
 \arguments{
-  \item{x}{
+  \item{y}{
 a vector (length > 1) with observed sample values; missing values not allowed.
 }
   \item{priors}{
-a list with elements specifying the priors for the mean and variance; see Details. Note that the default prior for the mean = 0, which will often be inappropriate. If \code{priors = NULL}, improper flat priors are used.
+an optional list with elements specifying the priors for the mean and variance; see Details.
 }
-  \item{n.chains}{
-number of MCMC chains to run.
+ \item{doPriorsOnly}{
+if TRUE, \code{Bnormal} returns MCMC chains representing the prior distributions, \emph{not} the posterior distributions for your data set.
 }
-  \item{n.iter}{
-number of values per chain, including burn-in.
+  \item{numSavedSteps}{
+the number of MCMC observations to be returned.
 }
-  \item{n.burnin}{
-number of values per chain to discard as burn-in.
+  \item{thinSteps}{
+thinning rate. If set to n > 1, n steps of the MCMC chain are calculated for each one returned. This is useful if autocorrelation is high.
+}
+  \item{burnInSteps}{
+number of steps to discard as burn-in at the beginning of the chain.
+}
+   \item{verbose}{
+if FALSE, output to the R Console is suppressed.
+}
+  \item{rnd.seed}{
+a positive integer (or NULL): the seed for the random number generator, used to obtain reproducible samples if required.
+}
+  \item{parallel}{
+if NULL or TRUE and > 3 cores are available, the MCMC chains are run in parallel. (If TRUE and < 4 cores are available, a warning is given.)
 }
 }
 
 \details{
-The function uses a Gibbs sampler, sampling alternately from the conjugate posterior distributions for the mean with known variance, and the variance with known mean: see Gill (2008:74-79). This allows for separate specification of the priors for the mean and standard deviation of the Gaussian distribution, with values in the \code{priors} argument list. See Ntzoufras (2009:72).
+The function generates vectors of random draws from the posterior distributions of the population mean (\eqn{\mu}) and standard deviation (\eqn{\sigma}). The procedure uses a Bayesian MCMC process implemented in JAGS (Plummer 2003).
 
-The prior for the mean is a normal distribution with mean \code{mMean} and standard deviation \code{sMean}. Note that \code{sMean} is \emph{not} the standard deviation of the modelled distribution, but reflects the 'width' of the prior for the mean. The default is \code{mMean = 0} and \code{sMean = 100}. A warning is issued if the sample mean is outside the range \code{mMean +- sMean}.
+Priors for all parameters can be specified by including elements in the \code{priors} list:\cr
+\eqn{\mu} : the population mean has a normal prior, with mean \code{muM} and standard deviation \code{muSD};\cr
+\eqn{\sigma} : the population standard deviation has gamma priors, with mode \code{sigmaMode} and standard deviation \code{sigmaSD}.
 
-The prior for the variance is an inverse gamma function with parameters \code{aSigma} and \code{bSigma}. The default is the uninformative prior, \code{aSigma = bSigma = 0.001}.
+The default priors correspond to \code{list(muM = mean(y), muSD = sd(y)*5, sigmaMode = sd(y), sigmaSD = sd(y)*5)}.
+
+If \code{priors = NULL}, vague priors as described by Kruschke (2013) are used for all parameters.
 }
 
 \value{
@@ -46,26 +64,21 @@ There are \code{print} and \code{plot} methods for class \code{Bwiqid}, as well 
 }
 
 \references{
+Kruschke, J K. 2013. Bayesian estimation supersedes the \emph{t} test. \emph{Journal of Experimental Psychology: General} 142(2):573-603. doi: 10.1037/a0029146
 
-Ntzoufras 2009. \emph{Bayesian modeling using WinBUGS}. Wiley, Hoboken NJ.
-
-Gill 2008. \emph{Bayesian methods: A social and behavioral sciences approach}. 2nd edition, Chapman and Hall/CRC.
+Plummer, Martyn (2003). JAGS: A Program for Analysis of Bayesian Graphical Models Using Gibbs Sampling, \emph{Proceedings of the 3rd International Workshop on Distributed Statistical Computing (DSC 2003)}, March 20-22, Vienna, Austria. ISSN 1609-395X
 }
 
 \author{
-Mike Meredith, after Ntzoufras (2009) and Brian Neelon's web site.
+Mike Meredith, adapted from code in the \code{BEST} package.
 }
 
 \examples{
 # Generate a sample from a normal distribution, maybe the head-body length of a
-#   carnivore in meters:
-HB <- rnorm(10, 0.9, 0.15)
-Bnormal(HB)
-# The default prior for the mean, Normal(0, 100^2), works for this, but not if
-#   we measure in mm:
-HBmm <- HB * 1000
-Bnormal(HBmm)  # warning
-Bnormal(HBmm, priors=list(mMean=1000, sMean=500)) # more appropriate prior
-
+#   carnivore in mm:
+HB <- rnorm(10, 900, 0.15)
+Bnormal(HB)  # with broad default priors
+Bnormal(HB, priors=list(muM=1000, muSD=200)) # an appropriate prior
+Bnormal(HB, priors=list(muM=1, muSD=0.2))    # a silly prior produces a warning.
 
 }

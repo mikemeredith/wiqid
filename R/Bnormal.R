@@ -2,7 +2,7 @@
 # Bayesian modelling of normal distribution with Gibbs sampler
 # ============================================================
 
-Bnormal <- function(x, priors=list(),
+Bnormal1 <- function(x, priors=list(),
                     n.chains=3, n.iter=10100, n.burnin=100) {
                     
   startTime <- Sys.time()
