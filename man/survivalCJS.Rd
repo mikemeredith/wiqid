@@ -14,7 +14,7 @@ survCJS(DH, model=list(phi~1, p~1), data=NULL, freq=1, group, ci = 0.95)
 survCJSaj(DHj, DHa=NULL, model=list(phiJ~1, phiA~1, p~1), data=NULL,
     freqj=1, freqa=1, ci = 0.95)
 
-BsurvCJS(DH, model=list(phi~1, p~1), data = NULL, freq=1, group,
+BsurvCJS(DH, model=list(phi~1, p~1), data = NULL, freq=1,
     priorOnly=FALSE, ...)
 
 }
