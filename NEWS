@@ -9,21 +9,25 @@ TODO
   * Add survey covars to occSSrn.
 
   * Add probit link option to remaining MLE functions.
-  
+
   * Fix BsurvCJS with groups argument.
+
+CHANGES in 2015-05-20 v.0.0.387
+
+  * Revamp of Bnormal as two separate functions.
 
 CHANGES in 2015-05-20 v.0.0.386
 
   * Roll back to previous version of BsurvCJS, without groups argument.
-  
+
 CHANGES in 2015-05-14 v.0.0.385
 
   * Changed default priors for Bnormal to match BEST::BESTmcmc.
-  
+
 CHANGES in 2015-03-02 v.0.0.384
 
   * fixed convergence issues of survCJS with large samples
-  
+
 CHANGES in 2015-02-27 v.0.0.383
 
   * occSS* functions gain a 'link' argument and optional probit link.

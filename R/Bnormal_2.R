@@ -1,10 +1,13 @@
 
 # Bayesian modelling of normal distribution with JAGS
 # ===================================================
-# Essentially the same as one-sample version of BEST::BESTmcmc
+# This version allows for a gamma prior for the scale, sigma,
+#  though the default is a uniform prior over a wide range.
+# The gamma prior is specified by mode and SD.
+# Similar to the one-sample version of BEST::BESTmcmc
 #  but with normal instead of t-distribution.
 
-Bnormal <- function(y, priors=NULL, doPriorsOnly=FALSE,
+Bnormal2 <- function(y, priors=NULL, doPriorsOnly=FALSE,
     numSavedSteps=1e5, thinSteps=1, burnInSteps = 1000,
     verbose=TRUE, rnd.seed=NULL, parallel=NULL) {
 
@@ -39,7 +42,7 @@ Bnormal <- function(y, priors=NULL, doPriorsOnly=FALSE,
         stop("'priors' must be a list (or NULL).")
     }
     nameOK <- names(priors) %in%
-          c("muM", "muSD", "sigmaMode", "sigmaSD")
+          c("muMean", "muSD", "sigmaMode", "sigmaSD")
     if(!all(nameOK))
       stop("Invalid items in prior specification: ",
           paste(sQuote(names(priors)[!nameOK]), collapse=", "))
@@ -52,42 +55,39 @@ Bnormal <- function(y, priors=NULL, doPriorsOnly=FALSE,
     rnd.seed <- floor(runif(1,1,10000))
 
   # THE PRIORS
-  if(is.null(priors)) {   # use the safe prior specification
-    dataForJAGS <- list(
-      muM = mean(y) ,
-      muP = 0.000001 * 1/sd(y)^2 ,
-      sigmaLow = sd(y) / 1000 ,
-      sigmaHigh = sd(y) * 1000
-    )
-  } else {    # use gamma priors
-    priors0 <- list(  # default priors
-      muM = mean(y) ,
-      muSD = sd(y)*5 ,
-      sigmaMode = sd(y),
-      sigmaSD = sd(y)*5)
-    priors0 <- modifyList(priors0, priors)  # user's priors take prior-ity (duh!!)
-    if(mean(y) > priors0$muM + priors0$muSD || mean(y) < priors0$muM - priors0$muSD)
-      warning("Sample mean is outside the prior range muM \u00B1 muSD.")
+  if(is.null(priors$muMean))
+    priors$muMean <-  mean(y)
+  if(is.null(priors$muSD))
+    priors$muSD <-  sd(y) * 1000
+  if(mean(y) > priors$muMean + priors$muSD || mean(y) < priors$muMean - priors$muSD)
+    warning("Sample mean is outside the prior range mMean \u00B1 sMean.")
+  priors$muP <- 1/priors$muSD^2 # convert to precision
+  priors$muSD <- NULL           #   and remove SD
+
+  useUniformPrior <- is.null(priors$sigmaMode) || is.null(priors$sigmaSD)
+  if(useUniformPrior) {
+    priors$sigmaLo <- sd(y) / 1000
+    priors$sigmaHi <- sd(y) * 1000
+  } else {
     # Convert to Shape/Rate
-    sigmaShRa <- gammaShRaFromModeSD(mode=priors0$sigmaMode, sd=priors0$sigmaSD)
-    dataForJAGS <- list(
-      muM = priors0$muM,
-      muP = 1/priors0$muSD^2,  # convert SD to precision
-      Sh = sigmaShRa$shape,
-      Ra = sigmaShRa$rate)
+    rate <- (priors$sigmaMode +
+      sqrt(priors$sigmaMode^2 + 4 * priors$sigmaSD^2)) / (2 * priors$sigmaSD^2)
+    shape <- 1 + priors$sigmaMode * rate
+    priors$Sh <- shape
+    priors$Ra <- rate
   }
 
   # THE MODEL.
   modelFile <- file.path(tempdir(), "BESTmodel.txt")
-  if(is.null(priors)) {  # use old broad priors
+  if(useUniformPrior) {
     modelString = "
     model {
       for ( i in 1:Ntotal ) {
         y[i] ~ dnorm(mu, tau)
       }
-      mu ~ dnorm(muM, muP)
+      mu ~ dnorm(muMean, muP)
       tau <- pow(sigma, -2)
-      sigma ~ dunif(sigmaLow, sigmaHigh)
+      sigma ~ dunif(sigmaLo, sigmaHi)
     }
     " # close quote for modelString
   } else {    # use gamma priors
@@ -96,7 +96,7 @@ Bnormal <- function(y, priors=NULL, doPriorsOnly=FALSE,
       for ( i in 1:Ntotal ) {
         y[i] ~ dnorm(mu, tau)
       }
-      mu ~ dnorm(muM, muP)
+      mu ~ dnorm(muMean, muP)
       tau <- pow(sigma, -2)
       sigma ~ dgamma(Sh, Ra)
     }
@@ -106,7 +106,8 @@ Bnormal <- function(y, priors=NULL, doPriorsOnly=FALSE,
   writeLines( modelString , con=modelFile )
 
   # THE DATA.
-  # dataForJAGS already has the priors, add the data:
+  # add priors and data to dataForJAGS:
+  dataForJAGS <- priors
   if(!doPriorsOnly)
     dataForJAGS$y <- y
   dataForJAGS$Ntotal <- length(y)
@@ -149,7 +150,7 @@ Bnormal <- function(y, priors=NULL, doPriorsOnly=FALSE,
   attr(out, "Rhat") <- Rhat
   attr(out, "doPriorsOnly") <- doPriorsOnly
   if(!is.null(priors))
-    attr(out, "priors") <- priors0
+    attr(out, "priors") <- priors
 
   attr(out, "timetaken") <- Sys.time() - startTime
   return(out)
