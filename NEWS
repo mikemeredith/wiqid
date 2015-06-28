@@ -12,6 +12,10 @@ TODO
 
   * Fix BsurvCJS with groups argument.
 
+CHANGES in 2015-06-28 v.0.0.388
+
+  * Minor fixes.
+
 CHANGES in 2015-05-20 v.0.0.387
 
   * Revamp of Bnormal as two separate functions.

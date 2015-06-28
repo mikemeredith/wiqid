@@ -6,7 +6,7 @@
 #  though the default is an improper flat prior.
 # The gamma prior is specified by shape and rate.
 
-Bnormal1 <- function(y, priors=NULL,
+Bnormal <- function(y, priors=NULL,
                     numChains=3, numSavedSteps=50000, burnInSteps=100) {
 
   startTime <- Sys.time()

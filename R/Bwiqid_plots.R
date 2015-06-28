@@ -51,7 +51,8 @@ densityPlot <- function(object, ask=TRUE, ...)  {
   
   for( i in 1:ncol(object)) {
     mat <- matrix(object[, i], ncol=n.chains)
-    bw <- bw.SJ(mat)
+    # bw <- bw.SJ(mat) # bw.SJ is slow and often fails: "sample is too sparse..."
+    bw <- bw.nrd0(mat)
     from <- min(mat) - 3*bw
     to <- max(mat) + 3*bw
     dens <- apply(mat, 2, function(x) density(x, bw=bw, n=128, from=from, to=to)$y)

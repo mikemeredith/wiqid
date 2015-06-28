@@ -6,12 +6,12 @@ require(wiqid)
 
 context("Bayesian normal models")
 
-test_that("Bnormal1 gives same answers",  {
+test_that("Bnormal gives same answers",  {
   # Generate data
   set.seed(123)
   x <- rnorm(10, 1, 0.15)
   # With default (flat) priors:
-  Bout <- Bnormal1(x)
+  Bout <- Bnormal(x)
   expect_that(class(Bout), equals(c("Bwiqid", "data.frame")))
   expect_that(dim(Bout), equals(c(50001, 2)))
   expect_that(names(Bout), equals(c("mu", "sigma")))
@@ -20,19 +20,19 @@ test_that("Bnormal1 gives same answers",  {
   expect_that(attr(Bout, "n.chains"), equals(3))
   expect_equivalent(round(attr(Bout, "n.eff")), c(48528, 39372))
   expect_equivalent(round(attr(Bout, "Rhat"), 3), c(1, 1))
-  expect_equal(as.character(attr(Bout, "call")), c("Bnormal1", "x"))
+  expect_equal(as.character(attr(Bout, "call")), c("Bnormal", "x"))
 
   expect_equivalent(round(colMeans(Bout), 4), c(1.0113, 0.1563))
   expect_equivalent(round(c(hdi(Bout)), 4), c(0.9073, 1.1098, 0.0904, 0.2416))
   xx <- x * 1000
-  expect_warning(Bout <- Bnormal1(xx, priors=list(muMean=0, muSD=10)), # silly prior
+  expect_warning(Bout <- Bnormal(xx, priors=list(muMean=0, muSD=10)), # silly prior
       "Sample mean is outside the prior range")
   set.seed(123)
-  Bout <- Bnormal1(x, priors=list(muMean=0, muSD=10)) # informative prior for mu
+  Bout <- Bnormal(x, priors=list(muMean=0, muSD=10)) # informative prior for mu
   expect_equivalent(round(colMeans(Bout), 4), c(1.0112, 0.1563))
   expect_equivalent(round(c(hdi(Bout)), 4), c(0.9072, 1.1098, 0.0904, 0.2416))
   set.seed(234)
-  Bout <- Bnormal1(xx, priors=list(muMean=1000))  # sensible priors
+  Bout <- Bnormal(xx, priors=list(muMean=1000))  # sensible priors
   expect_equivalent(round(colMeans(Bout), 1), c(1011.4, 156.6))
   expect_equivalent(round(c(hdi(Bout)), 1), c(909.1, 1113.8, 91.2, 243.0))
 

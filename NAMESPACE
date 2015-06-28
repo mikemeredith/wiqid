@@ -24,7 +24,7 @@ export(
   occ2sps,
   occMS0, occMStime, occMScovSite, occMS,
   occMScov, occMSseason, occSScov, # These 3 deprecated.
-  Bnormal1, Bnormal2, Bregress, Blogit,
+  Bnormal, Bnormal2, Bregress, Blogit,
   BoccSS0, BoccSS, BsurvCJS, Bsecr0,
   richRarefy,
   richACE, richICE, richChao1, richChao2, richJack1, richJack2, richBoot, richMM,
