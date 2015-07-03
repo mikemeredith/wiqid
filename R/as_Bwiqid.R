@@ -18,6 +18,18 @@ as.Bwiqid.Bwiqid <- function(object, header, defaultPlot, ...) {
   return(out)
 }
 
+# Class data.frame 
+as.Bwiqid.data.frame <- function(object, header, defaultPlot, ...) {
+  out <- object
+  class(out) <- c("Bwiqid", class(out))
+  if(!missing(header))
+    attr(out, "header") <- header
+  attr(out, "n.chains") <- 1
+  if(!missing("defaultPlot"))
+    attr(out, "defaultPlot") <- defaultPlot
+  return(out)
+}
+
 # Class mcmc.list from (inter alia) rjags package
 as.Bwiqid.mcmc.list <- function(object, header, defaultPlot, ...) {
   out <- as.data.frame(as.matrix(object))

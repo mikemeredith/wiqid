@@ -11,7 +11,15 @@ TODO
   * Add probit link option to remaining MLE functions.
 
   * Fix BsurvCJS with groups argument.
+  
+  * Make 'secr' a Suggests instead of Imports dependency
 
+CHANGES in 2015-07-03 v.0.0.389
+
+  * Added Bbinom function.
+  
+  * as.Bwiqid gains a data.frame method.
+  
 CHANGES in 2015-06-28 v.0.0.388
 
   * Minor fixes.
