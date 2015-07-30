@@ -113,10 +113,12 @@ occ2sps <- function(DHA, DHB, modelSpec=111, ci=0.95)  {
   }
   
   beta.mat[,1] <- res$par[modPars]
-  varcov0 <- try(solve(res$hessian), silent=TRUE)
-  if (!inherits(varcov0, "try-error") && all(diag(varcov0) > 0)) {
+  # varcov0 <- try(solve(res$hessian), silent=TRUE)
+  varcov0 <- try(chol2inv(chol(res$hessian)), silent=TRUE)
+  # if (!inherits(varcov0, "try-error") && all(diag(varcov0) > 0)) {
+  if (!inherits(varcov0, "try-error")) {
     varcov <- varcov0
-    SE <- sqrt(diag(varcov))[modPars]
+    SE <- suppressWarnings(sqrt(diag(varcov))[modPars])
     beta.mat[, 2] <- SE
     beta.mat[, 3:4] <- sweep(outer(SE, crit), 1, beta.mat[, 1], "+")
   }

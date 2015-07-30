@@ -59,6 +59,7 @@ occSScovSite <- function(y, n, model=NULL, data=NULL,
     paste("psi:", 1:nSites, sep=""),
     paste("p:", 1:nSites, sep=""))
   logLik <- NA_real_
+  varcov <- NULL
 
   nll <- function(param){
     psiBeta <- param[1:psiK]
@@ -73,16 +74,18 @@ occSScovSite <- function(y, n, model=NULL, data=NULL,
   param <- rep(0, K)
   res <- nlm(nll, param, hessian=TRUE)
   if(res$code > 2)   # exit code 1 or 2 is ok.
-    warning(paste("Convergence may not have been reached (code", res$code, ")"))
+    warning(paste("Convergence may not have been reached (nlm code", res$code, ")"))
 
   # Process output
   beta.mat[,1] <- res$estimate
   lp.mat[, 1] <- c(psiModMat %*% beta.mat[1:psiK, 1],
                    pModMat %*% beta.mat[(psiK+1):K, 1])
-  varcov <- try(solve(res$hessian), silent=TRUE)
-  if (!inherits(varcov, "try-error") &&
-      all(diag(varcov) > 0)) {
-    SE <- sqrt(diag(varcov))
+  # varcov <- try(solve(res$hessian), silent=TRUE)
+  varcov0 <- try(chol2inv(chol(res$hessian)), silent=TRUE)
+  # if (!inherits(varcov, "try-error") && all(diag(varcov) > 0)) {
+  if (!inherits(varcov0, "try-error")) {
+    varcov <- varcov0
+    SE <- suppressWarnings(sqrt(diag(varcov)))
     beta.mat[, 2] <- SE
     beta.mat[, 3:4] <- sweep(outer(SE, crit), 1, res$estimate, "+")
     temp <- c(diag(psiModMat %*% varcov[1:psiK, 1:psiK] %*% t(psiModMat)),

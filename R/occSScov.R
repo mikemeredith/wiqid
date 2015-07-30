@@ -107,10 +107,12 @@ occSS <- function(DH, model=NULL, data=NULL, ci=0.95, link=c("logit", "probit"))
                    pModMat %*% beta.mat[(psiK+1):K, 1])
   if(res$code < 3) # Keep NA if in doubt
     logLik <- -res$minimum
-  varcov0 <- try(solve(res$hessian), silent=TRUE)
-  if (!inherits(varcov0, "try-error") && all(diag(varcov0) > 0)) {
+  # varcov0 <- try(solve(res$hessian), silent=TRUE)
+  varcov0 <- try(chol2inv(chol(res$hessian)), silent=TRUE)
+  # if (!inherits(varcov0, "try-error") && all(diag(varcov0) > 0)) {
+  if (!inherits(varcov0, "try-error")) {
     varcov <- varcov0
-    SE <- sqrt(diag(varcov))
+    SE <- suppressWarnings(sqrt(diag(varcov)))
     beta.mat[, 2] <- SE
     beta.mat[, 3:4] <- sweep(outer(SE, crit), 1, res$estimate, "+")
     SElp <- c(sqrt(diag(psiModMat %*% varcov[1:psiK, 1:psiK] %*% t(psiModMat))),

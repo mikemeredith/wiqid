@@ -3,7 +3,7 @@
 
 # 'link' argument added 2015-02-20
 
-## WORK IN PROGRESS ## can't yet deal with suvey covariates.
+## WORK IN PROGRESS ## can't yet deal with survey covariates.
 
 occSSrn <- function(DH, model=NULL, data=NULL,
     ci=0.95, link=c("logit", "probit")) {
@@ -72,10 +72,12 @@ function(y, n, ci=0.95, link=c("logit", "probit"))  {
     if(res$code > 2)   # exit code 1 or 2 is ok.
       warning(paste("Convergence may not have been reached (code", res$code, ")"))
     beta.mat[,1] <- res$estimate
-    varcov0 <- try(solve(res$hessian), silent=TRUE)
-    if (!inherits(varcov0, "try-error") && all(diag(varcov0) > 0)) {
+    # varcov0 <- try(solve(res$hessian), silent=TRUE)
+    varcov0 <- try(chol2inv(chol(res$hessian)), silent=TRUE)
+    # if (!inherits(varcov0, "try-error") && all(diag(varcov0) > 0)) {
+    if (!inherits(varcov0, "try-error")) {
       varcov <- varcov0
-      SE <- sqrt(diag(varcov))
+      SE <- suppressWarnings(sqrt(diag(varcov)))
       beta.mat[, 2] <- SE
       beta.mat[, 3:4] <- sweep(outer(SE, crit), 1, res$estimate, "+")
       logLik <- -res$minimum

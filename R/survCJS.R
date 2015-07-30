@@ -137,16 +137,18 @@ survCJS <- function(DH, model=list(phi~1, p~1), data=NULL, freq=1, group, ci = 0
   param <- rep(0, K)
   res <- nlm(nll, param, hessian=TRUE, stepmax=10) # 2015-03-01
   if(res$code > 2)   # exit code 1 or 2 is ok.
-    warning(paste("Convergence may not have been reached (code", res$code, ")"))
+    warning(paste("Convergence may not have been reached (nlm code", res$code, ")"))
 
   # Process the output
   beta.mat[,1] <- res$estimate
   lp.mat[, 1] <- c(phiMat %*% beta.mat[1:phiK, 1],
                    pMat %*% beta.mat[(phiK+1):K, 1])
-  varcov0 <- try(solve(res$hessian), silent=TRUE)
-  if (!inherits(varcov0, "try-error") && all(diag(varcov0) > 0)) {
+  # varcov0 <- try(solve(res$hessian), silent=TRUE)
+  varcov0 <- try(chol2inv(chol(res$hessian)), silent=TRUE)
+  # if (!inherits(varcov0, "try-error") && all(diag(varcov0) > 0)) {
+  if (!inherits(varcov0, "try-error")) {
     varcov <- varcov0
-    SE <- sqrt(diag(varcov))
+    SE <- suppressWarnings(sqrt(diag(varcov)))
     beta.mat[, 2] <- SE
     beta.mat[, 3:4] <- sweep(outer(SE, crit), 1, res$estimate, "+")
     SElp <- c(sqrt(diag(phiMat %*% varcov[1:phiK, 1:phiK] %*% t(phiMat))),

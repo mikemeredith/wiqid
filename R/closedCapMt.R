@@ -20,6 +20,7 @@ function(CH, ci = 0.95, ciType=c("normal", "MARK")) {
   colnames(beta.mat) <- c("est", "SE", "lowCI", "uppCI")
   rownames(beta.mat) <- c("Nhat", paste0("p", 1:nocc))
   logLik <- NA_real_
+  varcov <- NULL
   
   if(N.cap > 0)  {
     nll <- function(params) {
@@ -32,11 +33,14 @@ function(CH, ci = 0.95, ciType=c("normal", "MARK")) {
     params <- c(log(5), rep(0, nocc))
     res <- nlm(nll, params, hessian=TRUE, iterlim=1000)
     if(res$code > 2)   # exit code 1 or 2 is ok.
-      warning(paste("Convergence may not have been reached (code", res$code, ")"))
+      warning(paste("Convergence may not have been reached (nlm code", res$code, ")"))
     beta.mat[,1] <- res$estimate
-    varcov <- try(solve(res$hessian), silent=TRUE)
-    if (!inherits(varcov, "try-error") && all(diag(varcov) > 0)) {
-      beta.mat[, 2] <- sqrt(diag(varcov))
+    # varcov <- try(solve(res$hessian), silent=TRUE)
+    varcov0 <- try(chol2inv(chol(res$hessian)), silent=TRUE)
+    # if (!inherits(varcov, "try-error") && all(diag(varcov) > 0)) {
+    if (!inherits(varcov0, "try-error")) {
+      varcov <- varcov0
+      beta.mat[, 2] <- suppressWarnings(sqrt(diag(varcov)))
       beta.mat[, 3:4] <- sweep(outer(beta.mat[, 2], crit), 1, res$estimate, "+")
       logLik <- -res$minimum
     }

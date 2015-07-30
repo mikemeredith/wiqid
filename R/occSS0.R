@@ -39,10 +39,12 @@ function(y, n, ci=0.95, link=c("logit", "probit")) {
     if(res$code > 2)   # exit code 1 or 2 is ok.
       warning(paste("Convergence may not have been reached (code", res$code, ")"))
     beta.mat[,1] <- res$estimate
-    varcov0 <- try(solve(res$hessian), silent=TRUE)
-    if (!inherits(varcov0, "try-error") && all(diag(varcov0) > 0)) {
+    # varcov0 <- try(solve(res$hessian), silent=TRUE)
+    varcov0 <- try(chol2inv(chol(res$hessian)), silent=TRUE)
+    # if (!inherits(varcov0, "try-error") && all(diag(varcov0) > 0)) {
+    if (!inherits(varcov0, "try-error")) {
       varcov <- varcov0
-      beta.mat[, 2] <- sqrt(diag(varcov))
+      beta.mat[, 2] <- suppressWarnings(sqrt(diag(varcov)))
       beta.mat[, 3:4] <- sweep(outer(beta.mat[, 2], crit), 1, res$estimate, "+")
       logLik <- -res$minimum
     }

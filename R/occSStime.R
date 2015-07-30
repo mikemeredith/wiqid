@@ -66,10 +66,12 @@ function(DH, model=p~1, data=NULL, ci=0.95,
       warning(paste("Convergence may not have been reached (code", res$code, ")"))
     beta.mat[,1] <- res$estimate
     lp.mat[, 1] <- c(beta.mat[1], pModMat %*% beta.mat[-1,1])
-    varcov0 <- try(solve(res$hessian), silent=TRUE)
-    if (!inherits(varcov0, "try-error") && all(diag(varcov0) > 0)) {
+    # varcov0 <- try(solve(res$hessian), silent=TRUE)
+    varcov0 <- try(chol2inv(chol(res$hessian)), silent=TRUE)
+    # if (!inherits(varcov0, "try-error") && all(diag(varcov0) > 0)) {
+    if (!inherits(varcov0, "try-error")) {
       varcov <- varcov0
-      SE <- sqrt(diag(varcov))
+      SE <- suppressWarnings(sqrt(diag(varcov)))
       beta.mat[, 2] <- SE
       beta.mat[, 3:4] <- sweep(outer(SE, crit), 1, res$estimate, "+")
       SElp <- c(sqrt(varcov[1,1]),

@@ -65,11 +65,14 @@ function(CH, ci = 0.95, ciType=c("normal", "MARK")) {
     params[4] <- qlogis(p2)
     res2 <- nlm(nll2, params, hessian=TRUE)
     if(res2$code > 2)   # exit code 1 or 2 is ok.
-      warning(paste("Convergence may not have been reached (code", res2$code, ")"))
+      warning(paste("Convergence may not have been reached (nlm code", res2$code, ")"))
     beta.mat[, 1] <- res2$estimate
-    varcov <- try(solve(res2$hessian), silent=TRUE)
-    if (!inherits(varcov, "try-error") && all(diag(varcov) > 0)) {
-      beta.mat[, 2] <- sqrt(diag(varcov))
+    # varcov <- try(solve(res2$hessian), silent=TRUE)
+    varcov0 <- try(chol2inv(chol(res2$hessian)), silent=TRUE)
+    # if (!inherits(varcov, "try-error") && all(diag(varcov) > 0)) {
+    if (!inherits(varcov0, "try-error")) {
+      varcov <- varcov0
+      beta.mat[, 2] <- suppressWarnings(sqrt(diag(varcov)))
       beta.mat[, 3:4] <- sweep(outer(beta.mat[, 2], crit), 1, res2$estimate, "+")
       logLik <- -res2$minimum
     }
