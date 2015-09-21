@@ -7,68 +7,83 @@
 
 # DHA is detection history of the dominant species
 # DHB is detection history of the subordinate species
-# modelSpec is a 3-digit number, where
-  # the first digit specifies occupancy model (1: psiBA = psiBa, 2: psiBA != psiBa),
-  # the second, detection probability of species A (1: pA = rA, 2: pA != rA),
-  # the third, detection probability of species B (1: pB = rBA = rBa,
-  #   2: pB != rBA = rBa, 3: pB = rBa != rBA, 4: pB != rBA != rBa)
+# model is now a list of two-sided formulae (new 2015-09-19)
+#  The default is list(psiA~1, psiBa~1, pA~1, pB~1). If not included in the model
+#  list, the remaining parameters are assigned the following values:
+#  psiBA <- psiBa, rA <- pA, rBa <- pB, rBA <- rBa.
 
-occ2sps <- function(DHA, DHB, modelSpec=111, ci=0.95)  {
+occ2sps <- function(DHA, DHB, model=NULL, data=NULL, ci=0.95)  {
+
   DHA <- as.matrix(DHA)
   DHB <- as.matrix(DHB)
+  stopifnot(all.equal(dim(DHA), dim(DHB)))
+  # No check that they are numeric, 0/1/NA !!!
   # Check that the NAs match up
   stopifnot(all.equal(is.na(DHA), is.na(DHB), check.attributes=FALSE))
-  # Check for rows with all NAs ### this probably doesn't matter
+  # Check for rows with all NAs ### this probably doesn't matter !!!
   # bad <- rowSums(!is.na(DHA)) == 0
   # if(sum(bad) > 0) {
     # warning()
     # DHA <- DHA[!bad, ]
     # DHB <- DHB[!bad, ]
   # }
+  # Standardise the model:
+  model <- stdModel(model, list(psiA=~1, psiBa=~1, pA=~1, pB=~1))
+  # Check for invalid submodels in 'model':
+  parNames <- c("psiA", "psiBa", "psiBA", "pA", "pB", "rA", "rBa", "rBA")
+  ok <- names(model) %in% parNames
+  if(any(!ok))
+    stop("Invalid submodels for: ", paste(names(model)[!ok], collapse=", ")) 
+  # modPars is a vector of length 8 which maps the submodels needed to the
+  #   elements of 'model':
+  modPars <- pmatch(parNames, names(model))
+  names(modPars) <- parNames
+  if(is.null(model$psiBA))
+    modPars[3] <- modPars[2]  # psiBA <- psiBa
+  if(is.null(model$rA))
+    modPars[6] <- modPars[4]  # rA <- pA
+  if(is.null(model$rBa))
+    modPars[7] <- modPars[5]  # rBa <- pB
+  if(is.null(model$rBA))
+    modPars[8] <- modPars[7]  # rBA <- rBa
+    
+  if(is.null(data))
+    return(occ2sps0(DHA, DHB, modPars, ci=ci))
+    
+  M <- length(model)  # Number of elements in the model
   nSites <- nrow(DHA)
-
+  site.names <- rownames(data)
+  if(is.null(site.names))
+    site.names <- 1:nSites
   crit <- fixCI(ci)
 
-  # modPars is a vector of length 8 which maps the coefficients estimated to the
-  #   model parameters; order is
-  # psiA, psiBA, psiBa, pA, pB, rA, rBA, rBa.
-  modPars <- 1:8
-  modDesc <- c("psiBa != psiBA", "rA != pA", NA)
-  if(modelSpec < 200) {
-    modPars[3] <- 2
-    modDesc[1] <- "psiBa = psiBA"
-  }
-  if(modelSpec %% 100 < 20)  {
-    modPars[6] <- 4
-    modDesc[2] <- "rA = pA"
-  }
-  modPars[c(5, 7, 8)] <- switch(as.character(modelSpec %% 10),
-    "1" = c(5, 5, 5),   # 1: pB = rBA = rBa
-    "2" = c(5, 7, 7),   # 2: pB != rBA = rBa
-    "3" = c(5, 7, 5),   # 3: pB = rBa != rBA
-    "4" = c(5, 7, 8),   # 4: pB != rBA != rBa)
-    stop("modelSpec ", modelSpec, " not recognized."))
-  modPars <- as.integer(as.factor(modPars))
-  modDesc[3] <- switch(as.character(modelSpec %% 10),
-    "1" = "pB = rBA = rBa",
-    "2" = "pB != rBA = rBa",
-    "3" = "pB = rBa != rBA",
-    "4" = "pB != rBA != rBa")
+  data <- as.data.frame(stddata(data, nocc=NULL))
 
-  # get the occupancy vector
-  # psiX is a vector with elements psiA, psiBA, psiBa
+  # Build model matrices
+  modMatList <- vector('list', M)
+  for(i in 1:M)
+    modMatList[[i]] <- model.matrix(model[[i]], data)
+  parK <- sapply(modMatList, ncol)    # Number of parameters for each model matrix
+  K <- sum(parK)  # total number of parameters
+  idK <- rep(1:M, parK)  # specifies which of the K parameters belongs to each model matrix
+  # Get coefficient names
+  coefNames <- paste(rep(names(model), parK),
+      unlist(lapply(modMatList, colnames)), sep=":")
+  
+  # function to get the occupancy matrix
+  # psiX is a matrix with columns psiA, psiBa, psiBA
   getPHI <- function(psiX) {
-    c(psiX[1] * psiX[2],             # both
-      psiX[1] * (1 - psiX[2]),       # A only
-      (1 - psiX[1]) * psiX[3],       # B only
-      (1 - psiX[1]) * (1 - psiX[3])) # neither
+    cbind(psiX[, 1] * psiX[, 3],             # both
+      psiX[, 1] * (1 - psiX[, 3]),       # A only
+      (1 - psiX[, 1]) * psiX[, 2],       # B only
+      (1 - psiX[, 1]) * (1 - psiX[, 2])) # neither
   }
 
-  # Do the detection vector for one site
-  # pX is a vector with elements pA, pB, rA, rBA, rBa
+  # function to do the detection vector for one site
+  # pX is a vector with elements pA, pB, rA, rBa, rBA
   getP <- function(dhA, dhB, pX)  {
     # prob of detecting B if both present conditional on detection of A
-    probCapB <- dhA * pX[4] + (1 - dhA) * pX[5]
+    probCapB <- dhA * pX[5] + (1 - dhA) * pX[4]
     c(
       # Both sps present, use the r's
       prod(dhA * pX[3] + (1 - dhA) * (1 - pX[3]),      # A
@@ -78,7 +93,7 @@ occ2sps <- function(DHA, DHB, modelSpec=111, ci=0.95)  {
         prod(dhA * pX[1] + (1 - dhA) * (1 - pX[1]), na.rm=TRUE) # A
       },
       # Sps A absent, B present, use pB
-      if(sum(dhA, na.rm=TRUE) > 0) { 0 } else {  
+      if(sum(dhA, na.rm=TRUE) > 0) { 0 } else {
         prod(dhB * pX[2] + (1 - dhB) * (1 - pX[2]), na.rm=TRUE) # B
       },
       # Neither present
@@ -86,47 +101,68 @@ occ2sps <- function(DHA, DHB, modelSpec=111, ci=0.95)  {
   }
 
   # objects to hold output
-  beta.mat <- matrix(NA_real_, 8, 4)
+  beta.mat <- matrix(NA_real_, K, 4)
   colnames(beta.mat) <- c("est", "SE", "lowCI", "uppCI")
-  rownames(beta.mat) <- c("psiA", "psiBA", "psiBa",
-    "pA", "pB", "rA", "rBA", "rBa")
+  rownames(beta.mat) <- coefNames
   logLik <- NA_real_
   varcov <- NULL
+  lp.mat <- matrix(NA_real_, nSites * 8, 3)
+  colnames(lp.mat) <- c("est", "lowCI", "uppCI")
+  rownames(lp.mat) <- as.vector(t(outer(parNames, site.names, paste, sep=":")))
 
   # Do the neg log lik function:
+  real0 <- matrix(NA, nSites, M)
   nll <- function(params) {
-    real <- plogis(params[modPars])
-    PHI <- getPHI(real[1:3])
+    for(i in 1:M) {
+      betas <- params[idK == i]
+      real0[, i] <- plogis(modMatList[[i]] %*% betas)
+    }
+    real <- real0[, modPars]
+    PHI <- getPHI(real[, 1:3])
     lik <- numeric(nSites)
     for(i in 1:nSites)
-      lik[i] <- PHI %*% getP(dhA=DHA[i, ], dhB=DHB[i, ], pX=real[4:8])  
+      lik[i] <- PHI[i, ] %*% getP(dhA=DHA[i, ], dhB=DHB[i, ], pX=real[i, 4:8])
     return(min(-sum(log(lik)), .Machine$double.xmax))
-  }    
-    
+  }
+
   # Run mle estimation with optim:
-  params <- rep(0, length(unique(modPars)))
+  params <- rep(0, K)
   res <- optim(params, nll, method="L-BFGS-B", lower=-10, upper=10, hessian=TRUE)
   if(res$convergence > 0) {
     warning(paste("Convergence may not have been reached.", res$message))
   } else {
     logLik <- -res$value
   }
-  
-  beta.mat[,1] <- res$par[modPars]
-  # varcov0 <- try(solve(res$hessian), silent=TRUE)
+
+  beta.mat[,1] <- res$par
+  lp.mat0 <- matrix(NA, nSites, M)
+  for(i in 1:M) {
+    betas <- res$par[idK == i]
+    lp.mat0[, i] <- modMatList[[i]] %*% betas
+  }
+  lp.mat[, 1] <- as.vector(lp.mat0[, modPars])
+
   varcov0 <- try(chol2inv(chol(res$hessian)), silent=TRUE)
   # if (!inherits(varcov0, "try-error") && all(diag(varcov0) > 0)) {
   if (!inherits(varcov0, "try-error")) {
     varcov <- varcov0
-    SE <- suppressWarnings(sqrt(diag(varcov))[modPars])
+    SE <- suppressWarnings(sqrt(diag(varcov)))
     beta.mat[, 2] <- SE
     beta.mat[, 3:4] <- sweep(outer(SE, crit), 1, beta.mat[, 1], "+")
   }
+  SElp0 <- matrix(NA, nSites, M)
+  for(i in 1:M) {
+    varcov1 <- varcov[idK == i, idK == i]
+    SElp0[, i] <- sqrt(diag(modMatList[[i]] %*% varcov1 %*% t(modMatList[[i]])))
+  }
+  SElp <- as.vector(SElp0[, modPars])
+  lp.mat[, 2:3] <- sweep(outer(SElp, crit), 1, lp.mat[, 1], "+")
+  
   out <- list(call = match.call(),
               beta = beta.mat,
               beta.vcv = varcov,
-              real = plogis(beta.mat[, -2]),
-              logLik = c(logLik=logLik, df=length(unique(modPars)), nobs=nSites))
+              real = plogis(lp.mat),
+              logLik = c(logLik=logLik, df=K, nobs=nSites))
   class(out) <- c("wiqid", "list")
   return(out)
 }

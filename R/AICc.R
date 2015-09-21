@@ -46,7 +46,7 @@ AICc.default <- function (object, ..., nobs)
 # Creates a table from output of AIC or AICc
 # Exported
 
-AICtable <- function(x, digits=3) {
+AICtable <- function(x, digits=3, sort) {
   if(is.vector(x)) {
     name <- deparse(substitute(x))
     IC <- x
@@ -61,7 +61,9 @@ AICtable <- function(x, digits=3) {
   ModelLik <- exp( - Delta / 2)
   ModelWt <- ModelLik / sum(ModelLik, na.rm=TRUE)
   out <- round(cbind(x, Delta, ModelLik, ModelWt), digits)
-  if(!is.null(rownames(out))) { # only sort if rows are named
+  if(missing(sort))
+    sort <- !is.null(rownames(out)) # sort if rows are named
+  if(sort) { 
     ord <- order(IC)
     out <- out[ord, ]
   }

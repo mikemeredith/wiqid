@@ -6,8 +6,6 @@ TODO
 
   * Improve survRD* functions! Add test files.
 
-  * Add survey covars to occSSrn.
-
   * Add probit link option to remaining MLE functions.
 
   * Fix BsurvCJS with groups argument.
@@ -15,6 +13,15 @@ TODO
   * Make 'secr' a Suggests instead of Imports dependency
   
   * Add functions for multi-method and multi-state occupancy.
+  
+  * Sanity checks that detection histories are all numeric and 0/1/NA? This would slow down simulations.
+  
+CHANGES in 2015-09-21 v.0.0.391
+
+  * In occ2sps, change model specification to formulae and allow for site covariates
+      (request of Arthur Scully). Data 'railSims' changed to include covariates.
+
+  * AICtable gets sort argument
 
 CHANGES in 2015-07-29 v.0.0.390
 

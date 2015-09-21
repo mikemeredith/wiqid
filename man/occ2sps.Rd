@@ -9,16 +9,15 @@ Single-season two-species occupancy estimation
 Estimates occupancy and probability of detection for two species, where one (dominant) species affects the occupancy or detection of the other (subordinate) species (see Richmond et al, 2010). The model has the following parameters:
   \tabular{ll}{
   psiA \tab probability of occupancy of species A \cr
-  psiBA \tab probability of occupancy of B if A is present \cr
   psiBa \tab probability of occupancy of B if A is absent \cr
+  psiBA \tab probability of occupancy of B if A is present \cr
   pA \tab probability of detection of species A if B is absent \cr
-  pB \tab probability of detection of species B if A is absent \cr
   rA \tab probability of detection of species A if both are present \cr
-  rBA \tab probability of detection of species B if both are present and A was detected \cr
-  rBa \tab probability of detection of species B if both are present and A was not detected}
-}
+  pB \tab probability of detection of species B if A is absent \cr
+  rBa \tab probability of detection of species B if both are present but A was not detected \cr
+  rBA \tab probability of detection of species B if both are present and A was detected} }
 \usage{
-occ2sps(DHA, DHB, modelSpec = 111, ci = 0.95)
+occ2sps(DHA, DHB, model=NULL, data=NULL, ci = 0.95)
 }
 \arguments{
   \item{DHA}{
@@ -27,9 +26,11 @@ a 1/0/NA matrix (or data frame) of detection histories, sites x occasions, for t
   \item{DHB}{
 detection histories for the subordinate species in the same format as DHA.
 }
-  \item{modelSpec}{
-a 3-digit number, where the first digit specifies the occupancy model (1: psiBA = psiBa, 2: psiBA != psiBa); the second, detection probability of species A (1: pA = rA, 2: pA != rA); and the third, detection probability of species B (1: pB = rBA = rBa,
-  2: pB != rBA = rBa, 3: pB = rBa != rBA, 4: pB != rBA != rBa).
+  \item{model}{
+a list of formulae symbolically defining a linear predictor for any of the parameters in the model. The default, NULL, is equivalent to \code{list(psiA~1, psiBa~1, pA~1, pB~1)}; parameters not included in the list are given the following values: \code{psiBA <- psiBa, rA <- pA, rBa <- pB, rBA <- rBa}.
+}
+  \item{data}{
+a data frame containing the variables in the model. If \code{data = NULL}, a faster algorithm is used, and any covariates in the model will be ignored.
 }
   \item{ci}{
 the confidence interval to use.
@@ -60,9 +61,24 @@ Mike Meredith
 }
 
 \seealso{
-See \code{\link{occSS}} for single-season single-species occupancy estimation.
+See the example data set \code{\link{railSims}}. See \code{\link{occSS}} for single-season single-species occupancy estimation.
 }
 \examples{
-## To do
+data(railSims)
+# Extract the two detection histories
+DHA <- railSims[, 1:3]
+DHB <- railSims[, 4:6]
+
+# Default model (no interaction)
+occ2sps(DHA, DHB)
+
+# Add a submodel for psiBA, so that psiBA and psiBa are separated:
+occ2sps(DHA, DHB, model = psiBA ~ 1)
+
+# Add covariates for psiA and psiBA; only display beta coefficients:
+occ2sps(DHA, DHB, model = list(psiA ~ logArea, psiBA ~ reeds), data=railSims)$beta
+
+# Model corresponding to the data generation model
+occ2sps(DHA, DHB, list(psiA ~ logArea, psiBA ~ reeds, rBA ~ 1), data=railSims)$beta
 }
 
