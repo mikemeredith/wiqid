@@ -4,12 +4,15 @@
 Overlap between posterior and prior probability distributions.
 }
 \description{
-Calculates and displays the overlap between a posterior distribution (as a vector of samples, typically from an MCMC process) and a prior distribution (as a vector of samples or as a function). Unidentifiable parameters will have high overlap: Gimenez et al (2009) suggest that overlap greater than 35% indicates weak identifiability.
+Calculates and displays the overlap between a posterior distribution (as a vector of samples, typically from an MCMC process) and a prior distribution (as a vector of samples or as a function).
+% Unidentifiable parameters will have high overlap: Gimenez et al (2009) suggest that overlap greater than 35\% indicates weak identifiability.
+%% Maybe take this out, too many false positives!
 }
 \usage{
 postPriorOverlap(paramSampleVec, prior, ..., yaxt="n", ylab="",
            xlab="Parameter", main="", cex.lab=1.5, cex=1.4,
-           xlim=range(paramSampleVec), breaks=NULL)
+           xlim=range(paramSampleVec), ylim=NULL,
+           colors=c("skyblue", "yellow", "green", "white"), breaks=NULL)
 }
 \arguments{
   \item{paramSampleVec}{
@@ -22,7 +25,7 @@ a vector of samples drawn from the target distribution.
 named parameters to be passed to \code{prior} when it is a function.
 }
   \item{yaxt}{
-a character which specifies the y axis type; the default, "n", suppresses plotting.
+a character which specifies the y axis type; the default, "n", suppresses plotting, "s" allows plotting.
 }
   \item{ylab}{
 text to use as the label of the y axis.
@@ -39,6 +42,12 @@ a numerical value giving the amount by which plotting text and symbols should be
   \item{xlim}{
 a vector of length 2 giving the limits for the x axis.
 }
+  \item{ylim}{
+a vector of length 2 giving the limits for the y axis, or NULL to adjust for the actual range of density.
+}
+  \item{colors}{
+A vector of four colours for the posterior, prior, overlap, and borders. See the Color Specification section of \code{link{par}}
+}
   \item{main}{
 text to use as the main title of the plot
 }
@@ -49,9 +58,9 @@ controls the histogram break points or the number of bars; see \code{\link{hist}
 \value{
 Returns the overlap, the area lying under the lower of the two density curves.
 }
-\references{
-Gimenez, Morgan and Brooks (2009) Weak identifiability in models for mark-recapture-recovery data. pp.1055-1068 in Thomson, Cooch and Conroy (eds) \emph{Modeling demographic processes in marked populations} Springer
-}
+%\references{
+%Gimenez, Morgan and Brooks (2009) Weak identifiability in models for mark-recapture-recovery data. pp.1055-1068 in Thomson, Cooch and Conroy (eds) \emph{Modeling demographic processes in marked populations} Springer
+%}
 \author{
 Mike Meredith
 }
