@@ -35,7 +35,7 @@ export(
   distChaoJaccCorr, distChaoJaccNaive, distChaoSorCorr, distChaoSorNaive,
   distChord, distJaccard, distMatching, distMorisitaHorn, distOchiai, distPreston,
   distRogersTanimoto, distSimRatio, distSorensen, distWhittaker,
-  AICc, allCombinations, AICtable,
+  AICc, allCombinations, AICtable, WAIC,
   hdi, plotPost, postPriorOverlap, as.Bwiqid, tracePlot, densityPlot, acfPlot
 )
 

@@ -21,7 +21,8 @@ BoccSS0(y, n, psiPrior=c(1,1), pPrior=c(1,1),
 BoccSS0_JAGS(y, n, priorOnly=FALSE, ...)
 
 BoccSS(DH, model=NULL, data=NULL, priors=list(),
-                    n.chains=3, n.iter=11000, n.burnin=1000, parallel, seed=NULL)
+                    n.chains=3, n.iter=11000, n.burnin=1000, parallel,
+                    seed=NULL, doWAIC=FALSE)
 }
 \arguments{
   \item{y}{
@@ -56,6 +57,9 @@ number of values per chain to discard as burn-in.
 }
   \item{parallel}{
 logical; if TRUE \emph{and} \code{n.chains} > 1 \emph{and} available cores (as returned by \code{parallel::detectCores}) > 2, chains will be run in parallel. If missing, chains will be run in parallel if \code{n.chains} < available cores.
+}
+  \item{doWAIC}{
+logical; if TRUE, the Watanabe-Akaike Information Criterion is calculated. NOTE: THIS FEATURE IS STILL EXPERIMENTAL.
 }
   \item{seed}{
 for reproducible results; note that parallel and sequential methods use different random number generators, so will give different results with the same seed.

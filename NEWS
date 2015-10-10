@@ -16,6 +16,12 @@ TODO
   
   * Sanity checks that detection histories are all numeric and 0/1/NA? This would slow down simulations.
   
+  * Add WAIC to other Bayesian functions.
+  
+CHANGES in 2015-10-10 v.0.0.393
+
+  * Added WAIC to BoccSS. Code not yet fully tested!
+  
 CHANGES in 2015-10-06 v.0.0.392
 
   * postPriorOverlap gains extra graphical parameters (wish of Joshua Pandong).

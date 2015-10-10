@@ -3,7 +3,8 @@
 # Bayesian version, using Dorazio & Rodriguez (2011) algorithm
 
 BoccSS <- function(DH, model=NULL, data=NULL, priors=list(),
-                    n.chains=3, n.iter=11000, n.burnin=1000, parallel, seed=NULL) {
+                    n.chains=3, n.iter=11000, n.burnin=1000, parallel,
+                    seed=NULL, doWAIC=FALSE) {
   # single-season occupancy models with site and survey covariates
   # ** DH is detection data in a 1/0/NA matrix or data frame, sites in rows,
   #    detection occasions in columns..
@@ -174,9 +175,15 @@ BoccSS <- function(DH, model=NULL, data=NULL, priors=list(),
   run1chain <- function(start) {
     beta <- matrix(start[1:psiK], ncol=1)  # why matrix?
     alpha <- matrix(start[-(1:psiK)], ncol=1)
-    chain <- matrix(nrow=n.iter, ncol=K) # to hold MCMC chains
-    colnames(chain) <- c(paste("psi", colnames(psiModMat), sep="_"),
+    if(doWAIC) {
+      chain <- matrix(nrow=n.iter, ncol=K+nSites) # to hold MCMC chains
+      colnames(chain) <- c(paste("psi", colnames(psiModMat), sep="_"),
+                        paste("p", colnames(pModMat), sep="_"), site.names)
+    } else {
+      chain <- matrix(nrow=n.iter, ncol=K) # to hold MCMC chains
+      colnames(chain) <- c(paste("psi", colnames(psiModMat), sep="_"),
                         paste("p", colnames(pModMat), sep="_"))
+    }
     v <- rep(NA, psiK)
     for (draw in 1:n.iter) {
       #  draw z for sites with y = 0, using conditional (on data) prob of occupancy
@@ -212,8 +219,17 @@ BoccSS <- function(DH, model=NULL, data=NULL, priors=list(),
 
       alphaMean = V.alpha %*% (ScaledMuP + (t(Wmat) %*% u) ) # prior here
       alpha <- matrix(MASS::mvrnorm(1, alphaMean, V.alpha), ncol=1)
-
-      chain[draw, ] <- c(beta, alpha)
+      
+      # Calculate ppd for each site
+      if(doWAIC) {
+        p.vec <- as.vector(pnorm(pModMat %*% alpha))
+        lik1 <- dbinom(DHvec, 1, p.vec)
+        lik2 <- tapply(lik1, siteIDfac, prod)
+        ppd <- psi * lik2 + (1 - psi) * (y == 0)
+        chain[draw, ] <- c(beta, alpha, ppd)
+      } else {
+        chain[draw, ] <- c(beta, alpha) 
+      }
     }
     return(coda::mcmc(chain[(n.burnin+1):n.iter, ]))
   }
@@ -221,7 +237,7 @@ BoccSS <- function(DH, model=NULL, data=NULL, priors=list(),
   if(parallel) {
     clusterExport(cl, c("K", "psiK", "n.iter", "n.burnin",
         "psiModMat", "pModMat", "siteID", "siteIDfac", "y", "DHvec",
-        "ScaledMuPsi", "V.beta", "SigmaInvP", "ScaledMuP"),
+        "ScaledMuPsi", "V.beta", "SigmaInvP", "ScaledMuP", "doWAIC"),
         envir=environment())
     clusterSetRNGStream(cl, seed)
     chainList <- parLapply(cl, starters, run1chain)
@@ -229,8 +245,16 @@ BoccSS <- function(DH, model=NULL, data=NULL, priors=list(),
     chainList <- lapply(starters, run1chain)
   }
   cat("\nMCMC run complete.\n")
-  # Diagnostics
   MCMC <- mcmc.list(chainList)
+  if(doWAIC) {
+    ppd <- as.matrix(MCMC[, -(1:K)])
+    MCMC <- MCMC[, 1:K]
+    lppd <- log(ppd)
+    tmp.sum <- -2 * sum(log(colMeans(ppd)))  # first term of eqn 45
+    pD <- sum(apply(lppd, 2, var)) # eqn 44
+    WAIC <- tmp.sum + 2 * pD
+  }
+  # Diagnostics
   Rhat <- try(gelman.diag(MCMC, autoburnin=FALSE)$psrf[, 1], silent=TRUE)
   if(inherits(Rhat, "try-error") || !all(is.finite(Rhat)))
     Rhat <- NULL
@@ -242,6 +266,8 @@ BoccSS <- function(DH, model=NULL, data=NULL, priors=list(),
   attr(out, "n.chains") <- n.chains
   attr(out, "n.eff") <- effectiveSize(MCMC)
   attr(out, "Rhat") <- Rhat
+  if(doWAIC)
+    attr(out, "WAIC") <- c(WAIC = WAIC, pD = pD)
   attr(out, "timetaken") <- Sys.time() - startTime
   return(out)
 }
