@@ -7,7 +7,7 @@ importFrom(jagsUI, jags.basic)
 importFrom(runjags, testjags, runjags.options, autorun.jags)
 importFrom(coda, mcmc, mcmc.list, as.mcmc.list,
   geweke.diag, gelman.diag, effectiveSize)
-importFrom(secr, secr.fit)
+# importFrom(secr, secr.fit)
 importFrom(parallel, detectCores, makeCluster, stopCluster,
   clusterExport, clusterSetRNGStream, parLapply)
 importFrom(MASS, mvrnorm)

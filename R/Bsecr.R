@@ -26,7 +26,7 @@ Bsecr0 <- function(capthist, buffer = 100, start=NULL, nAug = NA,
     mle.res <- predict(start)
   } else {
     cat("Running secr.fit to get starting values...") ; flush.console()
-    mle.res <- predict(secr.fit(capthist, buffer=buffer, trace=FALSE))
+    mle.res <- predict(secr::secr.fit(capthist, buffer=buffer, trace=FALSE))
     cat("done\n") ; flush.console()
   }
   if(is.na(nAug))

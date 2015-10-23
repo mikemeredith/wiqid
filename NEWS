@@ -10,13 +10,19 @@ TODO
 
   * Fix BsurvCJS with groups argument.
   
-  * Make 'secr' a Suggests instead of Imports dependency
+  * survCJS can use time-specific covariate, eg, flood, or grouping factor, but not both.
   
   * Add functions for multi-method and multi-state occupancy.
   
   * Sanity checks that detection histories are all numeric and 0/1/NA? This would slow down simulations.
   
   * Add WAIC to other Bayesian functions.
+  
+CHANGES in 2015-10-22 v.0.0.394
+
+  * Modifications to accommodate JAGS v.4
+  
+  * Package 'secr' now a Suggests instead of Imports dependency
   
 CHANGES in 2015-10-10 v.0.0.393
 

@@ -18,9 +18,9 @@ test_that("Bnormal gives same answers",  {
   expect_that(attr(Bout, "header"),
     equals("Model fitted in R with a Gibbs sampler"))
   expect_that(attr(Bout, "n.chains"), equals(3))
+  expect_equal(as.character(attr(Bout, "call")), c("Bnormal", "x"))
   expect_equivalent(round(attr(Bout, "n.eff")), c(48528, 39372))
   expect_equivalent(round(attr(Bout, "Rhat"), 3), c(1, 1))
-  expect_equal(as.character(attr(Bout, "call")), c("Bnormal", "x"))
 
   expect_equivalent(round(colMeans(Bout), 4), c(1.0113, 0.1563))
   expect_equivalent(round(c(hdi(Bout)), 4), c(0.9073, 1.1098, 0.0904, 0.2416))
@@ -49,19 +49,34 @@ test_that("Bnormal2 gives same answers",  {
   expect_that(attr(Bout, "header"),
     equals("Model fitted in JAGS with jagsUI::jags.basic"))
   expect_that(attr(Bout, "n.chains"), equals(3))
-  expect_equivalent(round(attr(Bout, "n.eff")), c(103943, 22727 ))
-  expect_equivalent(round(attr(Bout, "Rhat"), 3), c(1, 1.003))
   expect_equal(as.character(attr(Bout, "call")), c("Bnormal2", "x", "FALSE", "345"))
-
-  expect_equivalent(round(colMeans(Bout), 4), c(1.0114, 0.1685))
-  expect_equivalent(round(c(hdi(Bout)), 4), c(0.9010, 1.1222, 0.0932, 0.2665))
+  if(packageVersion("rjags") < "4.0.0") {
+    expect_equivalent(round(attr(Bout, "n.eff")), c(103943, 22727 ))
+    expect_equivalent(round(attr(Bout, "Rhat"), 3), c(1, 1.003))
+    expect_equivalent(round(colMeans(Bout), 4), c(1.0114, 0.1685))
+    expect_equivalent(round(c(hdi(Bout)), 4), c(0.9010, 1.1222, 0.0932, 0.2665))
+  } else {
+    expect_equivalent(round(attr(Bout, "n.eff")), c(99939, 26041 ))
+    expect_equivalent(round(attr(Bout, "Rhat"), 3), c(1, 1))
+    expect_equivalent(round(colMeans(Bout), 4), c(1.0114, 0.1683))
+    expect_equivalent(round(c(hdi(Bout)), 4), c(0.9002, 1.1216, 0.0930, 0.2664))
+  }
   xx <- x * 1000
   expect_warning(Bout <- Bnormal2(xx, priors=list(muMean=0, muSD=10)), # silly prior
       "Sample mean is outside the prior range")
   Bout <- Bnormal2(x, priors=list(muMean=0, muSD=10), rnd.seed=345, verbose=FALSE)  # informative prior for mu, default for sigma
-  expect_equivalent(round(colMeans(Bout), 4), c(1.0111, 0.1687))
-  expect_equivalent(round(c(hdi(Bout)), 4), c(0.9003, 1.1221, 0.0918, 0.2659))
+  if(packageVersion("rjags") < "4.0.0") {
+    expect_equivalent(round(colMeans(Bout), 4), c(1.0111, 0.1687))
+    expect_equivalent(round(c(hdi(Bout)), 4), c(0.9003, 1.1221, 0.0918, 0.2659))
+  } else {
+    expect_equivalent(round(colMeans(Bout), 4), c(1.0112, 0.1684))
+    expect_equivalent(round(c(hdi(Bout)), 4), c(0.8987, 1.1202, 0.0934, 0.2677))
+  }
   Bout <- Bnormal2(x, priors=list(muMean=0, muSD=10, sigmaMode=0.1, sigmaSD=0.2), rnd.seed=345, verbose=FALSE)  # informative prior for mu and sigma
   expect_equivalent(round(colMeans(Bout), 4), c(1.0112, 0.1622))
-  expect_equivalent(round(c(hdi(Bout)), 4), c(0.9032, 1.1156, 0.0917, 0.2473))
+  if(packageVersion("rjags") < "4.0.0") {
+    expect_equivalent(round(c(hdi(Bout)), 4), c(0.9032, 1.1156, 0.0917, 0.2473))
+  } else {
+    expect_equivalent(round(c(hdi(Bout)), 4), c(0.9028, 1.1144, 0.0927, 0.2474))
+  }
 })
