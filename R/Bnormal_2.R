@@ -7,24 +7,15 @@
 # Similar to the one-sample version of BEST::BESTmcmc
 #  but with normal instead of t-distribution.
 
-Bnormal2 <- function(y, priors=NULL, doPriorsOnly=FALSE,
-    numSavedSteps=1e5, thinSteps=1, burnInSteps = 1000,
-    verbose=TRUE, rnd.seed=NULL, parallel=NULL) {
+Bnormal2 <- function(y, priors=NULL, 
+                    chains=3, sample=1e4, burnin=0, thin=1, adapt=1000,
+                    doPriorsOnly=FALSE, parallel=NULL, seed=NULL) {
 
   startTime <- Sys.time()
 
-  if(doPriorsOnly && verbose)
+  if(doPriorsOnly)
     cat("Warning: The output shows the prior distributions,
       NOT the posterior distributions for your data.\n")
-  # Parallel processing check
-  nCores <- detectCores()
-  if(!is.null(parallel) && parallel && nCores < 4)  {
-    if(verbose)
-      warning("Not enough cores for parallel processing, running chains sequentially.")
-    parallel <- FALSE
-  }
-  if(is.null(parallel))
-    parallel <- nCores > 3
 
   # Data checks
   if(!all(is.finite(y)))
@@ -51,8 +42,6 @@ Bnormal2 <- function(y, priors=NULL, doPriorsOnly=FALSE,
     if(!is.null(priors$muSD) && priors$muSD <= 0)
       stop("muSD must be > 0")
   }
-  if(is.null(rnd.seed))
-    rnd.seed <- floor(runif(1,1,10000))
 
   # THE PRIORS
   if(is.null(priors$muMean))
@@ -114,35 +103,19 @@ Bnormal2 <- function(y, priors=NULL, doPriorsOnly=FALSE,
 
   # INTIALIZE THE CHAINS.
   # Initial values of MCMC chains based on data:
-  initsList0 <- list(mu=mean(y), sigma=sd(y), .RNG.seed=rnd.seed)
-  initsList <- list(
-                c(initsList0, .RNG.name="base::Wichmann-Hill"),
-                c(initsList0, .RNG.name="base::Marsaglia-Multicarry"),
-                c(initsList0, .RNG.name="base::Super-Duper") )
+  inits <- function() list(mu=mean(y), sigma=sd(y))
 
   # RUN THE CHAINS
-  codaSamples <- jags.basic(
-    data = dataForJAGS,
-    inits = initsList,
-    parameters.to.save = c( "mu" , "sigma" ),     # The parameters to be monitored
-    model.file = modelFile,
-    n.chains = 3,    # Do not change this without also changing initsList.
-    n.adapt = 500,
-    n.iter = ceiling( ( numSavedSteps * thinSteps) / 3  + burnInSteps ),
-    n.burnin = burnInSteps,
-    n.thin = thinSteps,
-    modules = NULL,
-    parallel = parallel,
-    DIC = FALSE,
-    seed = rnd.seed,
-    verbose = verbose)
+  codaSamples <- justRunJags(dataForJAGS, inits, c("mu", "sigma"), modelFile,
+            chains, sample, burnin, thin, adapt,
+            modules = c("glm"), parallel = parallel, seed=seed)
 
   Rhat <- try(gelman.diag(codaSamples, autoburnin=FALSE)$psrf[, 1], silent=TRUE)
   if(inherits(Rhat, "try-error") || !all(is.finite(Rhat)))
     Rhat <- NULL
 
   out <- as.Bwiqid(codaSamples,
-      header = "Model fitted in JAGS with jagsUI::jags.basic",
+      header = "Model fitted in JAGS with 'rjags' functions",
       defaultPlot = names(codaSamples)[1])
   attr(out, "call") <- match.call()
   attr(out, "n.chains") <- 3

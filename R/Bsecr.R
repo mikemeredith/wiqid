@@ -2,16 +2,13 @@
 # Bayesian version of secr to work with stoats data
 
 Bsecr0 <- function(capthist, buffer = 100, start=NULL, nAug = NA,
-                    priorOnly=FALSE, ...) {
+                    chains=3, sample=1e4, burnin=0, thin=1, adapt=1000,
+                    priorOnly=FALSE, parallel=NULL, seed=NULL) {
   stopifnot(inherits(capthist, "capthist"))
   
   
   if (priorOnly)
     warning("The prior distributions will be produced, not the posterior distributions!")
-  stopifnot(testjags(silent=TRUE)$JAGS.found)
-  if (detectCores() > 3)
-    runjags.options("method"="parallel")
-  runjags.options("rng.warning"=FALSE)
 
   traps <- traps(capthist)
   J <- nrow(traps)
@@ -29,6 +26,7 @@ Bsecr0 <- function(capthist, buffer = 100, start=NULL, nAug = NA,
     mle.res <- predict(secr::secr.fit(capthist, buffer=buffer, trace=FALSE))
     cat("done\n") ; flush.console()
   }
+
   if(is.na(nAug))
     nAug <- ceiling(1.5 * mle.res[1, 5] * A)
   maxSig2 <- (2.2 * mle.res[3, 5]) ^ 2
@@ -57,6 +55,7 @@ Bsecr0 <- function(capthist, buffer = 100, start=NULL, nAug = NA,
   }
 
   # Define the model
+  modelFile <- file.path(tempdir(), "JAGSmodel.txt")
   modeltext <- "
     model {
     sigma2 ~ dunif(0, maxSig2)      # need to set good max
@@ -77,6 +76,7 @@ Bsecr0 <- function(capthist, buffer = 100, start=NULL, nAug = NA,
     N <- sum(z[1:M]) # derive number (check against M)
     D <- N / A       # derive density
   }   "
+  writeLines(modeltext, con=modelFile)
 
    # organise the data:
   jagsData <- list(M = nAug, xl=xl, xu=xu, yl=yl, yu=yu, J=J,
@@ -92,10 +92,12 @@ Bsecr0 <- function(capthist, buffer = 100, start=NULL, nAug = NA,
   wanted <- c("D", "lam0", "sigma")
   
   # Run the model:
-  resB <- autorun.jags(modeltext, wanted, jagsData, n.chains=3, inits, ...)
+  resB <- justRunJags(jagsData, inits, wanted, modelFile,
+            chains, sample, burnin, thin, adapt,
+            modules = c("glm"), parallel = parallel, seed=seed)
     
   out <- as.Bwiqid(resB, 
-      header = "Model fitted in JAGS with runjags::autorun.jags",
+      header = "Model fitted in JAGS with 'rjags' functions",
       defaultPlot = "D")
   # check augmentation
   if(ceiling(max(out$D) * A) >= nAug)

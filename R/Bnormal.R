@@ -7,7 +7,7 @@
 # The gamma prior is specified by shape and rate.
 
 Bnormal <- function(y, priors=NULL,
-                    numChains=3, numSavedSteps=50000, burnInSteps=100) {
+                    chains=3, sample=10000, burnin=100) {
 
   startTime <- Sys.time()
 
@@ -30,12 +30,12 @@ Bnormal <- function(y, priors=NULL,
   aBit <- a + n / 2 # This doesn't change
 
   # Objects to hold results
-  n.iter <- ceiling((numSavedSteps) / numChains + burnInSteps)
-  chainList <- vector('list', numChains)
+  n.iter <- sample + burnin
+  chainList <- vector('list', chains)
   chain <- matrix(nrow=n.iter, ncol=2) # will hold output
   colnames(chain) <- c("mu", "sigma")
 
-  for(ch in 1:numChains) {
+  for(ch in 1:chains) {
     tau <- 1  # starting values
     for (t in 1:n.iter){
       # Draw mu from conjugate posterior with known sigma
@@ -46,7 +46,7 @@ Bnormal <- function(y, priors=NULL,
       tau <- rgamma(1, aBit, b + sum((y - mu)^2)/2)
       chain[t, ] <- c(mu, sqrt(1/tau))
     }
-    chainList[[ch]] <- mcmc(chain[(burnInSteps+1):n.iter, ])
+    chainList[[ch]] <- mcmc(chain[(burnin+1):n.iter, ])
   }
   MCMC <- mcmc.list(chainList)
   Rhat <- try(gelman.diag(MCMC, autoburnin=FALSE)$psrf[, 1], silent=TRUE)
@@ -57,7 +57,7 @@ Bnormal <- function(y, priors=NULL,
       header = "Model fitted in R with a Gibbs sampler",
       defaultPlot = names(MCMC)[1])
   attr(out, "call") <- match.call()
-  attr(out, "n.chains") <- numChains
+  attr(out, "n.chains") <- chains
   attr(out, "n.eff") <- effectiveSize(MCMC)
   attr(out, "Rhat") <- Rhat
   attr(out, "timetaken") <- Sys.time() - startTime

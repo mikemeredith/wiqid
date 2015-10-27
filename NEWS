@@ -18,6 +18,12 @@ TODO
   
   * Add WAIC to other Bayesian functions.
   
+CHANGES in 2015-10-27 v.0.0.395
+
+  * No longer Depends on 'runjags' or 'jagsUI'.
+  
+  * Change arguments for MCMC functions to 'chains', 'sample', 'burnin', 'thin' and 'adapt'. 
+  
 CHANGES in 2015-10-22 v.0.0.394
 
   * Modifications to accommodate JAGS v.4

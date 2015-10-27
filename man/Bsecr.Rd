@@ -10,7 +10,8 @@ Functions to estimate density from mark-recapture data using MCMC methods and JA
 }
 \usage{
 Bsecr0(capthist, buffer = 100, start = NULL, nAug = NA,
-                 priorOnly=FALSE, ...) 
+                    chains=3, sample=1e4, burnin=0, thin=1, adapt=1000,
+                    priorOnly=FALSE, parallel=NULL, seed=NULL) 
 }
 \arguments{
   \item{capthist}{
@@ -24,11 +25,29 @@ an optional object of class \code{secr}, ie, output from the \code{secr.fit} fun
   \item{nAug}{
 number of individuals in the augmented population; if NA, a suitable default is chosen based on the object passed to \code{start} or a preliminary run of \code{secr.fit}.
 }
+  \item{chains}{
+the number of Markov chains to run.
+}
+  \item{sample}{
+the number of values per chain to return. The total number of values calculated per chain is \code{adapt + burnin + sample * thin}.
+}
+  \item{burnin}{
+the number of values to discard at the beginning of each chain.
+}
+  \item{thin}{
+the thinning rate. If set to n > 1, n values are calculated for each value returned.
+}
+  \item{adapt}{
+the number of iterations to run in the JAGS adaptive phase. 
+}
   \item{priorOnly}{
 if TRUE, the function produces random draws from the appropriate \emph{prior} distributions, with a warning.
 }
-  \item{...}{
-further arguments passed to \code{\link{autorun.jags}}.
+  \item{seed}{
+set a seed for the random number generators.
+}
+  \item{parallel}{
+if TRUE or NULL and sufficient cores are available, the MCMC chains are run in parallel; if TRUE and insufficent cores are available, a warning is given.
 }
 }
 \details{

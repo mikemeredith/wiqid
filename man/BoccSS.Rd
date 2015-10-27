@@ -1,7 +1,6 @@
 \name{Bayesian Occupancy Single Season}
 \alias{BoccSS}
 \alias{BoccSS0}
-\alias{BoccSS0_JAGS}
 
 
 \title{
@@ -10,15 +9,13 @@ Bayesian single-season occupancy modelling
 \description{
 Functions to estimate occupancy from detection/non-detection data for a single season using a Gibbs sampler coded in R or JAGS.
 
-\code{BoccSS0} runs a model in R without covariates, and allows priors to be specified as beta distributions for probability of occupancy and probability of detection. \code{BoccSS0_JAGS} uses JAGS and does not allow prior specification; it will likely be removed in future versions.
+\code{BoccSS0} runs a model in R without covariates, and allows priors to be specified as beta distributions for probability of occupancy and probability of detection.
 
 \code{BoccSS} runs a model in R allowing for covariates, using a probit link and conjugate normal priors, which can be specified as mean and covariance.
 }
 \usage{
 BoccSS0(y, n, psiPrior=c(1,1), pPrior=c(1,1),
                     n.chains=3, n.iter=10100, n.burnin=100)
-
-BoccSS0_JAGS(y, n, priorOnly=FALSE, ...)
 
 BoccSS(DH, model=NULL, data=NULL, priors=list(),
                     n.chains=3, n.iter=11000, n.burnin=1000, parallel,
@@ -65,15 +62,9 @@ logical; if TRUE, the Watanabe-Akaike Information Criterion is calculated. NOTE:
 for reproducible results; note that parallel and sequential methods use different random number generators, so will give different results with the same seed.
 }
 
-  \item{priorOnly}{
-if TRUE, the function produces random draws from the appropriate \emph{prior} distributions, with a warning.
-}
-  \item{...}{
-further arguments passed to \code{\link{autorun.jags}}.
-}
 }
 \details{
-\code{BoccSS0} and \code{BoccSS0_JAGS} implement a simple model with one parameter for probability of occupancy and one for probability of detection, ie. a \code{psi(.) p(.)} model. The first uses a Gibbs sampler implemented in R, the second calls JAGS.
+\code{BoccSS0} implements a simple model with one parameter for probability of occupancy and one for probability of detection, ie. a \code{psi(.) p(.)} model, using a Gibbs sampler implemented in R.
 
 Independent beta distributions are used as priors for \code{BoccSS0}, as specified by \code{psiPrior} and \code{pPrior}. The defaults, \code{c(1, 1)}, correspond to uniform priors on the probabilities of occupancy and detection.
 

@@ -11,11 +11,11 @@ Bayesian estimation of centre (\eqn{\mu}) and scale (\eqn{\sigma}) of a normal d
 }
 \usage{
 Bnormal(y, priors=NULL,
-    numChains=3, numSavedSteps=50000, burnInSteps=100)
+            chains=3, sample=10000, burnin=100)
 
-Bnormal2(y, priors=NULL, doPriorsOnly=FALSE,
-    numSavedSteps=1e5, thinSteps=1, burnInSteps = 1000,
-    verbose=TRUE, rnd.seed=NULL, parallel=NULL)
+Bnormal2(y, priors=NULL, 
+            chains=3, sample=1e4, burnin=0, thin=1, adapt=1000,
+            doPriorsOnly=FALSE, parallel=NULL, seed=NULL)
 
 }
 \arguments{
@@ -28,22 +28,22 @@ an optional list with elements specifying the priors for the centre and scale; s
  \item{doPriorsOnly}{
 if TRUE, \code{Bnormal2} returns MCMC chains representing the prior distributions, \emph{not} the posterior distributions for your data set.
 }
-  \item{numChains}{
+  \item{chains}{
 the number of MCMC chains to run.
 }
-  \item{numSavedSteps}{
-the number of MCMC observations to be returned.
+  \item{sample}{
+the number of MCMC observations per chain to be returned.
 }
-  \item{thinSteps}{
+  \item{thin}{
 thinning rate. If set to n > 1, n steps of the MCMC chain are calculated for each one returned. This is useful if autocorrelation is high.
 }
-  \item{burnInSteps}{
+  \item{burnin}{
 number of steps to discard as burn-in at the beginning of each chain.
 }
-   \item{verbose}{
-if FALSE, output to the R Console is suppressed.
+  \item{adapt}{
+number of steps for adaptation.
 }
-  \item{rnd.seed}{
+  \item{seed}{
 a positive integer (or NULL): the seed for the random number generator, used to obtain reproducible samples if required.
 }
   \item{parallel}{

@@ -15,8 +15,8 @@ survCJSaj(DHj, DHa=NULL, model=list(phiJ~1, phiA~1, p~1), data=NULL,
     freqj=1, freqa=1, ci = 0.95)
 
 BsurvCJS(DH, model=list(phi~1, p~1), data = NULL, freq=1,
-    priorOnly=FALSE, ...)
-
+    chains=3, sample=1e4, burnin=1000, thin=1, adapt=1000,
+    parallel = NULL, seed=NULL, priorOnly=FALSE)
 }
 \arguments{
   \item{DH}{
@@ -43,11 +43,29 @@ frequencies of each detection history in DHj and DHa; freqa is ignored if DHa = 
   \item{ci}{
 the required confidence interval.
 }
+  \item{chains}{
+the number of Markov chains to run.
+}
+  \item{sample}{
+the number of values per chain to return. The total number of values calculated per chain is \code{adapt + burnin + sample * thin}.
+}
+  \item{burnin}{
+the number of values to discard at the beginning of each chain.
+}
+  \item{thin}{
+the thinning rate. If set to n > 1, n values are calculated for each value returned.
+}
+  \item{adapt}{
+the number of iterations to run in the JAGS adaptive phase. 
+}
   \item{priorOnly}{
 if TRUE, the function produces random draws from the appropriate \emph{prior} distributions, with a warning.
 }
-  \item{...}{
-further arguments passed to \code{\link{autorun.jags}}.
+  \item{parallel}{
+if TRUE or NULL and sufficient cores are available, the MCMC chains are run in parallel; if TRUE and insufficent cores are available, a warning is given.
+}
+  \item{seed}{
+a positive integer, the seed for the random number generators.
 }
 }
 
