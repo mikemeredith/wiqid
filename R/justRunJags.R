@@ -70,7 +70,7 @@ justRunJags <- function(data, inits, params, modelFile,
   }
 
   if(parallel) {   ##### Do the parallel stuff #####
-    cl <- makeCluster(3) ; on.exit(stopCluster(cl))
+    cl <- makeCluster(coresToUse) ; on.exit(stopCluster(cl))
     clusterEvalQ(cl, library(rjags))
     if(!is.null(modules)) {
       clusterExport(cl, c("modules", "loadJagsModules"), envir=environment())

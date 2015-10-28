@@ -41,8 +41,9 @@ survCJS(DH, phi ~ flood * group, data=df, group=dippers$sex)
 
 # Bayesian estimation:
 
-Bdip <- BsurvCJS(DH)
+Bdip <- BsurvCJS(DH, parallel=FALSE)
 plot(Bdip)
+\donttest{
 BdipFlood <- BsurvCJS(DH, list(phi ~ flood, p ~ .time), data=df)
 BdipFlood
 op <- par(mfrow=2:1)
@@ -51,5 +52,6 @@ plot(BdipFlood, "phi2", xlim=c(0.3, 0.75), main="Flood")
 par(op)
 ratio <- BdipFlood$phi2 / BdipFlood$phi1
 plotPost(ratio, compVal=1)
+}
 }
 \keyword{datasets}

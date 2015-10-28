@@ -1,8 +1,10 @@
 TODO
 
-  * (TRY using Gelman et al 2008 recommendations for priors for logistic coefficients. Update man page for priors.) Maybe more important, allow user to choose priors.
+  * (TRY using Gelman et al 2008 recommendations for priors for logistic coefficients.
+  Update man page for priors.) Maybe more important, allow user to choose priors.
 
-  * Try using optim instead of nlm for functions where estimation near boundaries is a problem.
+  * Try using optim instead of nlm for functions where estimation near boundaries
+  is a problem.
 
   * Improve survRD* functions! Add test files.
 
@@ -14,9 +16,14 @@ TODO
   
   * Add functions for multi-method and multi-state occupancy.
   
-  * Sanity checks that detection histories are all numeric and 0/1/NA? This would slow down simulations.
+  * Sanity checks that detection histories are all numeric and 0/1/NA? This would
+  slow down simulations.
   
   * Add WAIC to other Bayesian functions.
+  
+CHANGES in 2015-10-28 v.0.0.396
+
+  * Minor changes and fixes to pass --as-cran checks
   
 CHANGES in 2015-10-27 v.0.0.395
 
@@ -49,7 +56,8 @@ CHANGES in 2015-07-29 v.0.0.390
 
   * Fixed bug in occMS0
   
-  * Changing Hessian inversion from solve() to chol2inv(chol()); negative variances allowed to generate NaNs for SEs and CIs (but less common with chol2inv).
+  * Changing Hessian inversion from solve() to chol2inv(chol()); negative variances
+  allowed to generate NaNs for SEs and CIs (but less common with chol2inv).
   
 CHANGES in 2015-07-03 v.0.0.389
 
@@ -148,7 +156,8 @@ CHANGES IN 2014-04-16 v.0.0.375
 
 CHANGES IN 2014-03-30 v.0.0.374
 
-  * new diagnostic plots for Bwiqid objects: tracePlot, densityPlot and acfPlot; class Bwiqid objects get an attribute 'n.chains' to enable this.
+  * new diagnostic plots for Bwiqid objects: tracePlot, densityPlot and acfPlot;
+  class Bwiqid objects get an attribute 'n.chains' to enable this.
 
   * window.Bwiqid added.
 
@@ -176,7 +185,9 @@ CHANGES IN 2014-02-24 v.0.0.370
 
 CHANGES IN 2014-02-24 v.0.0.369
 
-  * plotPost and the plot.Bwiqid method now make full use of the ... argument for additional graphical parameters. Default xlim now based on 99% HDI (not range). They return an object of class 'histogram'.
+  * plotPost and the plot.Bwiqid method now make full use of the ... argument for
+  additional graphical parameters. Default xlim now based on 99% HDI (not range).
+  They return an object of class 'histogram'.
 
 CHANGES IN 2014-02-10 v.0.0.368
 
@@ -190,7 +201,9 @@ CHANGES IN 2014-02-07 v.0.0.367
 
 CHANGES IN 2014-02-05 v.0.0.366
 
-  * New function BsurvCJSautorun, which uses the runjags::autorun.jags function. 'wiqid' now depends on runjags. Experimental: may have to roll back if runjags does not work for everyone.
+  * New function BsurvCJSautorun, which uses the runjags::autorun.jags function.
+  'wiqid' now depends on runjags. Experimental: may have to roll back if runjags
+  does not work for everyone.
 
   * Implemented 0.5xSD scaling for all functions.
 
@@ -200,7 +213,8 @@ CHANGES IN 2014-02-01 v.0.0.365
 
   * Lots of small fixes.
 
-  * Removed occSSautocorA; occSScov gains a built-in .b covariate which does the same thing.
+  * Removed occSSautocorA; occSScov gains a built-in .b covariate which does
+  the same thing.
 
   * Added test files for occMS* functions. Speed up occMScov.
 
@@ -208,7 +222,9 @@ CHANGES IN 2014-01-30 v.0.0.364
 
   * added grand skinks data set.
 
-  * expanded occMScov to take survey covariates; that is slow, as it calculates a different probability of detection for each site x occasion. So retained the old function under the name occMScovSite.
+  * expanded occMScov to take survey covariates; that is slow, as it calculates
+  a different probability of detection for each site x occasion. So retained
+  the old function under the name occMScovSite.
 
 CHANGES IN 2014-01-28 v.0.0.363
 
@@ -222,27 +238,33 @@ CHANGES IN 2014-01-28 v.0.0.363
 
 CHANGES IN 2014-01-26 v.0.0.362
 
-  * Changed closedCap* functions so that all take a detection history matrix as first argument.
+  * Changed closedCap* functions so that all take a detection history matrix
+  as first argument.
 
   * The hdi generic gets methods for classes bugs, rjags and runjags.
 
-  * New function postPriorOverlap calculates and displays the overlap between posterior and prior.
+  * New function postPriorOverlap calculates and displays the overlap between
+  posterior and prior.
 
 CHANGES IN 2014-01-11 v.0.0.361
 
-  * Multi-season occupancy functions (occMS*) tidied up to deal with sites with surveys in first season only.
+  * Multi-season occupancy functions (occMS*) tidied up to deal with sites with
+  surveys in first season only.
 
   * Fixed bug in Bsecr0 - prior for sigma was too constrained.
 
-  * Changed survival functions to use ordinary detection history matrix instead of m-array; conversion to m-array is done internally.
+  * Changed survival functions to use ordinary detection history matrix instead
+  of m-array; conversion to m-array is done internally.
 
   * Added dippers data set.
 
-  * Functions occSS.t, occSS.T and occSS.T2 replaced with a single function, occSStime, which can also accept time-varying covariates for probability of detection.
+  * Functions occSS.t, occSS.T and occSS.T2 replaced with a single function,
+  occSStime, which can also accept time-varying covariates for probability of detection.
 
 CHANGES IN 2014-01-05
 
-  * Version number system changed as CRAN doesn't like leading zeros. Version 0.0359 followed by version 0.0.360.
+  * Version number system changed as CRAN doesn't like leading zeros. 
+  Version 0.0359 followed by version 0.0.360.
 
 CHANGES IN 2013-12-24
 
@@ -252,11 +274,13 @@ CHANGES IN 2013-12-24
 
   * New function survCJSaj for data sets for adults and juveniles, eg sociable lapwings.
 
-  * New class 'wiqid' replaces classes 'occupancy' and 'closedCap' and is used for survCJS output.
+  * New class 'wiqid' replaces classes 'occupancy' and 'closedCap' and is used for
+  survCJS output.
 
 CHANGES IN 2013-12-16
 
-  * New functions occMSseason and occMScov do covariate versions of multiple season occupancy.
+  * New functions occMSseason and occMScov do covariate versions of multiple
+  season occupancy.
 
 CHANGES IN 2013-12-14
 
@@ -272,7 +296,8 @@ CHANGES IN 2013-12-14
 
   * Covariate data for occSScovSite now a data frame, not a list.
 
-  * New function occSS.T2 does quadratic model for probabilitiy of detection. occSS.T and occSS.T2 do a plot of p vs time.
+  * New function occSS.T2 does quadratic model for probabilitiy of detection.
+  occSS.T and occSS.T2 do a plot of p vs time.
 
   * New function BoccSS0 does Bayesian modelling with JAGS.
 
@@ -287,9 +312,11 @@ CHANGES IN 2013-12-14
 
 CHANGES IN BUILD 2013-11-04
 
-  * closedCap* functions now return an object of class closedCap, for which there are print, logLik and nobs methods.
+  * closedCap* functions now return an object of class closedCap, for which there
+  are print, logLik and nobs methods.
 
-  * added ciType argument to closedCap* functions. ciType = "MARK" calculates CI for N as in Program MARK. Test files modified to match.
+  * added ciType argument to closedCap* functions. ciType = "MARK" calculates CI
+  for N as in Program MARK. Test files modified to match.
 
   * add closedCapMt and closedCapMtcov
 
@@ -302,9 +329,11 @@ CHANGES IN BUILD 2013-04-07
 
  * Fixed occSSrn to produce NAs if input is all ones; changed test file to match.
 
- * Changed checks for solving hessian in closedCapM0, Mh2; increased interlim for mle in closedCapM0.
+ * Changed checks for solving hessian in closedCapM0, Mh2; increased interlim
+ for mle in closedCapM0.
 
- * Changes to test files for closedCap*, as R 3.0.0 was not giving exactly the same answer; round(...,4) changed to signif(..., 4).
+ * Changes to test files for closedCap*, as R 3.0.0 was not giving exactly the same
+ answer; round(...,4) changed to signif(..., 4).
 
 CHANGES IN BUILD 2013-03-31
 
@@ -329,11 +358,13 @@ CHANGES IN BUILD 2013-03-24
 
   * Took out bird_mass from KillarneyBirds data set.
 
-  * Changed spelling of *Rarify to *Rarefy (Oxford Dictionary online says both are correct but rarefy is more common).
+  * Changed spelling of *Rarify to *Rarefy (Oxford Dictionary online says both are
+  correct but rarefy is more common).
 
 CHANGES IN BUILD 2013-03-19
 
-  * Tweaked occSScovar and occSScovarSite to accept formulae as character variables, also to return logLik = NA if convergence problems.
+  * Tweaked occSScovar and occSScovarSite to accept formulae as character variables,
+  also to return logLik = NA if convergence problems.
 
   * occSScovar was throwing error if no survey covars were provided.
 
@@ -341,13 +372,15 @@ CHANGES IN BUILD 2013-03-19
 
 CHANGES IN BUILD 2013-03-19
 
-  * Tweaked occSScovar and occSScovarSite to improve convergence and catch variance estimation problems. Covars internally standardised, so betas are different.
+  * Tweaked occSScovar and occSScovarSite to improve convergence and catch variance
+  estimation problems. Covars internally standardised, so betas are different.
 
 CHANGES IN BUILD 2013-03-18
 
   * Added allCombinations function.
 
-  * Added logLik and nobs methods for class occupancy; modified occSS* functions to accommodate that. Function stats::AIC now works for occupancy.
+  * Added logLik and nobs methods for class occupancy; modified occSS* functions
+  to accommodate that. Function stats::AIC now works for occupancy.
 
   * Added AICc generic and AICc.default.
 

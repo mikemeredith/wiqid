@@ -36,6 +36,7 @@ occSS(DH, list(psi ~ Browsed, p ~ ObsD), data=weta)
 occSS(DH, list(psi ~ Browsed, p ~ Browsed), data=weta)
 
 # Bayesian analysis
+\donttest{
 # Model with separate intercepts for occupancy in Browsed and Unbrowsed
 #  bushes, and a time trend for probability of detection; specify uniform
 #  priors for probability of occupancy:
@@ -44,5 +45,6 @@ Bwet <- BoccSS(DH, model=list(psi~Browsed-1, p~.Time), data=weta,
 Bwet
 plot(Bwet)
 plot(Bwet, "p_.Time")
+}
 }
 \keyword{datasets}
