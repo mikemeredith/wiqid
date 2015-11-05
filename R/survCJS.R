@@ -30,7 +30,8 @@ qArray <- function(phi, p) {
 }
 # ..........................................................................
 
-survCJS <- function(DH, model=list(phi~1, p~1), data=NULL, freq=1, group, ci = 0.95) {
+survCJS <- function(DH, model=list(phi~1, p~1), data=NULL, freq=1, group, ci = 0.95,
+            link=c("logit", "probit")) {
   # ** DH is detection history matrix/data frame, animals x occasions.
   # ** freq is vector of frequencies for each detection history
   # ** model is a list of 2-sided formulae for psi and p; can also be a single
@@ -38,6 +39,12 @@ survCJS <- function(DH, model=list(phi~1, p~1), data=NULL, freq=1, group, ci = 0
   # ** data a data frame with the covariates.
   # ** group is a factor specifying which group each row of DH belongs to.
   # ** ci is required confidence interval.
+
+  if(match.arg(link) == "logit") {
+    plink <- plogis
+  } else {
+    plink <- pnorm
+  }
 
   # Sanity checks:  for DH??
   ni <- ncol(DH) - 1  # number of survival intervals and REcapture occasions
@@ -116,8 +123,8 @@ survCJS <- function(DH, model=list(phi~1, p~1), data=NULL, freq=1, group, ci = 0
   nll <- function(param){
     phiBeta <- param[1:phiK]
     pBeta <- param[(phiK+1):K]
-    phiProb <- plogis(phiMat %*% phiBeta)
-    pProb <- plogis(pMat %*% pBeta)
+    phiProb <- plink(phiMat %*% phiBeta)
+    pProb <- plink(pMat %*% pBeta)
     if(any(pProb * phiProb == 1))
       return(.Machine$double.max)
     if(nGroup == 1) {
@@ -161,7 +168,7 @@ survCJS <- function(DH, model=list(phi~1, p~1), data=NULL, freq=1, group, ci = 0
   out <- list(call = match.call(),
               beta = beta.mat,
               beta.vcv = varcov,
-              real = plogis(lp.mat),
+              real = plink(lp.mat),
               logLik = c(logLik=logLik, df=K, nobs=sum(mARRAY)) )
   class(out) <- c("wiqid", "list")
   return(out)

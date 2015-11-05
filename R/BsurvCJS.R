@@ -4,7 +4,7 @@
 
 # This uses rjags via the local justRunJags function
 
-BsurvCJS <- function(DH, model=list(phi~1, p~1), data=NULL, freq=1,
+BsurvCJS <- function(DH, model=list(phi~1, p~1), data=NULL, freq=1, priors=NULL,
     chains=3, sample=1e4, burnin=1000, thin=1, adapt=1000,
     parallel = NULL, seed=NULL, priorOnly=FALSE) {
   # phi(t) p(t) model or models with time covariates for Cormack-Joly-Seber
@@ -47,6 +47,13 @@ BsurvCJS <- function(DH, model=list(phi~1, p~1), data=NULL, freq=1,
   if(nrow(phiMat) != ni || nrow(pMat) != ni)
     stop("Missing values not allowed in covariates.")
 
+  # Deal with priors:
+  defaultPriors <- list(muPhi = rep(0, phiK),
+                        sigmaPhi = if(phiK==1) 1 else rep(10, phiK),
+                        muP = rep(0, pK),
+                        sigmaP = if(pK==1) 1 else rep(10, pK))
+  priors <- checkPriors(priors, defaultPriors)
+
   # Run MLE version to get starting values
   nll <- function(param){
     phiBeta <- param[1:phiK]
@@ -73,15 +80,15 @@ BsurvCJS <- function(DH, model=list(phi~1, p~1), data=NULL, freq=1,
     model{
       # priors for beta parameters
       for(i in 1:phiK)  {
-        phiBeta[i] ~ dnorm(0, 0.01)
+        phiBeta[i] ~ dnorm(muPhi[i], tauPhi[i])
       }
       for(i in 1:pK)  {
-        pBeta[i] ~ dnorm(0, 0.01)
+        pBeta[i] ~ dnorm(muP[i], tauP[i])
       }
       # Calculate p and phi
       for(t in 1:(nocc-1)) {
-        logit(phi[t]) <- sum(phiBeta[] * phiMat[t, ])
-        logit(p[t]) <- sum(pBeta[] * pMat[t, ])
+        probit(phi[t]) <- sum(phiBeta[] * phiMat[t, ])
+        probit(p[t]) <- sum(pBeta[] * pMat[t, ])
       }
       # Multinomial likelihood
       for(t in 1:(nocc-1)) {
@@ -111,7 +118,9 @@ BsurvCJS <- function(DH, model=list(phi~1, p~1), data=NULL, freq=1,
 
    # organise the data:
   jagsData <- list(nocc = ncol(mArray), rel=rowSums(mArray),
-                      pK = pK, phiK = phiK, pMat=pMat, phiMat=phiMat)
+                      pK = pK, phiK = phiK, pMat=pMat, phiMat=phiMat,
+                      muPhi = priors$muPhi, tauPhi = 1/(priors$sigmaPhi)^2,
+                      muP = priors$muP, tauP = 1/(priors$sigmaP)^2)
   if(!priorOnly)
       jagsData$marr <- mArray
 

@@ -23,12 +23,12 @@ qArrayAJ <- function(phi, p, phiJ=phi) {
     }
   }
   q[, n+1] <- 1 - rowSums(q, na.rm=TRUE)  # Add the last column and return
-  return(q) 
+  return(q)
 }
 # ..........................................................................
 
 survCJSaj <- function(DHj, DHa=NULL, model=list(phiJ~1, phiA~1, p~1), data=NULL,
-    freqj=1, freqa=1, ci = 0.95) {
+    freqj=1, freqa=1, ci = 0.95, link=c("logit", "probit")) {
   # phi(t) p(t) model or models with time covariates for Cormack-Joly-Seber
   # estimation of apparent survival.
   # ** DHj is detection history matrix/data frame, animals x occasions, for animals marked as juveniles; DHa (optional) has detection histories for animals marked as adults.
@@ -37,6 +37,12 @@ survCJSaj <- function(DHj, DHa=NULL, model=list(phiJ~1, phiA~1, p~1), data=NULL,
   #   2-sided formula, eg, model = psiJ ~ habitat.
   # ** data a data frame with the covariates.
   # ** ci is required confidence interval.
+
+    if(match.arg(link) == "logit") {
+    plink <- plogis
+  } else {
+    plink <- pnorm
+  }
 
   # Sanity checks:
   # Check DHj and DHa have same no. of columns ...
@@ -47,7 +53,7 @@ survCJSaj <- function(DHj, DHa=NULL, model=list(phiJ~1, phiA~1, p~1), data=NULL,
     freqj <- rep(freqj, nrow(DHj))
   # if (length(freqa) == 1)
     # freqa <- rep(freqa, nrow(DHa))  # Not needed
-    
+
   if(ci > 1 | ci < 0.5)
     stop("ci must be between 0.5 and 1")
   alf <- (1 - ci[1]) / 2
@@ -61,7 +67,7 @@ survCJSaj <- function(DHj, DHa=NULL, model=list(phiJ~1, phiA~1, p~1), data=NULL,
   for(i in 1:nrow(grown))
     grown[i, first[i]] <- 0
   marrayA <- ch2mArray(grown, freqj)
-  
+
   # Do m-array for juvenile juveniles
   ma <- matrix(0, nocc, nocc+1)
   for(i in 1:nrow(DHj)) {
@@ -75,14 +81,14 @@ survCJSaj <- function(DHj, DHa=NULL, model=list(phiJ~1, phiA~1, p~1), data=NULL,
   ringed <- tapply(freqj, first, sum)
   ma[, nocc+1] <- c(ringed, 0) - rowSums(ma)
   marrayJ <- ma[-nocc, -1]
-  
+
   # Add data for adults
   if(!is.null(DHa))
     marrayA <- marrayA + ch2mArray(DHa, freqa)
-  
+
   # Standardise the model:
   model <- stdModel(model, defaultModel=list(phiJ=~1, phiA=~1, p=~1))
-  
+
   # Standardize the data
   dataList <- stddata(data, NULL)
   dataList$.Time <- as.vector(scale(1:ni)) /2
@@ -123,9 +129,9 @@ survCJSaj <- function(DHj, DHa=NULL, model=list(phiJ~1, phiA~1, p~1), data=NULL,
     phiABeta <- param[parID==1]
     phiJBeta <- param[parID==2]
     pBeta <- param[parID==3]
-    phiAProb <- plogis(phiAMat %*% phiABeta)
-    phiJProb <- plogis(phiJMat %*% phiJBeta)
-    pProb <- plogis(pMat %*% pBeta)
+    phiAProb <- plink(phiAMat %*% phiABeta)
+    phiJProb <- plink(phiJMat %*% phiJBeta)
+    pProb <- plink(pMat %*% pBeta)
     if(any(pProb * phiAProb == 1) || any(pProb * phiJProb == 1) )
       return(.Machine$double.max)
     # Calculate the negative log(likelihood) value:
@@ -165,7 +171,7 @@ survCJSaj <- function(DHj, DHa=NULL, model=list(phiJ~1, phiA~1, p~1), data=NULL,
   out <- list(call = match.call(),
               beta = beta.mat,
               beta.vcv = varcov,
-              real = plogis(lp.mat),
+              real = plink(lp.mat),
               logLik = c(logLik=logLik, df=K, nobs=sum(marrayJ, marrayA)))
   class(out) <- c("wiqid", "list")
   return(out)

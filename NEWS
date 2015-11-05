@@ -11,36 +11,41 @@ TODO
   * Add probit link option to remaining MLE functions.
 
   * Fix BsurvCJS with groups argument.
-  
+
   * survCJS can use time-specific covariate, eg, flood, or grouping factor, but not both.
-  
+
   * Add functions for multi-method and multi-state occupancy.
-  
+
   * Sanity checks that detection histories are all numeric and 0/1/NA? This would
   slow down simulations.
-  
+
   * Add WAIC to other Bayesian functions.
-  
+
+CHANGES in 2015-11-05 v.0.0.397
+
+  * BsurvCJS uses a logit link and allows priors to be specified; other survCJS
+  functions get a link argument.
+
 CHANGES in 2015-10-28 v.0.0.396
 
   * Minor changes and fixes to pass --as-cran checks
-  
+
 CHANGES in 2015-10-27 v.0.0.395
 
   * No longer Depends on 'runjags' or 'jagsUI'.
-  
-  * Change arguments for MCMC functions to 'chains', 'sample', 'burnin', 'thin' and 'adapt'. 
-  
+
+  * Change arguments for MCMC functions to 'chains', 'sample', 'burnin', 'thin' and 'adapt'.
+
 CHANGES in 2015-10-22 v.0.0.394
 
   * Modifications to accommodate JAGS v.4
-  
+
   * Package 'secr' now a Suggests instead of Imports dependency
-  
+
 CHANGES in 2015-10-10 v.0.0.393
 
   * Added WAIC to BoccSS. Code not yet fully tested!
-  
+
 CHANGES in 2015-10-06 v.0.0.392
 
   * postPriorOverlap gains extra graphical parameters (wish of Joshua Pandong).
@@ -55,16 +60,16 @@ CHANGES in 2015-09-21 v.0.0.391
 CHANGES in 2015-07-29 v.0.0.390
 
   * Fixed bug in occMS0
-  
+
   * Changing Hessian inversion from solve() to chol2inv(chol()); negative variances
   allowed to generate NaNs for SEs and CIs (but less common with chol2inv).
-  
+
 CHANGES in 2015-07-03 v.0.0.389
 
   * Added Bbinom function.
-  
+
   * as.Bwiqid gains a data.frame method.
-  
+
 CHANGES in 2015-06-28 v.0.0.388
 
   * Minor fixes.
@@ -263,7 +268,7 @@ CHANGES IN 2014-01-11 v.0.0.361
 
 CHANGES IN 2014-01-05
 
-  * Version number system changed as CRAN doesn't like leading zeros. 
+  * Version number system changed as CRAN doesn't like leading zeros.
   Version 0.0359 followed by version 0.0.360.
 
 CHANGES IN 2013-12-24
