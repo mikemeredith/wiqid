@@ -91,8 +91,8 @@ test_that("closedCapMtcov gives right answers",  {
   covars <- data.frame(Temp = runif(ncol(KanhaTigers), 15, 25),
       Cloud = sample(0:8, ncol(KanhaTigers), replace=TRUE))
   resC <- closedCapMtcov(KanhaTigers, p~Cloud, data=covars)
-  expect_that(round(as.vector(resC$real[1, ]), 4), 
-      is_equivalent_to(c(28.4435, 26.4280, 39.9513)))
+  expect_that(round(as.vector(resC$real[1, ]), 3), 
+      is_equivalent_to(c(28.444, 26.428, 39.951)))
   expect_that(round(as.vector(resC$real[-1, ]), 4), 
       is_equivalent_to(c(
      0.2147,0.2029,0.2088,0.2058,0.1916,0.2147,0.1972,0.1916,0.1972,0.2147,

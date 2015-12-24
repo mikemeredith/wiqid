@@ -106,6 +106,7 @@ as.Bwiqid.jagsUI <- function(object, header, defaultPlot, ...) {
     attr(out, "Rhat") <- unlist(object$Rhat)
   if(!missing("defaultPlot"))
     attr(out, "defaultPlot") <- defaultPlot
+  attr(out, "timetaken") <- as.difftime(object$mcmc.info$elapsed.mins, units="mins")
   return(out)
 }
 

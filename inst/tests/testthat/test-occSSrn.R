@@ -39,9 +39,9 @@ test_that("occSSrn with logit",  {
   # Put in a row of NAs
   BRS[3,] <- NA
   res <- occSSrn(BRS)
-  expect_that(round(as.vector(res$real), 4),
-      is_equivalent_to(c(0.6349, 1.0076, 0.1510, 0.3244, 0.3922, 0.0545, 0.9249,
-          2.5884, 0.3540)))
+  expect_that(round(as.vector(res$real), 3),
+      is_equivalent_to(c(0.635, 1.008, 0.151, 0.324, 0.392, 0.055, 0.925,
+          2.588, 0.354)))
   expect_that(round(AIC(res), 4), equals(142.9799))
   # Put in a column of NAs
   BRS[, 3] <- NA

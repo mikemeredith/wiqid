@@ -66,10 +66,10 @@ test_that("closedCapMh2 gives right answers",  {
   expect_that(names(res), equals(c("call", "beta",  "beta.vcv", "real", "logLik"))) 
   expect_that(colnames(res$real), equals(c("est", "lowCI", "uppCI")))
   expect_that(rownames(res$real), equals(c("Nhat", "piHat","p1hat", "p2hat")))
-  expect_that(round(as.vector(res$real[1, ]), 3),
-      is_equivalent_to(c(135.476, 93.847, 274.207)))
-  expect_that(round(as.vector(resM$real[1, ]), 3),
-      is_equivalent_to(c(135.476, 95.624, 256.257)))
+  expect_that(round(as.vector(res$real[1, ]), 2),
+      is_equivalent_to(c(135.48, 93.85, 274.21)))
+  expect_that(round(as.vector(resM$real[1, ]), 2),
+      is_equivalent_to(c(135.48, 95.62, 256.26)))
     # MARK gives 135.47714, 95.586384, 256.61168  
   expect_that(round(as.vector(res$real[-1, ]), 4),
       is_equivalent_to(c(0.1548, 0.1795, 0.0360, 0.0536, 0.1027,

@@ -21,9 +21,15 @@ TODO
 
   * Add WAIC to other Bayesian functions.
 
+CHANGES in 2015-12-24 v.0.0.398
+
+  * Minor bug fixes and more in namespace.
+  
+  * hdi.density is now exported; column names fixed.
+  
 CHANGES in 2015-11-05 v.0.0.397
 
-  * BsurvCJS uses a logit link and allows priors to be specified; other survCJS
+  * BsurvCJS uses a probit link and allows priors to be specified; other survCJS
   functions get a link argument.
 
 CHANGES in 2015-10-28 v.0.0.396

@@ -13,6 +13,16 @@ importFrom(parallel, detectCores, makeCluster, stopCluster,
 importFrom(MASS, mvrnorm)
 importFrom(truncnorm, rtruncnorm)
 importFrom(MCMCpack, MCMCregress, MCMClogit)
+importFrom("grDevices", "devAskNewPage")
+importFrom("graphics", "abline", "hist", "lines", "matplot", "par",
+   "plot", "plot.default", "polygon", "rect", "segments",
+   "text")
+importFrom("stats", "AIC", "acf", "as.dist", "as.formula", "bw.nrd0",
+   "dbinom", "density", "dpois", "median", "model.matrix",
+   "na.omit", "nlm", "optim", "optimize", "pchisq", "plogis",
+   "pnorm", "predict", "qlogis", "qnorm", "rbeta", "rbinom",
+   "rgamma", "rnorm", "runif", "sd", "terms", "var")
+importFrom("utils", "flush.console", "modifyList")
 
 
 export(
@@ -36,7 +46,8 @@ export(
   distChord, distJaccard, distMatching, distMorisitaHorn, distOchiai, distPreston,
   distRogersTanimoto, distSimRatio, distSorensen, distWhittaker,
   AICc, allCombinations, AICtable, WAIC,
-  hdi, plotPost, postPriorOverlap, as.Bwiqid, tracePlot, densityPlot, acfPlot
+  hdi, hdi.density,
+  plotPost, postPriorOverlap, as.Bwiqid, tracePlot, densityPlot, acfPlot
 )
 
 S3method("print", "wiqid")

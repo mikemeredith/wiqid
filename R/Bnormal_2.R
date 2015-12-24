@@ -65,6 +65,8 @@ Bnormal2 <- function(y, priors=NULL,
     priors$Sh <- shape
     priors$Ra <- rate
   }
+  priors$sigmaMode <- NULL
+  priors$sigmaSD <- NULL
 
   # THE MODEL.
   modelFile <- file.path(tempdir(), "BESTmodel.txt")

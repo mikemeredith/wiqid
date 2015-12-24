@@ -41,7 +41,7 @@ test_that("Bnormal2 gives same answers",  {
   # Generate data
   set.seed(123)
   x <- rnorm(10, 1, 0.15)
-  Bout <- Bnormal2(x, seed=345)  # default prior
+  capture.output(Bout <- Bnormal2(x, seed=345))  # default prior
   expect_that(class(Bout), equals(c("Bwiqid", "data.frame")))
   expect_that(dim(Bout), equals(c(30000, 2)))
   expect_that(names(Bout), equals(c("mu", "sigma")))
@@ -58,12 +58,12 @@ test_that("Bnormal2 gives same answers",  {
   xx <- x * 1000
   expect_warning(Bout <- Bnormal2(xx, priors=list(muMean=0, muSD=10)), # silly prior
       "Sample mean is outside the prior range")
-  Bout <- Bnormal2(x, priors=list(muMean=0, muSD=10), seed=345)  # informative prior for mu, default for sigma
+  capture.output(Bout <- Bnormal2(x, priors=list(muMean=0, muSD=10), seed=345))  # informative prior for mu, default for sigma
   if(packageVersion("rjags") < "4.0.0") {
     expect_equivalent(round(colMeans(Bout), 4), c(1.0110, 0.1684))
     expect_equivalent(round(c(hdi(Bout)), 4), c(0.8975, 1.1171, 0.0911, 0.2642))
   }
-  Bout <- Bnormal2(x, priors=list(muMean=0, muSD=10, sigmaMode=0.1, sigmaSD=0.2), seed=345)  # informative prior for mu and sigma
+  capture.output(Bout <- Bnormal2(x, priors=list(muMean=0, muSD=10, sigmaMode=0.1, sigmaSD=0.2), seed=345))  # informative prior for mu and sigma
   expect_equivalent(round(colMeans(Bout), 4), c(1.0115, 0.1620))
   if(packageVersion("rjags") < "4.0.0") {
     expect_equivalent(round(c(hdi(Bout)), 4), c(0.9076, 1.1182, 0.0931, 0.2476))

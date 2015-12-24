@@ -101,7 +101,7 @@ hdi.density <- function(object, credMass=0.95, allowSplit=FALSE, ...) {
     ends <- indices[c(gaps, length(indices))]
     result <- cbind(begin = object$x[begs], end = object$x[ends])
     if(!allowSplit)
-      names(result) <- c("lower", "upper")
+      colnames(result) <- c("lower", "upper")
   }
   attr(result, "credMass") <- credMass
   attr(result, "height") <- height
