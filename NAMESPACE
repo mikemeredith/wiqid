@@ -46,7 +46,7 @@ export(
   distChord, distJaccard, distMatching, distMorisitaHorn, distOchiai, distPreston,
   distRogersTanimoto, distSimRatio, distSorensen, distWhittaker,
   AICc, allCombinations, AICtable, WAIC,
-  hdi, hdi.density,
+  hdi, plotComb,
   plotPost, postPriorOverlap, as.Bwiqid, tracePlot, densityPlot, acfPlot
 )
 

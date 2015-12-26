@@ -21,6 +21,10 @@ TODO
 
   * Add WAIC to other Bayesian functions.
 
+CHANGES in 2015-12-25 v.0.0.399
+
+  * New function plotComb added; hdi.density no longer exported.
+  
 CHANGES in 2015-12-24 v.0.0.398
 
   * Minor bug fixes and more in namespace.
