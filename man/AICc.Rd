@@ -22,6 +22,8 @@ the value to use for the effective sample size; overrides the value contained in
 }
 }
 \details{
+AICc is Akaike's information Criterion (AIC) with a small sample correction. It is \deqn{AICc = AIC + 2K(K + 1) / (n - K - 1)} where \emph{K} is the number of parameters and \emph{n} is the number of observations.
+
 This is an S3 generic, with a default method which calls \code{\link{logLik}}, and should work with any class that has a \code{logLik} method.
 }
 \value{

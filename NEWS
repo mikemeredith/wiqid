@@ -3,6 +3,10 @@ TODO
   * (TRY using Gelman et al 2008 recommendations for priors for logistic coefficients.
   Update man page for priors.) Maybe more important, allow user to choose priors.
 
+  * Review default priors for BoccSS.
+
+  * occ2sps order of parameters in the output is not the same as in the help page.
+
   * Try using optim instead of nlm for functions where estimation near boundaries
   is a problem.
 
@@ -14,23 +18,31 @@ TODO
 
   * survCJS can use time-specific covariate, eg, flood, or grouping factor, but not both.
 
+  * Allow unequal intervals for survCJS.
+
+  * Allow for trap losses in closedCap* functions and survRD (needed for Jim Nichols' meadow vole data).
+
   * Add functions for multi-method and multi-state occupancy.
 
   * Sanity checks that detection histories are all numeric and 0/1/NA? This would
-  slow down simulations.
+  slow down simulations. Maybe have a 'verify' argument as in secr::read.capthist.
 
   * Add WAIC to other Bayesian functions.
+
+CHANGES in 2016-02-23 v.0.0.400
+
+  * MCMCpack wrappers removed because of problems with new version of MCMCpack
 
 CHANGES in 2015-12-25 v.0.0.399
 
   * New function plotComb added; hdi.density no longer exported.
-  
+
 CHANGES in 2015-12-24 v.0.0.398
 
   * Minor bug fixes and more in namespace.
-  
+
   * hdi.density is now exported; column names fixed.
-  
+
 CHANGES in 2015-11-05 v.0.0.397
 
   * BsurvCJS uses a probit link and allows priors to be specified; other survCJS
