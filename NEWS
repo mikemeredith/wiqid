@@ -29,7 +29,11 @@ TODO
 
   * Add WAIC to other Bayesian functions.
 
-CHANGES in 2016-02-23 v.0.0.400
+CHANGES in 2016-02-24 v.0.0.401
+
+  * Function showShinyApp added, plus apps to display beta and gamma distributions.
+
+  CHANGES in 2016-02-23 v.0.0.400
 
   * MCMCpack wrappers removed because of problems with new version of MCMCpack
 

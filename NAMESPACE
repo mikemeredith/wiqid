@@ -48,7 +48,8 @@ export(
   distRogersTanimoto, distSimRatio, distSorensen, distWhittaker,
   AICc, allCombinations, AICtable, WAIC,
   hdi, plotComb,
-  plotPost, postPriorOverlap, as.Bwiqid, tracePlot, densityPlot, acfPlot
+  plotPost, postPriorOverlap, as.Bwiqid, tracePlot, densityPlot, acfPlot,
+  showShinyApp
 )
 
 S3method("print", "wiqid")
