@@ -29,11 +29,15 @@ TODO
 
   * Add WAIC to other Bayesian functions.
 
+CHANGES in 2016-03-15 v.0.0.402
+
+  * 'rjags' (and hence JAGS) now Suggests; 'wiqid' can be installed without JAGS.
+  
 CHANGES in 2016-02-24 v.0.0.401
 
   * Function showShinyApp added, plus apps to display beta and gamma distributions.
 
-  CHANGES in 2016-02-23 v.0.0.400
+CHANGES in 2016-02-23 v.0.0.400
 
   * MCMCpack wrappers removed because of problems with new version of MCMCpack
 

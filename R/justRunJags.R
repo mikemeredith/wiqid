@@ -6,12 +6,12 @@
 # rjags::load.module and unload.module will only load/unload one module!
 loadJagsModules <- function(modules)  {
   for(i in seq_along(modules))
-    load.module(modules[i])
+    rjags::load.module(modules[i])
 }
 
 unloadJagsModules <- function(modules)  {
   for(i in seq_along(modules))
-    unload.module(modules[i])
+    rjags::unload.module(modules[i])
 }
 #''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
@@ -21,10 +21,10 @@ unloadJagsModules <- function(modules)  {
 # Note that initList MUST be the first argument to work with parLapply.
 justRunJagsSerial <- function(initList, data, params, modelFile,
     chains, sample, burnin, adapt=1000, thin=1) {
-  jm <- jags.model(modelFile, data, initList, n.chains=chains, n.adapt=adapt)
+  jm <- rjags::jags.model(modelFile, data, initList, n.chains=chains, n.adapt=adapt)
   if(burnin > 0)
     update(jm, burnin)
-  coda.samples(jm, params, n.iter=sample*thin, thin=thin)
+  rjags::coda.samples(jm, params, n.iter=sample*thin, thin=thin)
 }
 # ---------------------------------------------------------------
 
@@ -33,7 +33,12 @@ justRunJagsSerial <- function(initList, data, params, modelFile,
 justRunJags <- function(data, inits, params, modelFile, 
         chains, sample, burnin, thin=1, adapt = 1000,
         modules = c("glm"), parallel = NULL, seed=NULL)  {
-    
+
+  # Check that `rjags` is installed
+  if(!requireNamespace("rjags", quietly=TRUE)) {
+    stop("The 'rjags' package (and the JAGS program) is needed to run this function.",
+      call.=FALSE)
+  }
   # Deal with parallelism:
   if(chains == 1)
     parallel <- FALSE

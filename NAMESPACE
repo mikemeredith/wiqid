@@ -2,17 +2,13 @@
 
 importFrom(utils, packageVersion, head, tail)
 importFrom(stats, nobs, logLik, update, window)
-importFrom(rjags, jags.model, coda.samples, load.module, unload.module)
-# importFrom(jagsUI, jags.basic)
-# importFrom(runjags, testjags, runjags.options, autorun.jags)
+# importFrom(rjags, jags.model, coda.samples, load.module, unload.module) # now Suggests
 importFrom(coda, mcmc, mcmc.list, as.mcmc.list,
   geweke.diag, gelman.diag, effectiveSize)
-# importFrom(secr, secr.fit) # now Suggests
 importFrom(parallel, detectCores, makeCluster, stopCluster,
   clusterExport, clusterEvalQ, clusterSetRNGStream, parLapply)
 importFrom(MASS, mvrnorm)
 importFrom(truncnorm, rtruncnorm)
-# importFrom(MCMCpack, MCMCregress, MCMClogit) # MCMCpack issues with CRAN
 importFrom("grDevices", "devAskNewPage")
 importFrom("graphics", "abline", "hist", "lines", "matplot", "par",
    "plot", "plot.default", "polygon", "rect", "segments",
