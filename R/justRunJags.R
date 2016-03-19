@@ -24,19 +24,19 @@ justRunJagsSerial <- function(initList, data, params, modelFile,
   jm <- rjags::jags.model(modelFile, data, initList, n.chains=chains, n.adapt=adapt)
   if(burnin > 0)
     update(jm, burnin)
-  rjags::coda.samples(jm, params, n.iter=sample*thin, thin=thin)
+  rjags::coda.samples(jm, params, n.iter=ceiling(sample / chains) * thin, thin=thin)
 }
 # ---------------------------------------------------------------
 
 # The main function to run JAGS
 
-justRunJags <- function(data, inits, params, modelFile, 
+justRunJags <- function(data, inits, params, modelFile,
         chains, sample, burnin, thin=1, adapt = 1000,
         modules = c("glm"), parallel = NULL, seed=NULL)  {
 
   # Check that `rjags` is installed
   if(!requireNamespace("rjags", quietly=TRUE)) {
-    stop("The 'rjags' package (and the JAGS program) is needed to run this function.",
+    stop("The 'rjags' package and the JAGS program are needed to run this function.",
       call.=FALSE)
   }
   # Deal with parallelism:
@@ -59,10 +59,10 @@ justRunJags <- function(data, inits, params, modelFile,
   # Deal with seeds and RNGs
   set.seed(seed, kind='default')
   chainSeeds <- sample.int(1e6, chains)
-  rng0 <- paste("base", c("Wichmann-Hill", "Marsaglia-Multicarry", "Super-Duper", 
+  rng0 <- paste("base", c("Wichmann-Hill", "Marsaglia-Multicarry", "Super-Duper",
     "Mersenne-Twister"), sep="::")
   rng <- rep(rng0, length=chains)
-  
+
   # Fix inits
   if(is.function(inits))  {
     initList <- lapply(1:chains, function(x) inits())
@@ -83,17 +83,17 @@ justRunJags <- function(data, inits, params, modelFile,
       clusterEvalQ(cl, loadJagsModules(modules)) # No need to unload as we stopCluster
     }
     chainList <- parLapply(cl, initList, justRunJagsSerial, data=data, params=params,
-      modelFile=modelFile, chains=1, sample=sample, burnin=burnin, adapt=adapt, thin=thin)
+      modelFile=modelFile, chains=1, sample=ceiling(sample / chains), burnin=burnin, adapt=adapt, thin=thin)
     mcmcList <- mcmc.list(lapply(chainList, function(x) x[[1]]))
     cat("done.\n")
   } else {     ##### Do the serial stuff #####
     if(!is.null(modules))
       loadJagsModules(modules)
-    mcmcList <- justRunJagsSerial(initList, data=data, params=params, modelFile=modelFile, 
+    mcmcList <- justRunJagsSerial(initList, data=data, params=params, modelFile=modelFile,
                   chains=chains, sample=sample, burnin=burnin, adapt=adapt, thin=thin)
     if(!is.null(modules))
       unloadJagsModules(modules)
   }
-    
+
   invisible(mcmcList)
 }

@@ -3,8 +3,8 @@
 
 # This version uses a Gibbs sampler coded in R
 
-BoccSS0 <- function(y, n, psiPrior=c(1,1), pPrior=c(1,1), 
-                    n.chains=3, n.iter=10100, n.burnin=100) {
+BoccSS0 <- function(y, n, psiPrior=c(1,1), pPrior=c(1,1),
+                    chains=3, sample=30000, burnin=100) {
   startTime <- Sys.time()
   nSites <- length(y)
   if(length(n) == 1)
@@ -14,16 +14,13 @@ BoccSS0 <- function(y, n, psiPrior=c(1,1), pPrior=c(1,1),
   known <- y > 0  # sites known to be occupied
   detected <- sum(y)
 
-  # talk <- round(n.iter / 10) ### 'talk'ing increased time by a factor of 10!
+  n.iter <- ceiling(sample / chains) + burnin
   chain <- matrix(nrow=n.iter, ncol=2)
   colnames(chain) <- c("psi", "p")
   chain[1, ] <- rep(0.5, 2)
-  chainList <- vector('list', n.chains)
-  for(ch in 1:n.chains)  {
-    # cat("\nRunning chain", ch)
+  chainList <- vector('list', chains)
+  for(ch in 1:chains)  {
     for(i in 2:n.iter) {
-      # if(i %% talk == 0)
-        # cat(".") ; flush.console()
       # 1. Calculate prob(occupied | y = 0), draw new z vector
       psi.y0 <- (chain[i-1,1] * (1 - chain[i-1,2])^n) /
                     (chain[i-1,1] * (1 - chain[i-1,2])^n + (1 - chain[i-1,1]))
@@ -33,20 +30,19 @@ BoccSS0 <- function(y, n, psiPrior=c(1,1), pPrior=c(1,1),
       # 3. Update p from beta(detected+1, undetected+1) for occupied sites only.
       chain[i,2] <- rbeta(1, detected + pPrior[1], sum(n[z == 1]) - detected + pPrior[2])
     }
-    chainList[[ch]] <- mcmc(chain[(n.burnin+1):n.iter, ], start=n.burnin+1, end=n.iter)
+    chainList[[ch]] <- mcmc(chain, start=burnin+1, end=n.iter)
   }
-  # cat("\nDone.\n")
   # Diagnostics
   MCMC <- mcmc.list(chainList)
   Rhat <- try(gelman.diag(MCMC, autoburnin=FALSE)$psrf[, 1], silent=TRUE)
   if(inherits(Rhat, "try-error") || !is.finite(Rhat))
     Rhat <- NULL
-  
+
   out <- as.Bwiqid(MCMC,
       header = "Model fitted in R with a Gibbs sampler",
       defaultPlot = "psi")
   attr(out, "call") <- match.call()
-  attr(out, "n.chains") <- n.chains
+  attr(out, "n.chains") <- chains
   attr(out, "n.eff") <- effectiveSize(MCMC)
   attr(out, "Rhat") <- Rhat
   attr(out, "timetaken") <- Sys.time() - startTime

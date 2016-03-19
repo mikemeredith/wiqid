@@ -29,7 +29,7 @@ number of individuals in the augmented population; if NA, a suitable default is 
 the number of Markov chains to run.
 }
   \item{sample}{
-the number of values per chain to return. The total number of values calculated per chain is \code{adapt + burnin + sample * thin}.
+the total number of values to return. The number of values calculated per chain is \code{adapt + burnin + ceiling(sample / chains) * thin}.
 }
   \item{burnin}{
 the number of values to discard at the beginning of each chain.

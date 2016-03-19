@@ -15,10 +15,10 @@ Functions to estimate occupancy from detection/non-detection data for a single s
 }
 \usage{
 BoccSS0(y, n, psiPrior=c(1,1), pPrior=c(1,1),
-                    n.chains=3, n.iter=10100, n.burnin=100)
+                    chains=3, sample=30000, burnin=100)
 
 BoccSS(DH, model=NULL, data=NULL, priors=list(),
-                    n.chains=3, n.iter=11000, n.burnin=1000, parallel,
+                    chains=3, sample=30000, burnin=1000, thin=1, parallel,
                     seed=NULL, doWAIC=FALSE)
 }
 \arguments{
@@ -43,14 +43,17 @@ a data frame containing the variables in the model. For \code{occSStime}, a data
   \item{priors}{
 a list with elements for prior mean and variance for coefficients; see Details. If NULL, improper flat priors are used.
 }
-  \item{n.chains}{
+  \item{chains}{
 number of MCMC chains to run.
 }
-  \item{n.iter}{
-number of values per chain, including burn-in.
+  \item{sample}{
+minimum number of values to return. The actual number will be a multiple of the number of chains.
 }
-  \item{n.burnin}{
-number of values per chain to discard as burn-in.
+  \item{burnin}{
+number of iterations per chain to discard as burn-in.
+}
+  \item{thin}{
+the thinning interval between consecutive values in the sample
 }
   \item{parallel}{
 logical; if TRUE \emph{and} \code{n.chains} > 1 \emph{and} available cores (as returned by \code{parallel::detectCores}) > 2, chains will be run in parallel. If missing, chains will be run in parallel if \code{n.chains} < available cores.

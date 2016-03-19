@@ -7,8 +7,8 @@
 # Similar to the one-sample version of BEST::BESTmcmc
 #  but with normal instead of t-distribution.
 
-Bnormal2 <- function(y, priors=NULL, 
-                    chains=3, sample=1e4, burnin=0, thin=1, adapt=1000,
+Bnormal2 <- function(y, priors=NULL,
+                    chains=3, sample=3e4, burnin=0, thin=1, adapt=1000,
                     doPriorsOnly=FALSE, parallel=NULL, seed=NULL) {
 
   startTime <- Sys.time()
@@ -120,7 +120,7 @@ Bnormal2 <- function(y, priors=NULL,
       header = "Model fitted in JAGS with 'rjags' functions",
       defaultPlot = names(codaSamples)[1])
   attr(out, "call") <- match.call()
-  attr(out, "n.chains") <- 3
+  attr(out, "n.chains") <- chains
   attr(out, "n.eff") <- effectiveSize(codaSamples)
   attr(out, "Rhat") <- Rhat
   attr(out, "doPriorsOnly") <- doPriorsOnly

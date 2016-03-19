@@ -4,9 +4,9 @@
 
 # The beta prior is specified by mode and concentration.
 
-Bbinom <- function(y, n, priors=NULL, numSavedSteps=50000) {
+Bbinom <- function(y, n, priors=NULL, sample=50000) {
 
-  if(!is.null(priors$conc) && priors$conc < 2) 
+  if(!is.null(priors$conc) && priors$conc < 2)
     stop("priors$conc must not be less than 2.")
   if(!is.null(priors$mode) && (priors$mode < 0 || priors$mode > 1 ))
     stop("priors$mode must be between 0 and 1.")
@@ -19,11 +19,11 @@ Bbinom <- function(y, n, priors=NULL, numSavedSteps=50000) {
   } else {
     pr1 <- pr2 <- 1
   }
-  
+
   po1 <- pr1 + y
   po2 <- pr2 + n - y
-  
-  post <- rbeta(numSavedSteps, po1, po2)
+
+  post <- rbeta(sample, po1, po2)
 
   out <- as.Bwiqid(data.frame(pi = post),
       header = "Sample drawn from beta posterior distribution",

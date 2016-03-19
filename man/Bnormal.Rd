@@ -14,7 +14,7 @@ Bnormal(y, priors=NULL,
             chains=3, sample=10000, burnin=100)
 
 Bnormal2(y, priors=NULL, 
-            chains=3, sample=1e4, burnin=0, thin=1, adapt=1000,
+            chains=3, sample=3e4, burnin=0, thin=1, adapt=1000,
             doPriorsOnly=FALSE, parallel=NULL, seed=NULL)
 
 }

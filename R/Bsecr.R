@@ -4,9 +4,11 @@
 Bsecr0 <- function(capthist, buffer = 100, start=NULL, nAug = NA,
                     chains=3, sample=1e4, burnin=0, thin=1, adapt=1000,
                     priorOnly=FALSE, parallel=NULL, seed=NULL) {
+
   stopifnot(inherits(capthist, "capthist"))
-  
-  
+
+  startTime <- Sys.time()
+
   if (priorOnly)
     warning("The prior distributions will be produced, not the posterior distributions!")
 
@@ -33,7 +35,7 @@ Bsecr0 <- function(capthist, buffer = 100, start=NULL, nAug = NA,
   lam0start <- mle.res[2,2]
   sigma2start <- 2 * mle.res[3,2]^2
   psistart  <- (mle.res[1,2] * A) / nAug
-    
+
   # Convert capture histories into an Animals x Traps matrix
   nInd <- dim(capthist)[1]
   nOcc <- dim(capthist)[2]
@@ -45,7 +47,7 @@ Bsecr0 <- function(capthist, buffer = 100, start=NULL, nAug = NA,
       for(j in 1:nOcc)
         yMat[i, capthist[i, j]] <- yMat[i, capthist[i, j]] + 1
   }
-  
+
   # Get initial locations of animals
   SX <- SY <- numeric(nInd)
   for(i in 1:nInd) {
@@ -84,21 +86,23 @@ Bsecr0 <- function(capthist, buffer = 100, start=NULL, nAug = NA,
       A = A, maxSig2 = maxSig2)
   if (!priorOnly)
     jagsData$y <- yMat
-  inits <- function() {list(z=rep(1, nAug), 
+  inits <- function() {list(z=rep(1, nAug),
                         SX=c(SX, runif(nAug-nInd, xl, xu)),
                         SY=c(SY, runif(nAug-nInd, yl, yu)),
                         sigma2=sigma2start, lam0=lam0start,
                         psi=psistart)}
   wanted <- c("D", "lam0", "sigma")
-  
+
   # Run the model:
   resB <- justRunJags(jagsData, inits, wanted, modelFile,
             chains, sample, burnin, thin, adapt,
             modules = c("glm"), parallel = parallel, seed=seed)
-    
-  out <- as.Bwiqid(resB, 
+
+  out <- as.Bwiqid(resB,
       header = "Model fitted in JAGS with 'rjags' functions",
       defaultPlot = "D")
+  attr(out, "timetaken") <- Sys.time() - startTime
+  attr(out, "call") <- match.call()
   # check augmentation
   if(ceiling(max(out$D) * A) >= nAug)
     warning(paste("Augmentation may not be adequate; rerun with nAug >>", nAug))

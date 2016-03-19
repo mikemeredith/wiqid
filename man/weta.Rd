@@ -41,7 +41,7 @@ occSS(DH, list(psi ~ Browsed, p ~ Browsed), data=weta)
 #  bushes, and a time trend for probability of detection; specify uniform
 #  priors for probability of occupancy:
 Bwet <- BoccSS(DH, model=list(psi~Browsed-1, p~.Time), data=weta,
-  priors=list(sigmaPsi=c(1,1)), n.chains=2)
+  priors=list(sigmaPsi=c(1,1)), chains=2)
 Bwet
 plot(Bwet)
 plot(Bwet, "p_.Time")

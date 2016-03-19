@@ -34,8 +34,7 @@ A much simplified version of code by Jason Bryer on Github at https://github.com
 \examples{
 showShinyApp() # Shows a list of available apps
 
-\donttest{
-showShinyApp("Beta")
-}
+# The following command will cause R to freeze until you press Esc:
+# showShinyApp("Beta")
 
 }

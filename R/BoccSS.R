@@ -3,7 +3,7 @@
 # Bayesian version, using Dorazio & Rodriguez (2011) algorithm
 
 BoccSS <- function(DH, model=NULL, data=NULL, priors=list(),
-                    n.chains=3, n.iter=11000, n.burnin=1000, parallel,
+                    chains=3, sample=30000, burnin=1000, thin=1, parallel,
                     seed=NULL, doWAIC=FALSE) {
   # single-season occupancy models with site and survey covariates
   # ** DH is detection data in a 1/0/NA matrix or data frame, sites in rows,
@@ -20,20 +20,20 @@ BoccSS <- function(DH, model=NULL, data=NULL, priors=list(),
     stop("DH is not a valid detection history matrix (or data frame).")
 
   # Deal with parallel (order of the if statements is important!)
-  if(n.chains == 1)
+  if(chains == 1)
     parallel <- FALSE
   if(missing(parallel))
-    parallel <- n.chains < detectCores()
+    parallel <- chains < detectCores()
   if(parallel) {
-    coresToUse <- min(n.chains, detectCores() - 1)
+    coresToUse <- min(chains, detectCores() - 1)
     if(coresToUse < 2) {
       warning("Multiple cores not available; running chains sequentially.")
       parallel <- FALSE
     }
   }
   if(parallel) {
-    if(n.chains > coresToUse)
-      warning(paste("Running", n.chains, "chains on", coresToUse, "cores."))
+    if(chains > coresToUse)
+      warning(paste("Running", chains, "chains on", coresToUse, "cores."))
     cl <- makeCluster(coresToUse)
     on.exit(stopCluster(cl))
   }
@@ -162,13 +162,14 @@ BoccSS <- function(DH, model=NULL, data=NULL, priors=list(),
   }
   # Starting values - use MLEs
   set.seed(seed)
-  starters <- vector('list', n.chains)
-  for(i in 1:n.chains)
+  starters <- vector('list', chains)
+  for(i in 1:chains)
     starters[[i]] <- mle * runif(K, 0.95, 1.05) #####
   y <- rowSums(DH, na.rm=TRUE)
   z <- as.integer(y > 0)  ## (Starting value for) occupancy state
 
-  cat("Starting MCMC run for", n.chains, "chains with", n.iter, "iterations.\n")
+  n.iter <- ceiling(sample / chains) * thin + burnin
+  cat("Starting MCMC run for", chains, "chains with", n.iter, "iterations.\n")
   flush.console()
 
   # Function to do 1 chain
@@ -219,7 +220,7 @@ BoccSS <- function(DH, model=NULL, data=NULL, priors=list(),
 
       alphaMean = V.alpha %*% (ScaledMuP + (t(Wmat) %*% u) ) # prior here
       alpha <- matrix(MASS::mvrnorm(1, alphaMean, V.alpha), ncol=1)
-      
+
       # Calculate ppd for each site
       if(doWAIC) {
         p.vec <- as.vector(pnorm(pModMat %*% alpha))
@@ -228,14 +229,14 @@ BoccSS <- function(DH, model=NULL, data=NULL, priors=list(),
         ppd <- psi * lik2 + (1 - psi) * (y == 0)
         chain[draw, ] <- c(beta, alpha, ppd)
       } else {
-        chain[draw, ] <- c(beta, alpha) 
+        chain[draw, ] <- c(beta, alpha)
       }
     }
-    return(coda::mcmc(chain[(n.burnin+1):n.iter, ]))
+    return(coda::mcmc(chain[(burnin+1):n.iter, ], thin=thin))
   }
 
   if(parallel) {
-    clusterExport(cl, c("K", "psiK", "n.iter", "n.burnin",
+    clusterExport(cl, c("K", "psiK", "n.iter", "burnin", "thin",
         "psiModMat", "pModMat", "siteID", "siteIDfac", "y", "DHvec",
         "ScaledMuPsi", "V.beta", "SigmaInvP", "ScaledMuP", "doWAIC"),
         envir=environment())
@@ -263,7 +264,7 @@ BoccSS <- function(DH, model=NULL, data=NULL, priors=list(),
       header = "Model fitted in R with a Gibbs sampler",
       defaultPlot = names(MCMC)[1])
   attr(out, "call") <- match.call()
-  attr(out, "n.chains") <- n.chains
+  attr(out, "n.chains") <- chains
   attr(out, "n.eff") <- effectiveSize(MCMC)
   attr(out, "Rhat") <- Rhat
   if(doWAIC)

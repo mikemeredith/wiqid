@@ -9,7 +9,7 @@ Bayesian analysis of binomial data
 Simulates a sample from the posterior for a binomial likelihood and beta prior.
 }
 \usage{
-Bbinom(y, n, priors=NULL, numSavedSteps=50000)
+Bbinom(y, n, priors=NULL, sample=50000)
 }
 \arguments{
   \item{y}{
@@ -21,7 +21,7 @@ the number of trials
   \item{priors}{
 an optional list with elements specifying the priors for the mode and concentration of the beta prior distribution; see Details.
 }
-  \item{numSavedSteps}{
+  \item{sample}{
 the number of MCMC observations to be returned.
 }
 }
