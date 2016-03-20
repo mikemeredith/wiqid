@@ -168,7 +168,6 @@ All of these functions produce distance measures (not similarity) on a scale of 
   \code{\link{AICc}} \tab AIC with small-sample correction \cr
   \code{\link{AICtable}} \tab tabulate AIC for several models \cr
   \code{\link{allCombinations}} \tab model formulae for combinations of covariates \cr
-  \code{\link{hdi}} \tab calculate Highest Density Intervals of a distribution \cr
   \code{\link{plotPost}} \tab graphic display of a posterior distribution \cr
   \code{\link{postPriorOverlap}} \tab calculation and display of posterior/prior overlap \cr
   \code{\link{as.Bwiqid}} \tab converts a range of classes of MCMC output to class \code{Bwiqid} so that \code{wiqid}'s print and plot functions can be used. \cr
