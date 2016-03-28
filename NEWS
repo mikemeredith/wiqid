@@ -29,6 +29,10 @@ TODO
 
   * Add WAIC to other Bayesian functions.
 
+CHANGES in 2016-03-28 v.0.0.404
+
+  * 
+
 CHANGES in 2016-03-20 v.0.0.403
 
   * Function hdi removed; now imported from HDInterval package.
