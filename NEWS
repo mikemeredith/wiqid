@@ -16,7 +16,7 @@ TODO
 
   * Fix BsurvCJS with groups argument.
 
-  * survCJS can use time-specific covariate, eg, flood, or grouping factor, but not both.
+  * FIX - survCJS can use time-specific covariate, eg, flood, or grouping factor, but not both.
 
   * Allow unequal intervals for survCJS.
 
@@ -29,9 +29,9 @@ TODO
 
   * Add WAIC to other Bayesian functions.
 
-CHANGES in 2016-03-28 v.0.0.404
+CHANGES in 2016-05-02 v.0.0.404
 
-  * 
+  * Changed testthat files to work with R 3.3 (as well as R 3.2).
 
 CHANGES in 2016-03-20 v.0.0.403
 
