@@ -78,10 +78,7 @@ test_that("occMStime gives right answers",  {
       equals(c(0.6892, 0.6422, 0.7325)))
   expect_that(round(AIC(res1), 4), 
       equals(1775.0155))
-  expect_that(    
-    res2 <- occMStime(DH, 3, list(gamma ~ .interval, epsilon~.interval, p~.season)),
-    takes_less_than(20))
-
+  res2 <- occMStime(DH, 3, list(gamma ~ .interval, epsilon~.interval, p~.season))
   expect_that(dim(res2$beta), equals(c(14, 4)))
   expect_that(dim(res2$real), equals(c(14, 3)))
   # Check against PRESENCE results:
@@ -136,12 +133,9 @@ test_that("occMS gives right answers",  {
         equals(1775.0155))
   }  # if FALSE    
       
-  expect_that(    
-    res2 <- occMS(DH, 3,
-       model=list(psi1~habitat, gamma ~ habitat, epsilon~habitat),
-       data=GrandSkinks),
-    takes_less_than(300))
-
+  res2 <- occMS(DH, 3,
+     model=list(psi1~habitat, gamma ~ habitat, epsilon~habitat),
+     data=GrandSkinks)
   expect_that(dim(res2$beta), equals(c(7, 4)))
   expect_that(dim(res2$real), equals(c(5353, 3)))
   # Check against PRESENCE results:
@@ -192,12 +186,9 @@ test_that("occMScovSite gives right answers",  {
   expect_that(round(AIC(res1), 4), 
       equals(1775.0155))
       
-  expect_that(    
-    res2 <- occMScovSite(DH, 3,
-       model=list(psi1~habitat, gamma ~ habitat, epsilon~habitat),
-       data=GrandSkinks),
-    takes_less_than(10))
-
+  res2 <- occMScovSite(DH, 3,
+     model=list(psi1~habitat, gamma ~ habitat, epsilon~habitat),
+     data=GrandSkinks)
   expect_that(dim(res2$beta), equals(c(7, 4)))
   expect_that(dim(res2$real), equals(c(4928, 3)))
   # Check against PRESENCE results:

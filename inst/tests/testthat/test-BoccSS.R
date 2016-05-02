@@ -55,13 +55,20 @@ if(parallel::detectCores() > 3) {
     expect_that(names(Bout), equals(c("psi_(Intercept)", "p_(Intercept)")))
     expect_that(attr(Bout, "header"), equals("Model fitted in R with a Gibbs sampler"))
     expect_that(attr(Bout, "n.chains"), equals(3))
-    expect_equivalent(round(attr(Bout, "n.eff")), c(299, 399))
-    expect_equivalent(round(attr(Bout, "Rhat"), 3), c(1.009, 1.010))
     expect_equal(as.character(attr(Bout, "call")), c("BoccSS", "DH", "3000", "100", "123"))
-    expect_equivalent(round(colMeans(Bout), 4), c(0.3426, -0.4035))
-    expect_equivalent(round(c(hdi(Bout)), 4),
-      c(-0.1232, 0.8500, -0.6895, -0.1363))
-
+    if(getRversion() < "3.3.0") {
+      expect_equivalent(round(attr(Bout, "n.eff")), c(299, 399))
+      expect_equivalent(round(attr(Bout, "Rhat"), 3), c(1.009, 1.010))
+      expect_equivalent(round(colMeans(Bout), 4), c(0.3426, -0.4035))
+      expect_equivalent(round(c(hdi(Bout)), 4),
+        c(-0.1232, 0.8500, -0.6895, -0.1363))
+    } else {
+      expect_equivalent(round(attr(Bout, "n.eff")), c(248, 361))
+      expect_equivalent(round(attr(Bout, "Rhat"), 3), c(1.003, 1.002))
+      expect_equivalent(round(colMeans(Bout), 4), c(0.3927, -0.4286))
+      expect_equivalent(round(c(hdi(Bout)), 4),
+        c(-0.1096, 0.9313, -0.7059, -0.1553))
+    }
     expect_output({Bout <- BoccSS(DH, model=list(psi~Browsed-1, p~.Time), data=weta,
       priors=list(sigmaPsi=c(1,1)), chains=2, sample=2000, burnin=100,
       seed=234)}, " ")
@@ -75,8 +82,8 @@ if(parallel::detectCores() > 3) {
       "weta", "list(sigmaPsi = c(1, 1))", "2", "2000", "100", "234"))
 
     expect_equivalent(round(colMeans(Bout), 4), c(0.0207, 0.7862, -0.4192, 0.3369))
-    expect_equivalent(round(c(hdi(Bout)), 4),
-      c(-0.4969, 0.5628, 0.0593, 1.5890, -0.6890, -0.1601, -0.0534, 0.7599))
+    expect_equivalent(round(c(hdi(Bout)), 3),
+      c(-0.497, 0.563, 0.059, 1.589, -0.689, -0.160, -0.053, 0.760))
   })
 }
 # ........................................................
@@ -94,13 +101,20 @@ test_that("BoccSS sequential gives same answers",  {
   expect_that(names(Bout), equals(c("psi_(Intercept)", "p_(Intercept)")))
   expect_that(attr(Bout, "header"), equals("Model fitted in R with a Gibbs sampler"))
   expect_that(attr(Bout, "n.chains"), equals(3))
-  expect_equivalent(round(attr(Bout, "n.eff")), c(155, 224))
-  expect_equivalent(round(attr(Bout, "Rhat"), 3), c(1.642, 1.228))
   expect_equal(as.character(attr(Bout, "call")), c("BoccSS", "DH", "3000", "100", "FALSE", "123"))
-  expect_equivalent(round(colMeans(Bout), 4), c(1.0043, -0.4708))
-  expect_equivalent(round(c(hdi(Bout)), 4),
-    c(-0.1668, 5.2056, -0.8808, -0.1557))
-
+  if(getRversion() < "3.3.0") {
+    expect_equivalent(round(attr(Bout, "n.eff")), c(155, 224))
+    expect_equivalent(round(attr(Bout, "Rhat"), 3), c(1.642, 1.228))
+    expect_equivalent(round(colMeans(Bout), 4), c(1.0043, -0.4708))
+    expect_equivalent(round(c(hdi(Bout)), 4),
+      c(-0.1668, 5.2056, -0.8808, -0.1557))
+  } else {
+    expect_equivalent(round(attr(Bout, "n.eff")), c(174, 288))
+    expect_equivalent(round(attr(Bout, "Rhat"), 3), c(1.014, 1.003))
+    expect_equivalent(round(colMeans(Bout), 4), c(0.3788, -0.4145))
+    expect_equivalent(round(c(hdi(Bout)), 4),
+      c(-0.1052,  1.0259, -0.7200, -0.1142))
+  }
   expect_output({Bout <- BoccSS(DH, model=list(psi~Browsed-1, p~.Time), data=weta,
     priors=list(sigmaPsi=c(1,1)), chains=1, sample=1000, burnin=100,
     seed=234)}, " ")
