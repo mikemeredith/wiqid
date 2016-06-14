@@ -7,7 +7,7 @@
 
 \description{
   
-Generalised linear models with binomial resonse variables ("logistic regression") use a link function to link the response on a (0,1) scale to a linear predictor on (-Inf, Inf). The cannonical link is the logistic ("logit") function, which has some nice theoretical properties and can be interpreted as the log of the odds of success. Other links are available, notably the cumulative standard normal ("probit") link, which allows for Gibbs sampling with truncated normal distributions. For that reason, several of the Bayesian estimation functions in \pkg{wiqid} use the probit link.
+Generalised linear models with binomial resonse variables ("logistic regression") use a link function to link the response on a (0,1) scale to a linear predictor on (-Inf, Inf). The canonical link is the logistic ("logit") function, which has some nice theoretical properties and can be interpreted as the log of the odds of success. Other links are available, notably the cumulative standard normal ("probit") link, which allows for Gibbs sampling with truncated normal distributions. For that reason, several of the Bayesian estimation functions in \pkg{wiqid} use the probit link.
 
 The form of the logit and probit links are shown in the figure below.
 

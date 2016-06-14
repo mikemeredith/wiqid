@@ -2,14 +2,21 @@
 # This file contains utilities used in several places in the code
 #   and NOT exported:
 
+# logSumExp: sum probabilities without over/underflow
 # signifish : an alternative to signif (added 10-02-2015)
 # fixCI : Calculate critical values for CI.
-# fixNames : Tidy up the column names in MCMC output: remove [] and ,
+# fixNames : Tidy up the column names in MCMC output: remove [] and , and make names unique.
 # getMARKci : Calculate MARK-style confidence intervals for N
 # stdModel : Regularize a list of formulae, ensuring it is a named list of one-sided formulae.
 # stddata : Convert a data frame of site and survey data into a list and standardise
 # selectCovars : Pull the covars needed for a model matrix into a specific data frame
 # AICtable moved to file AICc.R
+
+# logSumExp: sum probabilities without over/underflow
+
+logSumExp <- function(x)
+  log(sum(exp(x - max(x)))) + max(x)
+
 # ...............................................................................
 
 # A more sensible version of signif
@@ -27,9 +34,11 @@ fixCI <- function(ci) {
 }
 # .....................................................................
 
-# Tidy up the column names in MCMC output: remove [] and ,
-fixNames <- function(x)
-  sub(",", "\\.", sub("\\]", "", sub("\\[", "", x)))
+# Tidy up the column names in MCMC output: remove [] and , and make names unique
+fixNames <- function(x) {
+  tmp <- sub(",", "\\.", sub("\\]", "", sub("\\[", "", x)))
+  make.unique(tmp)
+}
 # .....................................................................
 
 # Function to calculate the MARK-style confidence intervals for N
@@ -91,7 +100,7 @@ stdModel <- function (model1, defaultModel) {
 }
 # .............................................................................
 
-## Convert a data frame of site and survey data into a list 
+## Convert a data frame of site and survey data into a list
 # ** Site covars will each have a single column in the data frame,
 # ** survey covars will have a column for each survey occasion, and
 # column names end with the number of the occasion, eg, temperature

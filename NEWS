@@ -28,6 +28,14 @@ TODO
   slow down simulations. Maybe have a 'verify' argument as in secr::read.capthist.
 
   * Add WAIC to other Bayesian functions.
+  
+  * When estimation is subcontracted, (eg occSS to occSS0) original call should be returned.
+
+CHANGES in 2016-05-16 v.0.0.405
+
+  * Fixed underflow problem with occ2sps.
+
+  * Fixed bugs in as.Bwiqid.
 
 CHANGES in 2016-05-02 v.0.0.404
 

@@ -40,7 +40,7 @@ as.Bwiqid.mcmc.list <- function(object, header, defaultPlot, ...) {
   attr(out, "n.chains") <- length(object)
   attr(out, "n.eff") <- effectiveSize(object)
   if(length(object) > 1)
-    attr(out, "Rhat") <- gelman.diag(object, multivariate=FALSE)$psrf[, 1]
+    attr(out, "Rhat") <- gelman.diag(object, autoburnin=FALSE, multivariate=FALSE)$psrf[, 1]
   if(!missing("defaultPlot"))
     attr(out, "defaultPlot") <- defaultPlot
   return(out)
@@ -59,7 +59,7 @@ as.Bwiqid.mcmc <- function(object, header, defaultPlot, ...) {
   return(out)
 }
 
-# Class bugs from R2WinBUGS package (and R2OpenBUGS too?)
+# Class bugs from R2WinBUGS package and R2OpenBUGS
 as.Bwiqid.bugs <- function(object, header, defaultPlot, ...) {
   out <- as.data.frame(object$sims.matrix)
   names(out) <- fixNames(names(out))
@@ -68,8 +68,15 @@ as.Bwiqid.bugs <- function(object, header, defaultPlot, ...) {
     header <- paste("Model fitted in", object$program)
   attr(out, "header") <- header
   attr(out, "n.chains") <- object$n.chains
-  attr(out, "n.eff") <- object$summary[, 'n.eff']
-  attr(out, "Rhat") <- object$summary[, 'Rhat']
+  if(object$n.chains > 1) {
+    if(ncol(out) > 1) {
+      attr(out, "n.eff") <- object$summary[, 'n.eff']
+      attr(out, "Rhat") <- object$summary[, 'Rhat']
+    } else {
+      attr(out, "n.eff") <- object$summary['n.eff'] # summary is a vector
+      attr(out, "Rhat") <- object$summary['Rhat']
+    }
+  }
   if(!missing("defaultPlot"))
     attr(out, "defaultPlot") <- defaultPlot
   return(out)
@@ -84,8 +91,10 @@ as.Bwiqid.rjags <- function(object, header, defaultPlot, ...) {
     header <- "Model fitted in JAGS with R2jags"
   attr(out, "header") <- header
   attr(out, "n.chains") <- object$BUGSoutput$n.chains
-  attr(out, "n.eff") <- object$BUGSoutput$summary[, 'n.eff']
-  attr(out, "Rhat") <- object$BUGSoutput$summary[, 'Rhat']
+  if(object$BUGSoutput$n.chains > 1) {
+    attr(out, "n.eff") <- object$BUGSoutput$summary[, 'n.eff'] ## not calculated if 1 chain
+    attr(out, "Rhat") <- object$BUGSoutput$summary[, 'Rhat']
+  }
   if(!missing("defaultPlot"))
     attr(out, "defaultPlot") <- defaultPlot
   return(out)
@@ -101,9 +110,11 @@ as.Bwiqid.jagsUI <- function(object, header, defaultPlot, ...) {
     header <- "Model fitted in JAGS with jagsUI"
   attr(out, "header") <- header
   attr(out, "n.chains") <- length(object$samples)
-  attr(out, "n.eff") <- unlist(object$n.eff)
-  if(length(object) > 1)
-    attr(out, "Rhat") <- unlist(object$Rhat)
+  if(length(object$samples) > 1) {
+    attr(out, "n.eff") <- unlist(object$n.eff)
+    if(length(object) > 1)
+      attr(out, "Rhat") <- unlist(object$Rhat)
+  }
   if(!missing("defaultPlot"))
     attr(out, "defaultPlot") <- defaultPlot
   attr(out, "timetaken") <- as.difftime(object$mcmc.info$elapsed.mins, units="mins")
@@ -112,7 +123,7 @@ as.Bwiqid.jagsUI <- function(object, header, defaultPlot, ...) {
 
 # Class runjags from runjags package
 as.Bwiqid.runjags <- function(object, header, defaultPlot, ...) {
-  out <- as.data.frame(as.matrix(as.mcmc.list(object)))
+  out <- as.data.frame(as.matrix(object$mcmc))
   names(out) <- fixNames(names(out))
   class(out) <- c("Bwiqid", class(out))
   if(missing(header))
@@ -121,7 +132,8 @@ as.Bwiqid.runjags <- function(object, header, defaultPlot, ...) {
   attr(out, "n.chains") <- length(object$mcmc)
   attr(out, "n.eff") <- as.data.frame(unclass(object$mcse))$sseff
   attr(out, "MCerror") <- as.data.frame(unclass(object$mcse))$mcse
-  attr(out, "Rhat") <- object$psrf$psrf[, 1]
+  if(length(object$mcmc) > 1)
+    attr(out, "Rhat") <- object$psrf$psrf[, 1]
   if(!missing(defaultPlot))
     attr(out, "defaultPlot") <- defaultPlot
   attr(out, "timetaken") <- object$timetaken

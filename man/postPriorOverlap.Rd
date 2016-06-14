@@ -46,7 +46,7 @@ a vector of length 2 giving the limits for the x axis.
 a vector of length 2 giving the limits for the y axis, or NULL to adjust for the actual range of density.
 }
   \item{colors}{
-A vector of four colours for the posterior, prior, overlap, and borders. See the Color Specification section of \code{link{par}}
+A vector of four colours for the posterior, prior, overlap, and borders. See the Color Specification section of \code{\link{par}}
 }
   \item{main}{
 text to use as the main title of the plot

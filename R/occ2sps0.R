@@ -13,32 +13,32 @@ occ2sps0 <- function(DHA, DHB, modPars, ci=0.95)  {
 
   # get the occupancy vector
   # psiX is a vector with elements psiA, psiBa, psiBA
-  getPHI <- function(psiX) {
-    c(psiX[1] * psiX[3],             # both
+  getlogPHI <- function(psiX) {
+    log(c(psiX[1] * psiX[3],             # both
       psiX[1] * (1 - psiX[3]),       # A only
       (1 - psiX[1]) * psiX[2],       # B only
-      (1 - psiX[1]) * (1 - psiX[2])) # neither
+      (1 - psiX[1]) * (1 - psiX[2]))) # neither
   }
 
   # Do the detection vector for one site
   # pX is a vector with elements pA, pB, rA, rBa, rBA
-  getP <- function(dhA, dhB, pX)  {
+  getlogP <- function(dhA, dhB, pX)  {
     # prob of detecting B if both present conditional on detection of A
     probCapB <- dhA * pX[5] + (1 - dhA) * pX[4]
     c(
       # Both sps present, use the r's
-      prod(dhA * pX[3] + (1 - dhA) * (1 - pX[3]),      # A
-        dhB * probCapB + (1 - dhB) * (1 - probCapB), na.rm=TRUE),  # B
+      sum(log(dhA * pX[3] + (1 - dhA) * (1 - pX[3])),      # A
+        log(dhB * probCapB + (1 - dhB) * (1 - probCapB)), na.rm=TRUE),  # B
       # Sps A present, B absent, use pA
-      if(sum(dhB, na.rm=TRUE) > 0) { 0 } else {
-        prod(dhA * pX[1] + (1 - dhA) * (1 - pX[1]), na.rm=TRUE) # A
+      if(sum(dhB, na.rm=TRUE) > 0) { -Inf } else {
+        sum(log(dhA * pX[1] + (1 - dhA) * (1 - pX[1])), na.rm=TRUE) # A
       },
       # Sps A absent, B present, use pB
-      if(sum(dhA, na.rm=TRUE) > 0) { 0 } else {  
-        prod(dhB * pX[2] + (1 - dhB) * (1 - pX[2]), na.rm=TRUE) # B
+      if(sum(dhA, na.rm=TRUE) > 0) { -Inf } else {
+        sum(log(dhB * pX[2] + (1 - dhB) * (1 - pX[2])), na.rm=TRUE) # B
       },
       # Neither present
-      if(sum(dhA, dhB, na.rm=TRUE) > 0) { 0 } else { 1 } )
+      if(sum(dhA, dhB, na.rm=TRUE) > 0) { -Inf } else { 0 } )
   }
 
   # objects to hold output
@@ -51,13 +51,13 @@ occ2sps0 <- function(DHA, DHB, modPars, ci=0.95)  {
   # Do the neg log lik function:
   nll <- function(params) {
     real <- plogis(params[modPars])
-    PHI <- getPHI(real[1:3])
-    lik <- numeric(nSites)
+    logPHI <- getlogPHI(real[1:3])
+    loglik <- numeric(nSites)
     for(i in 1:nSites)
-      lik[i] <- PHI %*% getP(dhA=DHA[i, ], dhB=DHB[i, ], pX=real[4:8])  
-    return(min(-sum(log(lik)), .Machine$double.xmax))
-  }    
-    
+      loglik[i] <- logSumExp(logPHI + getlogP(dhA=DHA[i, ], dhB=DHB[i, ], pX=real[4:8]) )
+    return(min(-sum(loglik), .Machine$double.xmax))
+  }
+
   # Run mle estimation with optim:
   params <- rep(0, length(unique(modPars)))
   res <- optim(params, nll, method="L-BFGS-B", lower=-10, upper=10, hessian=TRUE)
@@ -66,7 +66,7 @@ occ2sps0 <- function(DHA, DHB, modPars, ci=0.95)  {
   } else {
     logLik <- -res$value
   }
-  
+
   beta.mat[,1] <- res$par[modPars]
   # varcov0 <- try(solve(res$hessian), silent=TRUE)
   varcov0 <- try(chol2inv(chol(res$hessian)), silent=TRUE)
