@@ -31,7 +31,7 @@ TODO
   
   * When estimation is subcontracted, (eg occSS to occSS0) original call should be returned.
 
-CHANGES in 2016-05-16 v.0.0.405
+CHANGES in 2016-06-14 v.0.0.405
 
   * Fixed underflow problem with occ2sps.
 
