@@ -11,9 +11,9 @@ Single-season occupancy estimation
 Functions to estimate occupancy from detection/non-detection data for a single season. \code{occSS} is the general-purpose function, and \code{occSStime} provides plots of detection probability against time. \code{occSS0} and \code{occSScovSite} are faster functions for simpler models with summarized data. See \code{occSSrn} for the Royle-Nichols model for abundance-induced heterogeneity in detection probability.
 }
 \usage{
-occSS(DH, model=NULL, data = NULL, ci=0.95, link=c("logit", "probit"))
+occSS(DH, model=NULL, data = NULL, ci=0.95, link=c("logit", "probit"), verify=TRUE)
 
-occSStime(DH, model=p~1, data=NULL, ci=0.95, plot=TRUE, link=c("logit", "probit"))
+occSStime(DH, model=p~1, data=NULL, ci=0.95, plot=TRUE, link=c("logit", "probit"), verify=TRUE)
 
 occSS0(y, n, ci=0.95, link=c("logit", "probit"))
 
@@ -35,6 +35,9 @@ a data frame containing the variables in the model. For \code{occSStime}, a data
 }
   \item{link}{
 the link function to use, either logit or probit; see \link{Links}.
+}
+  \item{verify}{
+if TRUE, the data provided will be checked.
 }
   \item{plot}{
 if TRUE (default), draws a plot of probability of detection vs time.

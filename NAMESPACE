@@ -1,7 +1,8 @@
 # NAMESPACE for package 'wiqid'
 
 importFrom(utils, packageVersion, head, tail)
-importFrom(stats, nobs, logLik, update, window)
+importFrom(stats, nobs, logLik, update, window,
+  dt, pt, qt, rt)
 importFrom(coda, mcmc, mcmc.list, as.mcmc.list,
   geweke.diag, gelman.diag, effectiveSize)
 importFrom(HDInterval, hdi)
@@ -29,7 +30,7 @@ export(
   occSSrn, occSSrn0, occSSrnSite,
   occ2sps,
   occMS0, occMStime, occMScovSite, occMS,
-  occMScov, occMSseason, occSScov, # These 3 deprecated.
+  # occMScov, occMSseason, occSScov, # These 3 deprecated.
   Bnormal, Bnormal2, Bbinom,
   # Bregress, Blogit, # These were wrappers for MCMCpack
   BoccSS0, BoccSS, BsurvCJS, Bsecr0,
@@ -45,7 +46,8 @@ export(
   AICc, allCombinations, AICtable, WAIC,
   plotComb,
   plotPost, postPriorOverlap, as.Bwiqid, tracePlot, densityPlot, acfPlot,
-  showShinyApp
+  showShinyApp,
+  dt2, pt2, qt2, rt2
 )
 
 S3method("print", "wiqid")

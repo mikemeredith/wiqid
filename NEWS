@@ -24,12 +24,19 @@ TODO
 
   * Add functions for multi-method and multi-state occupancy.
 
-  * Sanity checks that detection histories are all numeric and 0/1/NA? This would
-  slow down simulations. Maybe have a 'verify' argument as in secr::read.capthist.
+  * Add 'verify' argument to more functions.
 
   * Add WAIC to other Bayesian functions.
-  
+
   * When estimation is subcontracted, (eg occSS to occSS0) original call should be returned.
+
+CHANGES in 2016-09-28 v.0.0.406
+
+  * Added wrappers for t-distribution: dt2, pt2, qt2, rt2.
+  
+  * Added 'verify' argument to occSS, occSStime, occSSrn and occ2sps.
+  
+  * Removed the deprecated functions occMScov, occMSseason and occSScov.
 
 CHANGES in 2016-06-14 v.0.0.405
 
@@ -48,7 +55,7 @@ CHANGES in 2016-03-20 v.0.0.403
 CHANGES in 2016-03-15 v.0.0.402
 
   * 'rjags' (and hence JAGS) now Suggests; 'wiqid' can be installed without JAGS.
-  
+
 CHANGES in 2016-02-24 v.0.0.401
 
   * Function showShinyApp added, plus apps to display beta and gamma distributions.

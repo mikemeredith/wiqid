@@ -3,13 +3,16 @@
 
 # See MacKenzie et al (2006) "Occupancy..." p194ff
 
-occMS0 <- function(DH, occsPerSeason, ci=0.95) {    
+occMS0 <- function(DH, occsPerSeason, ci=0.95, verify=TRUE) {    
 
   # ** DH is detection data in a 1/0/NA matrix or data frame, sites in rows, 
   #    detection occasions in columns..
   # ** occsPerSeason is a scalar or vector with the number of occasions per season
   # ci is the required confidence interval.
-             
+  
+  if(verify)
+    DH <- verifyDH(DH, allowNA=TRUE)
+    
   crit <- fixCI(ci)
 
   # Check for all-NA rows (eg, Grand Skinks data set!)

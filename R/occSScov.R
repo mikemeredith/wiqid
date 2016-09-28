@@ -2,12 +2,8 @@
 
 # 'link' argument added 2015-02-20
 
-occSScov <- function(...) {
-  cat("occSScov has been renamed occSS.\n")
-  occSS(...)
-}
-
-occSS <- function(DH, model=NULL, data=NULL, ci=0.95, link=c("logit", "probit")) {
+occSS <- function(DH, model=NULL, data=NULL, ci=0.95, link=c("logit", "probit"),
+  verify=TRUE) {
   # single-season occupancy models with site and survey covatiates
   # ** DH is detection data in a 1/0/NA matrix or data frame, sites in rows,
   #    detection occasions in columns..
@@ -15,6 +11,9 @@ occSS <- function(DH, model=NULL, data=NULL, ci=0.95, link=c("logit", "probit"))
   #   2-sided formula, eg, model = psi ~ habitat.
   # ** data is a DATA FRAME with single columns for site covariates and a column for each survey occasion for each survey covariate.
   # ci is the required confidence interval.
+  
+  if(verify)
+    DH <- verifyDH(DH, allowNA=TRUE)
 
   if(is.null(model)) {
     y <- rowSums(DH, na.rm=TRUE)

@@ -12,21 +12,18 @@
 #  list, the remaining parameters are assigned the following values:
 #  psiBA <- psiBa, rA <- pA, rBa <- pB, rBA <- rBa.
 
-occ2sps <- function(DHA, DHB, model=NULL, data=NULL, ci=0.95)  {
+occ2sps <- function(DHA, DHB, model=NULL, data=NULL, ci=0.95, verify=TRUE)  {
 
   DHA <- as.matrix(DHA)
   DHB <- as.matrix(DHB)
-  stopifnot(all.equal(dim(DHA), dim(DHB)))
-  # No check that they are numeric, 0/1/NA !!!
-  # Check that the NAs match up
-  stopifnot(all.equal(is.na(DHA), is.na(DHB), check.attributes=FALSE))
-  # Check for rows with all NAs ### this probably doesn't matter !!!
-  # bad <- rowSums(!is.na(DHA)) == 0
-  # if(sum(bad) > 0) {
-    # warning()
-    # DHA <- DHA[!bad, ]
-    # DHB <- DHB[!bad, ]
-  # }
+  if(verify) {
+    stopifnot(all.equal(dim(DHA), dim(DHB)))
+    DHA <- verifyDH(DHA, allowNA = TRUE)
+    DHB <- verifyDH(DHB, allowNA = TRUE)
+    # Check that the NAs match up
+    stopifnot(all.equal(is.na(DHA), is.na(DHB), check.attributes=FALSE))
+  }
+  
   # Standardise the model:
   model <- stdModel(model, list(psiA=~1, psiBa=~1, pA=~1, pB=~1))
   # Check for invalid submodels in 'model':

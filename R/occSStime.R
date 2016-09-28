@@ -2,10 +2,11 @@
 # New verion 2013-02-27 without the time argument (no time=FALSE option)
 
 # 'link' argument added 2015-02-20
+# 'verify' argument added 2016-09-20
 
 occSStime <-
 function(DH, model=p~1, data=NULL, ci=0.95,
-    plot=TRUE, link=c("logit", "probit"))  {
+    plot=TRUE, link=c("logit", "probit"), verify=TRUE)  {
   # DH is a 1/0 matrix of detection histories, sites x occasions
   # model is a 2-sided formula for probability of detection, eg, model = p ~ habitat.
   # data is a DATA FRAME with a row for each capture occasion and columns for time covariates.
@@ -13,6 +14,8 @@ function(DH, model=p~1, data=NULL, ci=0.95,
 
   # Sanity checks and such:
   DH <- as.matrix(DH)  # in case it's a data frame
+  if(verify)
+    DH <- verifyDH(DH, allowNA=TRUE)
 	nocc <- ncol(DH)
   if (nocc < 2)
     stop("More than one survey occasion is needed")

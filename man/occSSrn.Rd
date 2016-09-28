@@ -13,7 +13,7 @@ Function \code{occSSrn} allows for site-specific covariates to be included in th
 }
 \usage{
 
-occSSrn(DH, model=NULL, data = NULL, ci=0.95, link=c("logit", "probit"))
+occSSrn(DH, model=NULL, data = NULL, ci=0.95, link=c("logit", "probit"), verify=TRUE)
 
 occSSrn0(y, n, ci=0.95, link=c("logit", "probit"))
 
@@ -37,6 +37,9 @@ the confidence interval to use.
 }
   \item{link}{
 the link function to use, either logit or probit; see \link{Links}.
+}
+  \item{verify}{
+if TRUE, the data provided will be checked.
 }
   \item{y}{
 a vector with the number of detections at each site.

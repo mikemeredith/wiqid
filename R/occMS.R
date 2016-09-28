@@ -1,34 +1,35 @@
 
 # Multiseason occupancy - version cov2
-# This version allows for 
+# This version allows for
 #  1. site covars for psi1
 #  2. site and site x interval covars (including a fixed interval effect) for gamma and epsilon
 #  3. site and site x survey occasion covars for probability of detection.
 
 # See MacKenzie et al (2006) "Occupancy..." p194ff
 
-occMScov <- function(...) {
-  cat("occMScov has been renamed occMS.\n\n")
-  occMS(...)
-}
-
 occMS <- function(DH, occsPerSeason,
              model=NULL,
-             data=NULL, ci=0.95) {    
-  # ** DH is detection data in a 1/0/NA matrix or data frame, sites in rows, 
+             data=NULL, ci=0.95, verify=TRUE) {
+  # ** DH is detection data in a 1/0/NA matrix or data frame, sites in rows,
   #    detection occasions in columns..
   # ** occsPerSeason is a scalar or vector with the number of occasions per season
   # ci is the required confidence interval.
-             
+
+  if(verify) {
+    DH <- verifyDH(DH, allowNA=TRUE)
+  } else {
+    DH <- as.matrix(DH)
+  }
+  
   # Check for simple models:
   if(is.null(model))
-    return(occMS0(DH=DH, occsPerSeason=occsPerSeason, ci=ci))
+    return(occMS0(DH=DH, occsPerSeason=occsPerSeason, ci=ci, verify=FALSE))
   if(is.null(data))
-    return(occMStime(DH=DH, occsPerSeason=occsPerSeason, model=model, data=NULL, ci=ci))
-  
+    return(occMStime(DH=DH, occsPerSeason=occsPerSeason, model=model, data=NULL,
+      ci=ci, verify=FALSE))
+
   crit <- fixCI(ci)
-  
-  DH <- as.matrix(DH)
+
   # Check for all-NA rows (eg, Grand Skinks data set!)
   allNA <- rowSums(!is.na(DH)) == 0
   if(any(allNA))  {
@@ -60,7 +61,7 @@ occMS <- function(DH, occsPerSeason,
   DHvec <- as.vector(DH)[survey.done]
   siteID <- row(DH)[survey.done]
   survID <- col(DH)[survey.done]
-  
+
   # Standardise the model:
   model <- stdModel(model, defaultModel=list(psi1=~1, gamma=~1, epsilon=~1, p=~1))
 
@@ -70,8 +71,8 @@ occMS <- function(DH, occsPerSeason,
   if (is.null(siteNames))
     siteNames <- rownames(data)
   if (is.null(siteNames))
-    siteNames <- 1:nSites 
-    
+    siteNames <- 1:nSites
+
   if(!is.null(data)) {
     if(nrow(data) != nSites)
       stop("data must have a row for each site")
@@ -85,7 +86,7 @@ occMS <- function(DH, occsPerSeason,
   dataList$.occasion <- as.factor(occasion)
   season <- rep.int(1:nseas, nSites*occsPerSeason)
   dataList$.season <- as.factor(season)
-  
+
   # cat("Preparing design matrices...") ; flush.console()
   psi1df <- selectCovars(model$psi1, dataList, nSites)
   psi1Mat <- model.matrix(model$psi1, psi1df)
@@ -104,7 +105,7 @@ occMS <- function(DH, occsPerSeason,
   pK <- ncol(pMat)
   K <- psi1K + gamK + epsK + pK
   parID <- rep(1:4, c(psi1K, gamK, epsK, pK))
-  
+
   # objects to hold the output
   beta.mat <- matrix(NA_real_, K, 4)
   colnames(beta.mat) <- c("est", "SE", "lowCI", "uppCI")
@@ -122,7 +123,7 @@ occMS <- function(DH, occsPerSeason,
     paste0("p:", siteNames[siteID], ",", survID))
   logLik <- NA_real_
   varcov <- NULL
-  
+
   # negative log likelihood function
   nll <- function(param){
     psi1Beta <- param[parID==1]
@@ -161,12 +162,12 @@ occMS <- function(DH, occsPerSeason,
     return(min(-sum(log(Prh)), .Machine$double.xmax))
   }
   # cat("done\n")
-  
+
   # cat("Maximizing likelihood...") ; flush.console()
   start <- rep(0, K)
   res <- nlm(nll, start, hessian=TRUE)
   # cat("done\n")
-  
+
   if(res$code > 2)   # exit code 1 or 2 is ok.
     warning(paste("Convergence may not have been reached (code", res$code, ")"))
   # cat("Organizing output...") ; flush.console()

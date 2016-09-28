@@ -17,7 +17,7 @@ Estimates occupancy and probability of detection for two species, where one (dom
   rBa \tab probability of detection of species B if both are present but A was not detected \cr
   rBA \tab probability of detection of species B if both are present and A was detected} }
 \usage{
-occ2sps(DHA, DHB, model=NULL, data=NULL, ci = 0.95)
+occ2sps(DHA, DHB, model=NULL, data=NULL, ci = 0.95, verify=TRUE)
 }
 \arguments{
   \item{DHA}{
@@ -34,6 +34,9 @@ a data frame containing the variables in the model. If \code{data = NULL}, a fas
 }
   \item{ci}{
 the confidence interval to use.
+}
+  \item{verify}{
+if TRUE, the data provided will be checked.
 }
 }
 

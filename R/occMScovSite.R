@@ -10,16 +10,18 @@
 
 occMScovSite <- function(DH, occsPerSeason,
              model=NULL,
-             data=NULL, ci=0.95) {    
+             data=NULL, ci=0.95, verify=TRUE) {    
   # ** DH is detection data in a 1/0/NA matrix or data frame, sites in rows, 
   #    detection occasions in columns..
   # ** occsPerSeason is a scalar or vector with the number of occasions per season
   # ci is the required confidence interval.
              
-  if(ci > 1 | ci < 0.5)
-    stop("ci must be between 0.5 and 1")
-  alf <- (1 - ci[1]) / 2
-  crit <- qnorm(c(alf, 1 - alf))
+  if(verify) {
+    DH <- verifyDH(DH, allowNA=TRUE)
+  } else {
+    DH <- as.matrix(DH)
+  }
+  crit <- fixCI(ci)
 
   # Deal with occsPerSeason
   nOcc <- ncol(DH)

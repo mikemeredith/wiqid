@@ -3,23 +3,22 @@
 
 # See MacKenzie et al (2006) "Occupancy..." p194ff
 
-occMSseason <- function(...) {
-  cat("occMSseason has been renamed occMStime.\n\n")
-  occMStime(...)
-}
-
 occMStime <- function(DH, occsPerSeason,
              model=NULL,
-             data=NULL, ci=0.95) {    
+             data=NULL, ci=0.95, verify=TRUE) {    
 
   # ** DH is detection data in a 1/0/NA matrix or data frame, sites in rows, 
   #    detection occasions in columns..
   # ** occsPerSeason is a scalar or vector with the number of occasions per season
   # ci is the required confidence interval.
              
+  if(verify) {
+    DH <- verifyDH(DH, allowNA=TRUE)
+  } else {
+    DH <- as.matrix(DH)
+  }
   crit <- fixCI(ci)
   
-  DH <- as.matrix(DH)
   # Check for all-NA rows (eg, Grand Skinks data set!)
   allNA <- rowSums(!is.na(DH)) == 0
   if(any(allNA))  {

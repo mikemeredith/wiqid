@@ -11,17 +11,17 @@ Multi-season occupancy estimation
 Functions to estimate occupancy from detection/non-detection data for multiple seasons. \code{occMS} is the general purpose function; it allows for site-, season- and survey-level covariates, but it is slow. \code{occMScovSite} excludes survey-level covariates, but is fast. \code{occMStime} and \code{occMS0} are simpler and faster.
 }
 \usage{
-occMS0(DH, occsPerSeason, ci=0.95)
+occMS0(DH, occsPerSeason, ci=0.95, verify=TRUE)
 
-occMStime(DH, occsPerSeason, model=NULL, data=NULL, ci=0.95)
+occMStime(DH, occsPerSeason, model=NULL, data=NULL, ci=0.95, verify=TRUE)
 
-occMS(DH, occsPerSeason, model=NULL, data=NULL, ci=0.95)
+occMS(DH, occsPerSeason, model=NULL, data=NULL, ci=0.95, verify=TRUE)
              
-occMScovSite(DH, occsPerSeason, model=NULL, data=NULL, ci=0.95)
+occMScovSite(DH, occsPerSeason, model=NULL, data=NULL, ci=0.95, verify=TRUE)
 }
 \arguments{
  \item{DH}{
-a 1/0/NA matrix (or data frame) of detection histories, sites x occasions
+a 1/0/NA matrix (or data frame) of detection histories, sites x occasions. Rows with all NAs are silently removed.
 }
   \item{occsPerSeason}{
 the number of survey occasions per season; either a scalar if the number of surveys is constant, or a vector with one element for each season.
@@ -34,6 +34,9 @@ a data frame containing the variables in the model: one row for each season or b
 }
   \item{ci}{
 the confidence interval to use.
+}
+  \item{verify}{
+if TRUE, the data provided will be checked.
 }
 }
 \details{

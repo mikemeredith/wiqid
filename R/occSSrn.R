@@ -2,11 +2,12 @@
 # Royle-Nichols occupancy models, with abundance-induced heterogeneity in detection probability.
 
 # 'link' argument added 2015-02-20
+# 'verify' argument added 2016-09-20
 
 ## WORK IN PROGRESS ## can't yet deal with survey covariates.
 
 occSSrn <- function(DH, model=NULL, data=NULL,
-    ci=0.95, link=c("logit", "probit")) {
+    ci=0.95, link=c("logit", "probit"), verify=TRUE) {
   # single-season Royle-Nichols model with site and survey covariates
   # ** DH is detection data in a 1/0/NA matrix or data frame, sites in rows,
   #    detection occasions in columns.
@@ -16,8 +17,8 @@ occSSrn <- function(DH, model=NULL, data=NULL,
   # ** data is a DATA FRAME with single columns for site covariates and a column for each survey occasion for each survey covariate.
   # ci is the required confidence interval.
 
-  if (!is.matrix(DH) && !is.data.frame(DH))
-    stop("DH should be a detection history matrix (or data frame)")
+  if (verify)
+    DH <- verifyDH(DH, allowNA=TRUE)
 
   if(TRUE) {  # TODO check that survey covars aren't included in the model
     y <- rowSums(DH, na.rm=TRUE)

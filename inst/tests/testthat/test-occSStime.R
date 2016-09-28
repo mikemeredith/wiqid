@@ -70,7 +70,7 @@ test_that("occSStime with logit link",  {
   expect_that(AIC(res), equals(NA_real_))
   # All NAs:
   tst <- matrix(NA, 39, 5)
-  res <- occSStime(tst, p~.time, plot=FALSE)
+  res <- occSStime(tst, p~.time, plot=FALSE, verify=FALSE)
   expect_that(as.vector(res$real),
       is_equivalent_to(rep(NA_real_, 18)))
   expect_that(AIC(res),

@@ -61,7 +61,7 @@ test_that("occSSrn with logit",  {
       is_equivalent_to(rep(NA_real_, 9)))
   expect_that(AIC(res), equals(NA_real_))
   # All NAs:
-  res <- occSSrn(matrix(NA, 39, 5))
+  res <- occSSrn(matrix(NA, 39, 5), verify=FALSE)
   expect_that(as.vector(res$real),
       is_equivalent_to(rep(NA_real_, 9)))
   expect_that(AIC(res),
