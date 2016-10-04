@@ -3,16 +3,16 @@
 \alias{wiqid}
 \docType{package}
 \title{
-Estimation functions for wildlife population models
+Fast, simple estimation functions for wildlife population models
 }
 \description{
 Quick and dirty functions to estimate occupancy, survival, abundance, species richness and diversity, etc. for wildlife populations.
 }
 \details{
 
-There are a number of sophisticated programs for the analysis of wildlife data, producing estimates of occupancy, survival, abundance, or density. \pkg{wiqid} began as a collection of fast, bare-bones functions which can be run from R suitable for use when you are generating hundreds of simulated data sets.
+There are a number of sophisticated programs for the analysis of wildlife data, producing estimates of occupancy, survival, abundance, or density. \pkg{wiqid} began as a collection of fast, bare-bones functions which can be run from R suitable for use when you are generating hundreds of simulated data sets. The package takes its name from the quick-and-dirty nature of the original functions.
 
-We now use \pkg{wiqid} in basic wildlife study design and data analysis workshops, where we want to focus on the concepts behind occupancy, mark-recapture, survival, etc. and study design issues. Participants have used \code{lm}, \code{glm} and functions in the \code{secr} and \code{BEST} packages. So  \pkg{wiqid} tries to match the look and feel of these functions.
+We now use \pkg{wiqid} in basic wildlife study design and data analysis workshops, and most functions now have options to check the input data and give informative error messages. Workshop participants have used \code{lm}, \code{glm} and functions in the \code{secr} and \code{BEST} packages. So  \pkg{wiqid} tries to match the look and feel of these functions.
 
 All functions use standard data frames or matrices for data input. ML estimation functions return objects of class \code{wiqid} with parameter estimates on the transformed scale(usually logit functions), variance-covariance matrix, and back-transformed `real' values; there are \code{print} and \code{logLik} methods. Bayesian functions (distinguished by an initial "B") return class \code{Bwiqid} objects, a data frame with a column of MCMC observations for each parameter, plus attributes for MCMC diagnostics; there are \code{print} and \code{plot} methods.
 
@@ -54,7 +54,7 @@ We use the \pkg{secr} package for ML estimation of density. For Bayesian estimat
 
 \section{ABUNDANCE from closed-population capture-recapture data}{
   
-Although data for genuinely closed populations are rare, this is an important conceptual stepping-stone from CJS models to robust models.
+Although data for genuinely closed populations are rare, this is an important conceptual stepping-stone from CJS models to robust models for survival.
 
   \tabular{ll}{
   \code{\link{closedCapM0}} \tab simple model with constant capture probability \cr

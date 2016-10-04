@@ -2,6 +2,8 @@
 # Combine the list of priors and the default list, check the result and
 #   expand scalar values to vector when necessary.
 
+# Not exported.
+
 # Current version can only deal with vector-valued priors, not varcovar matrices.
 # TODO ### check for NAs and sigma <= 0
 

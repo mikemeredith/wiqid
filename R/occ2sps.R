@@ -14,6 +14,8 @@
 
 occ2sps <- function(DHA, DHB, model=NULL, data=NULL, ci=0.95, verify=TRUE)  {
 
+  crit <- fixCI(ci)
+
   DHA <- as.matrix(DHA)
   DHB <- as.matrix(DHB)
   if(verify) {
@@ -23,7 +25,7 @@ occ2sps <- function(DHA, DHB, model=NULL, data=NULL, ci=0.95, verify=TRUE)  {
     # Check that the NAs match up
     stopifnot(all.equal(is.na(DHA), is.na(DHB), check.attributes=FALSE))
   }
-  
+
   # Standardise the model:
   model <- stdModel(model, list(psiA=~1, psiBa=~1, pA=~1, pB=~1))
   # Check for invalid submodels in 'model':
@@ -52,7 +54,6 @@ occ2sps <- function(DHA, DHB, model=NULL, data=NULL, ci=0.95, verify=TRUE)  {
   site.names <- rownames(data)
   if(is.null(site.names))
     site.names <- 1:nSites
-  crit <- fixCI(ci)
 
   data <- as.data.frame(stddata(data, nocc=NULL))
 

@@ -49,21 +49,21 @@ the required confidence interval.
 }
 }
 \details{
-\code{richACE} and \code{richICE} calculate Anne Chao's Abundance-based and Incidence-based Coverage Estimators of species richness respectively (Chao et al, 2000). 
+\code{richACE} and \code{richICE} calculate Anne Chao's Abundance-based and Incidence-based Coverage Estimators of species richness respectively (Chao et al, 2000).
 
-\code{richChao1} and \code{richChao2} calculate Anne Chao's Chao 1 (abundance-based) and Chao 2 (incidence-based) estimators (Chao 1984, 1987). 
+\code{richChao1} and \code{richChao2} calculate Anne Chao's Chao 1 (abundance-based) and Chao 2 (incidence-based) estimators (Chao 1984, 1987).
 
-\code{richJack1} and \code{richJack2} calculate first and second order incidence-based jackknife estimators of species richness (Smith & van Belle, 1984). 
+\code{richJack1} and \code{richJack2} calculate first and second order incidence-based jackknife estimators of species richness (Smith & van Belle, 1984).
 
-\code{richBoot} calculates a bootstrap estimator of species richness (Smith & van Belle, 1984). 
+\code{richBoot} calculates a bootstrap estimator of species richness (Smith & van Belle, 1984).
 
 \code{richMM} calculates the assymptotic species richness from a Michaelis-Menten curve fitted to the species rarefaction curve (Colwell et al. 2004).
 
-See the EstimateS Users Guide at \url{http://viceroy.eeb.uconn.edu/estimates/EstimateSPages/EstSUsersGuide/EstimateSUsersGuide.htm} for the equations for the functions above.
+See the EstimateS Users Guide at \url{http://viceroy.eeb.uconn.edu/estimates/} for the equations for the functions above.
 
 The following are not included in EstimateS v.8.2:
 
-\code{richJackA1} and \code{richJackA2} calculate first and second order abundance-based jackknife estimators of species richness (Gotelli & Colwell 2011). 
+\code{richJackA1} and \code{richJackA2} calculate first and second order abundance-based jackknife estimators of species richness (Gotelli & Colwell 2011).
 
 \code{richRenLau} calculates Rennolls & Laumonier's (2006) 'shadow species' abundance-based estimator of richness.
 }
@@ -75,7 +75,7 @@ The other functions return a scalar.
 \references{
 Chao, A. 1984. Non-parametric estimation of the number of classes in a population. \emph{Scandinavian Journal of Statistics} 11, 265-270.
 
-Chao, A. 1987. Estimating the population size for capture-recapture data with unequal capture probabilities. \emph{Biometrics} 43:783-791. 
+Chao, A. 1987. Estimating the population size for capture-recapture data with unequal capture probabilities. \emph{Biometrics} 43:783-791.
 
 Chao, A., W.-H. Hwang, Y.-C. Chen, and C.-Y. Kuo. 2000. Estimating the number of shared species in two communities. \emph{Statistica Sinica} 10:227-246.
 
@@ -94,7 +94,7 @@ Mike Meredith
 
 \section{Benchmarks}{
 Output for estimators included in EstimateS 8.2 has been checked against EstimateS for the \code{seedbank} and \code{killarneyBirds} data sets. EstimateS results are often 0.01 lower, as EstimateS appears to truncate rather than rounding.
-} 
+}
 
 \seealso{
 \code{\link{richRarefy}} for rarefaction curves, and \code{\link{richCurve}} for a function to give richness estimates for sub-sets of samples.

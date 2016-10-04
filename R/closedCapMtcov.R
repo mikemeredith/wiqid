@@ -4,11 +4,8 @@ closedCapMtcov <-
 function(CH, model=list(p~1), data=NULL, ci = 0.95, ciType=c("normal", "MARK")) {
   # CH is a 1/0 capture history matrix, animals x occasions
   # ci is the required confidence interval
-  
-  if(ci > 1 | ci < 0.5)
-    stop("ci must be between 0.5 and 1")
-  alf <- (1 - ci[1]) / 2
-  crit <- qnorm(c(alf, 1 - alf))
+
+  crit <- fixCI(ci)
   ciType <- match.arg(ciType)
 
   # Standardise the model:
@@ -36,13 +33,13 @@ function(CH, model=list(p~1), data=NULL, ci = 0.95, ciType=c("normal", "MARK")) 
   rownames(lp.mat) <- paste0("p", 1:nocc)
   logLik <- NA_real_
   varcov <- NULL
-  
+
   if(N.cap > 0)  {
     nll <- function(params) {
       N <- min(exp(params[1]) + N.cap, 1e+300, .Machine$double.xmax)
       pBeta <- params[-1]
       p <- as.vector(plogis(pModMat %*% pBeta))
-      tmp <- lgamma(N + 1) - lgamma(N - N.cap + 1) + 
+      tmp <- lgamma(N + 1) - lgamma(N - N.cap + 1) +
         sum(n * log(p) + (N - n) * log(1-p))
       return(min(-tmp, .Machine$double.xmax))
     }

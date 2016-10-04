@@ -4,7 +4,7 @@ function(CH, ci = 0.95, ciType=c("normal", "MARK")) {
   #  a vector of capture frequencies of length equal to the number
   #  of occasions - trailing zeros are required.
   # ci is the required confidence interval
-  
+
   if (is.matrix(CH) || is.data.frame(CH)) {
     n.occ <- ncol(CH)
     freq <- tabulate(rowSums(CH), nbins=n.occ)
@@ -13,10 +13,7 @@ function(CH, ci = 0.95, ciType=c("normal", "MARK")) {
     n.occ <- length(freq)
   }
 
-  if(ci > 1 | ci < 0.5)
-    stop("ci must be between 0.5 and 1")
-  alf <- (1 - ci[1]) / 2
-  crit <- qnorm(c(alf, 1 - alf))
+  crit <- fixCI(ci)
   ciType <- match.arg(ciType)
 
   N.cap <- sum(freq)  # Number of individual animals captured
@@ -25,7 +22,7 @@ function(CH, ci = 0.95, ciType=c("normal", "MARK")) {
   rownames(beta.mat) <- c("Nhat", "piHat", "p1hat", "p2hat")
   logLik <- NA_real_
   varcov <- NULL
-  
+
   if(sum(freq[-1]) > 1)  {  # Do checks here
     # nll1 ensures p2 <= p1, but useless for Hessian
     # nll2 starts with output from nll1 (so p2/p1 not an issue)

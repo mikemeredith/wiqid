@@ -5,20 +5,20 @@
 
 occMStime <- function(DH, occsPerSeason,
              model=NULL,
-             data=NULL, ci=0.95, verify=TRUE) {    
+             data=NULL, ci=0.95, verify=TRUE) {
 
-  # ** DH is detection data in a 1/0/NA matrix or data frame, sites in rows, 
+  # ** DH is detection data in a 1/0/NA matrix or data frame, sites in rows,
   #    detection occasions in columns..
   # ** occsPerSeason is a scalar or vector with the number of occasions per season
   # ci is the required confidence interval.
-             
+
   if(verify) {
     DH <- verifyDH(DH, allowNA=TRUE)
   } else {
     DH <- as.matrix(DH)
   }
   crit <- fixCI(ci)
-  
+
   # Check for all-NA rows (eg, Grand Skinks data set!)
   allNA <- rowSums(!is.na(DH)) == 0
   if(any(allNA))  {
@@ -64,7 +64,7 @@ occMStime <- function(DH, occsPerSeason,
   pK <- ncol(pMat)
   K <- 1 + gamK + epsK + pK
   parID <- rep(1:4, c(1, gamK, epsK, pK))
-  
+
   beta.mat <- matrix(NA_real_, K, 4)
   colnames(beta.mat) <- c("est", "SE", "lowCI", "uppCI")
   rownames(beta.mat) <- c("psi1",
@@ -79,7 +79,7 @@ occMStime <- function(DH, occsPerSeason,
     paste0("p", 1:nseas))
   logLik <- NA_real_
   varcov <- NULL
-  
+
   nll <- function(param){
     psi1 <- plogis(param[1])
     gamBeta <- param[parID==2]
@@ -125,7 +125,7 @@ occMStime <- function(DH, occsPerSeason,
       logLik <- -res$minimum
     }
   }
-  
+
   out <- list(call = match.call(),
               beta = beta.mat,
               beta.vcv = varcov,
@@ -143,7 +143,7 @@ occMStime <- function(DH, occsPerSeason,
 # Not exported
 
 # dh is a 0/1/NA of length equal total no. of surveys
-# p is a scalar, or vector of detection probs of length equal to 
+# p is a scalar, or vector of detection probs of length equal to
 #   dh
 # PHI0 is the vector c(psi1, 1-psi1)
 # PHIt is a 2 x 2 x (nseas-1) array, where
@@ -170,4 +170,3 @@ Prh1A <- function(dhp, p, PHI0, PHIt, seasonID) {
   res <- res %*% PT
   return(res)
 }
-  

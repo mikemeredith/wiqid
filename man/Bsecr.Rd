@@ -77,7 +77,7 @@ The function \code{secr.fit} in package \code{secr}.
 # The stoats data set in 'secr'
 require(secr)
 data(stoatDNA)
-# This takes 25-30 mins on a multicore machine:
+# This takes ca 10 mins on a multicore machine:
 Bout <- Bsecr0(stoatCH, buffer=1000)
 Bout
 plot(Bout)

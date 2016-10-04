@@ -12,8 +12,6 @@ TODO
 
   * Improve survRD* functions! Add test files.
 
-  * Add probit link option to remaining MLE functions.
-
   * Fix BsurvCJS with groups argument.
 
   * FIX - survCJS can use time-specific covariate, eg, flood, or grouping factor, but not both.
@@ -29,6 +27,10 @@ TODO
   * Add WAIC to other Bayesian functions.
 
   * When estimation is subcontracted, (eg occSS to occSS0) original call should be returned.
+
+CHANGES in 2016-10-04 v.0.0.407
+
+  * Maintenance only.
 
 CHANGES in 2016-09-28 v.0.0.406
 

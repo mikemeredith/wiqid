@@ -1,4 +1,4 @@
-# Mt model, capture probability dependent on a permanent behavioural response
+# Mb model, capture probability dependent on a permanent behavioural response
 
 closedCapMb <-
 function(CH, ci = 0.95, ciType=c("normal", "MARK")) {
@@ -21,13 +21,13 @@ function(CH, ci = 0.95, ciType=c("normal", "MARK")) {
   n0 <- firstCap - 1         # number of misses before first capture, prob = 1 - p
   ns <- rowSums(CH) - 1      # number of hits after first capture, prob = c
   nf <- nOcc - firstCap - ns # number of misses after first capture, prob = 1 - c
-  
+
   beta.mat <- matrix(NA_real_, 3, 4) # objects to hold output
   colnames(beta.mat) <- c("est", "SE", "lowCI", "uppCI")
   rownames(beta.mat) <- c("Nhat", "phat", "chat")
   logLik <- NA_real_
   varcov <- NULL
-  
+
   if(N.cap > 0)  {
     nll <- function(params) {
       f0 <- min(exp(params[1]), 1e+300, .Machine$double.xmax)

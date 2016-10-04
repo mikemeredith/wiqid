@@ -11,7 +11,7 @@ occSS <- function(DH, model=NULL, data=NULL, ci=0.95, link=c("logit", "probit"),
   #   2-sided formula, eg, model = psi ~ habitat.
   # ** data is a DATA FRAME with single columns for site covariates and a column for each survey occasion for each survey covariate.
   # ci is the required confidence interval.
-  
+
   if(verify)
     DH <- verifyDH(DH, allowNA=TRUE)
 

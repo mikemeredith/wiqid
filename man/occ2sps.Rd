@@ -75,6 +75,7 @@ DHB <- railSims[, 4:6]
 # Default model (no interaction)
 occ2sps(DHA, DHB)
 
+\donttest{  %%% these can be slow
 # Add a submodel for psiBA, so that psiBA and psiBa are separated:
 occ2sps(DHA, DHB, model = psiBA ~ 1)
 
@@ -83,5 +84,6 @@ occ2sps(DHA, DHB, model = list(psiA ~ logArea, psiBA ~ reeds), data=railSims)$be
 
 # Model corresponding to the data generation model
 occ2sps(DHA, DHB, list(psiA ~ logArea, psiBA ~ reeds, rBA ~ 1), data=railSims)$beta
+}
 }
 

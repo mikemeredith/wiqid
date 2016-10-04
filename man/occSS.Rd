@@ -13,7 +13,8 @@ Functions to estimate occupancy from detection/non-detection data for a single s
 \usage{
 occSS(DH, model=NULL, data = NULL, ci=0.95, link=c("logit", "probit"), verify=TRUE)
 
-occSStime(DH, model=p~1, data=NULL, ci=0.95, plot=TRUE, link=c("logit", "probit"), verify=TRUE)
+occSStime(DH, model=p~1, data=NULL, ci=0.95, plot=TRUE, link=c("logit", "probit"),
+  verify=TRUE)
 
 occSS0(y, n, ci=0.95, link=c("logit", "probit"))
 

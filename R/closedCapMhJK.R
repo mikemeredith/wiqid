@@ -13,10 +13,7 @@ function(CH, ci=0.95) {
     n.occ <- length(freq)
   }
 
-  if(ci > 1 | ci < 0.5)
-    stop("ci must be between 0.5 and 1")
-  alf <- (1 - ci[1]) / 2
-  crit <- qnorm(1 - alf)
+  crit <- fixCI(ci)[2]
 
    N.cap <- sum(freq)  # Number of animals captured
    n.snap <- sum(freq * seq_along(freq)) # Total number of capture events
