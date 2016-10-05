@@ -1,25 +1,24 @@
 # NAMESPACE for package 'wiqid'
 
-importFrom(utils, packageVersion, head, tail)
-importFrom(stats, nobs, logLik, update, window,
-  dt, pt, qt, rt)
-importFrom(coda, mcmc, mcmc.list, as.mcmc.list,
-  geweke.diag, gelman.diag, effectiveSize)
-importFrom(HDInterval, hdi)
-importFrom(parallel, detectCores, makeCluster, stopCluster,
-  clusterExport, clusterEvalQ, clusterSetRNGStream, parLapply)
-importFrom(MASS, mvrnorm)
-importFrom(truncnorm, rtruncnorm)
-importFrom("grDevices", "devAskNewPage")
-importFrom("graphics", "abline", "hist", "lines", "matplot", "par",
-   "plot", "plot.default", "polygon", "rect", "segments",
-   "text")
+importFrom("utils", "packageVersion", "head", "tail", "flush.console", "modifyList")
 importFrom("stats", "AIC", "acf", "as.dist", "as.formula", "bw.nrd0",
    "dbinom", "density", "dpois", "median", "model.matrix",
    "na.omit", "nlm", "optim", "optimize", "pchisq", "plogis",
    "pnorm", "predict", "qlogis", "qnorm", "rbeta", "rbinom",
-   "rgamma", "rnorm", "runif", "sd", "terms", "var")
-importFrom("utils", "flush.console", "modifyList")
+   "rgamma", "rnorm", "runif", "sd", "terms", "var",
+   "nobs", "logLik", "update", "window",
+   "dt", "pt", "qt", "rt")
+importFrom("coda", "mcmc", "mcmc.list", "as.mcmc.list",
+  "geweke.diag", "gelman.diag", "effectiveSize")
+importFrom("HDInterval", "hdi")
+importFrom("parallel", "detectCores", "makeCluster", "stopCluster",
+  "clusterExport", "clusterEvalQ", "clusterSetRNGStream", "parLapply")
+importFrom("MASS", "mvrnorm")
+importFrom("truncnorm", "rtruncnorm")
+importFrom("grDevices", "devAskNewPage")
+importFrom("graphics", "abline", "hist", "lines", "matplot", "par",
+   "plot", "plot.default", "polygon", "rect", "segments",
+   "text")
 
 
 export(
@@ -30,9 +29,7 @@ export(
   occSSrn, occSSrn0, occSSrnSite,
   occ2sps,
   occMS0, occMStime, occMScovSite, occMS,
-  # occMScov, occMSseason, occSScov, # These 3 deprecated.
   Bnormal, Bnormal2, Bbinom,
-  # Bregress, Blogit, # These were wrappers for MCMCpack
   BoccSS0, BoccSS, BsurvCJS, Bsecr0,
   richRarefy,
   richACE, richICE, richChao1, richChao2, richJack1, richJack2, richBoot, richMM,
