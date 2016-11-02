@@ -1,40 +1,4 @@
-# View, print, plot, window, head and tail methods for class Bwiqid, ie. MCMC output
-
-# Create generic View function:
-# See section 7 of Writing R Extensions
-View <- function(x, title, ...) UseMethod("View")
-
-View.default <- function(x, title, ...) utils::View(x, title)
-
-View.Bwiqid <- function(x, title, digits=4, ...)  {
-  if(!inherits(x, "data.frame"))
-    stop("x is not a valid Bwiqid object")
-  if(missing(title))
-    title <- paste("Bwiqid:", deparse(substitute(x)))
-  MCerror <- attr(x, "MCerror")
-  Rhat <- attr(x, "Rhat")
-  n.eff <- attr(x, "n.eff")
-
-  toView <- cbind(
-    parameters = names(x),
-    mean = round(colMeans(x), digits),
-    sd = round(apply(x, 2, sd), digits),
-    median = round(apply(x, 2, median), digits),
-    round(t(hdi(x)), digits))
-  colnames(toView)[5:6] <- c("HDIlo", "HDIup")
-  if(!is.null(MCerror))
-    toView <- cbind(toView, 'MCE%' = round(100 * MCerror/toView[, 'sd'], 1))
-  if(!is.null(Rhat))
-    toView <- cbind(toView, Rhat = round(Rhat, digits))
-  if(!is.null(n.eff))
-    toView <- cbind(toView, n.eff = round(n.eff))
-  rownames(toView) <- NULL
-  
-  View.default(toView, title = title)
-
-  }
-
-# .........................................................
+# Print, plot, window, head and tail methods for class Bwiqid, ie. MCMC output
 
 print.Bwiqid <- function(x, digits=4, ...)  {
   if(!inherits(x, "data.frame"))
