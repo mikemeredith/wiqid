@@ -20,7 +20,7 @@ occMS <- function(DH, occsPerSeason,
   } else {
     DH <- as.matrix(DH)
   }
-  
+
   # Check for simple models:
   if(is.null(model))
     return(occMS0(DH=DH, occsPerSeason=occsPerSeason, ci=ci, verify=FALSE))
@@ -78,7 +78,7 @@ occMS <- function(DH, occsPerSeason,
       stop("data must have a row for each site")
     rownames(data) <- NULL  # rownames cause problems when the data frame is recast
   }
-  dataList <- stddata(data, c(nOcc, nseas - 1), 0.5)
+  dataList <- stddata(data, c(nOcc, nseas - 1), scaleBy=NULL)
   # add built-in covars
   interval <- rep(1:(nseas-1), each=nSites)
   dataList$.interval <- as.factor(interval)
@@ -86,6 +86,11 @@ occMS <- function(DH, occsPerSeason,
   dataList$.occasion <- as.factor(occasion)
   season <- rep.int(1:nseas, nSites*occsPerSeason)
   dataList$.season <- as.factor(season)
+  # Get factor levels and scaling values (needed for prediction)
+  xlev <- lapply(dataList[sapply(dataList, is.factor)], levels)
+  scaling <- lapply(dataList[sapply(dataList, is.numeric)],
+    getScaling, scaleBy = 0.5)
+  dataList <- lapply(dataList, doScaling, scaleBy = 0.5)
 
   # cat("Preparing design matrices...") ; flush.console()
   psi1df <- selectCovars(model$psi1, dataList, nSites)
@@ -105,6 +110,10 @@ occMS <- function(DH, occsPerSeason,
   pK <- ncol(pMat)
   K <- psi1K + gamK + epsK + pK
   parID <- rep(1:4, c(psi1K, gamK, epsK, pK))
+  index <- vector('list', length(model)) # needed for 'predict'
+  names(index) <- names(model)
+  for(i in seq_along(model))
+    index[[i]] <- (1:K)[parID == i]
 
   # objects to hold the output
   beta.mat <- matrix(NA_real_, K, 4)
@@ -201,7 +210,12 @@ occMS <- function(DH, occsPerSeason,
               beta = beta.mat,
               beta.vcv = varcov,
               real = plogis(lp.mat),
-              logLik = c(logLik=logLik, df=K, nobs=nrow(DH)))
+              logLik = c(logLik=logLik, df=K, nobs=nrow(DH)),
+              ci = ci,
+              formulae = model,
+              index = index,
+              xlev = xlev,
+              scaling = scaling)
   class(out) <- c("wiqid", "list")
   return(out)
 }

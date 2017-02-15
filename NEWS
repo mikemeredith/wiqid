@@ -1,0 +1,7 @@
+  
+CHANGES in 0.1.0.9001
+
+  * Added 'coef' and 'vcov' methods for 'wiqid' objects.
+  
+  * Added 'predict' methods for 'occSS', 'occSSrn', 'occMS' and 'occ2sps' functions.
+  

@@ -15,7 +15,8 @@ test_that("occSS0 with logit link",  {
   y <- rowSums(BRS > 0, na.rm=TRUE)
   brs1 <- occSS0(y, n)
   expect_that(class(brs1), equals(c("wiqid", "list")))
-  expect_that(names(brs1), equals(c("call", "link", "beta", "beta.vcv", "real", "logLik")))
+  expect_that(names(brs1), equals(c("call", "link", "beta", "beta.vcv", "real", "logLik",
+       "ci", "formulae", "index")))
   expect_that(is.call(brs1$call), is_true())
   expect_that(colnames(brs1$real), equals(c("est", "lowCI", "uppCI")))
   expect_that(rownames(brs1$real), equals(c("psiHat", "pHat")))
@@ -82,7 +83,8 @@ test_that("occSS0 with probit link",  {
   y <- rowSums(BRS > 0, na.rm=TRUE)
   brs1 <- occSS0(y, n, link="probit")
   expect_that(class(brs1), equals(c("wiqid", "list")))
-  expect_that(names(brs1), equals(c("call", "link", "beta", "beta.vcv", "real", "logLik")))
+  expect_that(names(brs1), equals(c("call", "link", "beta", "beta.vcv", "real", "logLik",
+       "ci", "formulae", "index")))
   expect_that(is.call(brs1$call), is_true())
   expect_that(colnames(brs1$real), equals(c("est", "lowCI", "uppCI")))
   expect_that(rownames(brs1$real), equals(c("psiHat", "pHat")))

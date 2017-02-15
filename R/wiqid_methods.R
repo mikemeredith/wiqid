@@ -1,4 +1,14 @@
-# Print method for class wigid, ie. output for wiqid MLE functions.
+# Various methods for class wigid, ie. output for wiqid MLE functions.
+
+# coef and vcov added 2017-02-09
+
+coef.wiqid <- function(object, ...) {
+  object$beta[,1]
+}
+
+vcov.wiqid <- function(object, ...) {
+  object$beta.vcv
+}
 
 print.wiqid <- function(x, digits=4, ...)  {
   cat("Call: ")

@@ -11,13 +11,36 @@
 # stddata : Convert a data frame of site and survey data into a list and standardise
 # selectCovars : Pull the covars needed for a model matrix into a specific data frame
 # AICtable moved to file AICc.R
+# ...............................................................................
+
+# Functions to deal with scaling, can be used with s/lapply
+
+getScaling <- function(x, scaleBy)
+  c(mean(x, na.rm=TRUE), sd(x, na.rm=TRUE) / scaleBy)
+  
+doScaling <- function(x, scaleBy)
+  if(is.numeric(x)) (x - mean(x, na.rm=TRUE)) / sd(x, na.rm=TRUE) * scaleBy else x
+  
+# This takes a whole data frame
+scaleToMatch <- function(target, scaling) {
+  for(i in seq_along(target)) {
+    if(is.numeric(target[[i]])) {
+      pos <- match(names(target)[i], names(scaling))
+      if(!is.na(pos)) {
+        sc <- scaling[[pos]]
+        target[[i]] <- (target[[i]] - sc[1]) / sc[2]
+      }
+    }
+  }
+  return(target)
+}
+
+# ...............................................................................
 
 # logSumExp: sum probabilities without over/underflow
-
 logSumExp <- function(x)
   log(sum(exp(x - max(x)))) + max(x)
 
-# ...............................................................................
 
 # A more sensible version of signif
 signifish <- function(x, digits=3)

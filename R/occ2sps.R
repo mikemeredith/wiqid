@@ -55,7 +55,12 @@ occ2sps <- function(DHA, DHB, model=NULL, data=NULL, ci=0.95, verify=TRUE)  {
   if(is.null(site.names))
     site.names <- 1:nSites
 
-  data <- as.data.frame(stddata(data, nocc=NULL))
+  data <- as.data.frame(stddata(data, nocc=NULL, scaleBy=NULL))
+  # Get factor levels and scaling values (needed for prediction)
+  xlev <- lapply(data[sapply(data, is.factor)], levels)
+  scaling <- lapply(data[sapply(data, is.numeric)],
+    getScaling, scaleBy = 0.5)
+  data <- as.data.frame(lapply(data, doScaling, scaleBy = 0.5))
 
   # Build model matrices
   modMatList <- vector('list', M)
@@ -64,6 +69,10 @@ occ2sps <- function(DHA, DHB, model=NULL, data=NULL, ci=0.95, verify=TRUE)  {
   parK <- sapply(modMatList, ncol)    # Number of parameters for each model matrix
   K <- sum(parK)  # total number of parameters
   idK <- rep(1:M, parK)  # specifies which of the K parameters belongs to each model matrix
+  index <- vector('list', length(model)) # needed for 'predict'
+  names(index) <- names(model)
+  for(i in seq_along(model))
+    index[[i]] <- (1:K)[idK == i]
   # Get coefficient names
   coefNames <- paste(rep(names(model), parK),
       unlist(lapply(modMatList, colnames)), sep=":")
@@ -160,7 +169,12 @@ occ2sps <- function(DHA, DHB, model=NULL, data=NULL, ci=0.95, verify=TRUE)  {
               beta = beta.mat,
               beta.vcv = varcov,
               real = plogis(lp.mat),
-              logLik = c(logLik=logLik, df=K, nobs=nSites))
+              logLik = c(logLik=logLik, df=K, nobs=nSites),
+              ci = ci,
+              formulae = model,
+              index = index,
+              xlev = xlev,
+              scaling = scaling)
   class(out) <- c("wiqid", "list")
   return(out)
 }

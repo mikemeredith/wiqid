@@ -54,7 +54,10 @@ function(y, n, ci=0.95, link=c("logit", "probit")) {
               beta = beta.mat,
               beta.vcv = varcov,
               real = plink(beta.mat[, -2]),
-              logLik = c(logLik=logLik, df=2, nobs=length(y)))
+              logLik = c(logLik=logLik, df=2, nobs=length(y)),
+              ci = ci,
+              formulae = list(psi= ~ 1, p = ~1),
+              index = list(psi= 1, p = 2))
   class(out) <- c("wiqid", "list")
   return(out)
 }

@@ -41,13 +41,7 @@ if TRUE, the data provided will be checked.
 }
 
 \value{
-Returns an object of class \code{wiqid}, which is a list with the following elements:
-
-  \item{call}{The call used to produce the results}
-  \item{beta}{Estimates of the parameters on the logit scale, with standard errors and confidence intervals.}
-  \item{beta.vcv }{The variance-covariance matrix for the beta estimates.}
-  \item{real}{Estimates of the parameters on the real scale, with confidence intervals}
-  \item{logLik}{a vector with elements for log(likelihood), number of parameters, and effective sample size. If parameters \emph{and their SEs} cannot be estimated, the first element should be \code{NA}.}
+Returns an object of class \code{wiqid}, see \link{wiqid-class} for details.
 }
 
 \section{Benchmarks}{Output has been checked against output from PRESENCE (Hines 2006) v.5.5 for the \code{\link{railSims}} data set. Real values are  the same to 4 decimal places, and AICs are the same.

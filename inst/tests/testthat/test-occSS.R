@@ -13,7 +13,7 @@ test_that("occSS with logit link",  {
 
   weta4 <- occSS(DH)  # This should call occSS0
   expect_that(class(weta4), equals(c("wiqid", "list")))
-  expect_that(names(weta4), equals(c("call", "link", "beta", "beta.vcv", "real", "logLik")))
+  expect_that(names(weta4), equals(c("call", "link", "beta", "beta.vcv", "real", "logLik","ci", "formulae", "index")))
   expect_that(is.call(weta4$call), is_true())
   expect_that(dim(weta4$beta), equals(c(2, 4)))
   expect_that(colnames(weta4$beta),
@@ -40,7 +40,8 @@ test_that("occSS with logit link",  {
       equals(c(0.3494, 0.2765, 0.4301)))
 
   weta5 <- occSS(DH, psi ~ Browsed, data=weta.covs)
-  expect_that(names(weta5), equals(c("call", "link", "beta", "beta.vcv", "real", "logLik")))
+  expect_that(names(weta5), equals(
+    c("call", "link", "beta", "beta.vcv", "real", "logLik", "ci", "formulae", "index", "xlev", "scaling")))
   expect_that(dim(weta5$beta), equals(c(3, 4)))
   expect_that(colnames(weta5$beta),
     equals(c("est", "SE",  "lowCI", "uppCI")))
@@ -66,7 +67,7 @@ test_that("occSS with logit link",  {
       equals(264.2643))
 
   weta6 <- occSS(DH, list(psi ~ Browsed, p ~ ObsD), data=weta.covs)
-  expect_that(names(weta6), equals(c("call", "link", "beta", "beta.vcv", "real", "logLik")))
+  expect_that(names(weta6), equals( c("call", "link", "beta", "beta.vcv", "real", "logLik", "ci", "formulae", "index", "xlev", "scaling")))
   expect_that(dim(weta6$beta), equals(c(5, 4)))
   expect_that(colnames(weta6$beta),
     equals(c("est", "SE",  "lowCI", "uppCI")))
@@ -106,7 +107,8 @@ test_that("occSS with probit link",  {
 
   weta4p <- occSS(DH, link="probit")
   expect_that(class(weta4p), equals(c("wiqid", "list")))
-  expect_that(names(weta4p), equals(c("call", "link", "beta", "beta.vcv", "real", "logLik")))
+  expect_that(names(weta4p), equals(c("call", "link", "beta", "beta.vcv", "real", "logLik",
+    "ci", "formulae", "index")))
   expect_that(is.call(weta4p$call), is_true())
   expect_that(dim(weta4p$beta), equals(c(2, 4)))
   expect_that(colnames(weta4p$beta),
@@ -128,7 +130,7 @@ test_that("occSS with probit link",  {
       equals(265.7872)) # different
 
   weta5p <- occSS(DH, psi ~ Browsed, data=weta.covs, link="p")
-  expect_that(names(weta5p), equals(c("call", "link", "beta", "beta.vcv", "real", "logLik")))
+  expect_that(names(weta5p), equals( c("call", "link", "beta", "beta.vcv", "real", "logLik", "ci", "formulae", "index", "xlev", "scaling")))
   expect_that(dim(weta5p$beta), equals(c(3, 4)))
   expect_that(colnames(weta5p$beta),
     equals(c("est", "SE",  "lowCI", "uppCI")))
@@ -153,7 +155,7 @@ test_that("occSS with probit link",  {
       equals(264.2643))
 
   weta6p <- occSS(DH, list(psi ~ Browsed, p ~ ObsD), data=weta.covs, link='p')
-  expect_that(names(weta6p), equals(c("call", "link", "beta", "beta.vcv", "real", "logLik")))
+  expect_that(names(weta6p), equals( c("call", "link", "beta", "beta.vcv", "real", "logLik", "ci", "formulae", "index", "xlev", "scaling")))
   expect_that(dim(weta6p$beta), equals(c(5, 4)))
   expect_that(colnames(weta6p$beta),
     equals(c("est", "SE",  "lowCI", "uppCI")))

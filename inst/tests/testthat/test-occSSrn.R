@@ -15,7 +15,8 @@ test_that("occSSrn with logit",  {
   res <- occSSrn(BRS)
 
   expect_that(class(res), equals(c("wiqid", "list")))
-  expect_that(names(res), equals(c("call", "link", "beta", "beta.vcv", "real", "logLik")))
+  expect_that(names(res), equals(c("call", "link", "beta", "beta.vcv", "real", "logLik",
+    "ci", "formulae", "index")))
   expect_that(is.call(res$call), is_true())
   expect_that(colnames(res$real), equals(c("est", "lowCI", "uppCI")))
   expect_that(rownames(res$real),
@@ -77,7 +78,8 @@ test_that("occSSrn with probit",  {
   resp <- occSSrn(BRS, link='p')
 
   expect_that(class(resp), equals(c("wiqid", "list")))
-  expect_that(names(resp), equals(c("call", "link", "beta", "beta.vcv", "real", "logLik")))
+  expect_that(names(resp), equals(c("call", "link", "beta", "beta.vcv", "real", "logLik",
+    "ci", "formulae", "index")))
   expect_that(is.call(resp$call), is_true())
   expect_that(colnames(resp$real), equals(c("est", "lowCI", "uppCI")))
   expect_that(rownames(resp$real),
@@ -100,7 +102,8 @@ test_that("occSSrnSite with logit",  {
 
   res <- occSSrnSite(y, n)
   expect_that(class(res), equals(c("wiqid", "list")))
-  expect_that(names(res), equals(c("call", "link", "beta", "beta.vcv", "real", "logLik")))
+  expect_that(names(res), equals(c("call", "link", "beta", "beta.vcv", "real", "logLik",
+    "ci", "formulae", "index", "xlev", "scaling")))
   expect_that(is.call(res$call), is_true())
   expect_that(colnames(res$real), equals(c("est", "lowCI", "uppCI")))
   expect_that(rownames(res$real)[c(1, 72, 73, 145)] ,
@@ -113,7 +116,8 @@ test_that("occSSrnSite with logit",  {
 
   res <- occSSrnSite(y, n, lambda ~ Browsed, data=weta)
   expect_that(class(res), equals(c("wiqid", "list")))
-  expect_that(names(res), equals(c("call", "link", "beta", "beta.vcv", "real", "logLik")))
+  expect_that(names(res), equals(c("call", "link", "beta", "beta.vcv", "real", "logLik",
+    "ci", "formulae", "index", "xlev", "scaling")))
   expect_that(is.call(res$call), is_true())
   expect_that(colnames(res$real), equals(c("est", "lowCI", "uppCI")))
   expect_that(rownames(res$real)[c(1, 72, 73, 145)] ,
@@ -128,7 +132,8 @@ test_that("occSSrnSite with logit",  {
 
   res <- occSSrnSite(y, n, r ~ Browsed, data=weta)
   expect_that(class(res), equals(c("wiqid", "list")))
-  expect_that(names(res), equals(c("call", "link", "beta", "beta.vcv", "real", "logLik")))
+  expect_that(names(res), equals(c("call", "link", "beta", "beta.vcv", "real", "logLik",
+    "ci", "formulae", "index", "xlev", "scaling")))
   expect_that(is.call(res$call), is_true())
   expect_that(colnames(res$real), equals(c("est", "lowCI", "uppCI")))
   expect_that(rownames(res$real)[c(1, 72, 73, 145)] ,
@@ -143,7 +148,8 @@ test_that("occSSrnSite with logit",  {
 
   res <- occSSrnSite(y, n, c(lambda~ Browsed, r ~ Browsed), data=weta)
   expect_that(class(res), equals(c("wiqid", "list")))
-  expect_that(names(res), equals(c("call", "link", "beta", "beta.vcv", "real", "logLik")))
+  expect_that(names(res), equals(c("call", "link", "beta", "beta.vcv", "real", "logLik",
+    "ci", "formulae", "index", "xlev", "scaling")))
   expect_that(is.call(res$call), is_true())
   expect_that(colnames(res$real), equals(c("est", "lowCI", "uppCI")))
   expect_that(rownames(res$real)[c(1, 72, 73, 145)] ,

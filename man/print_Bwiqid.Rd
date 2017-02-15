@@ -22,7 +22,7 @@ further arguments for the print function.
 }
 }
 \details{
-The function prints a table with a row for each parameter \emph{after} removing duplicated columns. Duplication usually arises because a covariate has only a few unique values.
+The function prints a table with a row for each parameter \emph{after} removing duplicated rows. Duplication usually arises because a covariate has only a few unique values.
 
 There are columns for each of the following summary statistics ...
 
