@@ -14,7 +14,7 @@ A \code{wiqid} object is a list with the following elements:
 
 \describe{
   \item{call }{The call used to produce the results}
-  \item{link }{The link function used for probabilities, usually \code{logit} or \code{probit}.}
+  \item{link }{Either a named list with the link functions used, or a single value if the same link is used for all parameters. For probabilities, usually \code{logit} or \code{probit}.}
   \item{beta }{A matrix of values of the coefficients of the terms in the linear predictors, with standard errors and confidence intervals.}
   \item{beta.vcv }{The variance-covariance matrix for the beta estimates.}
   \item{real }{Estimates of occupancy and probability of detection on the real scale, with confidence intervals.}

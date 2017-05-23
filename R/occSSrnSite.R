@@ -115,7 +115,7 @@ occSSrnSite <- function(y, n, model=NULL, data=NULL,
   rownames(realPsi) <- paste("psi:", 1:nSites, sep="")
 
   out <- list(call = match.call(),
-              link = match.arg(link),
+              link = c(lambda = "log", r = match.arg(link)),
               beta = beta.mat,
               beta.vcv = varcov,
               real = rbind(realPsi, realLam, realR),

@@ -7,7 +7,7 @@ importFrom("stats", "AIC", "acf", "as.dist", "as.formula", "bw.nrd0",
    "pnorm", "predict", "qlogis", "qnorm", "rbeta", "rbinom",
    "rgamma", "rnorm", "runif", "sd", "terms", "var",
    "nobs", "logLik", "update", "window",
-   "dt", "pt", "qt", "rt", "coef", "model.frame")
+   "dt", "pt", "qt", "rt", "coef", "model.frame", "dnorm")
 importFrom("coda", "mcmc", "mcmc.list", "as.mcmc.list",
   "geweke.diag", "gelman.diag", "effectiveSize")
 importFrom("HDInterval", "hdi")

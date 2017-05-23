@@ -4,7 +4,7 @@
 Predict method for objects of class 'wiqid'
 }
 \description{
-Obtains predictions, with estimates standard errors and confidence intervals, from a fitted model object of class \code{wiqid}, as produced by frequentist estimation functions in the \pkg{wiqid} package. Not all functions produce objects that enable predictions to be made. Please treat this as a 'beta' version and check output carefully.
+Obtains predictions, with estimates, standard errors and confidence intervals, from a fitted model object of class \code{wiqid}, as produced by frequentist estimation functions in the \pkg{wiqid} package. Not all functions produce objects that enable predictions to be made. Please treat this as a 'beta' version and check output carefully.
 }
 \usage{
 \method{predict}{wiqid}(object, newdata, parameter, ci, type=c("link", "response"), ...) 

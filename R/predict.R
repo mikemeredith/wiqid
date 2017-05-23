@@ -1,11 +1,12 @@
 
-# This is intended to become a 'predict' method for 'wiqid' objects
+# This is the 'predict' method for 'wiqid' objects
 
-# Additional info to be included in the 'wiqid' fit:
+# Essential info to be included in the 'wiqid' fit:
 # = model formulae
 # = preprocessing information:
 #   - for numeric covars, scaling info (mean, SD/2)
 #   - for factors, original levels
+# = link function used, at present "logit", "probit" and "log" are implemented.
 
 predict.wiqid <- function(object, newdata, parameter, ci, type=c("link", "response"), ...) {
   
@@ -28,11 +29,16 @@ predict.wiqid <- function(object, newdata, parameter, ci, type=c("link", "respon
     stop("No submodel found for parameter ", parameter)
   index <- object$index[[parID]]
   formula <- forms[[parID]]
+  link <- object$link
+  if(is.null(link))
+    link <- "logit"
+  if(length(link) > 1)
+    link <- link[[parID]]
   varsNeeded <- all.vars(formula)
   
   if(length(varsNeeded) == 0) {   # INTERCEPT ONLY MODEL
     stopifnot(length(index) == 1) # check
-    cat("This is an intercept-only model, all values identical.\n")    
+    message("This is an intercept-only model, all values identical.")    
     intercept <- object$beta[index, 1:2] # est and SE
     intercept <- c(intercept, intercept[1] + intercept[2] * crit)
     lp.mat <- matrix(rep(intercept, each=nrow(newdata)), nrow(newdata))
@@ -69,18 +75,22 @@ predict.wiqid <- function(object, newdata, parameter, ci, type=c("link", "respon
   }
   type <- match.arg(type)
   if(type == "response") {
-    link <- object$link
-    if(is.null(link))
-      link <- "logit"
-    plink <- switch(link,
-      logit = plogis,
-      probit = pnorm,
-      stop("Link type ", link, " not recognised."))
     SE <- lp.mat[, 2]
-    lp.mat <- plink(lp.mat)
-    lp.mat[, 2] <- lp.mat[, 1] * (1 - lp.mat[, 1]) * SE
+    if(link == "logit") {
+      lp.mat <- plogis(lp.mat)
+      lp.mat[, 2] <- SE * lp.mat[, 1] * (1 - lp.mat[, 1])
+    } else if(link == "probit"){
+      SE <- SE * dnorm(lp.mat[, 1])
+      lp.mat <- pnorm(lp.mat)
+      lp.mat[, 2] <- SE
+    } else if(link == "log") {
+      lp.mat <- exp(lp.mat)
+      lp.mat[, 2] <- SE * lp.mat[, 1]
+    } else {
+      stop("Link type ", link, " not recognised.")
+    }
   }
   attr(lp.mat, "ci") <- ci
-  attr(lp.mat, "link") <- object$link
+  attr(lp.mat, "link") <- link
   return(lp.mat)
 }

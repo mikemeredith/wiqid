@@ -89,7 +89,7 @@ function(y, n, ci=0.95, link=c("logit", "probit"))  {
   colnames(real) <- c("est", "lowCI", "uppCI")
   rownames(real) <- c("psiHat", "lambdaHat", "rHat")
   out <- list(call = match.call(),
-              link = match.arg(link),
+              link = c(lambda = "log", r = match.arg(link)),
               beta = beta.mat,
               beta.vcv = varcov,
               real = real,
