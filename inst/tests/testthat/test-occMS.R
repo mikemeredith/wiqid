@@ -13,7 +13,7 @@ test_that("occMS0 gives right answers",  {
 
   expect_that(class(res1), equals(c("wiqid", "list"))) 
   expect_that(names(res1),
-    equals(c("call", "beta", "beta.vcv", "real", "logLik"))) 
+    equals(c("call", "beta", "beta.vcv", "real", "logLik", "ci", "link", "index"))) 
   expect_that(is.call(res1$call), is_true())
 
   expect_that(dim(res1$beta), equals(c(4, 4)))
@@ -104,10 +104,10 @@ test_that("occMS gives right answers",  {
   DH <- GrandSkinks[, 1:15]
   
   if(TRUE)  {  # Don't do this regularly, too slow
-    res1 <- occMS(DH, 3)
+    res1 <- occMS(DH, 3)  # this invokes occMS0
     expect_that(class(res1), equals(c("wiqid", "list"))) 
     expect_that(names(res1),
-      equals(c("call", "beta", "beta.vcv", "real", "logLik"))) 
+      equals(c("call", "beta", "beta.vcv", "real", "logLik", "ci", "link", "index"))) 
     expect_that(is.call(res1$call), is_true())
 
     expect_that(dim(res1$beta), equals(c(4, 4)))
@@ -161,7 +161,7 @@ test_that("occMScovSite gives right answers",  {
   res1 <- occMScovSite(DH, 3)
   expect_that(class(res1), equals(c("wiqid", "list"))) 
   expect_that(names(res1),
-    equals(c("call", "beta", "beta.vcv", "real", "logLik"))) 
+    equals(c("call", "beta", "beta.vcv", "real", "logLik", "ci"))) 
   expect_that(is.call(res1$call), is_true())
 
   expect_that(dim(res1$beta), equals(c(4, 4)))

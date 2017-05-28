@@ -1,12 +1,13 @@
 # File created 2017-05-23
 
 # test_that code for predict methods
+# occSSrn now has own file
 
-# predict is implemented for occSS, occSS0, occSSrn, occSSrn0
+# predict is implemented for occSS, occSS0
 
-# not implemented for occSScovsite, surv*, 
+# not implemented for occSScovsite, occSStime
 
-context("Predict method")
+context("Predict method for occSS*")
 
 test_that("Predict works for occSS",  {
   # Data set (weta)
@@ -65,7 +66,7 @@ test_that("Predict works for occSS",  {
   expect_error(predict(wetaBn, newdata, "psi"),
     "Needed variable")
   expect_error(predict(wetaBn, newdata, "whatever"),
-    "No submodel found for parameter")
+    "No coefficients found for parameter")
   newdata2 <- data.frame(ObsD = c("B", "C", "X"))
   expect_error(predict(wetaBnO, newdata2, "p"),
     "factor ObsD has new levels X")
@@ -85,171 +86,104 @@ test_that("Predict works for occSS",  {
   expect_equal(colnames(predBn), c("est", "SE", "lowCI", "uppCI"))
   expect_equivalent(round(colMeans(predBn), 4), c(0.6227, 0.1281, 0.3543, 0.8274))
   
+  # With .time and .Time covars
+  # ---------------------------
+  wetaBt <- occSS(DH, p ~ Browsed + .time, data=weta.covs)
+  newdata2 <- expand.grid(Browsed=c(TRUE, FALSE), .time=factor(1:5))
+  rownames(newdata2) <- outer(c(TRUE, FALSE), 1:5, paste, sep=":")
+  # On logit scale:
+  predBt <- predict(wetaBt, newdata2, "p")
+  expect_equal(attr(predBt, "link"), "logit")
+  expect_equal(rownames(predBt), rownames(newdata2))
+  expect_equal(colnames(predBt), c("est", "SE", "lowCI", "uppCI"))
+  expect_equivalent(round(colMeans(predBt), 4), c(-0.8012,  0.4842, -1.7503,  0.1479))
+  # On probability scale:
+  predBtp <- predict(wetaBt, newdata2, "p", type="response")
+  expect_equivalent(round(colMeans(predBtp), 4), c(0.3252, 0.0949, 0.1708, 0.5313))
+ 
+  wetaBT <- occSS(DH, p ~ Browsed + .Time, data=weta.covs)
+  newdata3 <- expand.grid(.Time=1:5, Browsed=c(TRUE, FALSE))
+  rownames(newdata3) <- outer(1:5, c(TRUE, FALSE), paste, sep=":")
+  # On logit scale:
+  predBT <- predict(wetaBT, newdata3, "p")
+  expect_equal(rownames(predBT), rownames(newdata3))
+  expect_equivalent(round(colMeans(predBT), 4), c(-0.7944,  0.3628, -1.5055, -0.0834))
+  # On probability scale:
+  predBTp <- predict(wetaBT, newdata3, "p", type="response")
+  expect_equivalent(round(colMeans(predBTp), 4), c(0.3183, 0.0745, 0.1932, 0.4794))
 })
 # ..............................................................
 
-test_that("predict works with occSSrn0",  {
-  # Data set (Blue Ridge Salamanders)
+test_that("Predict works for occSS0",  {
+  # Data set (weta)
   require(wiqid)
   data(salamanders)
-  n <- rep(ncol(salamanders), nrow(salamanders))
-  y <- rowSums(salamanders)
+  n <- rowSums(!is.na(salamanders))
+  y <- rowSums(salamanders > 0, na.rm=TRUE)
+  brs1 <- occSS0(y, n)
+
+  newdata <- data.frame(factor(1:3))
+  rownames(newdata) <- LETTERS[1:3]
+  # logit scale
+  expect_message(pred1 <- predict(brs1, newdata, "psi"),
+    "This is an intercept-only model")
+  expect_equal(attr(pred1, "link"), "logit")
+  expect_equal(rownames(pred1), rownames(newdata))
+  expect_equivalent(colMeans(pred1), brs1$beta["psiHat", ])
+  expect_true(all(diff(pred1[, 1]) == 0))
+  # probability scale
+  expect_message(pred1p <- predict(brs1, newdata, "p", type="response"),
+    "This is an intercept-only model")
+  expect_equal(attr(pred1p, "link"), "logit")
+  expect_equal(rownames(pred1p), rownames(newdata))
+  expect_equivalent(colMeans(pred1p)[-2], brs1$real["pHat", ])
+  expect_true(all(diff(pred1p[, 1]) == 0))
+
+  brs2 <- occSS0(y, n, link="probit")
+
+  # probit scale
+  expect_message(pred2 <- predict(brs2, newdata, "psi"),
+    "This is an intercept-only model")
+  expect_equal(attr(pred2, "link"), "probit")
+  expect_equal(rownames(pred2), rownames(newdata))
+  expect_equivalent(colMeans(pred2), brs2$beta["psiHat", ])
+  expect_true(all(diff(pred2[, 1]) == 0))
+  # probability scale
+  expect_message(pred2p <- predict(brs2, newdata, "p", type="response"),
+    "This is an intercept-only model")
+  expect_equal(attr(pred2p, "link"), "probit")
+  expect_equal(rownames(pred2p), rownames(newdata))
+  expect_equivalent(colMeans(pred2p)[-2], brs2$real["pHat", ])
+  expect_true(all(diff(pred2p[, 1]) == 0))
   
-  res <- occSSrn0(y, n)
-  newdata <- data.frame(dummy = 1:3)
-  rownames(newdata) <- c("A", "B", "C")
-  expect_message(predLam <- predict(res, newdata, "lambda"),
-    "This is an intercept-only model")
-  expect_equal(attr(predLam, "link"), "log")
-  expect_equal(nrow(predLam), nrow(newdata))
-  expect_equal(rownames(predLam), rownames(newdata))
-  expect_equal(colnames(predLam), c("est", "SE", "lowCI", "uppCI"))
-  expect_equivalent(round(colMeans(predLam), 4), c(0.1332, 0.4494, -0.7476 ,1.0141))
-
-  expect_message(predr <- predict(res, newdata, "r"),
-    "This is an intercept-only model")
-  expect_equal(attr(predr, "link"), "logit")
-  expect_equal(nrow(predr), nrow(newdata))
-  expect_equal(rownames(predr), rownames(newdata))
-  expect_equal(colnames(predr), c("est", "SE", "lowCI", "uppCI"))
-  expect_equivalent(round(colMeans(predr), 4), c(-1.7546, 0.5261, -2.7857, -0.7235))
-
-  predLam <- predict(res, newdata, "lambda", type="response")
-  expect_equivalent(round(colMeans(predLam), 4), c(1.1425, 0.5135, 0.4735, 2.7568))
-  predr <- predict(res, newdata, "r", type="response")
-  expect_equivalent(round(colMeans(predr), 4), c(0.1475, 0.0661, 0.0581, 0.3266))
-
-  res2 <- occSSrn0(y, n, link="probit")
-  predLam <- predict(res2, newdata, "lambda")
-  expect_equal(attr(predLam, "link"), "log")
-  expect_equivalent(round(colMeans(predLam), 4), c(0.1332,  0.4495, -0.7477,  1.0142 ))
-  predr <- predict(res2, newdata, "r")
-  expect_equal(attr(predr, "link"), "probit")
-  expect_equivalent(round(colMeans(predr), 4), c(-1.0474,  0.2870, -1.6098, -0.4849))
-
-  predLam <- predict(res2, newdata, "lambda", type="response")
-  expect_equivalent(round(colMeans(predLam), 4), c(1.1425, 0.5135, 0.4734, 2.7571))
-  predr <- predict(res2, newdata, "r", type="response")
-  expect_equivalent(round(colMeans(predr), 4), c(0.1475, 0.0661, 0.0537, 0.3139))
- } )
- 
+})
 # ..............................................................
 
-test_that("predict works with occSSrnSite",  {
+test_that("Predict DOESN'T work for occSScovSite",  {
   require(wiqid)
   data(weta)
   DH <- weta[, 1:5]
   y <- rowSums(DH, na.rm=TRUE)
   n <- rowSums(!is.na(DH))
-  weta.covs <- weta[, 6:11]
-  set.seed(123)
+  weta.covs <- weta[, 6, drop=FALSE]
   weta.covs$nons <- rnorm(nrow(weta))
 
-  newdata <- expand.grid(Browsed=c(TRUE, FALSE), nons=c(-1,0,1))
-  rownames(newdata) <- LETTERS[1:nrow(newdata)]
-  # Full model for lambda
-  res <- occSSrnSite(y, n, lambda ~ Browsed + nons, data=weta.covs)
-  expect_silent(predLam <- predict(res, newdata, "lambda"))
-  expect_equal(attr(predLam, "link"), "log")
-  expect_equal(nrow(predLam), nrow(newdata))
-  expect_equal(rownames(predLam), rownames(newdata))
-  expect_equal(colnames(predLam), c("est", "SE", "lowCI", "uppCI"))
-  expect_equivalent(round(colMeans(predLam), 4), c(0.1830,  0.4186, -0.6375,  1.0035))
-  predLam <- predict(res, newdata, "lambda", type="response")
-  expect_equivalent(round(colMeans(predLam), 4), c(1.2527, 0.5216, 0.5544, 2.8358))
+  newdata <- expand.grid(Browsed=c(TRUE, FALSE), nons=c(-1,0,1), KEEP.OUT.ATTRS = FALSE)
 
-  expect_message(predr <- predict(res, newdata, "r"),
-    "This is an intercept-only model")
-  expect_equal(attr(predr, "link"), "logit")
-  expect_equal(nrow(predr), nrow(newdata))
-  expect_equal(rownames(predr), rownames(newdata))
-  expect_equal(colnames(predr), c("est", "SE", "lowCI", "uppCI"))
-  expect_equivalent(round(colMeans(predr), 4), c(-1.4015,  0.4381, -2.2602, -0.5428))
-  predr <- predict(res, newdata, "r", type="response")
-  expect_equivalent(round(colMeans(predr), 4), c(0.1976, 0.0695, 0.0945, 0.3675))
+  weta1 <- occSScovSite(y, n)
+  expect_error(pred1 <- predict(weta1, newdata, "psi"),
+      "No coefficients found")
+})
+# ..............................................................
 
-  res2 <- occSSrnSite(y, n, lambda ~ Browsed + nons, data=weta.covs, link="probit")
-  predLam <- predict(res2, newdata, "lambda")
-  expect_equal(attr(predLam, "link"), "log")
-  expect_equivalent(round(colMeans(predLam), 4), c(0.1830,  0.4187, -0.6376,  1.0035))
-  predLam <- predict(res2, newdata, "lambda", type="response")
-  expect_equivalent(round(colMeans(predLam), 4), c(1.2527, 0.5217, 0.5543, 2.8360))
-
-  predr <- predict(res2, newdata, "r")
-  expect_equal(attr(predr, "link"), "probit")
-  expect_equivalent(round(colMeans(predr), 4), c(-0.8503,  0.2500, -1.3402, -0.3603))
-  predr <- predict(res2, newdata, "r", type="response")
-  expect_equivalent(round(colMeans(predr), 4), c(0.1976, 0.0695, 0.0901, 0.3593))
-
-  # Model for lambda and r
-  res <- occSSrnSite(y, n, list(lambda ~ nons, r ~ Browsed), data=weta.covs)
-  expect_silent(predLam <- predict(res, newdata, "lambda"))
-  expect_equal(attr(predLam, "link"), "log")
-  expect_equal(nrow(predLam), nrow(newdata))
-  expect_equal(rownames(predLam), rownames(newdata))
-  expect_equal(colnames(predLam), c("est", "SE", "lowCI", "uppCI"))
-  expect_equivalent(round(colMeans(predLam), 4), c(0.3014,  0.4099, -0.5020,  1.1047))
-  predLam <- predict(res, newdata, "lambda", type="response")
-  expect_equivalent(round(colMeans(predLam), 4), c(1.3535, 0.5552, 0.6062, 3.0266))
-
-  expect_silent(predr <- predict(res, newdata, "r"))
-  expect_equal(attr(predr, "link"), "logit")
-  expect_equal(nrow(predr), nrow(newdata))
-  expect_equal(rownames(predr), rownames(newdata))
-  expect_equal(colnames(predr), c("est", "SE", "lowCI", "uppCI"))
-  expect_equivalent(round(colMeans(predr), 4), c(-1.5367,  0.5044, -2.5253, -0.5480))
-  predr <- predict(res, newdata, "r", type="response")
-  expect_equivalent(round(colMeans(predr), 4), c(0.1804, 0.0729, 0.0775, 0.3675 ))
-
-  res2 <- occSSrnSite(y, n, list(lambda ~ nons, r ~ Browsed), data=weta.covs, link="probit")
-  predLam <- predict(res2, newdata, "lambda")
-  expect_equal(attr(predLam, "link"), "log")
-  expect_equivalent(round(colMeans(predLam), 4), c(0.3014,  0.4100, -0.5021,  1.1049 ))
-  predLam <- predict(res2, newdata, "lambda", type="response")
-  expect_equivalent(round(colMeans(predLam), 4), c(1.3535, 0.5553, 0.6061, 3.0271))
-
-  predr <- predict(res2, newdata, "r")
-  expect_equal(attr(predr, "link"), "probit")
-  expect_equivalent(round(colMeans(predr), 4), c(-0.9242,  0.2821, -1.4771, -0.3713 ))
-  predr <- predict(res2, newdata, "r", type="response")
-  expect_equivalent(round(colMeans(predr), 4), c(0.1804, 0.0729, 0.0728, 0.3563))
-
-  # Intercept only:
-  newdata <- expand.grid(Browsed=c(TRUE, FALSE), nons=c(-1,0,1))
-  res <- occSSrnSite(y, n)
-  rownames(newdata) <- LETTERS[1:nrow(newdata)]
-  expect_message(predLam <- predict(res, newdata, "lambda"),
-    "This is an intercept-only model")
-  expect_equal(attr(predLam, "link"), "log")
-  expect_equal(nrow(predLam), nrow(newdata))
-  expect_equal(rownames(predLam), rownames(newdata))
-  expect_equal(colnames(predLam), c("est", "SE", "lowCI", "uppCI"))
-  expect_equivalent(round(colMeans(predLam), 4), c(0.1506,  0.3329, -0.5018,  0.8031))
-  predLam <- predict(res, newdata, "lambda", type="response")
-  expect_equivalent(round(colMeans(predLam), 4), c(1.1626, 0.3870, 0.6055, 2.2324))
-
-  expect_message(predr <- predict(res, newdata, "r"),
-    "This is an intercept-only model")
-  expect_equal(attr(predr, "link"), "logit")
-  expect_equal(nrow(predr), nrow(newdata))
-  expect_equal(rownames(predr), rownames(newdata))
-  expect_equal(colnames(predr), c("est", "SE", "lowCI", "uppCI"))
-  expect_equivalent(round(colMeans(predr), 4), c(-1.3296,  0.4147, -2.1423, -0.5168))
-  predr <- predict(res, newdata, "r", type="response")
-  expect_equivalent(round(colMeans(predr), 4), c(0.2092, 0.0686, 0.1050, 0.3736))
-
-  res2 <- occSSrn0(y, n, link="probit")
-  predLam <- predict(res2, newdata, "lambda")
-  expect_equal(attr(predLam, "link"), "log")
-  expect_equivalent(round(colMeans(predLam), 4), c(0.1506,  0.3329, -0.5019,  0.8031))
-  predLam <- predict(res2, newdata, "lambda", type="response")
-  expect_equivalent(round(colMeans(predLam), 4), c(1.1626, 0.3870, 0.6054, 2.2326))
-
-  predr <- predict(res2, newdata, "r")
-  expect_equal(attr(predr, "link"), "probit")
-  expect_equivalent(round(colMeans(predr), 4), c(-0.8091,  0.2386, -1.2768, -0.3414))
-  predr <- predict(res2, newdata, "r", type="response")
-  expect_equivalent(round(colMeans(predr), 4), c(0.2092, 0.0686, 0.1008, 0.3664))
-} )
- 
- 
+test_that("Predict DOESN'T work for occSStime",  {
+  require(wiqid)
+  data(salamanders)
+  BRS <- salamanders
+  
+  res0 <- occSStime(BRS, plot=FALSE)
+  newdata <- data.frame(.time = factor(1:5))
+  expect_error(pred0 <- predict(res0, newdata, 'p'),
+      "No coefficients found")
+})
+# ..............................................................

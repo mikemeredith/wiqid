@@ -4,7 +4,7 @@
 Predict method for objects of class 'wiqid'
 }
 \description{
-Obtains predictions, with estimates, standard errors and confidence intervals, from a fitted model object of class \code{wiqid}, as produced by frequentist estimation functions in the \pkg{wiqid} package. Not all functions produce objects that enable predictions to be made. Please treat this as a 'beta' version and check output carefully.
+Obtains predictions, with estimates, standard errors and confidence intervals, from a fitted model object of class \code{wiqid}, as produced by frequentist estimation functions in the \pkg{wiqid} package. Not all functions produce objects that enable predictions to be made; see Details. Please treat this as a 'beta' version and check output carefully.
 }
 \usage{
 \method{predict}{wiqid}(object, newdata, parameter, ci, type=c("link", "response"), ...) 
@@ -33,7 +33,14 @@ further arguments for other methods.
 \details{
 Most \pkg{wiqid} functions have models with multiple submodels, corresponding to the formulae in the \code{model} argument. Check \code{object$formulae} for a list of the available submodels.
 
-The argument \code{newdata} is required, and must be a data frame with named columns for each of the covariates in the submodel. For factors, the levels must be (a subset of) the levels in the original data; check \code{object$xlev} for possible levels.
+The argument \code{newdata} is required (even for intercept-only models), and must be a data frame with named columns for each of the covariates in the submodel. For factors, the levels must be (a subset of) the levels in the original data; check \code{object$xlev} for possible levels.
+
+\code{predict} is not yet implemented for the following functions:
+  \tabular{ll}{
+  \code{occSStime} and \code{occSScovSite} \tab : use \code{occSS} instead.\cr
+  \code{occMStime} and \code{occMScovSite} \tab : use \code{occMS} instead.\cr
+  \code{closedCap*} functions \tab : these models have no covariates.\cr
+  \code{surv*} functions \tab : these have no covariates.}
 
 }
 \value{

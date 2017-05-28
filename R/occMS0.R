@@ -69,7 +69,10 @@ occMS0 <- function(DH, occsPerSeason, ci=0.95, verify=TRUE) {
               beta = beta.mat,
               beta.vcv = varcov,
               real = plogis(beta.mat[, -2]),
-              logLik = c(logLik=logLik, df=4, nobs=nrow(DH)))
+              logLik = c(logLik=logLik, df=4, nobs=nrow(DH)),
+              ci = ci,
+              link="logit",
+              index = list(psi1 = 1, gamma = 2, epsilon = 3, p = 4) )
   class(out) <- c("wiqid", "list")
   return(out)
 }

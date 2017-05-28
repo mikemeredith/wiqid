@@ -46,8 +46,12 @@ occ2sps <- function(DHA, DHB, model=NULL, data=NULL, ci=0.95, verify=TRUE)  {
   if(is.null(model$rBA))
     modPars[8] <- modPars[7]  # rBA <- rBa
 
-  if(is.null(data))
-    return(occ2sps0(DHA, DHB, modPars, ci=ci))
+  if(is.null(data))  {
+    out <- occ2sps0(DHA, DHB, modPars, ci=ci)
+    out$formulae <- model
+    out$index <- list("psiA"=1, "psiBa"=2, "psiBA"=3, "pA"=4, "pB"=5, "rA"=6, "rBa"=7, "rBA"=8)
+    return(out)
+  }
 
   M <- length(model)  # Number of elements in the model
   nSites <- nrow(DHA)

@@ -10,9 +10,10 @@ test_that("occ2sps gives right answers",  {
   DHB <- railSims[, 4:6]
   # Default model (no interaction)
   rail1 <- occ2sps(DHA, DHB)
-  expect_that(class(rail1), equals(c("wiqid", "list"))) 
-  expect_that(names(rail1), equals(c("call", "beta", "beta.vcv", "real", "logLik"))) 
-  expect_that(is.call(rail1$call), is_true())
+  expect_equal(class(rail1), c("wiqid", "list"))
+  expect_equal(names(rail1), c("call", "beta", "beta.vcv", "real", "logLik",
+      "ci", "formulae", "index"))
+  expect_true(is.call(rail1$call))
 
   expect_that(dim(rail1$beta), equals(c(8, 4)))
   expect_that(colnames(rail1$beta),

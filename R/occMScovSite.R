@@ -168,7 +168,8 @@ occMScovSite <- function(DH, occsPerSeason,
               beta = beta.mat,
               beta.vcv = varcov,
               real = plogis(lp.mat),
-              logLik = c(logLik=logLik, df=K, nobs=nrow(DH)))
+              logLik = c(logLik=logLik, df=K, nobs=nrow(DH)),
+              ci = ci)
   class(out) <- c("wiqid", "list")
   return(out)
 }

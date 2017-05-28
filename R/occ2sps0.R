@@ -81,7 +81,8 @@ occ2sps0 <- function(DHA, DHB, modPars, ci=0.95)  {
               beta = beta.mat,
               beta.vcv = varcov,
               real = plogis(beta.mat[, -2]),
-              logLik = c(logLik=logLik, df=length(unique(modPars)), nobs=nSites))
+              logLik = c(logLik=logLik, df=length(unique(modPars)), nobs=nSites),
+              ci = ci)
   class(out) <- c("wiqid", "list")
   return(out)
 }
