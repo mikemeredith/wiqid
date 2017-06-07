@@ -1,7 +1,10 @@
+CHANGES in 0.1.0.9004 (2017-05-30)
 
-CHANGES in 0.1.0.9003 (2017-??)
+  * Removed 'View' generic and 'View.Bwiqid' method (sadly) as they clash with jagsUI::View generic.
 
-  * Added 'testthat' tests for 'predict' for 'occ2sps' functions (and fixed bug).
+CHANGES in 0.1.0.9003 (2017-05-28)
+
+  * Added 'testthat' tests for 'predict' for 'occ2sps' and 'occMS*' functions (and fixed bugs).
 
 CHANGES in 0.1.0.9002 (2017-05-23)
 
@@ -12,3 +15,7 @@ CHANGES in 0.1.0.9001 (2017-02-15)
   * Added 'coef' and 'vcov' methods for 'wiqid' objects.
 
   * Added 'predict' methods for 'occSS', 'occSSrn' and 'occ2sps' functions.
+
+CHANGES in 0.1.0.900 (2016-11-02)
+
+  * Added View generic and View.Bwiqid method (removed later, 0.1.0.9004).
