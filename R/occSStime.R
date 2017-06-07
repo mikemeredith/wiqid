@@ -6,7 +6,7 @@
 
 occSStime <-
 function(DH, model=p~1, data=NULL, ci=0.95,
-    plot=TRUE, link=c("logit", "probit"), verify=TRUE)  {
+    plot=TRUE, link=c("logit", "probit"), verify=TRUE, ...)  {
   # DH is a 1/0 matrix of detection histories, sites x occasions
   # model is a 2-sided formula for probability of detection, eg, model = p ~ habitat.
   # data is a DATA FRAME with a row for each capture occasion and columns for time covariates.
@@ -63,8 +63,12 @@ function(DH, model=p~1, data=NULL, ci=0.95,
           (1 - psi) * (rowSums(DH, na.rm=TRUE) == 0)))
       return(min(-llh, .Machine$double.xmax)) # min(..) stops Inf being returned
     }
-    params <- rep(0, K)
-    res <- nlm(nll, params, hessian=TRUE)
+    # res <- nlm(nll, params, hessian=TRUE)
+    nlmArgs <- list(...)
+    nlmArgs$f <- nll
+    nlmArgs$p <- rep(0, K)
+    nlmArgs$hessian <- TRUE
+    res <- do.call(nlm, nlmArgs)
     if(res$code > 2)   # exit code 1 or 2 is ok.
       warning(paste("Convergence may not have been reached (code", res$code, ")"))
     beta.mat[,1] <- res$estimate

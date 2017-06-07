@@ -10,7 +10,7 @@
 
 occMScovSite <- function(DH, occsPerSeason,
              model=NULL,
-             data=NULL, ci=0.95, verify=TRUE) {    
+             data=NULL, ci=0.95, verify=TRUE, ...) {    
   # ** DH is detection data in a 1/0/NA matrix or data frame, sites in rows, 
   #    detection occasions in columns..
   # ** occsPerSeason is a scalar or vector with the number of occasions per season
@@ -132,8 +132,12 @@ occMScovSite <- function(DH, occsPerSeason,
 
   # cat("done\n")
   # cat("Maximizing likelihood...") ; flush.console()
-  start <- rep(0, K)
-  res <- nlm(nll, start, hessian=TRUE)
+  # res <- nlm(nll, start, hessian=TRUE)
+  nlmArgs <- list(...)
+  nlmArgs$f <- nll
+  nlmArgs$p <- rep(0, K)
+  nlmArgs$hessian <- TRUE
+  res <- do.call(nlm, nlmArgs)
   # cat("done\n")
   # cat("Organizing output...") ; flush.console()
   if(res$code > 2)   # exit code 1 or 2 is ok.

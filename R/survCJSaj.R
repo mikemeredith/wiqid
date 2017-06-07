@@ -28,7 +28,7 @@ qArrayAJ <- function(phi, p, phiJ=phi) {
 # ..........................................................................
 
 survCJSaj <- function(DHj, DHa=NULL, model=list(phiJ~1, phiA~1, p~1), data=NULL,
-    freqj=1, freqa=1, ci = 0.95, link=c("logit", "probit")) {
+    freqj=1, freqa=1, ci = 0.95, link=c("logit", "probit"), ...) {
   # phi(t) p(t) model or models with time covariates for Cormack-Joly-Seber
   # estimation of apparent survival.
   # ** DHj is detection history matrix/data frame, animals x occasions, for animals marked as juveniles; DHa (optional) has detection histories for animals marked as adults.
@@ -141,8 +141,14 @@ survCJSaj <- function(DHj, DHa=NULL, model=list(phiJ~1, phiA~1, p~1), data=NULL,
   }
 
   # Run mle estimation with nlm:
-  param <- rep(0, K)
-  res <- nlm(nll, param, hessian=TRUE, stepmax=10) # 2015-03-01
+  # res <- nlm(nll, param, hessian=TRUE, stepmax=10) # 2015-03-01
+  nlmArgs <- list(...)
+  nlmArgs$f <- nll
+  nlmArgs$p <- rep(0, K)
+  nlmArgs$hessian <- TRUE
+  if(is.null(nlmArgs$stepmax))
+    nlmArgs$stepmax <- 10
+  res <- do.call(nlm, nlmArgs)
   if(res$code > 2)   # exit code 1 or 2 is ok.
     warning(paste("Convergence may not have been reached (nlm code", res$code, ")"))
 

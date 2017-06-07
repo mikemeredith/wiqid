@@ -31,7 +31,7 @@ qArray <- function(phi, p) {
 # ..........................................................................
 
 survCJS <- function(DH, model=list(phi~1, p~1), data=NULL, freq=1, group, ci = 0.95,
-            link=c("logit", "probit")) {
+            link=c("logit", "probit"), ...) {
   # ** DH is detection history matrix/data frame, animals x occasions.
   # ** freq is vector of frequencies for each detection history
   # ** model is a list of 2-sided formulae for psi and p; can also be a single
@@ -141,8 +141,14 @@ survCJS <- function(DH, model=list(phi~1, p~1), data=NULL, freq=1, group, ci = 0
   }
 
   # Run mle estimation with nlm:
-  param <- rep(0, K)
-  res <- nlm(nll, param, hessian=TRUE, stepmax=10) # 2015-03-01
+  # res <- nlm(nll, param, hessian=TRUE, stepmax=10) # 2015-03-01
+  nlmArgs <- list(...)
+  nlmArgs$f <- nll
+  nlmArgs$p <- rep(0, K)
+  nlmArgs$hessian <- TRUE
+  if(is.null(nlmArgs$stepmax))
+    nlmArgs$stepmax <- 19
+  res <- do.call(nlm, nlmArgs)
   if(res$code > 2)   # exit code 1 or 2 is ok.
     warning(paste("Convergence may not have been reached (nlm code", res$code, ")"))
 

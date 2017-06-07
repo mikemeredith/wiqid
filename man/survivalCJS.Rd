@@ -10,10 +10,10 @@ Calculation of apparent survival (accounting for recapture probability) from mar
 }
 \usage{
 survCJS(DH, model=list(phi~1, p~1), data=NULL, freq=1, group, ci = 0.95,
-    link=c("logit", "probit"))
+    link=c("logit", "probit"), ...)
 
 survCJSaj(DHj, DHa=NULL, model=list(phiJ~1, phiA~1, p~1), data=NULL,
-    freqj=1, freqa=1, ci = 0.95, link=c("logit", "probit"))
+    freqj=1, freqa=1, ci = 0.95, link=c("logit", "probit"), ...)
 
 BsurvCJS(DH, model=list(phi~1, p~1), data = NULL, freq=1, priors=NULL,
     chains=3, sample=1e4, burnin=1000, thin=1, adapt=1000,
@@ -47,6 +47,9 @@ the required confidence interval.
   \item{link}{
 the link function to use, either logit or probit; see \link{Links}.
 }
+  \item{...}{
+other arguments passed to \code{\link{nlm}}.
+}
   \item{priors}{
 a list with elements for prior mean and variance for coefficients; see Details.
 }
@@ -54,7 +57,7 @@ a list with elements for prior mean and variance for coefficients; see Details.
 the number of Markov chains to run.
 }
   \item{sample}{
-the number of values per chain to return. The total number of values calculated per chain is \code{adapt + burnin + sample * thin}.
+the minimum number of values to return; the actual number returned may be slightly higher, as it will be a multiple of \code{chains}.
 }
   \item{burnin}{
 the number of values to discard at the beginning of each chain.

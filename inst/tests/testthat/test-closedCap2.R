@@ -8,6 +8,9 @@ context("Closed captures/CHmatrix")
 
 test_that("closedCapMb gives right answers",  {
   data(KanhaTigers)
+  # Check dots passed to nlm
+  expect_warning(closedCapMb(KanhaTigers, iterlim=4),
+      "Convergence may not have been reached")
   res <- closedCapMb(KanhaTigers)
   resM <- closedCapMb(KanhaTigers, ciType='MARK')
   expect_that(class(res), equals(c("wiqid", "list"))) 
@@ -43,6 +46,9 @@ test_that("closedCapMb gives right answers",  {
 
 test_that("closedCapMt gives right answers",  {
   data(KanhaTigers)
+  # Check dots passed to nlm
+  expect_warning(closedCapMt(KanhaTigers, iterlim=4),
+      "Convergence may not have been reached")
   res <- closedCapMt(KanhaTigers)
   resM <- closedCapMt(KanhaTigers, ciType='MARK')
   expect_that(class(res), equals(c("wiqid", "list"))) 
@@ -79,6 +85,9 @@ test_that("closedCapMt gives right answers",  {
 
 test_that("closedCapMtcov gives right answers",  {
   data(KanhaTigers)
+  # Check dots passed to nlm
+  expect_warning(closedCapMtcov(KanhaTigers, iterlim=4),
+      "Convergence may not have been reached")
   res0 <- closedCapMtcov(KanhaTigers)
   expect_that(class(res0), equals(c("wiqid", "list"))) 
   expect_that(names(res0), equals(c("call", "beta", "beta.vcv", "real", "logLik"))) 
@@ -95,6 +104,9 @@ test_that("closedCapMtcov gives right answers",  {
   set.seed(123)
   covars <- data.frame(Temp = runif(ncol(KanhaTigers), 15, 25),
       Cloud = sample(0:8, ncol(KanhaTigers), replace=TRUE))
+  # Check dots passed to nlm
+  expect_warning(closedCapMtcov(KanhaTigers, p~Cloud, data=covars, iterlim=4),
+      "Convergence may not have been reached")
   resC <- closedCapMtcov(KanhaTigers, p~Cloud, data=covars)
   expect_that(round(as.vector(resC$real[1, ]), 3), 
       is_equivalent_to(c(28.444, 26.428, 39.951)))

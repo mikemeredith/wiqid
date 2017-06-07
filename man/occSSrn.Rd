@@ -13,11 +13,12 @@ Function \code{occSSrn} allows for site-specific covariates to be included in th
 }
 \usage{
 
-occSSrn(DH, model=NULL, data = NULL, ci=0.95, link=c("logit", "probit"), verify=TRUE)
+occSSrn(DH, model=NULL, data = NULL, ci=0.95, link=c("logit", "probit"),
+    verify=TRUE, ...)
 
-occSSrn0(y, n, ci=0.95, link=c("logit", "probit"))
+occSSrn0(y, n, ci=0.95, link=c("logit", "probit"), ...)
 
-occSSrnSite(y, n, model=NULL, data = NULL, ci=0.95, link=c("logit", "probit"))
+occSSrnSite(y, n, model=NULL, data = NULL, ci=0.95, link=c("logit", "probit"), ...)
 
 }
 \arguments{
@@ -46,6 +47,9 @@ a vector with the number of detections at each site.
 }
   \item{n}{
 a scalar or vector with the number of visits (survey occasions) at each site.
+}
+  \item{...}{
+other arguments passed to \code{\link{nlm}}.
 }
 
 }

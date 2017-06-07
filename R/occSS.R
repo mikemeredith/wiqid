@@ -4,7 +4,7 @@
 # modifications to allow 'predict' 2017-02-09
 
 occSS <- function(DH, model=NULL, data=NULL, ci=0.95, link=c("logit", "probit"),
-  verify=TRUE) {
+  verify=TRUE, ...) {
   # single-season occupancy models with site and survey covatiates
   # ** DH is detection data in a 1/0/NA matrix or data frame, sites in rows,
   #    detection occasions in columns..
@@ -19,7 +19,7 @@ occSS <- function(DH, model=NULL, data=NULL, ci=0.95, link=c("logit", "probit"),
   if(is.null(model)) {
     y <- rowSums(DH, na.rm=TRUE)
     n <- rowSums(!is.na(DH))
-    return(occSS0(y, n, ci=ci, link=link))
+    return(occSS0(y, n, ci=ci, link=link, ...))
   }
   crit <- fixCI(ci)
 
@@ -104,8 +104,12 @@ occSS <- function(DH, model=NULL, data=NULL, ci=0.95, link=c("logit", "probit"),
   }
 
   # Run mle estimation with nlm:
-  param <- rep(0, K)
-  res <- nlm(nll, param, hessian=TRUE)
+  # res <- nlm(nll, param, hessian=TRUE)
+  nlmArgs <- list(...)
+  nlmArgs$f <- nll
+  nlmArgs$p <- rep(0, K)
+  nlmArgs$hessian <- TRUE
+  res <- do.call(nlm, nlmArgs)
   if(res$code > 2)   # exit code 1 or 2 is ok.
     warning(paste("Convergence may not have been reached (code", res$code, ")"))
   beta.mat[,1] <- res$estimate

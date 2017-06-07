@@ -4,7 +4,7 @@
 # 'link' argument added 2015-02-20
 
 occSScovSite <- function(y, n, model=NULL, data=NULL,
-    ci=0.95, link=c("logit", "probit")) {
+    ci=0.95, link=c("logit", "probit"), ...) {
   # single-season occupancy models with site-specific covatiates
   # new version with y/n input; much faster!
   # y is a vector with the number of detections at each site.
@@ -71,8 +71,12 @@ occSScovSite <- function(y, n, model=NULL, data=NULL,
   }
 
   # Run mle estimation with nlm:
-  param <- rep(0, K)
-  res <- nlm(nll, param, hessian=TRUE)
+  # res <- nlm(nll, param, hessian=TRUE)
+  nlmArgs <- list(...)
+  nlmArgs$f <- nll
+  nlmArgs$p <- rep(0, K)
+  nlmArgs$hessian <- TRUE
+  res <- do.call(nlm, nlmArgs)
   if(res$code > 2)   # exit code 1 or 2 is ok.
     warning(paste("Convergence may not have been reached (nlm code", res$code, ")"))
 

@@ -9,6 +9,9 @@ context("Closed captures/frequency")
 test_that("closedCapM0 gives right answers",  {
   # Rabbit data from Edwards and Eberhart (1967)
   freq2 <- c(43, 16, 8, 6, 0, 2, 1, rep(0, 11))
+  # Check dots passed to nlm
+  expect_warning(closedCapM0(freq2, iterlim=4),
+      "Convergence may not have been reached")
   res <- closedCapM0(freq2)
   resM <- closedCapM0(freq2, ciType='MARK')
   expect_that(class(res), equals(c("wiqid", "list"))) 
@@ -60,7 +63,9 @@ test_that("closedCapM0 gives right answers",  {
 test_that("closedCapMh2 gives right answers",  {
   # Rabbit data from Edwards and Eberhart (1967)
   freq2 <- c(43, 16, 8, 6, 0, 2, 1, rep(0, 11))
-  res <- closedCapMh2(freq2)
+  # Check dots passed to nlm
+  expect_output(res <- closedCapMh2(freq2, print.level=2),
+      "iteration")
   resM <- closedCapMh2(freq2, ciType="MARK")
   expect_that(class(res), equals(c("wiqid", "list"))) 
   expect_that(names(res), equals(c("call", "beta",  "beta.vcv", "real", "logLik"))) 

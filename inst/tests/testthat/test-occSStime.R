@@ -11,6 +11,10 @@ test_that("occSStime with logit link",  {
   require(wiqid)
   data(salamanders)
   BRS <- salamanders
+  # Check dots passed to nlm
+  expect_warning(occSStime(BRS, plot=FALSE, iterlim=4),
+      "Convergence may not have been reached")
+
   res <- occSStime(BRS, p~.time, plot=FALSE)
   expect_that(class(res), equals(c("wiqid", "list")))
   expect_that(names(res), equals(c("call", "link", "beta", "beta.vcv", "real", "logLik")))

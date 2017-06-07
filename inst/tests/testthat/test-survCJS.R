@@ -12,6 +12,9 @@ test_that("survCJS gives right answers",  {
   # Data set (Lebreton et al dippers)
   data(dippers)
   DH <- dippers[, 1:7]
+  # Check dots passed to nlm
+  expect_warning(survCJS(DH, iterlim=4),
+      "Convergence may not have been reached")
   res <- survCJS(DH)  # default is a phi(.) p(.) model
   expect_that(class(res), equals(c("wiqid", "list")))
   expect_that(names(res), equals(c("call", "beta", "beta.vcv", "real", "logLik")))
@@ -47,7 +50,7 @@ test_that("survCJS gives right answers",  {
 
   res <- survCJS(DH, phi ~ flood, data=dd, ci=0.85)
   expect_that(round(as.vector(t(res$real[c(1,2,7),])), 4),
-      equals(c(0.6071, 0.5618, 0.6507,
+      equals(c(0.6071, 0.5618, 0.6506,
                0.4688, 0.4074, 0.5312,
                0.8998, 0.8491, 0.9348)))
   expect_that(round(AIC(res), 4), equals(666.1028)) # MARK output

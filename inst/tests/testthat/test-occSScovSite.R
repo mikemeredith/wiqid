@@ -12,6 +12,10 @@ test_that("occSScovSite with logit link",  {
   y <- rowSums(DH, na.rm=TRUE)
   n <- rowSums(!is.na(DH))
   weta.covs <- weta[, 6, drop=FALSE]
+  # Check dots passed to nlm
+  expect_warning(occSScovSite(y, n, iterlim=4),
+      "Convergence may not have been reached")
+
   weta1 <- occSScovSite(y, n)
 
   expect_that(class(weta1), equals(c("wiqid", "list")))

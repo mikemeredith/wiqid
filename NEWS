@@ -1,3 +1,7 @@
+CHANGES in 0.1.0.9005 (2017-06-07)
+
+  * dots argument added to many functions to pass parameters to 'nlm'.
+
 CHANGES in 0.1.0.9004 (2017-05-30)
 
   * Removed 'View' generic and 'View.Bwiqid' method (sadly) as they clash with jagsUI::View generic.

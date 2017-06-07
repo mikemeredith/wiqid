@@ -1,7 +1,7 @@
 # Mt model, capture probability time dependent
 
 closedCapMt <-
-function(CH, ci = 0.95, ciType=c("normal", "MARK")) {
+function(CH, ci = 0.95, ciType=c("normal", "MARK"), ...) {
   # CH is a 1/0 capture history matrix, animals x occasions
   # ci is the required confidence interval
 
@@ -27,8 +27,14 @@ function(CH, ci = 0.95, ciType=c("normal", "MARK")) {
         sum(n * log(p) + (N - n) * log(1-p))
       return(min(-tmp, .Machine$double.xmax))
     }
-    params <- c(log(5), rep(0, nocc))
-    res <- nlm(nll, params, hessian=TRUE, iterlim=1000)
+    # res <- nlm(nll, params, hessian=TRUE, iterlim=1000)
+    nlmArgs <- list(...)
+    nlmArgs$f <- nll
+    nlmArgs$p <- c(log(5), rep(0, nocc))
+    nlmArgs$hessian <- TRUE
+    if(is.null(nlmArgs$iterlim))
+      nlmArgs$iterlim <- 1000
+    res <- do.call(nlm, nlmArgs)
     if(res$code > 2)   # exit code 1 or 2 is ok.
       warning(paste("Convergence may not have been reached (nlm code", res$code, ")"))
     beta.mat[,1] <- res$estimate

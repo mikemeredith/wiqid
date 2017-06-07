@@ -1,5 +1,5 @@
 closedCapM0 <-
-function(CH, ci = 0.95, ciType=c("normal", "MARK")) {
+function(CH, ci = 0.95, ciType=c("normal", "MARK"), ...) {
   # CH is a 1/0 capture history matrix, animals x occasions, OR
   #  a vector of capture frequencies of length equal to the number
   #  of occasions - trailing zeros are required.
@@ -23,7 +23,6 @@ function(CH, ci = 0.95, ciType=c("normal", "MARK")) {
   rownames(beta.mat) <- c("Nhat", "phat")
   varcov <- NULL
   logLik <- NA_real_
-#  if(sum(freq[-1]) > 1) {  # Need recaptures
   if(sum(freq[-1]) > 0) {  # Need recaptures
     nll <- function(params) {
       N <- min(exp(params[1]) + N.cap, 1e+300, .Machine$double.xmax)
@@ -32,8 +31,14 @@ function(CH, ci = 0.95, ciType=c("normal", "MARK")) {
             (N*n.occ - n.snap)*log(1-p)
       return(min(-tmp, .Machine$double.xmax))
     }
-    params <- c(log(5), 0)
-    res <- nlm(nll, params, hessian=TRUE, iterlim=1000)
+    # res <- nlm(nll, params, hessian=TRUE, iterlim=1000)
+    nlmArgs <- list(...)
+    nlmArgs$f <- nll
+    nlmArgs$p <- c(log(5), 0)
+    nlmArgs$hessian <- TRUE
+    if(is.null(nlmArgs$iterlim))
+      nlmArgs$iterlim <- 1000
+    res <- do.call(nlm, nlmArgs)
     if(res$code > 2)   # exit code 1 or 2 is ok.
       warning(paste("Convergence may not have been reached (code", res$code, ")"))
     beta.mat[,1] <- res$estimate

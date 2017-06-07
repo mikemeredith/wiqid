@@ -7,7 +7,7 @@
 ## WORK IN PROGRESS ## can't yet deal with survey covariates.
 
 occSSrn <- function(DH, model=NULL, data=NULL,
-    ci=0.95, link=c("logit", "probit"), verify=TRUE) {
+    ci=0.95, link=c("logit", "probit"), verify=TRUE, ...) {
   # single-season Royle-Nichols model with site and survey covariates
   # ** DH is detection data in a 1/0/NA matrix or data frame, sites in rows,
   #    detection occasions in columns.
@@ -24,9 +24,9 @@ occSSrn <- function(DH, model=NULL, data=NULL,
     y <- rowSums(DH, na.rm=TRUE)
     n <- rowSums(!is.na(DH))
     if(is.null(model)) {
-      return(occSSrn0(y, n, ci=ci, link=link))
+      return(occSSrn0(y, n, ci=ci, link=link, ...))
     } else {
-      return(occSSrnSite(y, n, model=model, data=data, ci=ci, link=link))
+      return(occSSrnSite(y, n, model=model, data=data, ci=ci, link=link, ...))
     }
   }
 }
@@ -34,7 +34,7 @@ occSSrn <- function(DH, model=NULL, data=NULL,
 # ------------------------------------------------------------------
 
 occSSrn0 <-
-function(y, n, ci=0.95, link=c("logit", "probit"))  {
+function(y, n, ci=0.95, link=c("logit", "probit"), ...)  {
   # Fast version without covariates.
   # y is a vector with the number of detections at each site.
   # n is a vector with the number of occasions at each site.
@@ -69,7 +69,12 @@ function(y, n, ci=0.95, link=c("logit", "probit"))  {
       }
       return(min(-llh, .Machine$double.xmax)) # min(..) stops Inf being returned
     }
-    res <- nlm(nll, params, hessian=TRUE)
+    nlmArgs <- list(...)
+    nlmArgs$f <- nll
+    nlmArgs$p <- params
+    nlmArgs$hessian <- TRUE
+    res <- do.call(nlm, nlmArgs)
+    # res <- nlm(nll, params, hessian=TRUE)
     if(res$code > 2)   # exit code 1 or 2 is ok.
       warning(paste("Convergence may not have been reached (code", res$code, ")"))
     beta.mat[,1] <- res$estimate

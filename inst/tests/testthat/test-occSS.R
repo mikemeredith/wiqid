@@ -10,7 +10,9 @@ test_that("occSS with logit link",  {
   data(weta)
   DH <- weta[, 1:5]
   weta.covs <- weta[, 6:11]
-
+  # Check dots passed to nlm
+  expect_warning(occSS(DH, iterlim=4),
+      "Convergence may not have been reached")
   weta4 <- occSS(DH)  # This should call occSS0
   expect_that(class(weta4), equals(c("wiqid", "list")))
   expect_that(names(weta4), equals(c("call", "link", "beta", "beta.vcv", "real", "logLik","ci", "formulae", "index")))
@@ -38,6 +40,10 @@ test_that("occSS with logit link",  {
       equals(c(0.6166, 0.4840, 0.7339)))
   expect_that(round(as.vector(weta4a$real[2, ]), 4),
       equals(c(0.3494, 0.2765, 0.4301)))
+
+  # Check dots passed to nlm
+  expect_warning(occSS(DH, psi ~ Browsed, data=weta.covs, iterlim=5),
+      "Convergence may not have been reached")
 
   weta5 <- occSS(DH, psi ~ Browsed, data=weta.covs)
   expect_that(names(weta5), equals(

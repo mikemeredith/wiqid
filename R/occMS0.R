@@ -3,7 +3,7 @@
 
 # See MacKenzie et al (2006) "Occupancy..." p194ff
 
-occMS0 <- function(DH, occsPerSeason, ci=0.95, verify=TRUE) {    
+occMS0 <- function(DH, occsPerSeason, ci=0.95, verify=TRUE, ...) {    
 
   # ** DH is detection data in a 1/0/NA matrix or data frame, sites in rows, 
   #    detection occasions in columns..
@@ -49,8 +49,12 @@ occMS0 <- function(DH, occsPerSeason, ci=0.95, verify=TRUE) {
     return(min(-sum(log(Prh)), .Machine$double.xmax))
   }
 
-  start <- rep(0, 4)
-  res <- nlm(nll, start, hessian=TRUE)
+  # res <- nlm(nll, start, hessian=TRUE)
+  nlmArgs <- list(...)
+  nlmArgs$f <- nll
+  nlmArgs$p <- rep(0, 4)
+  nlmArgs$hessian <- TRUE
+  res <- do.call(nlm, nlmArgs)
   if(res$code > 2)   # exit code 1 or 2 is ok.
     warning(paste("Convergence may not have been reached (nlm code", res$code, ")"))
   beta.mat[,1] <- res$estimate

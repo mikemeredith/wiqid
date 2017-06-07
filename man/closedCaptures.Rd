@@ -13,15 +13,16 @@ Analysis of mark-recapture data for closed populations
 Functions to analyse the classical models for closed populations without individual covariates, ie. full likelihood models.
 }
 \usage{
-closedCapM0(CH, ci = 0.95, ciType=c("normal", "MARK"))
+closedCapM0(CH, ci = 0.95, ciType=c("normal", "MARK"), ...)
 
-closedCapMb(CH, ci = 0.95, ciType=c("normal", "MARK"))
+closedCapMb(CH, ci = 0.95, ciType=c("normal", "MARK"), ...)
 
-closedCapMt(CH, ci = 0.95, ciType=c("normal", "MARK"))
+closedCapMt(CH, ci = 0.95, ciType=c("normal", "MARK"), ...)
 
-closedCapMtcov(CH, model=list(p~1), data=NULL, ci = 0.95, ciType=c("normal", "MARK"))
+closedCapMtcov(CH, model=list(p~1), data=NULL, ci = 0.95,
+    ciType=c("normal", "MARK"), ...)
 
-closedCapMh2(CH, ci = 0.95, ciType=c("normal", "MARK"))
+closedCapMh2(CH, ci = 0.95, ciType=c("normal", "MARK"), ...)
 
 closedCapMhJK(CH, ci = 0.95)
 
@@ -41,6 +42,9 @@ the required confidence interval.
 }
   \item{ciType}{
 the method used to calculate the confidence interval for population size (N); see Details.
+}
+  \item{...}{
+other arguments passed to \code{\link{nlm}}.
 }
 }
 \details{

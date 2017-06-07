@@ -5,7 +5,7 @@
 
 occMStime <- function(DH, occsPerSeason,
              model=NULL,
-             data=NULL, ci=0.95, verify=TRUE) {
+             data=NULL, ci=0.95, verify=TRUE, ...) {
 
   # ** DH is detection data in a 1/0/NA matrix or data frame, sites in rows,
   #    detection occasions in columns..
@@ -98,8 +98,12 @@ occMStime <- function(DH, occsPerSeason,
     return(min(-sum(log(Prh)), .Machine$double.xmax))
   }
 
-  start <- rep(0, K)
-  res <- nlm(nll, start, hessian=TRUE)
+  # res <- nlm(nll, start, hessian=TRUE)
+  nlmArgs <- list(...)
+  nlmArgs$f <- nll
+  nlmArgs$p <- rep(0, K)
+  nlmArgs$hessian <- TRUE
+  res <- do.call(nlm, nlmArgs)
   if(res$code > 2)   # exit code 1 or 2 is ok.
     warning(paste("Convergence may not have been reached (code", res$code, ")"))
   beta.mat[,1] <- res$estimate

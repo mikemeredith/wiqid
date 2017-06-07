@@ -13,6 +13,9 @@ test_that("occSS0 with logit link",  {
   BRS <- salamanders
   n <- rowSums(!is.na(BRS))
   y <- rowSums(BRS > 0, na.rm=TRUE)
+  # Check dots passed to nlm
+  expect_warning(occSS0(y, n, iterlim=4),
+      "Convergence may not have been reached")
   brs1 <- occSS0(y, n)
   expect_that(class(brs1), equals(c("wiqid", "list")))
   expect_that(names(brs1), equals(c("call", "link", "beta", "beta.vcv", "real", "logLik",

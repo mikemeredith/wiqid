@@ -1,5 +1,5 @@
 closedCapMh2 <-
-function(CH, ci = 0.95, ciType=c("normal", "MARK")) {
+function(CH, ci = 0.95, ciType=c("normal", "MARK"), ...) {
   # CH is a 1/0 capture history matrix, animals x occasions, OR
   #  a vector of capture frequencies of length equal to the number
   #  of occasions - trailing zeros are required.
@@ -60,7 +60,12 @@ function(CH, ci = 0.95, ciType=c("normal", "MARK")) {
     params <- res1$estimate
     p2 <- plogis(params[3]) * plogis(params[4])
     params[4] <- qlogis(p2)
-    res2 <- nlm(nll2, params, hessian=TRUE)
+    # res2 <- nlm(nll2, params, hessian=TRUE)
+    nlmArgs <- list(...)
+    nlmArgs$f <- nll2
+    nlmArgs$p <- params
+    nlmArgs$hessian <- TRUE
+    res2 <- do.call(nlm, nlmArgs)
     if(res2$code > 2)   # exit code 1 or 2 is ok.
       warning(paste("Convergence may not have been reached (nlm code", res2$code, ")"))
     beta.mat[, 1] <- res2$estimate

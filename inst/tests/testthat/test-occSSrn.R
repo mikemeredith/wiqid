@@ -12,6 +12,10 @@ test_that("occSSrn with logit",  {
   require(wiqid)
   data(salamanders)
   BRS <- salamanders
+  # Check dots passed to nlm
+  expect_warning(occSSrn(BRS, iterlim=4),
+      "Convergence may not have been reached")
+      
   res <- occSSrn(BRS)
 
   expect_that(class(res), equals(c("wiqid", "list")))
@@ -99,6 +103,9 @@ test_that("occSSrnSite with logit",  {
   DH <- weta[, 1:5]
   y <- rowSums(DH, na.rm=TRUE)
   n <- rowSums(!is.na(DH))
+  # Check dots passed to nlm
+  expect_warning(occSSrnSite(y, n, iterlim=4),
+      "Convergence may not have been reached")
 
   res <- occSSrnSite(y, n)
   expect_that(class(res), equals(c("wiqid", "list")))

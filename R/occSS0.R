@@ -3,7 +3,7 @@
 # 'link' argument added 2015-02-20
 
 occSS0 <-
-function(y, n, ci=0.95, link=c("logit", "probit")) {
+function(y, n, ci=0.95, link=c("logit", "probit"), ...) {
   # n is a vector with the number of occasions at each site.
   # y is a vector with the number of detections at each site.
   # ci is the required confidence interval.
@@ -20,7 +20,7 @@ function(y, n, ci=0.95, link=c("logit", "probit")) {
   } else {
     plink <- pnorm
   }
-
+  
   beta.mat <- matrix(NA_real_, 2, 4)
   colnames(beta.mat) <- c("est", "SE", "lowCI", "uppCI")
   rownames(beta.mat) <- c("psiHat", "pHat")
@@ -34,8 +34,12 @@ function(y, n, ci=0.95, link=c("logit", "probit")) {
        prob <- psi * p^y * (1-p)^(n - y) + (1 - psi) * (y==0)
       return(min(-sum(log(prob)), .Machine$double.xmax))
     }
-    params <- rep(0,2)
-    res <- nlm(nll, params, hessian=TRUE)
+    # res <- nlm(nll, params, hessian=TRUE)
+    nlmArgs <- list(...)
+    nlmArgs$f <- nll
+    nlmArgs$p <- rep(0, 2)
+    nlmArgs$hessian <- TRUE
+    res <- do.call(nlm, nlmArgs)
     if(res$code > 2)   # exit code 1 or 2 is ok.
       warning(paste("Convergence may not have been reached (code", res$code, ")"))
     beta.mat[,1] <- res$estimate

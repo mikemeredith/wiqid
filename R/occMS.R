@@ -9,7 +9,7 @@
 
 occMS <- function(DH, occsPerSeason,
              model=NULL,
-             data=NULL, ci=0.95, verify=TRUE) {
+             data=NULL, ci=0.95, verify=TRUE, ...) {
   # ** DH is detection data in a 1/0/NA matrix or data frame, sites in rows,
   #    detection occasions in columns..
   # ** occsPerSeason is a scalar or vector with the number of occasions per season
@@ -23,10 +23,10 @@ occMS <- function(DH, occsPerSeason,
 
   # Check for simple models:
   if(is.null(model))
-    return(occMS0(DH=DH, occsPerSeason=occsPerSeason, ci=ci, verify=FALSE))
+    return(occMS0(DH=DH, occsPerSeason=occsPerSeason, ci=ci, verify=FALSE, ...))
   if(is.null(data))
     return(occMStime(DH=DH, occsPerSeason=occsPerSeason, model=model, data=NULL,
-      ci=ci, verify=FALSE))
+      ci=ci, verify=FALSE, ...))
 
   crit <- fixCI(ci)
 
@@ -172,10 +172,12 @@ occMS <- function(DH, occsPerSeason,
   }
   # cat("done\n")
 
-  # cat("Maximizing likelihood...") ; flush.console()
-  start <- rep(0, K)
-  res <- nlm(nll, start, hessian=TRUE)
-  # cat("done\n")
+  # res <- nlm(nll, start, hessian=TRUE)
+  nlmArgs <- list(...)
+  nlmArgs$f <- nll
+  nlmArgs$p <- rep(0, K)
+  nlmArgs$hessian <- TRUE
+  res <- do.call(nlm, nlmArgs)
 
   if(res$code > 2)   # exit code 1 or 2 is ok.
     warning(paste("Convergence may not have been reached (code", res$code, ")"))
