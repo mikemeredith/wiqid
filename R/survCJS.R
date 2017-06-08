@@ -10,28 +10,35 @@
 #  Do design matrices with a set of occasions for each group
 #  Calculate q-array and likelihood for each group and combine
 
-qArray <- function(phi, p) {
-  # Calculates the matrix of multinomial cell probabilities
+log_qArray <- function(log_phi, log_p, log_1mp) {
+  # Calculates the matrix of multinomial cell log(probabilities)
   #   corresponding to an m-array.
-  # phi = vector of apparent survival probabilities
-  # p = vector of recapture probabilities
+  # log_phi = vector of log(apparent survival probabilities)
+  # log_p = vector of log(recapture probabilities)
+  # log_1mp = vector of log(1 - recapture probabilities)
   # NO SANITY CHECKS, calling function must take care of this.
 
-  n <- length(phi)
+  n <- length(log_phi)
 
-  q <- diag(as.vector(p * phi), n, n+1)  # Create n x n+1 matrix and fill diagonal
-  for (i in 1:(n-1)){ # Fill the upper triangle
+  # Create n x n+1 matrix and fill diagonal
+  q <- diag(as.vector(log_p + log_phi), n, n+1)  
+  # Fill the upper triangle, and get the row sums
+  sum_probs <- numeric(n)
+  for (i in 1:(n-1)){
     for (j in (i+1):n) {
-      q[i,j] <- prod(phi[i:j])*prod(1-p[i:(j-1)])*p[j]
+      q[i,j] <- sum(log_phi[i:j]) + sum(log_1mp[i:(j-1)]) + log_p[j]
     }
+    sum_probs[i] <- logSumExp(q[i, i:n])
   }
-  q[, n+1] <- 1 - rowSums(q, na.rm=TRUE)  # Add the last column and return
+  sum_probs[n] <- q[n, n]
+  # Add the last column and return
+  q[, n+1] <- log1minusExp(sum_probs) 
   return(q)
 }
 # ..........................................................................
 
-survCJS <- function(DH, model=list(phi~1, p~1), data=NULL, freq=1, group, ci = 0.95,
-            link=c("logit", "probit"), ...) {
+survCJS <- function(DH, model=list(phi~1, p~1), data=NULL, freq=1, group, interval=1,
+  ci = 0.95, link=c("logit", "probit"), ...) {
   # ** DH is detection history matrix/data frame, animals x occasions.
   # ** freq is vector of frequencies for each detection history
   # ** model is a list of 2-sided formulae for psi and p; can also be a single
@@ -66,6 +73,10 @@ survCJS <- function(DH, model=list(phi~1, p~1), data=NULL, freq=1, group, ci = 0
     group <- NULL
     nGroup <- 1
   }
+  if(length(interval) == 1)
+    interval <- rep(interval, ni)
+  if(length(interval) != ni)
+    stop("'interval' must be scalar or length equal to number of intervals between captures")
   crit <- fixCI(ci)
 
   # Convert detection history to 3d array of m-arrays to facilitate use of multinomial likelihood
@@ -123,18 +134,19 @@ survCJS <- function(DH, model=list(phi~1, p~1), data=NULL, freq=1, group, ci = 0
   nll <- function(param){
     phiBeta <- param[1:phiK]
     pBeta <- param[(phiK+1):K]
-    phiProb <- plink(phiMat %*% phiBeta)
-    pProb <- plink(pMat %*% pBeta)
-    if(any(pProb * phiProb == 1))
-      return(.Machine$double.max)
+    log_phi <- plink(phiMat %*% phiBeta, log.p=TRUE)
+    link_p <- pMat %*% pBeta
+    log_p <- plink(link_p, log.p=TRUE)
+    log_1mp <- plink( -link_p, log.p=TRUE)
     if(nGroup == 1) {
-      nll <-  -sum(mARRAY[, , 1] * log(qArray(phiProb, pProb)), na.rm=TRUE)
+      nll <-  -sum(mARRAY[, , 1] * log_qArray(log_phi*interval, log_p, log_1mp))
     } else {
       nll <- numeric(nGroup)
       for(i in 1:nGroup) {
-        phiProb0 <- phiProb[data$group == groupNames[i]]
-        pProb0 <- pProb[data$group == groupNames[i]]
-        nll[i] <- -sum(mARRAY[, , i] * log(qArray(phiProb0, pProb0)), na.rm=TRUE)
+        log_phi0 <- log_phi[data$group == groupNames[i]]
+        log_p0 <- log_p[data$group == groupNames[i]]
+        log_1mp0 <- log_1mp[data$group == groupNames[i]]
+        nll[i] <- -sum(mARRAY[, , i] * log_qArray(log_phi0*interval, log_p0, log_1mp0))
       }
     }
     return(min(sum(nll), .Machine$double.xmax))
@@ -147,7 +159,7 @@ survCJS <- function(DH, model=list(phi~1, p~1), data=NULL, freq=1, group, ci = 0
   nlmArgs$p <- rep(0, K)
   nlmArgs$hessian <- TRUE
   if(is.null(nlmArgs$stepmax))
-    nlmArgs$stepmax <- 19
+    nlmArgs$stepmax <- 10
   res <- do.call(nlm, nlmArgs)
   if(res$code > 2)   # exit code 1 or 2 is ok.
     warning(paste("Convergence may not have been reached (nlm code", res$code, ")"))

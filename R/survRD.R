@@ -61,7 +61,8 @@ survRD <- function(DH, freq=1, occsPerSeason)  {
     p <- plogis(param[1:K])
     pStar <- 1 - (1 - p)^nOcc
     phi <- plogis(param[(K+1):(K*2-1)])
-    logL1 <- sum(mMat * log(qArray(phi, pStar[-1])), na.rm=TRUE)
+    # logL1 <- sum(mMat * log(qArray(phi, pStar[-1])), na.rm=TRUE)
+    logL1 <- sum(mMat * log_qArray(log(phi), log(pStar[-1]), log(1 - pStar[-1])))
     logL2i <- numeric(K)
     for(i in 1:K) {
       pCond <- getpCond(Omega01, p[i])

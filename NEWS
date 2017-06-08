@@ -1,3 +1,9 @@
+CHANGES in 0.1.0.9006 (2017-06-08)
+
+  * survCJS and survCJSaj made more robust to under/overflows.
+  
+  * survCJS gains an 'interval' argument.
+
 CHANGES in 0.1.0.9005 (2017-06-07)
 
   * dots argument added to many functions to pass parameters to 'nlm'.

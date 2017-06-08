@@ -2,7 +2,8 @@
 # This file contains utilities used in several places in the code
 #   and NOT exported:
 
-# logSumExp: sum probabilities without over/underflow
+# getScaling, doScaling, scaleToMatch : functions to deal with scaling
+# logSumExp, log1minusExp : handle probabilities without over/underflow
 # signifish : an alternative to signif (added 10-02-2015)
 # fixCI : Calculate critical values for CI.
 # fixNames : Tidy up the column names in MCMC output: remove [] and , and make names unique.
@@ -38,9 +39,16 @@ scaleToMatch <- function(target, scaling) {
 # ...............................................................................
 
 # logSumExp: sum probabilities without over/underflow
+# x is a vector with log(p); return value is log(sum(p)), scalar
 logSumExp <- function(x)
   log(sum(exp(x - max(x)))) + max(x)
 
+# log1minusExp: get 1 - p without over/underflow
+# x is a vector with log(p); return value is vector with log(1 - p)
+log1minusExp <- function(x)
+  ifelse(x > log(0.5), log(-expm1(x)), log1p(-exp(x)))
+
+# ...............................................................................
 
 # A more sensible version of signif
 signifish <- function(x, digits=3)

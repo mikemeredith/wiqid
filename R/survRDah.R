@@ -24,8 +24,8 @@ survRDah <- function(DH, freq=1, occsPerSeason, N, pStar)  {
   param <- rep(0, K-1)
   # Log likelihood function
   nll <- function(param)  {
-    phi <- plogis(param)
-    nll <- -sum(mMat * log(qArray(phi, pStar[-1])), na.rm=TRUE)
+    log_phi <- plogis(param, log.p=TRUE)
+    nll <- -sum(mMat * log_qArray(log_phi, log(pStar[-1]), log(1 - pStar[-1])))
     return(min(nll, .Machine$double.xmax))
   }
 

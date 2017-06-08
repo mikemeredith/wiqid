@@ -58,12 +58,12 @@ BsurvCJS <- function(DH, model=list(phi~1, p~1), data=NULL, freq=1, priors=NULL,
   nll <- function(param){
     phiBeta <- param[1:phiK]
     pBeta <- param[(phiK+1):K]
-    phiProb <- plogis(phiMat %*% phiBeta)
-    pProb <- plogis(pMat %*% pBeta)
-    if(any(pProb * phiProb == 1))
-      return(.Machine$double.max)
+    log_phi <- plogis(phiMat %*% phiBeta, log.p=TRUE)
+    link_p <- pMat %*% pBeta
+    log_p <- plogis(link_p, log.p=TRUE)
+    log_1mp <- plogis( -link_p, log.p=TRUE)
     # Output the negative log(likelihood) value:
-    nll <- -sum(mArray * log(qArray(phiProb, pProb)), na.rm=TRUE)
+    nll <-  -sum(mArray * log_qArray(log_phi, log_p, log_1mp))
     return(min(nll, .Machine$double.xmax))
   }
 
