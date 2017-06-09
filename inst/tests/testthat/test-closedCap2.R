@@ -18,13 +18,9 @@ test_that("closedCapMb gives right answers",  {
   expect_that(colnames(res$real), equals(c("est", "lowCI", "uppCI")))
   expect_that(rownames(res$real), equals(c("Nhat", "phat", "chat")))
   expect_that(rownames(resM$real), equals(c("Nhat", "phat", "chat")))
-  if(getRversion() < "3.3.0") {
-    expect_that(round(as.vector(res$real[1, ]), 3), 
-        is_equivalent_to(c(26.939, 26.021, 67.957)))
-  } else {
-    expect_that(round(as.vector(res$real[1, ]), 3), 
-        is_equivalent_to(c(26.939, 26.021, 67.959)))
-  }
+  expect_that(round(as.vector(res$real[1, ]), 2), 
+        is_equivalent_to(c(26.94, 26.02, 67.96)))
+  # Different R versions give different results for the 3rd decimal place.
   expect_that(round(as.vector(resM$real[1, ]), 3), 
       is_equivalent_to(c(26.939, 26.081, 36.858)))
       # MARK gives 36.861 for the upper limit
