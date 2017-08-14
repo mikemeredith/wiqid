@@ -29,7 +29,7 @@ export(
   occSSrn, occSSrn0, occSSrnSite,
   occ2sps,
   occMS0, occMStime, occMScovSite, occMS,
-  Bnormal, Bnormal2, Bbinom,
+  Bnormal, Bnormal2, Bbinom, Bpois,
   BoccSS0, BoccSS, BsurvCJS, Bsecr0,
   richRarefy,
   richACE, richICE, richChao1, richChao2, richJack1, richJack2, richBoot, richMM,

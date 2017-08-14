@@ -4,7 +4,7 @@
 
 # The beta prior is specified by mode and concentration.
 
-Bbinom <- function(y, n, priors=NULL, sample=50000) {
+Bbinom <- function(y, n, priors=NULL, sample=10000) {
 
   if(!is.null(priors$conc) && priors$conc < 2)
     stop("priors$conc must not be less than 2.")

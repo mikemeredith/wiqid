@@ -9,7 +9,7 @@ Bayesian analysis of binomial data
 Simulates a sample from the posterior for a binomial likelihood and beta prior.
 }
 \usage{
-Bbinom(y, n, priors=NULL, sample=50000)
+Bbinom(y, n, priors=NULL, sample=10000)
 }
 \arguments{
   \item{y}{

@@ -1,0 +1,56 @@
+\name{Bayesian Poisson simulation}
+\alias{Bpois}
+
+
+\title{
+Bayesian analysis of count data
+}
+\description{
+Simulates a sample from the posterior for a Poisson likelihood and gamma prior.
+}
+\usage{
+Bpois(y, n, priors=NULL, sample=10000)
+}
+\arguments{
+  \item{y}{
+the count
+}
+  \item{n}{
+the sample size
+}
+  \item{priors}{
+an optional list with elements specifying the priors for the mode and SD of the gamma prior distribution; see Details.
+}
+  \item{sample}{
+the number of MCMC observations to be returned.
+}
+}
+
+\details{
+The function generates a vector of random draws from the posterior distribution of the probability of the observed count. It uses conjugacy to determine the parameters of the posterior gamma distribution, and draws independent samples from this.
+
+A prior can be specified with the \code{priors} argument. A gamma prior is used, specified by mode, \code{mode}, and SD, \code{sd}.
+
+When \code{priors = NULL} (the default), a uniform prior corresponding to gamma(1, 0) is used.
+}
+
+\value{
+Returns an object of class \code{Bwiqid}, which is a data frame with a column for each parameter in the model.
+
+There are \code{print} and \code{plot} methods for class \code{Bwiqid}, as well as \link{diagnostic plots}.
+}
+
+\author{
+Mike Meredith.
+}
+
+\examples{
+# Generate a sample from a gamma distribution, maybe the number of ticks
+#   observed on a sample of rodents:
+n <- 10  # number of trials (rodents examined)
+( y <- rpois(n, 1.2) ) # number of ticks on each rodent
+Bpois(sum(y), n)  # with uniform prior
+plot(Bpois(sum(y), n))
+Bpois(sum(y), n, priors=list(mode=1, sd=3))  # with informative prior
+plot(Bpois(sum(y), n, priors=list(mode=1, sd=3)))
+}
