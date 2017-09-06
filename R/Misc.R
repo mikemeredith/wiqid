@@ -140,7 +140,8 @@ stdModel <- function (model1, defaultModel) {
 stddata <- function(df, nocc=NULL, scaleBy=0.5)  {
   if (is.null(df))
     return(NULL)
-  stopifnot(is.data.frame(df))
+  if(!is.data.frame(df))
+    stop("The 'data' argument must be a data frame.")
   dataList <- as.list(df)
   ## Group variables spread over > 1 column into a single vector
   if (!is.null(nocc)) {
