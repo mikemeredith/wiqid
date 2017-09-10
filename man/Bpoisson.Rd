@@ -1,5 +1,5 @@
 \name{Bayesian Poisson simulation}
-\alias{Bpois}
+\alias{Bpoisson}
 
 
 \title{
@@ -9,7 +9,7 @@ Bayesian analysis of count data
 Simulates a sample from the posterior for a Poisson likelihood and gamma prior.
 }
 \usage{
-Bpois(y, n, priors=NULL, sample=10000)
+Bpoisson(y, n, priors=NULL, sample=10000)
 }
 \arguments{
   \item{y}{
@@ -49,8 +49,8 @@ Mike Meredith.
 #   observed on a sample of rodents:
 n <- 10  # number of trials (rodents examined)
 ( y <- rpois(n, 1.2) ) # number of ticks on each rodent
-Bpois(sum(y), n)  # with uniform prior
-plot(Bpois(sum(y), n))
-Bpois(sum(y), n, priors=list(mode=1, sd=3))  # with informative prior
-plot(Bpois(sum(y), n, priors=list(mode=1, sd=3)))
+Bpoisson(sum(y), n)  # with uniform prior
+plot(Bpoisson(sum(y), n))
+Bpoisson(sum(y), n, priors=list(mode=1, sd=3))  # with informative prior
+plot(Bpoisson(sum(y), n, priors=list(mode=1, sd=3)))
 }

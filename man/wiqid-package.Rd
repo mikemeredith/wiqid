@@ -21,10 +21,18 @@ Simulations and bootstraps often generate weird data sets, eg. capture histories
 The functions are listed by topic below.
 }
 
+\section{SIMPLE BAYESIAN POSTERIORS}{
+
+  \tabular{ll}{
+  \code{\link{Bbinomial}} \tab generate draws from a conjugate beta posterior distribution \cr
+  \code{\link{Bpoisson}} \tab generate draws from a conjugate gamma posterior distribution \cr
+  \code{\link{Bnormal}} \tab fit a basic normal model to data }
+}
+
 \section{OCCUPANCY}{
 
   \bold{Single-season occupancy}
-  
+
   \tabular{ll}{
   \code{\link{occSS}} \tab general-purpose ML function; allows site- and survey-specific covariates \cr
   \code{\link{BoccSS}} \tab general-purpose Bayesian implementation of the above \cr
@@ -36,16 +44,16 @@ The functions are listed by topic below.
   \code{\link{occ2sps}} \tab single-season two-species models   }
 
   \bold{Multi-season occupancy}
-  
+
   \tabular{ll}{
   \code{\link{occMS}} \tab general-purpose function; parameters depend on covariates; slow \cr
   \code{\link{occMScovSite}} \tab smaller range of covariate options \cr
   \code{\link{occMS0}} \tab a simple multi-season model with four parameters; faster \cr
-  \code{\link{occMStime}} \tab parameters vary by season; faster  } 
+  \code{\link{occMStime}} \tab parameters vary by season; faster  }
 }
 
 \section{DENSITY from spatial capture-recapture data}{
-  
+
 We use the \pkg{secr} package for ML estimation of density. For Bayesian estimation, \pkg{wiqid} offers:
 
   \tabular{ll}{
@@ -53,7 +61,7 @@ We use the \pkg{secr} package for ML estimation of density. For Bayesian estimat
 }
 
 \section{ABUNDANCE from closed-population capture-recapture data}{
-  
+
 Although data for genuinely closed populations are rare, this is an important conceptual stepping-stone from CJS models to robust models for survival.
 
   \tabular{ll}{
@@ -68,25 +76,25 @@ Although data for genuinely closed populations are rare, this is an important co
 \section{SURVIVAL from capture-recapture data}{
 
   \bold{Cormack-Jolly-Seber models}
-  
+
   \tabular{ll}{
   \code{\link{survCJS}} \tab model with time-varying covariates \cr
   \code{\link{BsurvCJS}} \tab a Bayesian implementation of the above \cr
   \code{\link{survCJSaj}} \tab allows for different survival for adults and juveniles }
 
   \bold{Pollock's robust design}
-  
+
   \tabular{ll}{
   \code{\link{survRDah}} \tab 2-stage estimation of survival and recruitment \cr
   \code{\link{survRD}} \tab single stage maximum likelihood estimation }
-  
+
 Note that the RD functions are preliminary attempts at coding these models and have not been fully tested or benchmarked.
 }
 
 \section{SPECIES RICHNESS from species x sample matrices}{
 
   \bold{Rarefaction}
-  
+
   \tabular{ll}{
   \code{\link{richRarefy}} \tab Mao's tau estimator for rarefaction \cr
   \code{\link{richCurve}} \tab a shell for plug-in estimators, for example... \cr
@@ -95,9 +103,9 @@ Note that the RD functions are preliminary attempts at coding these models and h
   \code{\link{richDouble}} \tab the number of doubletons observed \cr
   \code{\link{richUnique}} \tab the number of uniques observed \cr
   \code{\link{richDuplicate}} \tab the number of duplicates observed }
-  
+
   \bold{Coverage estimators}
-  
+
   \tabular{ll}{
   \code{\link{richACE}} \tab Chao's Abundance-based Coverage Estimator \cr
   \code{\link{richICE}} \tab Chao's Incidence-based Coverage Estimator \cr
@@ -115,9 +123,9 @@ Note that the RD functions are preliminary attempts at coding these models and h
 \section{BIODIVERSITY INDICES}{
 
   \bold{Alpha diversity}
-  
+
 All of these functions express diversity as the number of common species in the assemblage.
-  
+
   \tabular{ll}{
   \code{\link{biodSimpson}} \tab inverse of Simpson's index of dominance \cr
   \code{\link{biodShannon}} \tab exponential form of Shannon's entropy \cr
@@ -127,7 +135,7 @@ All of these functions express diversity as the number of common species in the 
   \bold{Beta diversity / distance}
 
 All of these functions produce distance measures (not similarity) on a scale of 0 to 1. The function \code{\link{distShell}} provides a wrapper to produce a matrix of distance measures across a number of sites.
-  
+
   \tabular{ll}{
   \code{\link{distBrayCurtis}} \tab complement of Bray-Curtis index, aka 'quantitative Sorensen' \cr
   \code{\link{distChaoJaccCorr}} \tab complement of Chao's Jaccard corrected index \cr

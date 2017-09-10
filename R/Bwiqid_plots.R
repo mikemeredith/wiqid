@@ -86,7 +86,8 @@ density0 <- function(mat, plotArgs, ...)  {
     hgt <- apply(mat, 2, function(x) hist(x, breaks=breaks, plot=FALSE)$density)
     if(!is.matrix(hgt))
       hgt <- matrix(hgt, nrow=1)
-    plot(breaks, rep(0, nb), type='n', ylim=c(0, max(hgt)))
+    plot(breaks, rep(0, nb), type='n', ylim=c(0, max(hgt)), 
+      main=plotArgs$main, ylab=plotArgs$ylab, xlab=plotArgs$xlab)
     for(i in 1:ncol(mat))
       rect(breaks[-nb], rep(0, nb-1), breaks[-1], hgt[,i], border=plotArgs$col[i])
     abline(h=0)
@@ -159,7 +160,6 @@ tracePlot <- function(object, ask=TRUE, ...)  {
 }
 # ..........................................................
 
-# FIXME: use density0
 densityPlot <- function(object, ask=TRUE, ...)  {
   if(!inherits(object, "Bwiqid"))
     stop("object is not a valid Bwiqid object")
@@ -175,22 +175,14 @@ densityPlot <- function(object, ask=TRUE, ...)  {
   # Recommended colours for colour-blind people:
   cbCol <- c("#000000", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2",
     "#D55E00", "#CC79A7")
-  defaultArgs <- list(ylab="Density", type='l', lty=1, col=cbCol)
+  defaultArgs <- list(ylab="Density", type='l', lty=1, col=cbCol, xlab="")
   useArgs <- modifyList(defaultArgs, dots)
   # mainStem <- useArgs$main
 
   for( i in 1:ncol(object)) {
     mat <- matrix(object[, i], ncol=n.chains)
-    # bw <- bw.SJ(mat) # bw.SJ is slow and often fails: "sample is too sparse..."
-    bw <- bw.nrd0(mat)
-    from <- min(mat) - 3*bw
-    to <- max(mat) + 3*bw
-    dens <- apply(mat, 2, function(x) density(x, bw=bw, n=128, from=from, to=to)$y)
-    useArgs$xlab <- names(object[i])
-    useArgs$x <- seq(from, to, length=128)
-    useArgs$y <- dens
-    do.call(matplot, useArgs)
-    abline(v=mean(mat))
+    useArgs$main <- names(object)[i]
+    density0(mat, useArgs)
   }
 
   return(invisible(NULL))
@@ -219,18 +211,24 @@ acfPlot <- function(object, lag.max=NULL, ask=TRUE, ...)  {
   for( i in 1:ncol(object)) {
     mat <- matrix(object[, i], ncol=n.chains)
     acor <- apply(mat, 2, function(x) acf(x, lag.max=lag.max, plot=FALSE)$acf)
-    lags <- 0:(nrow(acor) - 1)
-    if (n.chains > 1) {
-      jitt <- seq(-0.2, 0.2, length=n.chains)
+    if(any(is.na(acor))) {
+      plot(1, 1, type = "n", ann = FALSE, axes = FALSE)
+      text(1,1, "No ACF calculated.")
+      title(main=names(object[i]))
     } else {
-      jitt <- 0
+      lags <- 0:(nrow(acor) - 1)
+      if (n.chains > 1) {
+        jitt <- seq(-0.2, 0.2, length=n.chains)
+      } else {
+        jitt <- 0
+      }
+      lags.mat <- outer(lags, jitt, "+")
+      useArgs$main <- names(object[i])
+      useArgs$x <- lags.mat
+      useArgs$y <- acor
+      do.call(matplot, useArgs)
+      abline(h=0)
     }
-    lags.mat <- outer(lags, jitt, "+")
-    useArgs$main <- names(object[i])
-    useArgs$x <- lags.mat
-    useArgs$y <- acor
-    do.call(matplot, useArgs)
-    abline(h=0)
   }
 
   return(invisible(NULL))

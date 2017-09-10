@@ -1,5 +1,6 @@
 \name{Bayesian binomial simulation}
 \alias{Bbinom}
+\alias{Bbinomial}
 
 
 \title{
@@ -10,6 +11,7 @@ Simulates a sample from the posterior for a binomial likelihood and beta prior.
 }
 \usage{
 Bbinom(y, n, priors=NULL, sample=10000)
+Bbinomial(y, n, priors=NULL, sample=10000)
 }
 \arguments{
   \item{y}{
@@ -49,7 +51,7 @@ Mike Meredith.
 #   where a species was detected:
 n <- 10  # number of trials (sites visited)
 ( y <- rbinom(1, n, 0.75) ) # number of successes (sites where species detected)
-Bbinom(y, n)  # with uniform prior
-Bbinom(y, n, priors=list(mode=0.4, conc=5))  # with informative prior
+Bbinomial(y, n)  # with uniform prior
+Bbinomial(y, n, priors=list(mode=0.4, conc=5))  # with informative prior
 }
 

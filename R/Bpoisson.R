@@ -6,7 +6,7 @@
 
 # y is total count, n is the sample size, eg, y=10 ticks on n=6 rats.
 
-Bpois <- function(y, n, priors=NULL, sample=10000) {
+Bpoisson <- function(y, n, priors=NULL, sample=10000) {
 
   if(!is.null(priors$mode) && priors$mode <= 0)
     stop("priors$mode must be greater than 0.")
