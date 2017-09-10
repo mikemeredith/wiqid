@@ -1,16 +1,8 @@
-CHANGES in 0.1.1.9002 (2017-09-10)
+CHANGES in 0.1.2 (2017-09-10)
 
-  * Tidy up other diagnostic plot functions.
+  * Added diagPlot function and improved other diagnostic plots.
 
-  * Bpois renamed Bpoisson, Bbinom renamed Bbinomial
-
-CHANGES in 0.1.1.9001 (2017-09-05)
-
-  * Added diagPlot function.
-
-CHANGES in 0.1.1.9000 (2017-08-14)
-
-  * Added Bpois function.
+  * Added function Bpoisson; Bbinom renamed Bbinomial
 
 CHANGES in 0.1.1 (2017-06-09)
 
