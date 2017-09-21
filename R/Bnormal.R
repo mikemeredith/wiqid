@@ -12,8 +12,11 @@ Bnormal <- function(y, priors=NULL,
   startTime <- Sys.time()
 
   # Data summaries
+  if(!is.numeric(y))
+    stop("'y' must be a numeric vector.")
   n <- length(y)
-  stopifnot(n > 1)
+  if(n < 2)
+    stop("'y' must contain at least 2 values")
   y.bar <- mean(y)
 
   m0 <- t0 <- a <- b <- 0
