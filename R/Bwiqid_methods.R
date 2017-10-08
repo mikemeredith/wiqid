@@ -57,7 +57,8 @@ function(x, which=NULL, credMass=0.95,
   # This function plots the posterior distribution for one selected item.
   # Description of arguments:
   # x is mcmc.list object of the type returned by B* functions in 'wiqid'.
-  # which indicates which item should be displayed; if NULL, looks for a 'toPlot' attribute in x; if missing does first column.
+  # which indicates which item should be displayed; if NULL, looks for a 'toPlot'
+  #   attribute in x; if missing does first column.
   # ROPE is a two element vector, such as c(-1,1), specifying the limit
   #   of the ROPE.
   # compVal is a scalar specifying the value for comparison.
@@ -78,6 +79,8 @@ function(x, which=NULL, credMass=0.95,
       which <- attr(x, "defaultPlot")
   if(is.null(which))
     which <- colnames(x)[1]
+  if(!is.character(which))
+    stop("'which' must be an object of class 'character'.") # Added 2017-09-27
   if(is.na(match(which, colnames(x))))
     stop(paste("Could not find", which, "in the output"))
   if(is.null(dots$xlab))

@@ -30,7 +30,7 @@ There are columns for each of the following summary statistics ...
   \code{mean} \tab the mean of each MCMC chain. \cr
   \code{sd} \tab  the standard deviation of each MCMC chain. \cr
   \code{median} \tab the median of each MCMC chain. \cr
-  \code{HDIlo} and \code{HDIup} \tab the lower and upper values of a 95\% Highest Density Interal CrI for each MCMC chain. }
+  \code{HDIlo} and \code{HDIup} \tab the lower and upper values of a 95\% Highest Density Interval CrI for each MCMC chain. }
 
 ... and for some or all of the following diagnostics, depending on the MCMC engine used for fitting the model:
 

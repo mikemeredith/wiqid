@@ -69,7 +69,7 @@ Although data for genuinely closed populations are rare, this is an important co
   \code{\link{closedCapMb}} \tab permanent behavioural response to first capture \cr
   \code{\link{closedCapMt}} \tab capture probability varies with time \cr
   \code{\link{closedCapMtcov}} \tab allows for time-varying covariates \cr
-  \code{\link{closedCapMh2}} \tab heterogenity with 2-mixture model \cr
+  \code{\link{closedCapMh2}} \tab heterogeneity with 2-mixture model \cr
   \code{\link{closedCapMhJK}} \tab jackknife estimator for heterogeneity  }
 }
 

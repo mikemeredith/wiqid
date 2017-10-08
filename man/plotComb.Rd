@@ -4,14 +4,14 @@
 Display a posterior probability distribution from the comb method
 }
 \description{
-Plot the posterior probability distribution for a single parameter calculaed using the comb method described by Krushke (2015).
+Plot the posterior probability distribution for a single parameter calculated using the comb method described by Kruschke (2015).
 }
 \usage{
 plotComb(x, y, credMass = 0.95, plot = TRUE, showMode = FALSE, shadeHDI = NULL, ...)
 }
 \arguments{
   \item{x}{
-A vector of equally-spaced possible values for the parameter. The range should cover all values of the parameter with non-negligable probability. (To restrict the range dispayed in the plot, use \code{xlim}.)
+A vector of equally-spaced possible values for the parameter. The range should cover all values of the parameter with non-negligible probability. (To restrict the range displayed in the plot, use \code{xlim}.)
 }
   \item{y}{
 A vector of probabilities corresponding to the values in \code{x}.

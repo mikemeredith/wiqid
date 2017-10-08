@@ -57,7 +57,7 @@ the required confidence interval.
 
 \code{richBoot} calculates a bootstrap estimator of species richness (Smith & van Belle, 1984).
 
-\code{richMM} calculates the assymptotic species richness from a Michaelis-Menten curve fitted to the species rarefaction curve (Colwell et al. 2004).
+\code{richMM} calculates the asymptotic species richness from a Michaelis-Menten curve fitted to the species rarefaction curve (Colwell et al. 2004).
 
 See the EstimateS Users Guide at \url{http://viceroy.eeb.uconn.edu/estimates/} for the equations for the functions above.
 

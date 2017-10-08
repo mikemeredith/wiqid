@@ -31,7 +31,7 @@ Following Gelman et al (2008), we use independent Cauchy priors with centre 0 an
 
 \section{Priors for probabilities}{
 
-We use independent Uniform(0, 1) priors for proababilities.
+We use independent Uniform(0, 1) priors for probabilities.
 
 }
 

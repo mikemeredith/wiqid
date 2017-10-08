@@ -1,3 +1,23 @@
+TODO
+
+  * Change parameter in Bsecr0 from lam0 to g0; note limitations in help file; use
+    secr::autoini to get starting values.
+
+  * Check on all 'stopifnot' calls and change to informative error messages.
+
+  * Check on calls to 'cat' and 'print' and replace with 'message'.
+
+  * Ensure that trap losses can be coded with NA in the detection history in ch2marray,
+      closedCap*, etc. Verify that NAs are preceded by 1 and continue to the end.
+
+  * Improve survRD: choice of closedCap function, AIC
+
+CHANGES in 0.1.2.9001 (2017-09-27)
+
+  * Better error message in plot.Bwiqid if 'which' is not character.
+
+  * Spelling corrections in help pages.
+
 CHANGES in 0.1.2.9000 (2017-09-21)
 
   * Sanity checks for Bnormal

@@ -50,7 +50,7 @@ For \code{survRDah}, the values of \code{pStarHat} and \code{Nhat} will equal th
 \references{
 Kendall, Pollock, and Brownie (1995) A likelihood-based approach to capture-recapture estimation of demographic parameters under the robust design. \emph{Biometrics} 51:293-308
 
-Kendall, Nichols, Hines (1997) Estimating temporatry emigration using capture-recapture data with Pollock's robust design. \emph{Ecology} 78(2):563-578 
+Kendall, Nichols, Hines (1997) Estimating temporary emigration using capture-recapture data with Pollock's robust design. \emph{Ecology} 78(2):563-578 
 }
 \author{
 Mike Meredith

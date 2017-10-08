@@ -70,7 +70,7 @@ test_that("closedCapMh2 gives right answers",  {
   expect_that(class(res), equals(c("wiqid", "list"))) 
   expect_that(names(res), equals(c("call", "beta",  "beta.vcv", "real", "logLik"))) 
   expect_that(colnames(res$real), equals(c("est", "lowCI", "uppCI")))
-  expect_that(rownames(res$real), equals(c("Nhat", "piHat","p1hat", "p2hat")))
+  expect_that(rownames(res$real), equals(c("Nhat", "pmixHat","p1hat", "p2hat")))
   expect_that(round(as.vector(res$real[1, ]), 2),
       is_equivalent_to(c(135.48, 93.85, 274.21)))
   expect_that(round(as.vector(resM$real[1, ]), 2),

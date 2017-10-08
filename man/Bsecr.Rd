@@ -47,7 +47,7 @@ if TRUE, the function produces random draws from the appropriate \emph{prior} di
 set a seed for the random number generators.
 }
   \item{parallel}{
-if TRUE or NULL and sufficient cores are available, the MCMC chains are run in parallel; if TRUE and insufficent cores are available, a warning is given.
+if TRUE or NULL and sufficient cores are available, the MCMC chains are run in parallel; if TRUE and insufficient cores are available, a warning is given.
 }
 }
 \details{

@@ -75,20 +75,20 @@ the number of iterations to run in the JAGS adaptive phase.
 if TRUE, the function produces random draws from the appropriate \emph{prior} distributions, with a warning.
 }
   \item{parallel}{
-if TRUE or NULL and sufficient cores are available, the MCMC chains are run in parallel; if TRUE and insufficent cores are available, a warning is given.
+if TRUE or NULL and sufficient cores are available, the MCMC chains are run in parallel; if TRUE and insufficient cores are available, a warning is given.
 }
   \item{seed}{
 a positive integer, the seed for the random number generators.
 }
 }
 \details{
-\code{BsurvCJS} uses a probit link to model apparant survival and detection as a function of covariates; most software uses a logistic (logit) link.
+\code{BsurvCJS} uses a probit link to model apparent survival and detection as a function of covariates; most software uses a logistic (logit) link.
 See \link{Links}.
 Coefficients on the probit scale are about half the size of the equivalent on the logit scale.
 
 Priors for \code{BsurvCJS} are listed in the \code{priors} argument, which may contain elements:
 
-\code{muPhi} and \code{muP} : the means for apparant survival and detection coefficients respectively. This may be a vector with one value for each coefficient, including the intercept, or a scalar, which will be used for all. The default is 0.
+\code{muPhi} and \code{muP} : the means for apparent survival and detection coefficients respectively. This may be a vector with one value for each coefficient, including the intercept, or a scalar, which will be used for all. The default is 0.
 
 \code{sigmaPhi} and \code{sigmaP} : the variance for apparent survival and detection coefficients respectively. This may be (1) a vector with one value for each coefficient, including the intercept, which represents the variance, assuming independence, or (2) a scalar, which will be used for all. The function does not currently allow a variance-covariance matrix. The default is 10, except for intercept-only models, where a default of 1 is used.
 

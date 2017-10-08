@@ -11,7 +11,7 @@ Results of an occupancy survey to see if presence/absence of weta in 72 gorse bu
 \format{
   A data frame with 72 observations on the following 11 variables.
   \describe{
-    \item{D1, D2, D3, D4, D5}{a numeric vector for each of 5 daily suveys, showing whether weta were detected (1) or not detected (0); NA if the bush was not surveyed on the relevant day. }
+    \item{D1, D2, D3, D4, D5}{a numeric vector for each of 5 daily surveys, showing whether weta were detected (1) or not detected (0); NA if the bush was not surveyed on the relevant day. }
     \item{Browsed}{a logical vector indicating whether the bush was browsed (TRUE) or not browsed (FALSE)}
     \item{ObsD1, ObsD2, ObsD3, ObsD4, ObsD5}{a factor with levels \code{A} \code{B} \code{C}, indicating which observer carried out each survey.}
   }

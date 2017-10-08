@@ -54,14 +54,14 @@ Model Mb allows for a permanent behavioural response: capture probability is dif
 
 Model Mh2 and the jackknife estimator allow for heterogeneity in capture probability.
 
-The likelihood maximization routine produces an estimate and standard error for beta = log(\emph{f0}), where \emph{f0} is the number of animals never captured. If ciType == "normal", a confidence interval for beta is calculated as beta +/- crit * SE.beta, where crit is the appropriate multiplier for the confidence interval required, 1.96 for a 95\% CI. This confidence interval is then back-transformed to the real scale and added to the number of animals captured (M[t+1]) to give estimates of N.
+The likelihood maximization routine produces an estimate and standard error for beta = log(\emph{f0}), where \emph{f0} is the number of animals never captured. If \code{ciType == "normal"}, a confidence interval for beta is calculated as beta +/- crit * SE.beta, where crit is the appropriate multiplier for the confidence interval required, 1.96 for a 95\% CI. This confidence interval is then back-transformed to the real scale and added to the number of animals captured (M[t+1]) to give estimates of N.
 
-If ciType == "MARK", the method used by MARK to calculate confidence intervals is used (see MARK help page for Closed Capture Models and Burnham et al (1987, p212). 
+If \code{ciType == "MARK"}, the method used by MARK to calculate confidence intervals is used (see MARK help page for Closed Capture Models and Burnham et al (1987, p212)). 
 The beta values are back-transformed with f0.hat = exp(beta) and SE.f0 = SE.beta * f0.hat, and hence CV = SE.f0 / f0.hat. The confidence limits are then
 
-Lower = f0.hat / C + M[t=1]
+Lower = f0.hat / C + M[t+1]
 
-Upper = f0.hat * C + M[t=1]
+Upper = f0.hat * C + M[t+1]
 
 where C = exp(crit * sqrt(log(1 + CV^2))).
 

@@ -19,7 +19,7 @@ function(CH, ci = 0.95, ciType=c("normal", "MARK"), ...) {
   N.cap <- sum(freq)  # Number of individual animals captured
   beta.mat <- matrix(NA_real_, 4, 4) # objects to hold output
   colnames(beta.mat) <- c("est", "SE", "lowCI", "uppCI")
-  rownames(beta.mat) <- c("Nhat", "piHat", "p1hat", "p2hat")
+  rownames(beta.mat) <- c("Nhat", "pmixHat", "p1hat", "p2hat")
   logLik <- NA_real_
   varcov <- NULL
 
