@@ -12,7 +12,17 @@ TODO
 
   * Improve survRD: choice of closedCap function, AIC
 
-CHANGES in 0.1.2.9001 (2017-09-27)
+  * Implement predict for occSScovSite, etc.
+
+CHANGES in 0.1.2.9002 (2017-10-16)
+
+  * Bug fix in BoccSS0: burnin iterations are now discarded.
+
+  * Calculation of SEs of fitted values now uses less memory: implemented for occSS.
+
+  * verify checks detection histories for all-NA rows; all-NA rows removed from GrandSkinks data set.
+
+CHANGES in 0.1.2.9001 (2017-10-08)
 
   * Better error message in plot.Bwiqid if 'which' is not character.
 

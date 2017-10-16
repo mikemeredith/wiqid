@@ -44,7 +44,9 @@ test_that("occSStime with logit link",  {
   expect_that(round(AIC(res), 4), equals(153.1581))
   # Put in a row of NAs
   BRS[3,] <- NA
-  res <- occSStime(BRS, p~.time, plot=FALSE)
+  expect_error(occSStime(BRS, p~.time, plot=FALSE),
+    "Detection history has a row with all NAs")
+  res <- occSStime(BRS, p~.time, plot=FALSE, verify=FALSE)
   expect_that(round(as.vector(res$real), 4),
       equals(c(0.5316, 0.2107, 0.0990, 0.4166, 0.3596, 0.2604, 0.3067,
         0.0758, 0.0238, 0.1952, 0.1514, 0.1031, 0.7444, 0.4650, 0.3308, 0.6778,
@@ -52,7 +54,7 @@ test_that("occSStime with logit link",  {
   expect_that(round(AIC(res), 4), equals(145.6360))
   # Put in a column of NAs
   BRS[, 3] <- NA
-  res <- occSStime(BRS, p~.time, plot=FALSE)
+  res <- occSStime(BRS, p~.time, plot=FALSE, verify=FALSE)
   expect_that(round(res$real[, 1], 4),
       is_equivalent_to(c(0.3579, 0.3017, 0.1471,0.3017, 0.5434, 0.3969)))
   expect_that(as.vector(res$real[, 2:3]),

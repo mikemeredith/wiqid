@@ -2,6 +2,7 @@
 # This file contains utilities used in several places in the code
 #   and NOT exported:
 
+# getVar, getFittedSE : get variance and SE for fitted values
 # getScaling, doScaling, scaleToMatch : functions to deal with scaling
 # logSumExp, log1minusExp : handle probabilities without over/underflow
 # signifish : an alternative to signif (added 10-02-2015)
@@ -12,6 +13,24 @@
 # stddata : Convert a data frame of site and survey data into a list and standardise
 # selectCovars : Pull the covars needed for a model matrix into a specific data frame
 # AICtable moved to file AICc.R
+# ...............................................................................
+
+# Functions to calculate the SE of fitted values from model matrix and var-covar matrix.
+# added 2017-10-16
+# Output of getFittedSE is equivalent to
+#   sqrt(diag(MM %*% varcov %*% t(MM)))
+# but does not require calculation of the full matrix, which can be huge.
+
+getVar <- function(x, vcv)
+  x %*% vcv %*% x
+# x : one row of a model matrix
+# vcv : variance-covariance matrix
+
+getFittedSE <- function(MM, vcv)
+  sqrt(apply(MM, 1, getVar, vcv=vcv))
+# MM : a model matrix
+# vcv : variance-covariance matrix
+
 # ...............................................................................
 
 # Functions to deal with scaling, can be used with s/lapply

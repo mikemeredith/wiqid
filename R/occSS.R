@@ -126,8 +126,10 @@ occSS <- function(DH, model=NULL, data=NULL, ci=0.95, link=c("logit", "probit"),
     SE <- suppressWarnings(sqrt(diag(varcov)))
     beta.mat[, 2] <- SE
     beta.mat[, 3:4] <- sweep(outer(SE, crit), 1, res$estimate, "+")
-    SElp <- c(sqrt(diag(psiModMat %*% varcov[1:psiK, 1:psiK] %*% t(psiModMat))),
-              sqrt(diag(pModMat %*% varcov[(psiK+1):K, (psiK+1):K] %*% t(pModMat))))
+    # SElp <- c(sqrt(diag(psiModMat %*% varcov[1:psiK, 1:psiK] %*% t(psiModMat))),
+              # sqrt(diag(pModMat %*% varcov[(psiK+1):K, (psiK+1):K] %*% t(pModMat))))
+    SElp <- c(getFittedSE(psiModMat, varcov[1:psiK, 1:psiK]),
+              getFittedSE(pModMat, varcov[(psiK+1):K, (psiK+1):K]))
     lp.mat[, 2:3] <- sweep(outer(SElp, crit), 1, lp.mat[, 1], "+")
   }
   out <- list(call = match.call(),
