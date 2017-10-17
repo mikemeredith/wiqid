@@ -90,8 +90,8 @@ BoccSS <- function(DH, model=NULL, data=NULL, priors=list(),
     if(length(muPsi) == 1)
       muPsi <- rep(muPsi, psiK)
     if(length(muPsi) != psiK) {
-      cat("Wrong length for priors$muPsi, should have values for:\n")
-      print(colnames(psiModMat))
+      message("Wrong length for priors$muPsi, should have values for:")
+      message(paste(colnames(psiModMat), collapse=" "))
       priorErrorFlag <- TRUE
     }
     sigmaPsi <- priors$sigmaPsi
@@ -101,16 +101,16 @@ BoccSS <- function(DH, model=NULL, data=NULL, priors=list(),
       sigmaPsi <- diag(sigmaPsi, nrow=psiK)
     }
     if(ncol(sigmaPsi) != psiK || nrow(sigmaPsi) != psiK) {
-      cat("Wrong dimensions for priors$sigmaPsi, should have values for:\n")
-      print(colnames(psiModMat))
+      message("Wrong dimensions for priors$sigmaPsi, should have values for:")
+      message(paste(colnames(psiModMat), collapse=" "))
       priorErrorFlag <- TRUE
     }
     muP <- priors$muP
     if(length(muP) == 1)
       muP <- rep(muP, pK)
     if(length(muP) != pK) {
-      cat("Wrong length for priors$muP, should have values for:\n")
-      print(colnames(pModMat))
+      message("Wrong length for priors$muP, should have values for:")
+      message(paste(colnames(pModMat), collapse=" "))
       priorErrorFlag <- TRUE
     }
     sigmaP <- priors$sigmaP
@@ -120,8 +120,8 @@ BoccSS <- function(DH, model=NULL, data=NULL, priors=list(),
       sigmaP <- diag(sigmaP, nrow=pK)
     }
     if(ncol(sigmaP) != pK || nrow(sigmaP) != pK) {
-      cat("Wrong dimensions for priors$sigmaP, should have values for:\n")
-      print(colnames(pModMat))
+      message("Wrong dimensions for priors$sigmaP, should have values for:")
+      message(paste(colnames(pModMat), collapse=" "))
       priorErrorFlag <- TRUE
     }
     if(priorErrorFlag)
@@ -169,7 +169,7 @@ BoccSS <- function(DH, model=NULL, data=NULL, priors=list(),
   z <- as.integer(y > 0)  ## (Starting value for) occupancy state
 
   n.iter <- ceiling(sample / chains) * thin + burnin
-  cat("Starting MCMC run for", chains, "chains with", n.iter, "iterations.\n")
+  message("Starting MCMC run for ", chains, " chains with ", n.iter, " iterations.")
   flush.console()
 
   # Function to do 1 chain
@@ -245,7 +245,7 @@ BoccSS <- function(DH, model=NULL, data=NULL, priors=list(),
   } else {
     chainList <- lapply(starters, run1chain)
   }
-  cat("\nMCMC run complete.\n")
+  message("MCMC run complete.")
   MCMC <- mcmc.list(chainList)
   if(doWAIC) {
     ppd <- as.matrix(MCMC[, -(1:K)])

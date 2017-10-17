@@ -75,7 +75,7 @@ justRunJags <- function(data, inits, params, modelFile,
   }
 
   if(parallel) {   ##### Do the parallel stuff #####
-    cat("Waiting for parallel processing to complete...") ; flush.console()
+    message("Waiting for parallel processing to complete...", appendLF=FALSE) ; flush.console()
     cl <- makeCluster(coresToUse) ; on.exit(stopCluster(cl))
     clusterEvalQ(cl, library(rjags))
     if(!is.null(modules)) {
@@ -85,7 +85,7 @@ justRunJags <- function(data, inits, params, modelFile,
     chainList <- parLapply(cl, initList, justRunJagsSerial, data=data, params=params,
       modelFile=modelFile, chains=1, sample=ceiling(sample / chains), burnin=burnin, adapt=adapt, thin=thin)
     mcmcList <- mcmc.list(lapply(chainList, function(x) x[[1]]))
-    cat("done.\n")
+    message("done.")
   } else {     ##### Do the serial stuff #####
     if(!is.null(modules))
       loadJagsModules(modules)

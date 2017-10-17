@@ -2,7 +2,7 @@
 # This file contains utilities used in several places in the code
 #   and NOT exported:
 
-# getVar, getFittedSE : get variance and SE for fitted values
+# getVar0, getFittedVar : get variance for fitted values
 # getScaling, doScaling, scaleToMatch : functions to deal with scaling
 # logSumExp, log1minusExp : handle probabilities without over/underflow
 # signifish : an alternative to signif (added 10-02-2015)
@@ -15,19 +15,19 @@
 # AICtable moved to file AICc.R
 # ...............................................................................
 
-# Functions to calculate the SE of fitted values from model matrix and var-covar matrix.
+# Functions to calculate the variance of fitted values from model matrix and var-covar matrix.
 # added 2017-10-16
-# Output of getFittedSE is equivalent to
-#   sqrt(diag(MM %*% varcov %*% t(MM)))
+# Output of getFittedVar is equivalent to
+#   diag(MM %*% varcov %*% t(MM))
 # but does not require calculation of the full matrix, which can be huge.
 
-getVar <- function(x, vcv)
+getVar0 <- function(x, vcv)
   x %*% vcv %*% x
 # x : one row of a model matrix
 # vcv : variance-covariance matrix
 
-getFittedSE <- function(MM, vcv)
-  sqrt(apply(MM, 1, getVar, vcv=vcv))
+getFittedVar <- function(MM, vcv)
+  apply(MM, 1, getVar0, vcv=vcv)
 # MM : a model matrix
 # vcv : variance-covariance matrix
 
@@ -37,10 +37,10 @@ getFittedSE <- function(MM, vcv)
 
 getScaling <- function(x, scaleBy)
   c(mean(x, na.rm=TRUE), sd(x, na.rm=TRUE) / scaleBy)
-  
+
 doScaling <- function(x, scaleBy)
   if(is.numeric(x)) (x - mean(x, na.rm=TRUE)) / sd(x, na.rm=TRUE) * scaleBy else x
-  
+
 # This takes a whole data frame
 scaleToMatch <- function(target, scaling) {
   for(i in seq_along(target)) {
@@ -129,7 +129,8 @@ stdModel <- function (model1, defaultModel) {
     return(defaultModel)
   if(inherits(model1, "formula"))
     model1 <- list(model1)
-  stopifnot(is.list(model1))
+  if(!is.list(model1))
+    stop("The 'model' argument must be a formula or a list of formulae.")
   LHS <- function (form) {
       trms <- as.character (form)
       if (length(trms)==2) '' else trms[2]
@@ -177,10 +178,12 @@ stddata <- function(df, nocc=NULL, scaleBy=0.5)  {
           subnames <- paste0(stem, 1:this.nocc)
           subtable <- df[, subnames]
           # check that there's a column for each occasion
-          stopifnot(ncol(subtable) == this.nocc)  # do less brutal thing later
+          if(ncol(subtable) != this.nocc)
+            stop("Survey covariates must have 1 column for each survey occasion.")
           # check that all have same class
           classes <- sapply(subtable, class)
-          stopifnot(length(unique(classes)) == 1)  # do less brutal thing later
+          if(length(unique(classes)) != 1)
+            stop("All columns of the survey covariates must have the same class (all factor or all numeric).")
           # remove original columns from the list:
           dataList <- replace(dataList, subnames, NULL)
           # convert to a matrix, then a vector;

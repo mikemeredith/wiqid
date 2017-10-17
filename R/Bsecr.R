@@ -5,7 +5,8 @@ Bsecr0 <- function(capthist, buffer = 100, start=NULL, nAug = NA,
                     chains=3, sample=1e4, burnin=0, thin=1, adapt=1000,
                     priorOnly=FALSE, parallel=NULL, seed=NULL) {
 
-  stopifnot(inherits(capthist, "capthist"))
+  if(!inherits(capthist, "capthist"))
+    stop("'capthist' is not a valid capthist object.")
 
   startTime <- Sys.time()
 
@@ -24,9 +25,9 @@ Bsecr0 <- function(capthist, buffer = 100, start=NULL, nAug = NA,
   if(!is.null(start) && inherits(start, "secr")) {
     mle.res <- predict(start)
   } else {
-    cat("Running secr.fit to get starting values...") ; flush.console()
+    message("Running secr.fit to get starting values...", appendLF=FALSE) ; flush.console()
     mle.res <- predict(secr::secr.fit(capthist, buffer=buffer, trace=FALSE))
-    cat("done\n") ; flush.console()
+    message("done") ; flush.console()
   }
 
   if(is.na(nAug))

@@ -9,8 +9,10 @@ BoccSS0 <- function(y, n, psiPrior=c(1,1), pPrior=c(1,1),
   nSites <- length(y)
   if(length(n) == 1)
     n <- rep(n, nSites)
-  stopifnot(length(n) == length(y))
-  stopifnot(all(n >= y))
+  if(length(n) != length(y))
+    stop("Lengths of 'y' and 'n' must be equal.")
+  if(any(y > n))
+    stop("No value of 'y' can be greater than the corresponding 'n'.")
   known <- y > 0  # sites known to be occupied
   detected <- sum(y)
 

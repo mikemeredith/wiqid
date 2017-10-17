@@ -92,7 +92,6 @@ occMS <- function(DH, occsPerSeason,
     getScaling, scaleBy = 0.5)
   dataList <- lapply(dataList, doScaling, scaleBy = 0.5)
 
-  # cat("Preparing design matrices...") ; flush.console()
   psi1df <- selectCovars(model$psi1, dataList, nSites)
   psi1Mat <- model.matrix(model$psi1, psi1df)
   psi1K <- ncol(psi1Mat)
@@ -170,7 +169,6 @@ occMS <- function(DH, occsPerSeason,
     }
     return(min(-sum(log(Prh)), .Machine$double.xmax))
   }
-  # cat("done\n")
 
   # res <- nlm(nll, start, hessian=TRUE)
   nlmArgs <- list(...)
@@ -181,7 +179,6 @@ occMS <- function(DH, occsPerSeason,
 
   if(res$code > 2)   # exit code 1 or 2 is ok.
     warning(paste("Convergence may not have been reached (code", res$code, ")"))
-  # cat("Organizing output...") ; flush.console()
   beta.mat[,1] <- res$estimate
   lp.mat[, 1] <- c(psi1Mat %*% beta.mat[parID==1, 1],
                    gamMat %*% beta.mat[parID==2, 1],
@@ -196,17 +193,17 @@ occMS <- function(DH, occsPerSeason,
     beta.mat[, 2] <- SE  # tidy later
     beta.mat[, 3:4] <- sweep(outer(SE, crit), 1, res$estimate, "+")
     temp <- c(
-       diag(psi1Mat %*% varcov[parID==1, parID==1] %*% t(psi1Mat)),
-       diag(gamMat %*% varcov[parID==2, parID==2] %*% t(gamMat)),
-       diag(epsMat %*% varcov[parID==3, parID==3] %*% t(epsMat)),
-       diag(pMat %*% varcov[parID==4, parID==4] %*% t(pMat)))
+       # diag(psi1Mat %*% varcov[parID==1, parID==1] %*% t(psi1Mat)),
+       getFittedVar(psi1Mat, varcov[parID==1, parID==1]),
+       getFittedVar(gamMat, varcov[parID==2, parID==2]),
+       getFittedVar(epsMat, varcov[parID==3, parID==3]),
+       getFittedVar(pMat, varcov[parID==4, parID==4]))
     if(all(temp >= 0))  {
       SElp <- sqrt(temp)
       lp.mat[, 2:3] <- sweep(outer(SElp, crit), 1, lp.mat[, 1], "+")
       logLik <- -res$minimum
     }
   }
-  # cat("done\n") ; flush.console()
 
   out <- list(call = match.call(),
               beta = beta.mat,

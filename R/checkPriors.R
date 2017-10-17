@@ -17,8 +17,8 @@ checkPriors <- function(priors0, defaultPriors) {
   parNames <- names(defaultPriors)
   cruft <- !(names(priors) %in% parNames)
   if(any(cruft)) {
-    cat("The following invalid elements in 'priors' will be ignored:\n")
-    print(names(priors)[cruft])
+    message("The following invalid elements in 'priors' will be ignored:")
+    message(paste(names(priors)[cruft], collapse=" "))
   }
   priors <- priors[parNames]  # removes cruft in priors
 
@@ -28,7 +28,7 @@ checkPriors <- function(priors0, defaultPriors) {
     if(length(priors[[this]]) == 1)
       priors[[this]] <- rep(priors[[this]], nPars)
     if(length(priors[[this]]) != nPars) {
-      cat("Wrong length for priors for", this, "which should have", nPars, "value(s).\n")
+      message("Wrong length for priors for ", this, " which should have ", nPars, " value(s).")
       priorErrorFlag <- TRUE
     }
   }

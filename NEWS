@@ -3,16 +3,20 @@ TODO
   * Change parameter in Bsecr0 from lam0 to g0; note limitations in help file; use
     secr::autoini to get starting values.
 
-  * Check on all 'stopifnot' calls and change to informative error messages.
-
-  * Check on calls to 'cat' and 'print' and replace with 'message'.
-
   * Ensure that trap losses can be coded with NA in the detection history in ch2marray,
       closedCap*, etc. Verify that NAs are preceded by 1 and continue to the end.
 
   * Improve survRD: choice of closedCap function, AIC
 
-  * Implement predict for occSScovSite, etc.
+  * Implement predict for more models: occSScovSite, etc.
+
+CHANGES in 0.1.2.9003 (2017-10-17)
+
+  * New code for SEs of fitted values implemented for predict, closedCapMtcov, occ2sps, occMS, occMStime, occMScovSite, occSScovSite, occSSrnSite, occSStime, survCJS, survCJSaj.
+
+  * Calls to 'stopifnot' changed to informative error messages.
+
+  * Calls to 'cat' and 'print' replaced with 'message' where appropriate.
 
 CHANGES in 0.1.2.9002 (2017-10-16)
 
@@ -20,7 +24,7 @@ CHANGES in 0.1.2.9002 (2017-10-16)
 
   * Calculation of SEs of fitted values now uses less memory: implemented for occSS.
 
-  * verify checks detection histories for all-NA rows; all-NA rows removed from GrandSkinks data set.
+  * 'verify' checks detection histories for all-NA rows; all-NA rows removed from GrandSkinks data set.
 
 CHANGES in 0.1.2.9001 (2017-10-08)
 

@@ -9,7 +9,8 @@ ch2mArray <- function(CH, freq=1){
   CH <- as.matrix(CH)  # might be a data frame
   if(length(freq) == 1)
     freq <- rep(freq, nrow(CH))
-  stopifnot(length(freq) == nrow(CH))
+  if(length(freq) != nrow(CH))
+    stop("'freq' must have one value for each row of the capture history matrix.")
   nocc <- ncol(CH)
   if(any(freq < 0)) {
     # When did the loss occur?
@@ -33,7 +34,7 @@ ch2mArray <- function(CH, freq=1){
   # Marked animals never seen again:
   totCH <- sweep(CH, 1, freq, "*")
   ma[, nocc+1] <- colSums(totCH) - rowSums(ma) - lost
-  # Remove 1st col (REcaptures on 1st occasion = all zeros) 
+  # Remove 1st col (REcaptures on 1st occasion = all zeros)
   #  and last row (releases  on last occasion will never be recaptured).
   return(ma[-nocc, -1])
 }

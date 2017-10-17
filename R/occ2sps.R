@@ -19,11 +19,13 @@ occ2sps <- function(DHA, DHB, model=NULL, data=NULL, ci=0.95, verify=TRUE)  {
   DHA <- as.matrix(DHA)
   DHB <- as.matrix(DHB)
   if(verify) {
-    stopifnot(all.equal(dim(DHA), dim(DHB)))
+    if(!all.equal(dim(DHA), dim(DHB)))
+      stop("DHA and DHB must have the same number of rows and columns.")
     DHA <- verifyDH(DHA, allowNA = TRUE)
     DHB <- verifyDH(DHB, allowNA = TRUE)
     # Check that the NAs match up
-    stopifnot(all.equal(is.na(DHA), is.na(DHB), check.attributes=FALSE))
+    if(!all.equal(is.na(DHA), is.na(DHB), check.attributes=FALSE))
+      stop("DHA and DHB must have missing values for the same surveys.")
   }
 
   # Standardise the model:
@@ -163,8 +165,9 @@ occ2sps <- function(DHA, DHB, model=NULL, data=NULL, ci=0.95, verify=TRUE)  {
   }
   SElp0 <- matrix(NA, nSites, M)
   for(i in 1:M) {
-    varcov1 <- varcov[idK == i, idK == i]
-    SElp0[, i] <- sqrt(diag(modMatList[[i]] %*% varcov1 %*% t(modMatList[[i]])))
+    # varcov1 <- varcov[idK == i, idK == i]
+    # SElp0[, i] <- sqrt(diag(modMatList[[i]] %*% varcov1 %*% t(modMatList[[i]])))
+    SElp0[, i] <- sqrt(getFittedVar(modMatList[[i]], varcov[idK == i, idK == i]))
   }
   SElp <- as.vector(SElp0[, modPars])
   lp.mat[, 2:3] <- sweep(outer(SElp, crit), 1, lp.mat[, 1], "+")

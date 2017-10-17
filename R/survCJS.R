@@ -176,8 +176,8 @@ survCJS <- function(DH, model=list(phi~1, p~1), data=NULL, freq=1, group, interv
     SE <- suppressWarnings(sqrt(diag(varcov)))
     beta.mat[, 2] <- SE
     beta.mat[, 3:4] <- sweep(outer(SE, crit), 1, res$estimate, "+")
-    SElp <- c(sqrt(diag(phiMat %*% varcov[1:phiK, 1:phiK] %*% t(phiMat))),
-              sqrt(diag(pMat %*% varcov[(phiK+1):K, (phiK+1):K] %*% t(pMat))))
+    SElp <- c(sqrt(getFittedVar(phiMat, varcov[1:phiK, 1:phiK])),
+              sqrt(getFittedVar(pMat, varcov[(phiK+1):K, (phiK+1):K])))
     lp.mat[, 2:3] <- sweep(outer(SElp, crit), 1, lp.mat[, 1], "+")
     logLik <- -res$minimum
   }

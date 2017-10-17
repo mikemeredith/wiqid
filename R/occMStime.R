@@ -120,9 +120,9 @@ occMStime <- function(DH, occsPerSeason,
     beta.mat[, 2] <- SE  # tidy later
     beta.mat[, 3:4] <- sweep(outer(SE, crit), 1, res$estimate, "+")
     temp <- c(varcov[1, 1],
-       diag(gamMat %*% varcov[parID==2, parID==2] %*% t(gamMat)),
-       diag(epsMat %*% varcov[parID==3, parID==3] %*% t(epsMat)),
-       diag(pMat %*% varcov[parID==4, parID==4] %*% t(pMat)))
+       getFittedVar(gamMat, varcov[parID==2, parID==2]),
+       getFittedVar(epsMat, varcov[parID==3, parID==3]),
+       getFittedVar(pMat, varcov[parID==4, parID==4]))
     if(all(temp >= 0))  {
       SElp <- sqrt(temp)
       lp.mat[, 2:3] <- sweep(outer(SElp, crit), 1, lp.mat[, 1], "+")

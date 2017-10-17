@@ -75,7 +75,8 @@ predict.wiqid <- function(object, newdata, parameter, ci, type=c("link", "respon
     rownames(lp.mat) <- rownames(modMat)
     colnames(lp.mat) <- c("est", "SE", "lowCI", "uppCI")
     lp.mat[, 1] <- modMat %*% coeffs
-    lp.mat[, 2] <- sqrt(diag(modMat %*% vcv %*% t(modMat)))
+    # lp.mat[, 2] <- sqrt(diag(modMat %*% vcv %*% t(modMat)))
+    lp.mat[, 2] <- sqrt(getFittedVar(modMat, vcv))
     lp.mat[, 3:4] <- sweep(outer(lp.mat[, 2], crit), 1, lp.mat[, 1], "+")
   }
   type <- match.arg(type)

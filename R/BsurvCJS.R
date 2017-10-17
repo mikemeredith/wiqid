@@ -23,7 +23,8 @@ BsurvCJS <- function(DH, model=list(phi~1, p~1), data=NULL, freq=1, priors=NULL,
     warning("The prior distributions will be produced, not the posterior distributions!")
 
   ni <- ncol(DH) - 1  # number of survival intervals and REcapture occasions
-  stopifnot(is.null(data) || nrow(data) == ni)
+  if(!is.null(data) && nrow(data) != ni)
+    stop("'DH' and 'data' must have the same number of rows.")
 
   # Convert detection history to m-array to facilitate use of multinomial likelihood
   mArray <- ch2mArray(CH=DH, freq=freq)

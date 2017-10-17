@@ -19,7 +19,8 @@ function(DH, model=p~1, data=NULL, ci=0.95,
 	nocc <- ncol(DH)
   if (nocc < 2)
     stop("More than one survey occasion is needed")
-  stopifnot(is.null(data) || nrow(data) == nocc)
+  if(!is.null(data) && nrow(data) != nocc)
+    stop("'data' must have one row for each survey occasion.")
   crit <- fixCI(ci)
 
   if(match.arg(link) == "logit") {
@@ -82,7 +83,7 @@ function(DH, model=p~1, data=NULL, ci=0.95,
       beta.mat[, 2] <- SE
       beta.mat[, 3:4] <- sweep(outer(SE, crit), 1, res$estimate, "+")
       SElp <- c(sqrt(varcov[1,1]),
-              sqrt(diag(pModMat %*% varcov[-1,-1] %*% t(pModMat))))
+              sqrt(getFittedVar(pModMat, varcov[-1,-1] )))
       lp.mat[, 2:3] <- sweep(outer(SElp, crit), 1, lp.mat[, 1], "+")
       logLik <- -res$minimum
     }

@@ -62,7 +62,7 @@ function(CH, model=list(p~1), data=NULL, ci = 0.95, ciType=c("normal", "MARK"), 
       varcov <- varcov0
       beta.mat[, 2] <- suppressWarnings(sqrt(diag(varcov)))
       beta.mat[, 3:4] <- sweep(outer(beta.mat[, 2], crit), 1, res$estimate, "+")
-      temp <- diag(pModMat %*% varcov[-1, -1] %*% t(pModMat))
+      temp <- getFittedVar(pModMat, varcov[-1, -1])
       if(all(temp >= 0))  {
         SElp <- sqrt(temp)
         lp.mat[, 2:3] <- sweep(outer(SElp, crit), 1, lp.mat[, 1], "+")

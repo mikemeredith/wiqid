@@ -105,8 +105,8 @@ occSSrnSite <- function(y, n, model=NULL, data=NULL,
     SE <- suppressWarnings(sqrt(diag(varcov)))
     beta.mat[, 2] <- SE
     beta.mat[, 3:4] <- sweep(outer(SE, crit), 1, res$estimate, "+")
-    temp <- c(diag(lamModMat %*% varcov[1:lamK, 1:lamK] %*% t(lamModMat)),
-              diag(rModMat %*% varcov[(lamK+1):K, (lamK+1):K] %*% t(rModMat)))
+    temp <- c(getFittedVar(lamModMat, varcov[1:lamK, 1:lamK]),
+              getFittedVar(rModMat, varcov[(lamK+1):K, (lamK+1):K]))
     if(all(temp >= 0))  {
       SElp <- sqrt(temp)
       lp.mat[, 2:3] <- sweep(outer(SElp, crit), 1, lp.mat[, 1], "+")

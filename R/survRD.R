@@ -11,8 +11,8 @@
 survRD <- function(DH, freq=1, occsPerSeason)  {
 
   # Do sanity checks here
-  stopifnot(length(occsPerSeason) == 1)  # For the moment!
-
+  if(length(occsPerSeason) > 1)  # For the moment!
+    stop("Different occasions per season are not supported: 'occsPerSeason' must be scalar.")
   # if(length(occsPerSeason) == 1)  {
     K <- ncol(DH) / occsPerSeason # Number of seasons
     # occsPerSeason <- rep(occsPerSeason, K)
@@ -20,7 +20,8 @@ survRD <- function(DH, freq=1, occsPerSeason)  {
     # K <- length(occsPerSeason)
   # }
   seasonID <- rep(1:K, each=occsPerSeason)
-  stopifnot(length(seasonID) == ncol(DH))
+  if(length(seasonID) != ncol(DH))
+    stop("The number of columns of 'DH' does not match the season data.")
 
   # turn the DH into a season-wise DH and do m-array
   getDHseason <- function(dh)

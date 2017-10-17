@@ -48,8 +48,8 @@ if(parallel::detectCores() > 3) {
     DH <- weta[, 1:5]
     weta.covs <- weta[, 6:11]
 
-    expect_output({Bout <- BoccSS(DH, sample=3000, burnin=100, seed=123)},
-    "Starting MCMC run for 3 chains with 1100 iterations.\n\nMCMC run complete.")
+    expect_message({Bout <- BoccSS(DH, sample=3000, burnin=100, seed=123)},
+    "Starting MCMC run for 3 chains with 1100 iterations")
     expect_that(class(Bout), equals(c("Bwiqid", "data.frame")))
     expect_that(dim(Bout), equals(c(3000, 2)))
     expect_that(names(Bout), equals(c("psi_(Intercept)", "p_(Intercept)")))
@@ -69,7 +69,7 @@ if(parallel::detectCores() > 3) {
       expect_equivalent(round(c(hdi(Bout)), 4),
         c(-0.1096, 0.9313, -0.7059, -0.1553))
     }
-    expect_output({Bout <- BoccSS(DH, model=list(psi~Browsed-1, p~.Time), data=weta,
+    expect_message({Bout <- BoccSS(DH, model=list(psi~Browsed-1, p~.Time), data=weta,
       priors=list(sigmaPsi=c(1,1)), chains=2, sample=2000, burnin=100,
       seed=234)}, " ")
     expect_that(class(Bout), equals(c("Bwiqid", "data.frame")))
@@ -94,8 +94,8 @@ test_that("BoccSS sequential gives same answers",  {
   DH <- weta[, 1:5]
   weta.covs <- weta[, 6:11]
 
-  expect_output({Bout <- BoccSS(DH, sample=3000, burnin=100, seed=123, parallel=FALSE)},
-  "Starting MCMC run for 3 chains with 1100 iterations.\n\nMCMC run complete.")
+  expect_message({Bout <- BoccSS(DH, sample=3000, burnin=100, seed=123, parallel=FALSE)},
+  "Starting MCMC run for 3 chains with 1100 iterations")
   expect_that(class(Bout), equals(c("Bwiqid", "data.frame")))
   expect_that(dim(Bout), equals(c(3000, 2)))
   expect_that(names(Bout), equals(c("psi_(Intercept)", "p_(Intercept)")))
@@ -115,7 +115,7 @@ test_that("BoccSS sequential gives same answers",  {
     expect_equivalent(round(c(hdi(Bout)), 4),
       c(-0.1052,  1.0259, -0.7200, -0.1142))
   }
-  expect_output({Bout <- BoccSS(DH, model=list(psi~Browsed-1, p~.Time), data=weta,
+  expect_message({Bout <- BoccSS(DH, model=list(psi~Browsed-1, p~.Time), data=weta,
     priors=list(sigmaPsi=c(1,1)), chains=1, sample=1000, burnin=100,
     seed=234)}, " ")
   expect_that(class(Bout), equals(c("Bwiqid", "data.frame")))

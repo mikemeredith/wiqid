@@ -14,8 +14,8 @@ Bnormal2 <- function(y, priors=NULL,
   startTime <- Sys.time()
 
   if(doPriorsOnly)
-    cat("Warning: The output shows the prior distributions,
-      NOT the posterior distributions for your data.\n")
+    warning("The output shows the prior distributions,
+      NOT the posterior distributions for your data.")
 
   # Data checks
   if(!all(is.finite(y)))

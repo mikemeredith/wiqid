@@ -56,7 +56,8 @@ survCJSaj <- function(DHj, DHa=NULL, model=list(phiJ~1, phiA~1, p~1), data=NULL,
   # Check DHj and DHa have same no. of columns ...
   nocc <- ncol(DHj)
   ni <- nocc - 1  # number of survival intervals and REcapture occasions
-  stopifnot(is.null(DHa) || ncol(DHa) == nocc)
+  if(!is.null(DHa) && ncol(DHa) != nocc)
+    stop("'DHa' and 'DHj' must have the same number of columns.") 
   if (length(freqj) == 1)
     freqj <- rep(freqj, nrow(DHj))
   # if (length(freqa) == 1)
@@ -173,9 +174,9 @@ survCJSaj <- function(DHj, DHa=NULL, model=list(phiJ~1, phiA~1, p~1), data=NULL,
     SE <- suppressWarnings(sqrt(diag(varcov)))
     beta.mat[, 2] <- SE
     beta.mat[, 3:4] <- sweep(outer(SE, crit), 1, res$estimate, "+")
-    temp <- c(sqrt(diag(phiAMat %*% varcov[parID==1, parID==1] %*% t(phiAMat))),
-             sqrt(diag(phiJMat %*% varcov[parID==2, parID==2] %*% t(phiJMat))),
-             sqrt(diag(pMat %*% varcov[parID==3, parID==3] %*% t(pMat))))
+    temp <- sqrt(c(getFittedVar(phiAMat, varcov[parID==1, parID==1]),
+             getFittedVar(phiJMat, varcov[parID==2, parID==2]),
+             getFittedVar(pMat, varcov[parID==3, parID==3])))
     if(all(temp >= 0))  {
       SElp <- sqrt(temp)
       lp.mat[, 2:3] <- sweep(outer(SElp, crit), 1, lp.mat[, 1], "+")
