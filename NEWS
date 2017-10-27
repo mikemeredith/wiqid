@@ -1,14 +1,16 @@
 TODO
 
-  * Change parameter in Bsecr0 from lam0 to g0; note limitations in help file; use
-    secr::autoini to get starting values.
-
   * Ensure that trap losses can be coded with NA in the detection history in ch2marray,
       closedCap*, etc. Verify that NAs are preceded by 1 and continue to the end.
 
   * Improve survRD: choice of closedCap function, AIC
 
   * Implement predict for more models: occSScovSite, etc.
+
+CHANGES in 0.1.2.9004 (2017-10-27)
+
+  * Changed parameter in Bsecr0 from lam0 to g0; use secr::autoini to get starting
+      values; better priors.
 
 CHANGES in 0.1.2.9003 (2017-10-17)
 

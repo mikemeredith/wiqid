@@ -9,7 +9,7 @@ Spatially explicit capture-recapture (secr) density estimation using MCMC
 Functions to estimate density from mark-recapture data using MCMC methods and JAGS. 
 }
 \usage{
-Bsecr0(capthist, buffer = 100, start = NULL, nAug = NA,
+Bsecr0(capthist, buffer = 100, start = NULL, nAug = NA, maxSig = 2*buffer,
                     chains=3, sample=1e4, burnin=0, thin=1, adapt=1000,
                     priorOnly=FALSE, parallel=NULL, seed=NULL) 
 }
@@ -24,6 +24,9 @@ an optional object of class \code{secr}, ie, output from the \code{secr.fit} fun
 }
   \item{nAug}{
 number of individuals in the augmented population; if NA, a suitable default is chosen based on the object passed to \code{start} or a preliminary run of \code{secr.fit}.
+}
+  \item{maxSig}{
+maximum value for the scale parameter of the detection function: the prior is \emph{Uniform(0, maxSig)}.
 }
   \item{chains}{
 the number of Markov chains to run.
