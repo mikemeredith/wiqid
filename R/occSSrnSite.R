@@ -50,7 +50,7 @@ occSSrnSite <- function(y, n, model=NULL, data=NULL,
   rModMat <- model.matrix(model$r, rDf)
   rK <- ncol(rModMat)
   K <- lamK + rK
-  
+
   # model.matrix removes rows with NAs:
   if(nrow(lamModMat) != nSites || nrow(rModMat) != nSites)
     stop("Missing site covariates are not allowed.")
@@ -72,12 +72,14 @@ occSSrnSite <- function(y, n, model=NULL, data=NULL,
     lamBeta <- param[1:lamK]
     rBeta <- param[(lamK+1):K]
     lambda <- as.vector(exp(lamModMat %*% lamBeta))
-    s <- 1 - as.vector(plink(rModMat %*% rBeta)) # s = 1 - r
+    logs <- as.vector(plink( -rModMat %*% rBeta, log.p=TRUE)) # s = 1 - r
     llh <- numeric(nSites)
     for(i in 1:nSites) {
-      rpart <- s[i]^(0:Nmax)
-      Npart <- dpois(0:Nmax, lambda[i])
-      llh[i] <- log(sum((1-rpart)^y[i] * rpart^(n[i]-y[i]) * Npart))
+      logrpart <- logs[i] * (0:Nmax)
+      log1mrpart <- log1minusExp(logrpart)
+      logNpart <- dpois(0:Nmax, lambda[i], log=TRUE)
+      tmp <- if(y[i]==0) 0 else log1mrpart * y[i]
+      llh[i] <- logSumExp(tmp + logrpart * (n[i]-y[i]) + logNpart)
     }
     return(min(-sum(llh), .Machine$double.xmax))
   }

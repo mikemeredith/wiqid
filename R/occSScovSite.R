@@ -64,10 +64,15 @@ occSScovSite <- function(y, n, model=NULL, data=NULL,
   nll <- function(param){
     psiBeta <- param[1:psiK]
     pBeta <- param[(psiK+1):K]
-    psiProb <- as.vector(plink(psiModMat %*% psiBeta))
-    pProb <- as.vector(plink(pModMat %*% pBeta))
-    prob <- psiProb * pProb^y * (1-pProb)^(n - y) + (1 - psiProb) * (y==0)
-    return(min(-sum(log(prob)), .Machine$double.xmax))
+    logitpsi <- as.vector(psiModMat %*% psiBeta)
+    logpsi <- plink(logitpsi, log.p=TRUE)
+    log1mpsi <- plink( -logitpsi, log.p=TRUE)
+    logitp <- as.vector(pModMat %*% pBeta)
+    logp <- plink(logitp, log.p=TRUE)
+    log1mp <- plink( -logitp, log.p=TRUE)
+    logprob <- logAddExp(logpsi + logp * y + log1mp * (n - y),
+        log1mpsi + log(y==0))
+    return(min(-sum(logprob), .Machine$double.xmax))
   }
 
   # Run mle estimation with nlm:

@@ -13,33 +13,14 @@ occ2sps0 <- function(DHA, DHB, modPars, ci=0.95)  {
 
   # get the occupancy vector
   # psiX is a vector with elements psiA, psiBa, psiBA
-  getlogPHI <- function(psiX) {
-    log(c(psiX[1] * psiX[3],             # both
-      psiX[1] * (1 - psiX[3]),       # A only
-      (1 - psiX[1]) * psiX[2],       # B only
-      (1 - psiX[1]) * (1 - psiX[2]))) # neither
-  }
+  # getlogPHI <- function(psiX) {
+    # log(c(psiX[1] * psiX[3],             # both
+      # psiX[1] * (1 - psiX[3]),       # A only
+      # (1 - psiX[1]) * psiX[2],       # B only
+      # (1 - psiX[1]) * (1 - psiX[2]))) # neither
+  # }
 
-  # Do the detection vector for one site
-  # pX is a vector with elements pA, pB, rA, rBa, rBA
-  getlogP <- function(dhA, dhB, pX)  {
-    # prob of detecting B if both present conditional on detection of A
-    probCapB <- dhA * pX[5] + (1 - dhA) * pX[4]
-    c(
-      # Both sps present, use the r's
-      sum(log(dhA * pX[3] + (1 - dhA) * (1 - pX[3])),      # A
-        log(dhB * probCapB + (1 - dhB) * (1 - probCapB)), na.rm=TRUE),  # B
-      # Sps A present, B absent, use pA
-      if(sum(dhB, na.rm=TRUE) > 0) { -Inf } else {
-        sum(log(dhA * pX[1] + (1 - dhA) * (1 - pX[1])), na.rm=TRUE) # A
-      },
-      # Sps A absent, B present, use pB
-      if(sum(dhA, na.rm=TRUE) > 0) { -Inf } else {
-        sum(log(dhB * pX[2] + (1 - dhB) * (1 - pX[2])), na.rm=TRUE) # B
-      },
-      # Neither present
-      if(sum(dhA, dhB, na.rm=TRUE) > 0) { -Inf } else { 0 } )
-  }
+# Functions getlogPHI and getlogP moved to file occ2sps_utils.R 2017-10-30
 
   # objects to hold output
   beta.mat <- matrix(NA_real_, 8, 4)
@@ -50,11 +31,11 @@ occ2sps0 <- function(DHA, DHB, modPars, ci=0.95)  {
 
   # Do the neg log lik function:
   nll <- function(params) {
-    real <- plogis(params[modPars])
-    logPHI <- getlogPHI(real[1:3])
-    loglik <- numeric(nSites)
-    for(i in 1:nSites)
-      loglik[i] <- logSumExp(logPHI + getlogP(dhA=DHA[i, ], dhB=DHB[i, ], pX=real[4:8]) )
+    logitreal <- params[modPars] # this is a vector
+    logPHI <- getlogPHI(t(logitreal[1:3])) # this is a vector
+    logPHImat <- matrix(logPHI, nSites, 4, byrow=TRUE)
+    logP <- getlogP(DHA, DHB, t(logitreal[4:8]))
+    loglik <- apply(logPHImat + logP, 1, logSumExp)
     return(min(-sum(loglik), .Machine$double.xmax))
   }
 

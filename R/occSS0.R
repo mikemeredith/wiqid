@@ -20,7 +20,7 @@ function(y, n, ci=0.95, link=c("logit", "probit"), ...) {
   } else {
     plink <- pnorm
   }
-  
+
   beta.mat <- matrix(NA_real_, 2, 4)
   colnames(beta.mat) <- c("est", "SE", "lowCI", "uppCI")
   rownames(beta.mat) <- c("psiHat", "pHat")
@@ -29,10 +29,13 @@ function(y, n, ci=0.95, link=c("logit", "probit"), ...) {
 
   if(sum(n) > 0) {    # If all n's are 0, no data available.
     nll <- function(params) {
-       psi <- plink(params[1])
-       p <- plink(params[2])
-       prob <- psi * p^y * (1-p)^(n - y) + (1 - psi) * (y==0)
-      return(min(-sum(log(prob)), .Machine$double.xmax))
+       logpsi <- plink(params[1], log.p=TRUE)
+       log1mpsi <- plink( -params[1], log.p=TRUE)
+       logp <- plink(params[2], log.p=TRUE)
+       log1mp <- plink( -params[2], log.p=TRUE)
+       logprob <- logAddExp(logpsi + logp * y + log1mp * (n - y),
+          log1mpsi + log(y==0))
+      return(min(-sum(logprob), .Machine$double.xmax))
     }
     # res <- nlm(nll, params, hessian=TRUE)
     nlmArgs <- list(...)

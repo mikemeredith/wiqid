@@ -58,14 +58,27 @@ function(y, n, ci=0.95, link=c("logit", "probit"), ...)  {
     params <- c(0, 0)
     Nmax <- 100 # See later if this is sensible
     # Negative log-likelihood function:
+    # nll <- function(params) {
+      # lambda <- exp(params[1])
+      # r <- plink(params[2])
+      # rpart <- (1-r)^(0:Nmax)
+      # Npart <- dpois(0:Nmax, lambda)
+      # llh <- 0
+      # for(i in seq_along(n)) {
+        # llh <- llh + log(sum((1-rpart)^y[i] * rpart^(n[i]-y[i]) * Npart))
+      # }
+      # return(min(-llh, .Machine$double.xmax)) # min(..) stops Inf being returned
+    # }
     nll <- function(params) {
       lambda <- exp(params[1])
-      r <- plink(params[2])
-      rpart <- (1-r)^(0:Nmax)
-      Npart <- dpois(0:Nmax, lambda)
+      log1mr <- plink( -params[2], log.p=TRUE) # log(1-r)
+      logrpart <- log1mr * (0:Nmax)            # log( (1-r)^N ), vector length 101
+      log1mrpart <- log1minusExp(logrpart)     # log( 1-(1-r)^N ), vector length 101
+      logNpart <- dpois(0:Nmax, lambda, log=TRUE) # log(poisson), vector length 101
       llh <- 0
       for(i in seq_along(n)) {
-        llh <- llh + log(sum((1-rpart)^y[i] * rpart^(n[i]-y[i]) * Npart))
+        tmp <- if(y[i]==0) 0 else log1mrpart*y[i] # because log(0) * 0 -> NaN
+        llh <- llh + logSumExp(tmp + logrpart*(n[i]-y[i]) + logNpart)
       }
       return(min(-llh, .Machine$double.xmax)) # min(..) stops Inf being returned
     }

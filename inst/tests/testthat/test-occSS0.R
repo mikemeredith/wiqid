@@ -67,8 +67,9 @@ test_that("occSS0 with logit link",  {
   # All zeros:
   brs6 <- occSS0(rep(0, length(n)), n)
   expect_that(round(as.vector(brs6$real), 4),
-      equals(c(0.0000, 0.0078, 0.0000, 0.0000, 1.0000, 1.0000)))
-  expect_that(round(AIC(brs6), 4), equals(4))
+      equals(c(0.0000, 0.0078, rep(NA_real_, 4))))
+  # expect_that(round(AIC(brs6), 4), equals(4))
+  expect_that(AIC(brs6), equals(NA_real_))
   # All NAs:
   brs7 <- occSS0(rep(0, length(n)), rep(0, length(n)))
   expect_that(as.vector(brs7$real),

@@ -22,9 +22,10 @@ function(CH, ci = 0.95, ciType=c("normal", "MARK"), ...) {
   if(N.cap > 0)  {
     nll <- function(params) {
       N <- min(exp(params[1]) + N.cap, 1e+300, .Machine$double.xmax)
-      p <- plogis(params[-1])
+      logp <- plogis(params[-1], log.p=TRUE)
+      log1mp <- plogis( -params[-1], log.p=TRUE)
       tmp <- lgamma(N + 1) - lgamma(N - N.cap + 1) +
-        sum(n * log(p) + (N - n) * log(1-p))
+        sum(n * logp + (N - n) * log1mp)
       return(min(-tmp, .Machine$double.xmax))
     }
     # res <- nlm(nll, params, hessian=TRUE, iterlim=1000)

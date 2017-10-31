@@ -26,9 +26,10 @@ function(CH, ci = 0.95, ciType=c("normal", "MARK"), ...) {
   if(sum(freq[-1]) > 0) {  # Need recaptures
     nll <- function(params) {
       N <- min(exp(params[1]) + N.cap, 1e+300, .Machine$double.xmax)
-      p <- plogis(params[2])
-      tmp <- lgamma(N + 1) - lgamma(N - N.cap + 1) + n.snap*log(p) +
-            (N*n.occ - n.snap)*log(1-p)
+      logp <- plogis(params[2], log.p=TRUE)
+      log1mp <- plogis( -params[2], log.p=TRUE)  # log(1-p)
+      tmp <- lgamma(N + 1) - lgamma(N - N.cap + 1) + n.snap*logp +
+            (N*n.occ - n.snap)*log1mp
       return(min(-tmp, .Machine$double.xmax))
     }
     # res <- nlm(nll, params, hessian=TRUE, iterlim=1000)

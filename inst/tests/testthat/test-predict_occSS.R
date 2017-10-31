@@ -35,7 +35,7 @@ test_that("Predict works for occSS",  {
   expect_equal(nrow(predBn), nrow(newdata))
   expect_equal(colnames(predBn), c("est", "SE", "lowCI", "uppCI"))
   expect_equivalent(round(colMeans(predBn), 4), c(0.6228, 0.1278, 0.3491, 0.8217))
-  
+
   wetaB <- occSS(DH, psi ~ Browsed, data=weta.covs)
   predB <- predict(wetaB, newdata, "psi", type="response")
   expect_equivalent(round(colMeans(predB), 4), c(0.6202, 0.1139, 0.3752, 0.8016))
@@ -47,7 +47,7 @@ test_that("Predict works for occSS",  {
   expect_equal(nrow(pred0), nrow(newdata))
   expect_equivalent(round(colMeans(pred0), 4), c(0.6166, 0.0885, 0.4356, 0.7702 ))
   expect_equal(pred0[1, ], pred0[2,])
-  
+
   newdata <- data.frame(ObsD = c("A", "B", "C"))
   wetaBnO <- occSS(DH, list(psi ~ Browsed + nons, p ~ ObsD), data=weta.covs)
   predBnO <- predict(wetaBnO, newdata, "p", type="response")
@@ -60,7 +60,7 @@ test_that("Predict works for occSS",  {
   expect_equal(nrow(predBnO1), nrow(newdata1))
   expect_equal(colnames(predBnO1), c("est", "SE", "lowCI", "uppCI"))
   expect_equivalent(round(colMeans(predBnO1), 4), c(0.4120, 0.0803, 0.2679, 0.5732))
-  
+
   # Check error messages
   newdata <- data.frame(Browsed=c(TRUE, FALSE))
   expect_error(predict(wetaBn, newdata, "psi"),
@@ -85,7 +85,7 @@ test_that("Predict works for occSS",  {
   expect_equal(nrow(predBn), nrow(newdata))
   expect_equal(colnames(predBn), c("est", "SE", "lowCI", "uppCI"))
   expect_equivalent(round(colMeans(predBn), 4), c(0.6227, 0.1281, 0.3543, 0.8274))
-  
+
   # With .time and .Time covars
   # ---------------------------
   wetaBt <- occSS(DH, p ~ Browsed + .time, data=weta.covs)
@@ -100,7 +100,7 @@ test_that("Predict works for occSS",  {
   # On probability scale:
   predBtp <- predict(wetaBt, newdata2, "p", type="response")
   expect_equivalent(round(colMeans(predBtp), 4), c(0.3252, 0.0949, 0.1708, 0.5313))
- 
+
   wetaBT <- occSS(DH, p ~ Browsed + .Time, data=weta.covs)
   newdata3 <- expand.grid(.Time=1:5, Browsed=c(TRUE, FALSE))
   rownames(newdata3) <- outer(1:5, c(TRUE, FALSE), paste, sep=":")
@@ -155,7 +155,7 @@ test_that("Predict works for occSS0",  {
   expect_equal(rownames(pred2p), rownames(newdata))
   expect_equivalent(colMeans(pred2p)[-2], brs2$real["pHat", ])
   expect_true(all(diff(pred2p[, 1]) == 0))
-  
+
 })
 # ..............................................................
 
@@ -180,7 +180,7 @@ test_that("Predict DOESN'T work for occSStime",  {
   require(wiqid)
   data(salamanders)
   BRS <- salamanders
-  
+
   res0 <- occSStime(BRS, plot=FALSE)
   newdata <- data.frame(.time = factor(1:5))
   expect_error(pred0 <- predict(res0, newdata, 'p'),

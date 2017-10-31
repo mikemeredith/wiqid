@@ -4,7 +4,6 @@
 
 # getVar0, getFittedVar : get variance for fitted values
 # getScaling, doScaling, scaleToMatch : functions to deal with scaling
-# logSumExp, log1minusExp : handle probabilities without over/underflow
 # signifish : an alternative to signif (added 10-02-2015)
 # fixCI : Calculate critical values for CI.
 # fixNames : Tidy up the column names in MCMC output: remove [] and , and make names unique.
@@ -12,7 +11,12 @@
 # stdModel : Regularize a list of formulae, ensuring it is a named list of one-sided formulae.
 # stddata : Convert a data frame of site and survey data into a list and standardise
 # selectCovars : Pull the covars needed for a model matrix into a specific data frame
+
 # AICtable moved to file AICc.R
+# logSumExp etc are now in file UnderOverflow.R
+# Functions to convert parameters of distributions (eg mean and sd to shape and rate) 
+#   are in converters.R
+# Variants of the t-distribution are in TDist.R
 # ...............................................................................
 
 # Functions to calculate the variance of fitted values from model matrix and var-covar matrix.
@@ -54,18 +58,6 @@ scaleToMatch <- function(target, scaling) {
   }
   return(target)
 }
-
-# ...............................................................................
-
-# logSumExp: sum probabilities without over/underflow
-# x is a vector with log(p); return value is log(sum(p)), scalar
-logSumExp <- function(x)
-  log(sum(exp(x - max(x)))) + max(x)
-
-# log1minusExp: get 1 - p without over/underflow
-# x is a vector with log(p); return value is vector with log(1 - p)
-log1minusExp <- function(x)
-  ifelse(x > log(0.5), log(-expm1(x)), log1p(-exp(x)))
 
 # ...............................................................................
 

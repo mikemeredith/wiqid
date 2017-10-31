@@ -19,6 +19,7 @@ function(DH, model=p~1, data=NULL, ci=0.95,
 	nocc <- ncol(DH)
   if (nocc < 2)
     stop("More than one survey occasion is needed")
+  notDetected <- rowSums(DH, na.rm=TRUE) == 0 # TRUE if species NOT detected at the site
   if(!is.null(data) && nrow(data) != nocc)
     stop("'data' must have one row for each survey occasion.")
   crit <- fixCI(ci)
@@ -56,12 +57,15 @@ function(DH, model=p~1, data=NULL, ci=0.95,
   if(ncol(DH) > 1 && sum(DH, na.rm=TRUE) > 0)  {
     # Negative log-likelihood function:
     nll <- function(params) {
-      psi <- plink(params[1])
+      logpsi <- plink(params[1], log.p=TRUE)
+      log1mpsi <- plink( -params[1], log.p=TRUE)
       pBeta <- params[-1]
-      p <- plink(pModMat %*% pBeta)
-      p.DH <- sweep(DH, 2, p, "*") + sweep((1-DH), 2, (1-p), "*")
-      llh <- sum(log(psi * apply(p.DH, 1, prod, na.rm=TRUE) +
-          (1 - psi) * (rowSums(DH, na.rm=TRUE) == 0)))
+      linkp <- pModMat %*% pBeta
+      logp <- plink(linkp, log.p=TRUE)
+      log1mp <- plink( -linkp, log.p=TRUE)
+      logLik1 <- sweep(DH, 2, logp, "*") + sweep((1-DH), 2, log1mp, "*")
+      logLik2 <- rowSums(logLik1, na.rm=TRUE)
+      llh <- sum(logAddExp(logpsi + logLik2, log1mpsi + log(notDetected)))
       return(min(-llh, .Machine$double.xmax)) # min(..) stops Inf being returned
     }
     # res <- nlm(nll, params, hessian=TRUE)

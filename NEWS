@@ -3,9 +3,16 @@ TODO
   * Ensure that trap losses can be coded with NA in the detection history in ch2marray,
       closedCap*, etc. Verify that NAs are preceded by 1 and continue to the end.
 
-  * Improve survRD: choice of closedCap function, AIC
+  * Improve survRD: choice of closedCap function, CIs and AIC
 
   * Implement predict for more models: occSScovSite, etc.
+
+  * Do help page on NAs in output.
+
+CHANGES in 0.1.2.9005 (2017-10-31)
+
+  * Functions more robust to underflow/overflow: closedCap*, occ2sps, occSS*
+      (not occMS* due to matrix multiplication chain)
 
 CHANGES in 0.1.2.9004 (2017-10-27)
 

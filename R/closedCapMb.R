@@ -32,11 +32,13 @@ function(CH, ci = 0.95, ciType=c("normal", "MARK"), ...) {
     nll <- function(params) {
       f0 <- min(exp(params[1]), 1e+300, .Machine$double.xmax)
       N <- N.cap + f0
-      p <- plogis(params[2])
-      c <- plogis(params[3])
+      logp <- plogis(params[2], log.p=TRUE)
+      log1mp <- plogis( -params[2], log.p=TRUE)
+      logc <- plogis(params[3], log.p=TRUE)
+      log1mc <- plogis( -params[3], log.p=TRUE)
       tmp <- lgamma(N + 1) - lgamma(N - N.cap + 1) +
-        sum(n0 * log(1-p) + ns * log(c) + nf * log(1-c)) + N.cap * log(p) + # Captured animals
-        f0 * nOcc * log(1-p) # Uncaptured animals
+        sum(n0 * log1mp + ns * logc + nf * log1mc) + N.cap * logp + # Captured animals
+        f0 * nOcc * log1mp # Uncaptured animals
       return(min(-tmp, .Machine$double.xmax))
     }
     # res <- nlm(nll, params, hessian=TRUE, iterlim=1000)
