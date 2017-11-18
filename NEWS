@@ -1,53 +1,13 @@
-TODO
 
-  * Ensure that trap losses can be coded with NA in the detection history in ch2marray,
-      closedCap*, etc. Verify that NAs are preceded by 1 and continue to the end.
+CHANGES in 0.1.3 (2017-11-18)
 
-  * Improve survRD: choice of closedCap function, CIs and AIC
-
-  * Implement predict for more models: occSScovSite, etc.
-
-  * Do help page on NAs in output.
-
-CHANGES in 0.1.2.9006 (2017-11-01)
-
-
-
-CHANGES in 0.1.2.9005 (2017-10-31)
+  * Calculation of SEs of fitted values now uses less memory, works for large data sets.
 
   * Functions more robust to underflow/overflow: closedCap*, occ2sps, occSS*
-      (not occMS* due to matrix multiplication chain)
 
-CHANGES in 0.1.2.9004 (2017-10-27)
-
-  * Changed parameter in Bsecr0 from lam0 to g0; use secr::autoini to get starting
-      values; better priors.
-
-CHANGES in 0.1.2.9003 (2017-10-17)
-
-  * New code for SEs of fitted values implemented for predict, closedCapMtcov, occ2sps, occMS, occMStime, occMScovSite, occSScovSite, occSSrnSite, occSStime, survCJS, survCJSaj.
-
-  * Calls to 'stopifnot' changed to informative error messages.
-
-  * Calls to 'cat' and 'print' replaced with 'message' where appropriate.
-
-CHANGES in 0.1.2.9002 (2017-10-16)
+  * Changed parameterization in Bsecr0 from lam0 to g0; better default priors.
 
   * Bug fix in BoccSS0: burnin iterations are now discarded.
-
-  * Calculation of SEs of fitted values now uses less memory: implemented for occSS.
-
-  * 'verify' checks detection histories for all-NA rows; all-NA rows removed from GrandSkinks data set.
-
-CHANGES in 0.1.2.9001 (2017-10-08)
-
-  * Better error message in plot.Bwiqid if 'which' is not character.
-
-  * Spelling corrections in help pages.
-
-CHANGES in 0.1.2.9000 (2017-09-21)
-
-  * Sanity checks for Bnormal
 
 CHANGES in 0.1.2 (2017-09-10)
 
