@@ -9,6 +9,10 @@ TODO
 
   * Do help page on NAs in output.
 
+CHANGES in 0.1.2.9006 (2017-11-01)
+
+
+
 CHANGES in 0.1.2.9005 (2017-10-31)
 
   * Functions more robust to underflow/overflow: closedCap*, occ2sps, occSS*
