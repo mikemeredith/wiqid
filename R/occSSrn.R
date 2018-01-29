@@ -39,6 +39,12 @@ function(y, n, ci=0.95, link=c("logit", "probit"), ...)  {
   # y is a vector with the number of detections at each site.
   # n is a vector with the number of occasions at each site.
   # ci is the required confidence interval.
+  if(length(n) == 1)
+    n <- rep(n, length(y))
+  if(length(y) != length(n))
+    stop("y and n must have the same length")
+  if(any(y > n))
+    stop("y cannot be greater than n")
   crit <- fixCI(ci)
 
   if(match.arg(link) == "logit") {

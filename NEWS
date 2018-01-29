@@ -1,4 +1,8 @@
 
+CHANGES in 0.1.3.9000 (2017-11-22)
+
+  * occSSrn0 now accepts scalar n, as documented.
+
 CHANGES in 0.1.3 (2017-11-18)
 
   * Calculation of SEs of fitted values now uses less memory, works for large data sets.
