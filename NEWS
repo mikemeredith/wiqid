@@ -1,4 +1,8 @@
 
+CHANGES in 0.1.3.9002 (2018-02-16)
+
+  * plotPost fixed so that histogram breaks are equidistant (as always intended).
+
 CHANGES in 0.1.3.9001 (2018-01-29)
 
   * the first argument to BoccSS0 can be a matrix or data frame with a detection history.

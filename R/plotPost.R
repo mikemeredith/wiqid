@@ -29,9 +29,10 @@ function( paramSampleVec, credMass=0.95, compVal=NULL, ROPE=NULL,
     if (all(paramSampleVec == round(paramSampleVec))) { # all integers
       breaks <- seq(min(paramSampleVec), max(paramSampleVec) + 1) - 0.5 
     } else {
-      by <- diff(hdi(paramSampleVec))/18
-      breaks <- unique(c( seq( from=min(paramSampleVec), to=max(paramSampleVec),
-                     by=by), max(paramSampleVec) ))
+      nbreaks <- ceiling(diff(range(paramSampleVec)) /
+                          diff(hdi(paramSampleVec)) * 18)
+      breaks <- seq( from=min(paramSampleVec), to=max(paramSampleVec), 
+                     length.out=nbreaks)
     }
   }
   histinfo <- hist(paramSampleVec, breaks=breaks, plot=FALSE)
