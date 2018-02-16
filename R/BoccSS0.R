@@ -6,6 +6,10 @@
 BoccSS0 <- function(y, n, psiPrior=c(1,1), pPrior=c(1,1),
                     chains=3, sample=30000, burnin=100) {
   startTime <- Sys.time()
+  if(!is.null(dim(y)) && dim(y)[2] > 1) {  # detection history
+    n <- rowSums(!is.na(y))
+    y <- rowSums(y, na.rm=TRUE)
+  }
   nSites <- length(y)
   if(length(n) == 1)
     n <- rep(n, nSites)

@@ -1,4 +1,8 @@
 
+CHANGES in 0.1.3.9001 (2018-01-29)
+
+  * the first argument to BoccSS0 can be a matrix or data frame with a detection history.
+
 CHANGES in 0.1.3.9000 (2017-11-22)
 
   * occSSrn0 now accepts scalar n, as documented.

@@ -23,10 +23,10 @@ BoccSS(DH, model=NULL, data=NULL, priors=list(),
 }
 \arguments{
   \item{y}{
-a vector with the number of detections at each site.
+a vector with the number of detections at each site; or a 1/0/NA matrix (or data frame) of detection histories, sites x occasions.
 }
   \item{n}{
-a scalar or vector with the number of visits (survey occasions) at each site.
+a scalar or vector with the number of visits (survey occasions) at each site; ignored if \code{y} is a matrix or data frame.
 }
   \item{psiPrior, pPrior}{
 parameters for beta distributions to be used as priors for psi and p.
