@@ -3,22 +3,22 @@
 #  enhancements, including shading of the HDI in showCurve=TRUE plots.
 
 plotPost <-
-function( paramSampleVec, credMass=0.95, compVal=NULL, ROPE=NULL, 
+function( paramSampleVec, credMass=0.95, compVal=NULL, ROPE=NULL,
            HDItextPlace=0.7, showMode=FALSE, showCurve=FALSE,
            shadeHDI=NULL, ... ) {
 
-  # Does a plot for a single parameter. Called by plot.Bwiqid but also exported. 
+  # Does a plot for a single parameter. Called by plot.Bwiqid but also exported.
   # Returns a histogram object invisibly.
   # This stuff should be in the ... argument:
   #   yaxt="n", ylab="", xlab="Parameter", main="", cex.lab=1.5, cex=1.4,
-  #   xlim=range(compVal, paramSampleVec), col="skyblue", border="white", 
-  #   breaks=NULL 
+  #   xlim=range(compVal, paramSampleVec), col="skyblue", border="white",
+  #   breaks=NULL
 
   # Deal with ... argument:
   dots <- list(...)
   if(length(dots) == 1 && class(dots[[1]]) == "list")
     dots <- dots[[1]]
-  defaultArgs <- list(xlab=deparse(substitute(paramSampleVec)), 
+  defaultArgs <- list(xlab=deparse(substitute(paramSampleVec)),
     yaxt="n", ylab="", main="", cex.lab=1.5,
     cex=1.4, col="skyblue", border="white", bty="n", lwd=5, freq=FALSE,
     xlim=range(compVal, hdi(paramSampleVec, 0.99)))
@@ -27,19 +27,19 @@ function( paramSampleVec, credMass=0.95, compVal=NULL, ROPE=NULL,
   breaks <- dots$breaks
   if (is.null(breaks)) {
     if (all(paramSampleVec == round(paramSampleVec))) { # all integers
-      breaks <- seq(min(paramSampleVec), max(paramSampleVec) + 1) - 0.5 
+      breaks <- seq(min(paramSampleVec), max(paramSampleVec) + 1) - 0.5
     } else {
       nbreaks <- ceiling(diff(range(paramSampleVec)) /
                           diff(hdi(paramSampleVec)) * 18)
-      breaks <- seq( from=min(paramSampleVec), to=max(paramSampleVec), 
+      breaks <- seq( from=min(paramSampleVec), to=max(paramSampleVec),
                      length.out=nbreaks)
     }
   }
   histinfo <- hist(paramSampleVec, breaks=breaks, plot=FALSE)
   histinfo$xname <- useArgs$xlab
-  
+
   if (showCurve) {
-    densCurve <- density( paramSampleVec, adjust=2 )
+    densCurve <- densityFolded( paramSampleVec, adjust=2 )
     cenTendHt <- 0.9 * max(densCurve$y)  # For plotting
     selPlot <- names(useArgs) %in%
       c(names(as.list(args(plot.default))), names(par(no.readonly=TRUE)))
@@ -76,7 +76,7 @@ function( paramSampleVec, credMass=0.95, compVal=NULL, ROPE=NULL,
   } else {
     cenTendHt <- 0.9 * max(histinfo$density)  # For plotting
     plot.histogram.args.names <- c("freq", "density", "angle", "border",
-      "main", "sub", "xlab", "ylab", "xlim", "ylim", "axes", "labels", 
+      "main", "sub", "xlab", "ylab", "xlim", "ylim", "axes", "labels",
       "add") # plot.histogram not exported, so need to cheat!
     selPlot <- names(useArgs) %in%
       c(plot.histogram.args.names, names(par(no.readonly=TRUE)))
