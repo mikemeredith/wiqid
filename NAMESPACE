@@ -59,6 +59,7 @@ S3method("predict", "wiqid")
 S3method("AICc", "default")
 
 S3method("print", "Bwiqid")
+S3method("summary", "Bwiqid")
 S3method("plot", "Bwiqid")
 S3method("window", "Bwiqid")
 S3method("head", "Bwiqid")

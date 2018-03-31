@@ -2,7 +2,7 @@
 # Function to do kernel density fitting for a VECTOR
 #   with folding for probability and non-negative values.
 
-# This is not used for diagnostic plots with multiple chains in a matrix.
+# This is now used for diagnostic plots with multiple chains in a matrix.
 
 densityFolded <- function(x, bw = "nrd0", adjust = 1, from, to, ...) {
   stopifnot(is.numeric(x))

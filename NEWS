@@ -1,4 +1,10 @@
 
+CHANGES in 0.1.3.9004 (2018-03-31)
+
+  * summary.Bwiqid method added, prints background and returns values invisibly.
+
+  * Fix for as.Bwiqid.mcmc.list, wrapping call to gelman.diag in try.
+
 CHANGES in 0.1.3.9003 (2018-02-17)
 
   * new function densityFolded, used in plotPost and plot.wiqid when showCurve=TRUE.

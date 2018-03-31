@@ -39,8 +39,11 @@ as.Bwiqid.mcmc.list <- function(object, header, defaultPlot, ...) {
     attr(out, "header") <- header
   attr(out, "n.chains") <- length(object)
   attr(out, "n.eff") <- effectiveSize(object)
-  if(length(object) > 1)
-    attr(out, "Rhat") <- gelman.diag(object, autoburnin=FALSE, multivariate=FALSE)$psrf[, 1]
+  if(length(object) > 1) {
+    gd <- try(gelman.diag(object, autoburnin=FALSE, multivariate=FALSE))
+    if(!inherits(gd, "try-error"))
+      attr(out, "Rhat") <- gd$psrf[, 1]
+  }
   if(!missing("defaultPlot"))
     attr(out, "defaultPlot") <- defaultPlot
   return(out)

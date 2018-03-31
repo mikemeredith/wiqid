@@ -1,14 +1,17 @@
 \name{print.Bwiqid}
 \alias{print.Bwiqid}
+\alias{summary.Bwiqid}
 \title{
-Print method for objects of class 'Bwiqid'
+Print and summary methods for objects of class 'Bwiqid'
 }
 \description{
-Prints summary statistics for the parameters and several MCMC diagnostic measures for objects of class \code{Bwiqid}.
+Both functions print details of the MCMC process to the Console. \code{print} also prints a table of summary statistics for the parameters and several MCMC diagnostic measures to the Console, while \code{summary} returns invisibly a corresponding data frame, which can be passed to \code{View}.
 }
 \usage{
-\method{print}{Bwiqid}(x, digits=4, ...)  
-    
+\method{print}{Bwiqid}(x, digits=4, ...)
+
+\method{summary}{Bwiqid}(object, ...)
+
 }
 \arguments{
   \item{x}{
@@ -18,11 +21,11 @@ an object of class \code{Bwiqid}.
 the number of digits to print.
 }
   \item{\dots}{
-further arguments for the print function.
+further arguments for the print or summary function.
 }
 }
 \details{
-The function prints a table with a row for each parameter \emph{after} removing duplicated rows. Duplication usually arises because a covariate has only a few unique values.
+The \code{print} function prints a table with a row for each parameter \emph{after} removing duplicated rows. Duplication usually arises because a covariate has only a few unique values.
 
 There are columns for each of the following summary statistics ...
 
@@ -41,7 +44,7 @@ There are columns for each of the following summary statistics ...
 
 }
 \value{
-Returns \code{x} invisibly.
+\code{print} returns \code{x} invisibly. \code{summary} returns the table of summary statistics.
 }
 \author{
 Mike Meredith.
