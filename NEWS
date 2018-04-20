@@ -1,29 +1,19 @@
 
-CHANGES in 0.1.3.9005 (2018-04-20)
-
-  * fixed colours in diagPlot; diagPlot now displays n.eff
-
-CHANGES in 0.1.3.9004 (2018-03-31)
-
-  * summary.Bwiqid method added, prints background and returns values invisibly.
-
-  * fix for as.Bwiqid.mcmc.list, wrapping call to gelman.diag in try.
-
-CHANGES in 0.1.3.9003 (2018-02-17)
+CHANGES in 0.1.4 (2018-04-20)
 
   * new function densityFolded, used in plotPost and plot.Bwiqid when showCurve=TRUE.
 
-CHANGES in 0.1.3.9002 (2018-02-16)
+  * summary.Bwiqid method added, prints background and returns values invisibly.
 
-  * plotPost fixed so that histogram breaks are equidistant (as always intended).
+  * diagPlot now displays n.eff
 
-CHANGES in 0.1.3.9001 (2018-01-29)
+  * fix: in as.Bwiqid.mcmc.list, call to gelman.diag wrapped in try.
 
-  * the first argument to BoccSS0 can be a matrix or data frame with a detection history.
+  * fix: histogram breaks in plotPost are equidistant (as always intended).
 
-CHANGES in 0.1.3.9000 (2017-11-22)
+  * fix: the first argument to BoccSS0 can be a matrix or data frame with a detection history.
 
-  * occSSrn0 now accepts scalar n, as documented.
+  * fix: occSSrn0 now accepts scalar n, as documented.
 
 CHANGES in 0.1.3 (2017-11-18)
 
