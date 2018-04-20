@@ -5,8 +5,6 @@
 # This version will only run apps in the wiqid package.
 
 showShinyApp <- function(topic) {
-  if(!requireNamespace("shiny", quietly=TRUE))
-    stop("You need to install the 'shiny' package to run this function.")
     
 	shinyPath <- file.path(path.package("wiqid"), 'shiny')
   apps <- list.dirs(shinyPath, recursive=FALSE, full.names=FALSE)
@@ -14,6 +12,10 @@ showShinyApp <- function(topic) {
     cat("The following topics are available:\n")
     return(apps)
   }
+  
+  if(!requireNamespace("shiny", quietly=TRUE))
+    stop("You need to install the 'shiny' package to run this function.")
+
   which <- pmatch(topic, apps)
   if(is.na(which))
     stop("No app for this topic available.")

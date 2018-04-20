@@ -41,9 +41,9 @@ survCJS(DH, phi ~ flood * group, data=df, group=dippers$sex)
 
 # Bayesian estimation:
 
+\donttest{
 Bdip <- BsurvCJS(DH, parallel=FALSE)
 plot(Bdip)
-\donttest{
 BdipFlood <- BsurvCJS(DH, list(phi ~ flood, p ~ .time), data=df)
 BdipFlood
 op <- par(mfrow=2:1)
