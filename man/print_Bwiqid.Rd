@@ -14,7 +14,7 @@ Both functions print details of the MCMC process to the Console. \code{print} al
 
 }
 \arguments{
-  \item{x}{
+  \item{x, object}{
 an object of class \code{Bwiqid}.
 }
   \item{digits}{

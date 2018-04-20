@@ -72,13 +72,17 @@ fake <- data.frame(
 class(fake) <- c("Bwiqid", "data.frame")
 attr(fake, "n.chains") <- 3
 attr(fake, "Rhat") <- c(1, 1.01, 1.05, 1.1, 1.2, 1, NA, 1, NA)
+attr(fake, "n.eff") <- c(2345, NA, 457, 63, 1234, 324, 543, 1, 1)
 
 fake
 diagPlot(fake)
+diagPlot(fake, which=3:6)
+diagPlot(fake, which="prob0")
+
 par(mfrow=c(3,3))
-tracePlot(fake)
-densityPlot(fake, col=1:5, lwd=2)
-acfPlot(fake, lag.max=10)
+tracePlot(fake, ask=FALSE)
+densityPlot(fake, col=1:5, lwd=2, ask=FALSE)
+acfPlot(fake, lag.max=10, ask=FALSE)
 par(mfrow=c(1,1))
 }
 }

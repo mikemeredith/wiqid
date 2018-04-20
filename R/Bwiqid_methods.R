@@ -50,21 +50,21 @@ print.Bwiqid <- function(x, digits=4, ...)  {
 # .........................................................
 
 
-summary.Bwiqid <- function(x,  ...)  {
-  if(!inherits(x, "data.frame"))
-    stop("x is not a valid Bwiqid object")
-  call <- attr(x, "call")
-  header <- attr(x, "header")
-  MCerror <- attr(x, "MCerror")
-  Rhat <- attr(x, "Rhat")
-  n.eff <- attr(x, "n.eff")
-  timetaken <- attr(x, "timetaken")
+summary.Bwiqid <- function(object,  ...)  {
+  if(!inherits(object, "data.frame"))
+    stop("object is not a valid Bwiqid object")
+  call <- attr(object, "call")
+  header <- attr(object, "header")
+  MCerror <- attr(object, "MCerror")
+  Rhat <- attr(object, "Rhat")
+  n.eff <- attr(object, "n.eff")
+  timetaken <- attr(object, "timetaken")
 
   toPrint <- cbind(
-    mean = colMeans(x),
-    sd = apply(x, 2, sd),
-    median = apply(x, 2, median),
-    t(hdi(x)))
+    mean = colMeans(object),
+    sd = apply(object, 2, sd),
+    median = apply(object, 2, median),
+    t(hdi(object)))
   colnames(toPrint)[4:5] <- c("HDIlo", "HDIup")
   if(!is.null(MCerror))
     toPrint <- cbind(toPrint, 'MCE%' = round(100 * MCerror/toPrint[, 'sd'], 1))
@@ -76,7 +76,7 @@ summary.Bwiqid <- function(x,  ...)  {
   if(is.null(header))
     header <- "MCMC fit results:"
   cat(header, "\n")
-  cat(nrow(x), "simulations saved.\n")
+  cat(nrow(object), "simulations saved.\n")
   cat("\n'HDIlo' and 'HDIup' are the limits of a 95% HDI credible interval.\n")
   if(!is.null(MCerror))
     cat("'MCE%' is the Monte Carlo error as a %age of the SD (should be less than 5%).\n")

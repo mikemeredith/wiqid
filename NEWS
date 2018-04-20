@@ -1,13 +1,17 @@
 
+CHANGES in 0.1.3.9005 (2018-04-20)
+
+  * fixed colours in diagPlot; diagPlot now displays n.eff
+
 CHANGES in 0.1.3.9004 (2018-03-31)
 
   * summary.Bwiqid method added, prints background and returns values invisibly.
 
-  * Fix for as.Bwiqid.mcmc.list, wrapping call to gelman.diag in try.
+  * fix for as.Bwiqid.mcmc.list, wrapping call to gelman.diag in try.
 
 CHANGES in 0.1.3.9003 (2018-02-17)
 
-  * new function densityFolded, used in plotPost and plot.wiqid when showCurve=TRUE.
+  * new function densityFolded, used in plotPost and plot.Bwiqid when showCurve=TRUE.
 
 CHANGES in 0.1.3.9002 (2018-02-16)
 

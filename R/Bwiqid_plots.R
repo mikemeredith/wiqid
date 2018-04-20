@@ -15,6 +15,11 @@ diagPlot <- function(object, which, ask=TRUE, maxRow=4, RhatBad=1.05, ...) {
     Rhat <- rep(NA, npars)
   Rhat <- round(Rhat, 2)
 
+  n.eff <- attr(object, "n.eff")
+  if(is.null(n.eff))
+    n.eff <- rep(NA, npars)
+  n.eff <- round(n.eff)
+
   if(!missing(which)) {
     if(is.character(which))
       which <- pmatch(which, names(object))
@@ -26,6 +31,7 @@ diagPlot <- function(object, which, ask=TRUE, maxRow=4, RhatBad=1.05, ...) {
     object <- object[which]
     npars <- ncol(object)
     Rhat <- Rhat[which]
+    n.eff <- n.eff[which]
   }
 
   old.par <- par(mar = c(2,2,2, 0)+0.1, oma=c(1,1,1,1), "mfrow")
@@ -58,11 +64,14 @@ diagPlot <- function(object, which, ask=TRUE, maxRow=4, RhatBad=1.05, ...) {
     title( main = paste0(names(object[i]), ", Rhat = ", Rhat[i]),
       line=1, adj=1, col.main=1 + redFlag)
     if(redFlag)
-      box(col='red', lwd=2)
+      box(col=2, lwd=2)
     # do density plot
     density0(mat, useArgsD)
+    if(!is.na(n.eff[i]))
+      title( main = paste0("n.eff = ", n.eff[i]),
+        line=1, adj=0, col.main=1 + redFlag)
     if(redFlag)
-      box(col='red', lwd=2)
+      box(col=2, lwd=2)
   }
 }
 # ..........................................................
