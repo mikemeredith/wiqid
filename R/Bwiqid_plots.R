@@ -118,7 +118,7 @@ density0 <- function(mat, plotArgs, ...)  {
     }
     if (min(mat) >= 0 && max(mat) <= 1 &&
           (min(mat) < 2 * bw || 1 - max(mat) < 2 * bw)) { # it's a probability
-      to <- 1
+      to <- min(to, 1)
       xx <- rbind(mat, -mat, 2-mat)
       mult <- 3
     }
@@ -158,6 +158,7 @@ tracePlot <- function(object, ask=TRUE, ...)  {
     mat <- matrix(object[, i], ncol=n.chains)
     useArgs$ylab <- names(object[i])
     useArgs$y <- mat
+    useArgs$main <- names(object)[i]
     do.call(matplot, useArgs)
     abline(h=mean(mat))
   }

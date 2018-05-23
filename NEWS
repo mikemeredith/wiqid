@@ -1,4 +1,10 @@
-CHANGES in 0.1.4 (2018-04-20)
+CHANGES in 0.1.5.9000 (2018-05-22)
+
+  * summary.Bwiqid gains digits argument.
+
+  * small tweaks to diagPlot family.
+
+CHANGES in 0.1.5 (2018-04-20)
 
   * Fixed check for installation of package shiny in showShinyApp.
 

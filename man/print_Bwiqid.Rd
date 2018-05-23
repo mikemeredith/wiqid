@@ -10,7 +10,7 @@ Both functions print details of the MCMC process to the Console. \code{print} al
 \usage{
 \method{print}{Bwiqid}(x, digits=4, ...)
 
-\method{summary}{Bwiqid}(object, ...)
+\method{summary}{Bwiqid}(object, digits=3, ...)
 
 }
 \arguments{
@@ -18,7 +18,7 @@ Both functions print details of the MCMC process to the Console. \code{print} al
 an object of class \code{Bwiqid}.
 }
   \item{digits}{
-the number of digits to print.
+the number of digits to print or include in the output.
 }
   \item{\dots}{
 further arguments for the print or summary function.

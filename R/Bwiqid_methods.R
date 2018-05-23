@@ -50,7 +50,7 @@ print.Bwiqid <- function(x, digits=4, ...)  {
 # .........................................................
 
 
-summary.Bwiqid <- function(object,  ...)  {
+summary.Bwiqid <- function(object, digits=3, ...)  {
   if(!inherits(object, "data.frame"))
     stop("object is not a valid Bwiqid object")
   call <- attr(object, "call")
@@ -88,7 +88,7 @@ summary.Bwiqid <- function(object,  ...)  {
     took <- format(round(timetaken, 1))
     cat("MCMC sample generation:", took, "\n")
   }
-  return(invisible(toPrint))
+  return(invisible(round(toPrint, digits=digits)))
 }
 # .........................................................
 

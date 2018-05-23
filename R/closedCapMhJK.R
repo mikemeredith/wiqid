@@ -4,6 +4,11 @@ function(CH, ci=0.95) {
   #  a vector of capture frequencies of length equal to the number
   #  of occasions - trailing zeros are required.
   # ci is the required confidence interval
+  
+  # B&O = Burnham, K.P. & Overton, W.S. (1979) Robust estimation of population size
+  #   when capture probabilities vary among animals. Ecology, 60, 927-936.
+  # R&B = Rexstad, E; K Burnham 1992. User's guide for interactive program CAPTURE.
+  #   USGS Patuxent. 
 
   if (is.matrix(CH) || is.data.frame(CH)) {
     n.occ <- ncol(CH)
@@ -78,7 +83,7 @@ function(CH, ci=0.95) {
      Chi2 <- c(Chi2, 0)
 
      ### Revised calculation of SE
-     # See Rexstat & Burnham 1992 for theory. CAPTURE source code uses Chi2 - 1 for the power 
+     # See R&B for theory. CAPTURE source code uses Chi2 - 1 for the power 
      #   calculation, or power = 0.5 if Chi2 < 1:
      lambda <- pmax(0, Chi2 - 1)[-length(Chi2)]
      powr <- pchisq(3.8415, 1, lambda, lower.tail=FALSE)
