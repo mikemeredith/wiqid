@@ -1,3 +1,9 @@
+CHANGES in 0.1.5.9001 (2018-09-12)
+
+  * Added *beta2 and *gamma2, wrappers for *beta and *gamma with mean and sd parameters.
+
+  * Added getBetaPar and getGammaPar to convert mean/sd parameters to shape/rate.
+
 CHANGES in 0.1.5.9000 (2018-05-22)
 
   * summary.Bwiqid gains digits argument.
