@@ -170,6 +170,18 @@ All of these functions produce distance measures (not similarity) on a scale of 
   \code{\link{weta}} \tab detection/non-detection data and covariates for weta }
 }
 
+\section{DISTRIBUTIONS}{
+
+These are convenience wrappers for the related d/p/q/r functions in the \code{stats} package which allow for parameterisation with mean and sd or (for Beta) mode and concentration.
+
+  \tabular{ll}{
+  \code{\link{dbeta2} etc} \tab Beta distribution with mean and sd \cr
+  \code{\link{dbeta3} etc} \tab Beta distribution with mode and concentration \cr
+  \code{\link{dgamma2} etc} \tab Gamma distribution with mean and sd \cr
+  \code{\link{dt2} etc} \tab t-distribution with mean, sd and df parameters
+  }
+}
+
 \section{UTILITY FUNCTIONS}{
 
   \tabular{ll}{

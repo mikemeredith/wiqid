@@ -6,7 +6,7 @@
 
 # Bbinom is retained for backward compatibility but will shortly be deprecated.
 
-Bbinomial <- function(y, n, priors=NULL, sample=10000) {
+Bbinomial <- function(y, n, priors=NULL, sample=100000) {
 
   if(!is.null(priors$conc) && priors$conc < 2)
     stop("priors$conc must not be less than 2.")

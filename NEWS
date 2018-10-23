@@ -1,3 +1,21 @@
+TODO
+
+  * deprecate Bbinom
+
+  * scrap improper default priors for Bnormal, maybe do as original version of BEST
+
+  * Improve Bsecr0...
+
+  * Have BoccSS, etc, use factors directly, not dummy variables.
+
+CHANGES in 0.1.5.9002 (2018-10-14)
+
+  * Added *beta3 wrappers with mode and concentration; added examples for BetaDist and GammaDist.
+
+  * Input checks for 'plotPost'.
+
+  * Default iterations for Bbinomial increased to reduce MC error.
+
 CHANGES in 0.1.5.9001 (2018-09-12)
 
   * Added *beta2 and *gamma2, wrappers for *beta and *gamma with mean and sd parameters.

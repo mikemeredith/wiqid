@@ -11,7 +11,7 @@ Simulates a sample from the posterior for a binomial likelihood and beta prior.
 }
 \usage{
 Bbinom(y, n, priors=NULL, sample=10000)
-Bbinomial(y, n, priors=NULL, sample=10000)
+Bbinomial(y, n, priors=NULL, sample=100000)
 }
 \arguments{
   \item{y}{

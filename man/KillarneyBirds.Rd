@@ -9,7 +9,7 @@ The number of territories held by breeding males in 9 blocks of woodland habitat
 }
 \usage{data(KillarneyBirds)}
 \format{
-  A data frame with counts for 31 species in 9 blocks of habitat, plus species body mass.
+  A data frame with counts for 31 species in 9 blocks of habitat. Row names are the English species names.
   \describe{
     \item{\code{Oak1}}{first of 3 oak wood sites}
     \item{\code{Oak2}}{second of 3 oak wood sites}

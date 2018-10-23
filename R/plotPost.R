@@ -13,6 +13,9 @@ function( paramSampleVec, credMass=0.95, compVal=NULL, ROPE=NULL,
   #   yaxt="n", ylab="", xlab="Parameter", main="", cex.lab=1.5, cex=1.4,
   #   xlim=range(compVal, paramSampleVec), col="skyblue", border="white",
   #   breaks=NULL
+  
+  if(!is.numeric(paramSampleVec))
+    stop("The first argument must be a vector of numbers.")
 
   # Deal with ... argument:
   dots <- list(...)
