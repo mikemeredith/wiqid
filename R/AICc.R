@@ -1,12 +1,15 @@
 # This is based on AIC in package stats
 
 # There are AICc functions in other packages, which don't all work with
-#   occupancy, but AIC does.
+#   'wiqid' objects.
+# stats::AIC.default does work with 'wiqid' objects
 
-AICc <- function(object, ..., nobs) UseMethod("AICc")
+AICc <- function(object, ..., nobs, df) UseMethod("AICc")
 
-AICc.default <- function (object, ..., nobs) 
-{
+AICc.default <- function (object, ..., nobs, df) {
+
+  if(!missing(nobs) && length(nobs) > 1)
+    stop("'nobs' must have a single value.")
   if (length(list(...))) {
     lls <- lapply(list(object, ...), logLik)
     vals <- sapply(lls, function(el) {
@@ -18,21 +21,29 @@ AICc.default <- function (object, ..., nobs)
     if (length(nos) && any(nos != nos[1L])) 
         warning("models are not all fitted to the same number of observations")
     # val <- data.frame(df = val$df, AIC = -2 * val$ll + k * val$df)
-    df <- vals[2L, ]
+    if(missing(df)) {
+      df <- vals[2L, ]
+    } else {
+      if(length(df) == 1)
+        df <- rep(df, ncol(vals))
+      if(any(is.na(df)))
+        df[is.na(df)] <- vals[2L, is.na(df)]
+    }
     if(missing(nobs))
       nobs <- vals[3L, ]
     val <- data.frame(df = df,
         AICc = -2 * vals[1L, ] + 2 * df * nobs / pmax(0, nobs - df - 1))
     Call <- match.call()
     Call$nobs <- NULL
+    Call$df <- NULL
     row.names(val) <- as.character(Call[-1L])
-  }
-  else {
+  } else {
     lls <- logLik(object)
-    df <- attr(lls, "df")
+    if(missing(df))
+      df <- attr(lls, "df")
     if(missing(nobs))
       nobs <- attr(lls, "nobs")
-    if(is.null(nobs))  {
+    if(is.null(nobs) || is.na(nobs))  {
       val <- NA_real_
     } else {
       val <- -2 * as.numeric(lls) + 2 * df * nobs / max(0, nobs - df - 1)

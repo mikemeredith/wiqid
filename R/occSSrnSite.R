@@ -66,6 +66,7 @@ occSSrnSite <- function(y, n, model=NULL, data=NULL,
     paste("lambda:", 1:nSites, sep=""),
     paste("r:", 1:nSites, sep=""))
   logLik <- NA_real_
+  npar <- NA_integer_
   varcov <- NULL
 
   nll <- function(param){
@@ -86,7 +87,6 @@ occSSrnSite <- function(y, n, model=NULL, data=NULL,
 
   # Run mle estimation with nlm:
   Nmax <- 100
-  # res <- nlm(nll, param, hessian=TRUE)
   nlmArgs <- list(...)
   nlmArgs$f <- nll
   nlmArgs$p <- rep(0, K)
@@ -99,10 +99,11 @@ occSSrnSite <- function(y, n, model=NULL, data=NULL,
   beta.mat[,1] <- res$estimate
   lp.mat[, 1] <- c(lamModMat %*% beta.mat[1:lamK, 1],
                    rModMat %*% beta.mat[(lamK+1):K, 1])
-  # varcov0 <- try(solve(res$hessian), silent=TRUE)
+  logLik <- -res$minimum
+
   varcov0 <- try(chol2inv(chol(res$hessian)), silent=TRUE)
-  # if (!inherits(varcov0, "try-error") && all(diag(varcov0) > 0)) {
   if (!inherits(varcov0, "try-error")) {
+    npar <- K
     varcov <- varcov0
     SE <- suppressWarnings(sqrt(diag(varcov)))
     beta.mat[, 2] <- SE
@@ -125,7 +126,7 @@ occSSrnSite <- function(y, n, model=NULL, data=NULL,
               beta = beta.mat,
               beta.vcv = varcov,
               real = rbind(realPsi, realLam, realR),
-              logLik = c(logLik=logLik, df=K, nobs=length(y)),
+              logLik = c(logLik=logLik, df=npar, nobs=length(y)),
               ci = ci,
               formulae = model,
               index = list(lambda=1:lamK, r=(lamK+1):K),

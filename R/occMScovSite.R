@@ -10,12 +10,12 @@
 
 occMScovSite <- function(DH, occsPerSeason,
              model=NULL,
-             data=NULL, ci=0.95, verify=TRUE, ...) {    
-  # ** DH is detection data in a 1/0/NA matrix or data frame, sites in rows, 
+             data=NULL, ci=0.95, verify=TRUE, ...) {
+  # ** DH is detection data in a 1/0/NA matrix or data frame, sites in rows,
   #    detection occasions in columns..
   # ** occsPerSeason is a scalar or vector with the number of occasions per season
   # ci is the required confidence interval.
-             
+
   if(verify) {
     DH <- verifyDH(DH, allowNA=TRUE)
   } else {
@@ -51,7 +51,7 @@ occMScovSite <- function(DH, occsPerSeason,
   if (is.null(siteNames))
     siteNames <- rownames(data)
   if (is.null(siteNames))
-    siteNames <- 1:nSites 
+    siteNames <- 1:nSites
 
   if(!is.null(data)) {
     if(nrow(data) != nSites)
@@ -66,7 +66,7 @@ occMScovSite <- function(DH, occsPerSeason,
   dataList$.interval <- as.factor(rep(1:(nseas-1), each=nSites))
   dataList$.season <- as.factor(rep(1:nseas, each=nSites))
 
-  # Build model matrices  
+  # Build model matrices
   psi1df <- selectCovars(model$psi1, dataList, nSites)
   if (nrow(psi1df) != nSites)
     stop("Covariate for psi1 is wrong length.")
@@ -89,7 +89,7 @@ occMScovSite <- function(DH, occsPerSeason,
   pK <- ncol(pMat)
   K <- psi1K + gamK + epsK + pK
   parID <- rep(1:4, c(psi1K, gamK, epsK, pK))
-  
+
   beta.mat <- matrix(NA_real_, K, 4)
   colnames(beta.mat) <- c("est", "SE", "lowCI", "uppCI")
   rownames(beta.mat) <- c(
@@ -106,7 +106,7 @@ occMScovSite <- function(DH, occsPerSeason,
     paste0("p:", siteNames, ",", dataList$.season))
   logLik <- NA_real_
   varcov <- NULL
-  
+
   nll <- function(param){
     psi1Beta <- param[parID==1]
     gamBeta <- param[parID==2]
@@ -130,16 +130,11 @@ occMScovSite <- function(DH, occsPerSeason,
     return(min(-sum(log(Prh)), .Machine$double.xmax))
   }
 
-  # cat("done\n")
-  # cat("Maximizing likelihood...") ; flush.console()
-  # res <- nlm(nll, start, hessian=TRUE)
   nlmArgs <- list(...)
   nlmArgs$f <- nll
   nlmArgs$p <- rep(0, K)
   nlmArgs$hessian <- TRUE
   res <- do.call(nlm, nlmArgs)
-  # cat("done\n")
-  # cat("Organizing output...") ; flush.console()
   if(res$code > 2)   # exit code 1 or 2 is ok.
     warning(paste("Convergence may not have been reached (code", res$code, ")"))
   beta.mat[,1] <- res$estimate
@@ -147,10 +142,12 @@ occMScovSite <- function(DH, occsPerSeason,
                    gamMat %*% beta.mat[parID==2, 1],
                    epsMat %*% beta.mat[parID==3, 1],
                    pMat %*% beta.mat[parID==4, 1])
-  # varcov0 <- try(solve(res$hessian), silent=TRUE)
+  logLik <- -res$minimum
+
   varcov0 <- try(chol2inv(chol(res$hessian)), silent=TRUE)
   # if (!inherits(varcov0, "try-error") && all(diag(varcov0) > 0)) {
   if (!inherits(varcov0, "try-error")) {
+    npar <- K
     varcov <- varcov0
     SE <- suppressWarnings(sqrt(diag(varcov)))
     beta.mat[, 2] <- SE  # tidy later
@@ -163,7 +160,6 @@ occMScovSite <- function(DH, occsPerSeason,
     if(all(temp >= 0))  {
       SElp <- sqrt(temp)
       lp.mat[, 2:3] <- sweep(outer(SElp, crit), 1, lp.mat[, 1], "+")
-      logLik <- -res$minimum
     }
   }
   # cat("done\n") ; flush.console()
@@ -172,7 +168,7 @@ occMScovSite <- function(DH, occsPerSeason,
               beta = beta.mat,
               beta.vcv = varcov,
               real = plogis(lp.mat),
-              logLik = c(logLik=logLik, df=K, nobs=nrow(DH)),
+              logLik = c(logLik=logLik, df=npar, nobs=nrow(DH)),
               ci = ci)
   class(out) <- c("wiqid", "list")
   return(out)

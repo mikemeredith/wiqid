@@ -4,7 +4,7 @@
 \title{ The 'wiqid' S3 class }
 
 \description{
-  
+
 All the maximum likelihood functions in the \pkg{wiqid} package should produce an object of class \code{wiqid}. Bayesian estimation runs produce objects of class \code{Bwiqid}.
 }
 
@@ -18,7 +18,7 @@ A \code{wiqid} object is a list with the following elements:
   \item{beta }{A matrix of values of the coefficients of the terms in the linear predictors, with standard errors and confidence intervals.}
   \item{beta.vcv }{The variance-covariance matrix for the beta estimates.}
   \item{real }{Estimates of occupancy and probability of detection on the real scale, with confidence intervals.}
-  \item{logLik }{a vector with elements for \code{log(likelihood)}, number of parameters, and effective sample size. If parameters \emph{and their SEs} cannot be estimated, the first element should be \code{NA}.}
+  \item{logLik }{a vector with elements for \code{log(likelihood)}, number of parameters, and effective sample size. If the variance-covariance matrix cannot be calculated, the second element should be \code{NA}.}
   \item{ci }{intended coverage of the confidence intervals.}
   \item{formulae }{a named list with the formulae of each of the submodels.}
   \item{index }{a named list indicating which rows of the \code{beta} and \code{beta.vcv} matrices correspond to each submodel.}

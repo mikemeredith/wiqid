@@ -127,7 +127,7 @@ survCJS <- function(DH, model=list(phi~1, p~1), data=NULL, freq=1, group, interv
       paste0(data$group, ":phi", 1:ni),
       paste0(data$group, ":p", 1:ni))
   }
-  logLik <- NA_real_
+  npar <- NA_real_
   varcov <- NULL
 
   # Log likelihood function
@@ -168,7 +168,7 @@ survCJS <- function(DH, model=list(phi~1, p~1), data=NULL, freq=1, group, interv
   beta.mat[,1] <- res$estimate
   lp.mat[, 1] <- c(phiMat %*% beta.mat[1:phiK, 1],
                    pMat %*% beta.mat[(phiK+1):K, 1])
-  # varcov0 <- try(solve(res$hessian), silent=TRUE)
+  logLik <- -res$minimum
   varcov0 <- try(chol2inv(chol(res$hessian)), silent=TRUE)
   # if (!inherits(varcov0, "try-error") && all(diag(varcov0) > 0)) {
   if (!inherits(varcov0, "try-error")) {
@@ -179,7 +179,7 @@ survCJS <- function(DH, model=list(phi~1, p~1), data=NULL, freq=1, group, interv
     SElp <- c(sqrt(getFittedVar(phiMat, varcov[1:phiK, 1:phiK])),
               sqrt(getFittedVar(pMat, varcov[(phiK+1):K, (phiK+1):K])))
     lp.mat[, 2:3] <- sweep(outer(SElp, crit), 1, lp.mat[, 1], "+")
-    logLik <- -res$minimum
+    npar <- K
   }
 
   # Put it all together and return
@@ -187,7 +187,7 @@ survCJS <- function(DH, model=list(phi~1, p~1), data=NULL, freq=1, group, interv
               beta = beta.mat,
               beta.vcv = varcov,
               real = plink(lp.mat),
-              logLik = c(logLik=logLik, df=K, nobs=sum(mARRAY)) )
+              logLik = c(logLik=logLik, df=npar, nobs=sum(mARRAY)) )
   class(out) <- c("wiqid", "list")
   return(out)
 }

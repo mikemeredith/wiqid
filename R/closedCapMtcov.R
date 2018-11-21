@@ -31,6 +31,7 @@ function(CH, model=list(p~1), data=NULL, ci = 0.95, ciType=c("normal", "MARK"), 
   lp.mat <- matrix(NA_real_, nocc, 3)
   colnames(lp.mat) <- c("est", "lowCI", "uppCI")
   rownames(lp.mat) <- paste0("p", 1:nocc)
+  npar <- NA_real_
   logLik <- NA_real_
   varcov <- NULL
 
@@ -56,9 +57,8 @@ function(CH, model=list(p~1), data=NULL, ci = 0.95, ciType=c("normal", "MARK"), 
       warning(paste("Convergence may not have been reached (code", res$code, ")"))
     beta.mat[,1] <- res$estimate
     lp.mat[, 1] <- pModMat %*% beta.mat[-1, 1]
-    # varcov0 <- try(solve(res$hessian), silent=TRUE)
+    logLik <- -res$minimum
     varcov0 <- try(chol2inv(chol(res$hessian)), silent=TRUE)
-    # if (!inherits(varcov0, "try-error") && all(diag(varcov0) > 0)) {
     if (!inherits(varcov0, "try-error")) {
       varcov <- varcov0
       beta.mat[, 2] <- suppressWarnings(sqrt(diag(varcov)))
@@ -67,7 +67,7 @@ function(CH, model=list(p~1), data=NULL, ci = 0.95, ciType=c("normal", "MARK"), 
       if(all(temp >= 0))  {
         SElp <- sqrt(temp)
         lp.mat[, 2:3] <- sweep(outer(SElp, crit), 1, lp.mat[, 1], "+")
-        logLik <- -res$minimum
+        npar <- K+1
       }
     }
   }
@@ -80,7 +80,7 @@ function(CH, model=list(p~1), data=NULL, ci = 0.95, ciType=c("normal", "MARK"), 
           beta = beta.mat,
           beta.vcv = varcov,
           real = rbind(Nhat, plogis(lp.mat)),
-          logLik = c(logLik=logLik, df=K+1, nobs=length(CH)))
+          logLik = c(logLik=logLik, df=npar, nobs=length(CH)))
   class(out) <- c("wiqid", "list")
   return(out)
 }

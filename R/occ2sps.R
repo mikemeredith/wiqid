@@ -90,6 +90,7 @@ occ2sps <- function(DHA, DHB, model=NULL, data=NULL, ci=0.95, verify=TRUE)  {
   colnames(beta.mat) <- c("est", "SE", "lowCI", "uppCI")
   rownames(beta.mat) <- coefNames
   logLik <- NA_real_
+  npar <- NA_real_
   varcov <- NULL
   lp.mat <- matrix(NA_real_, nSites * 8, 3)
   colnames(lp.mat) <- c("est", "lowCI", "uppCI")
@@ -127,8 +128,8 @@ occ2sps <- function(DHA, DHB, model=NULL, data=NULL, ci=0.95, verify=TRUE)  {
   lp.mat[, 1] <- as.vector(lp.mat0[, modPars])
 
   varcov0 <- try(chol2inv(chol(res$hessian)), silent=TRUE)
-  # if (!inherits(varcov0, "try-error") && all(diag(varcov0) > 0)) {
   if (!inherits(varcov0, "try-error")) {
+    npar <- K
     varcov <- varcov0
     SE <- suppressWarnings(sqrt(diag(varcov)))
     beta.mat[, 2] <- SE
@@ -136,8 +137,6 @@ occ2sps <- function(DHA, DHB, model=NULL, data=NULL, ci=0.95, verify=TRUE)  {
   }
   SElp0 <- matrix(NA, nSites, M)
   for(i in 1:M) {
-    # varcov1 <- varcov[idK == i, idK == i]
-    # SElp0[, i] <- sqrt(diag(modMatList[[i]] %*% varcov1 %*% t(modMatList[[i]])))
     SElp0[, i] <- sqrt(getFittedVar(modMatList[[i]], varcov[idK == i, idK == i]))
   }
   SElp <- as.vector(SElp0[, modPars])
@@ -147,7 +146,7 @@ occ2sps <- function(DHA, DHB, model=NULL, data=NULL, ci=0.95, verify=TRUE)  {
               beta = beta.mat,
               beta.vcv = varcov,
               real = plogis(lp.mat),
-              logLik = c(logLik=logLik, df=K, nobs=nSites),
+              logLik = c(logLik=logLik, df=npar, nobs=nSites),
               ci = ci,
               formulae = model,
               index = index,

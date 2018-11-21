@@ -20,6 +20,7 @@ function(CH, ci = 0.95, ciType=c("normal", "MARK"), ...) {
   beta.mat <- matrix(NA_real_, 4, 4) # objects to hold output
   colnames(beta.mat) <- c("est", "SE", "lowCI", "uppCI")
   rownames(beta.mat) <- c("Nhat", "pmixHat", "p1hat", "p2hat")
+  npar <- NA_real_
   logLik <- NA_real_
   varcov <- NULL
 
@@ -60,7 +61,6 @@ function(CH, ci = 0.95, ciType=c("normal", "MARK"), ...) {
     params <- res1$estimate
     p2 <- plogis(params[3]) * plogis(params[4])
     params[4] <- qlogis(p2)
-    # res2 <- nlm(nll2, params, hessian=TRUE)
     nlmArgs <- list(...)
     nlmArgs$f <- nll2
     nlmArgs$p <- params
@@ -69,14 +69,14 @@ function(CH, ci = 0.95, ciType=c("normal", "MARK"), ...) {
     if(res2$code > 2)   # exit code 1 or 2 is ok.
       warning(paste("Convergence may not have been reached (nlm code", res2$code, ")"))
     beta.mat[, 1] <- res2$estimate
-    # varcov <- try(solve(res2$hessian), silent=TRUE)
+    logLik <- -res2$minimum
     varcov0 <- try(chol2inv(chol(res2$hessian)), silent=TRUE)
     # if (!inherits(varcov, "try-error") && all(diag(varcov) > 0)) {
     if (!inherits(varcov0, "try-error")) {
       varcov <- varcov0
       beta.mat[, 2] <- suppressWarnings(sqrt(diag(varcov)))
       beta.mat[, 3:4] <- sweep(outer(beta.mat[, 2], crit), 1, res2$estimate, "+")
-      logLik <- -res2$minimum
+      npar <- 4
     }
   }
   if(ciType == "normal") {
@@ -88,7 +88,7 @@ function(CH, ci = 0.95, ciType=c("normal", "MARK"), ...) {
           beta = beta.mat,
           beta.vcv = varcov,
           real = rbind(Nhat, plogis(beta.mat[-1, -2])),
-          logLik = c(logLik=logLik, df=4, nobs=N.cap * n.occ))
+          logLik = c(logLik=logLik, df=npar, nobs=N.cap * n.occ))
   class(out) <- c("wiqid", "list")
   return(out)
 }

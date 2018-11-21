@@ -59,6 +59,7 @@ occSScovSite <- function(y, n, model=NULL, data=NULL,
     paste("psi:", 1:nSites, sep=""),
     paste("p:", 1:nSites, sep=""))
   logLik <- NA_real_
+  npar <- NA_integer_
   varcov <- NULL
 
   nll <- function(param){
@@ -84,15 +85,15 @@ occSScovSite <- function(y, n, model=NULL, data=NULL,
   res <- do.call(nlm, nlmArgs)
   if(res$code > 2)   # exit code 1 or 2 is ok.
     warning(paste("Convergence may not have been reached (nlm code", res$code, ")"))
-
   # Process output
   beta.mat[,1] <- res$estimate
   lp.mat[, 1] <- c(psiModMat %*% beta.mat[1:psiK, 1],
                    pModMat %*% beta.mat[(psiK+1):K, 1])
-  # varcov <- try(solve(res$hessian), silent=TRUE)
+  logLik <- -res$minimum
+
   varcov0 <- try(chol2inv(chol(res$hessian)), silent=TRUE)
-  # if (!inherits(varcov, "try-error") && all(diag(varcov) > 0)) {
   if (!inherits(varcov0, "try-error")) {
+    npar <- K
     varcov <- varcov0
     SE <- suppressWarnings(sqrt(diag(varcov)))
     beta.mat[, 2] <- SE
@@ -102,7 +103,6 @@ occSScovSite <- function(y, n, model=NULL, data=NULL,
     if(all(temp >= 0))  {
       SElp <- sqrt(temp)
       lp.mat[, 2:3] <- sweep(outer(SElp, crit), 1, lp.mat[, 1], "+")
-      logLik <- -res$minimum
     }
   }
   out <- list(call = match.call(),
@@ -110,7 +110,7 @@ occSScovSite <- function(y, n, model=NULL, data=NULL,
               beta = beta.mat,
               beta.vcv = varcov,
               real = plink(lp.mat),
-              logLik = c(logLik=logLik, df=K, nobs=length(y)))
+              logLik = c(logLik=logLik, df=npar, nobs=length(y)))
   class(out) <- c("wiqid", "list")
   return(out)
 }

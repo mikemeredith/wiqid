@@ -89,6 +89,7 @@ occSS <- function(DH, model=NULL, data=NULL, ci=0.95, link=c("logit", "probit"),
     paste("psi:", site.names, sep=""),
     paste("p:", siteID, ",", survID, sep=""))
   logLik <- NA_real_
+  npar <- NA_integer_
   varcov <- NULL
 
   # Negative log likelihood function
@@ -122,10 +123,10 @@ occSS <- function(DH, model=NULL, data=NULL, ci=0.95, link=c("logit", "probit"),
                    pModMat %*% beta.mat[(psiK+1):K, 1])
   if(res$code < 3) # Keep NA if in doubt
     logLik <- -res$minimum
-  # varcov0 <- try(solve(res$hessian), silent=TRUE)
+
   varcov0 <- try(chol2inv(chol(res$hessian)), silent=TRUE)
-  # if (!inherits(varcov0, "try-error") && all(diag(varcov0) > 0)) {
   if (!inherits(varcov0, "try-error")) {
+    npar <- K
     varcov <- varcov0
     rownames(varcov) <- rownames(beta.mat)
     SE <- suppressWarnings(sqrt(diag(varcov)))
@@ -142,7 +143,7 @@ occSS <- function(DH, model=NULL, data=NULL, ci=0.95, link=c("logit", "probit"),
               beta = beta.mat,
               beta.vcv = varcov,
               real = plink(lp.mat),
-              logLik = c(logLik=logLik, df=K, nobs=nrow(DH)),
+              logLik = c(logLik=logLik, df=npar, nobs=nrow(DH)),
               ci = ci,
               formulae = model,
               index = list(psi=1:psiK, p=(psiK+1):K),

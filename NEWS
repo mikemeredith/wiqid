@@ -1,5 +1,7 @@
 TODO
 
+  * standardise to mean=0, SD=1 (instead of SD=0.5)
+
   * deprecate Bbinom
 
   * scrap improper default priors for Bnormal, maybe do as original version of BEST
@@ -7,6 +9,14 @@ TODO
   * Improve Bsecr0...
 
   * Have BoccSS, etc, use factors directly, not dummy variables.
+
+CHANGES in 0.1.5.9003 (2018-11-20)
+
+  * If the variance-covariance matrix cannot be calculated, MLE functions
+    now return the log(likelihood) but number of parameters, df = NA.
+
+  * 'AICc' gains a 'df' argument which overrides the df value in the model
+    object.
 
 CHANGES in 0.1.5.9002 (2018-10-14)
 

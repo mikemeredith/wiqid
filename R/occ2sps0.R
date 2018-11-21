@@ -27,6 +27,7 @@ occ2sps0 <- function(DHA, DHB, modPars, ci=0.95)  {
   colnames(beta.mat) <- c("est", "SE", "lowCI", "uppCI")
   rownames(beta.mat) <- names(modPars)
   logLik <- NA_real_
+  npar <- NA_real_
   varcov <- NULL
 
   # Do the neg log lik function:
@@ -49,10 +50,9 @@ occ2sps0 <- function(DHA, DHB, modPars, ci=0.95)  {
   }
 
   beta.mat[,1] <- res$par[modPars]
-  # varcov0 <- try(solve(res$hessian), silent=TRUE)
   varcov0 <- try(chol2inv(chol(res$hessian)), silent=TRUE)
-  # if (!inherits(varcov0, "try-error") && all(diag(varcov0) > 0)) {
   if (!inherits(varcov0, "try-error")) {
+    npar <- length(unique(modPars))
     varcov <- varcov0
     SE <- suppressWarnings(sqrt(diag(varcov))[modPars])
     beta.mat[, 2] <- SE
@@ -62,7 +62,7 @@ occ2sps0 <- function(DHA, DHB, modPars, ci=0.95)  {
               beta = beta.mat,
               beta.vcv = varcov,
               real = plogis(beta.mat[, -2]),
-              logLik = c(logLik=logLik, df=length(unique(modPars)), nobs=nSites),
+              logLik = c(logLik=logLik, df=npar, nobs=nSites),
               ci = ci)
   class(out) <- c("wiqid", "list")
   return(out)

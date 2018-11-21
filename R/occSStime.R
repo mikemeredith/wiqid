@@ -52,6 +52,7 @@ function(DH, model=p~1, data=NULL, ci=0.95,
   colnames(lp.mat) <- c("est", "lowCI", "uppCI")
   rownames(lp.mat) <- c("psi", paste0("p", 1:nocc))
   logLik <- NA_real_
+  npar <- NA_integer_
   varcov <- NULL    # ????
 
   if(ncol(DH) > 1 && sum(DH, na.rm=TRUE) > 0)  {
@@ -68,7 +69,7 @@ function(DH, model=p~1, data=NULL, ci=0.95,
       llh <- sum(logAddExp(logpsi + logLik2, log1mpsi + log(notDetected)))
       return(min(-llh, .Machine$double.xmax)) # min(..) stops Inf being returned
     }
-    # res <- nlm(nll, params, hessian=TRUE)
+
     nlmArgs <- list(...)
     nlmArgs$f <- nll
     nlmArgs$p <- rep(0, K)
@@ -78,10 +79,12 @@ function(DH, model=p~1, data=NULL, ci=0.95,
       warning(paste("Convergence may not have been reached (code", res$code, ")"))
     beta.mat[,1] <- res$estimate
     lp.mat[, 1] <- c(beta.mat[1], pModMat %*% beta.mat[-1,1])
-    # varcov0 <- try(solve(res$hessian), silent=TRUE)
+    logLik <- -res$minimum
+
     varcov0 <- try(chol2inv(chol(res$hessian)), silent=TRUE)
     # if (!inherits(varcov0, "try-error") && all(diag(varcov0) > 0)) {
     if (!inherits(varcov0, "try-error")) {
+      npar <- K
       varcov <- varcov0
       SE <- suppressWarnings(sqrt(diag(varcov)))
       beta.mat[, 2] <- SE
@@ -89,7 +92,6 @@ function(DH, model=p~1, data=NULL, ci=0.95,
       SElp <- c(sqrt(varcov[1,1]),
               sqrt(getFittedVar(pModMat, varcov[-1,-1] )))
       lp.mat[, 2:3] <- sweep(outer(SElp, crit), 1, lp.mat[, 1], "+")
-      logLik <- -res$minimum
     }
 
     # Do the plot
@@ -107,7 +109,7 @@ function(DH, model=p~1, data=NULL, ci=0.95,
               beta = beta.mat,
               beta.vcv = varcov,
               real = plink(lp.mat),
-              logLik=c(logLik=logLik, df=K, nobs=nrow(DH)))
+              logLik=c(logLik=logLik, df=npar, nobs=nrow(DH)))
   class(out) <- c("wiqid", "list")
   return(out)
 }

@@ -56,7 +56,7 @@ Model Mh2 and the jackknife estimator allow for heterogeneity in capture probabi
 
 The likelihood maximization routine produces an estimate and standard error for beta = log(\emph{f0}), where \emph{f0} is the number of animals never captured. If \code{ciType == "normal"}, a confidence interval for beta is calculated as beta +/- crit * SE.beta, where crit is the appropriate multiplier for the confidence interval required, 1.96 for a 95\% CI. This confidence interval is then back-transformed to the real scale and added to the number of animals captured (M[t+1]) to give estimates of N.
 
-If \code{ciType == "MARK"}, the method used by MARK to calculate confidence intervals is used (see MARK help page for Closed Capture Models and Burnham et al (1987, p212)). 
+If \code{ciType == "MARK"}, the method used by MARK to calculate confidence intervals is used (see MARK help page for Closed Capture Models and Burnham et al (1987, p212)).
 The beta values are back-transformed with f0.hat = exp(beta) and SE.f0 = SE.beta * f0.hat, and hence CV = SE.f0 / f0.hat. The confidence limits are then
 
 Lower = f0.hat / C + M[t+1]
@@ -74,8 +74,8 @@ Returns an object of class \code{wiqid}, which is a list with the following elem
   \item{beta}{Values of the coefficients of the terms in the linear predictors, with standard errors and confidence intervals.}
   \item{beta.vcv }{The variance-covariance matrix for the beta estimates.}
   \item{real}{Estimates of population size (N) and probability of detection on the real scale, with confidence intervals.}
-  \item{logLik}{a vector with elements for log(likelihood), number of parameters, and effective sample size. If parameters \emph{and their SEs} cannot be estimated, the first element should be \code{NA}.}
-  
+  \item{logLik}{a vector with elements for log(likelihood), number of parameters, and effective sample size. If the variance-covariance matrix cannot be calculated, the second element should be \code{NA}.}
+
 The jackknife estimator does not use likelihood maximisation, so elements \code{beta} and \code{beta.vcv} are NULL and \code{logLik = NA}.
 
 There are \code{print}, \code{logLik}, and \code{nobs} methods for class \code{wiqid}.
@@ -128,7 +128,7 @@ closedCapMtcov(KanhaTigers, p~.Time)
 covars <- data.frame(Temp = runif(ncol(KanhaTigers), 15, 25),
   Cloud = sample(0:8, ncol(KanhaTigers), replace=TRUE))
 closedCapMtcov(KanhaTigers, p~Cloud, data=covars)
-  
+
 # Compare the normal (default) and MARK confidence intervals for N:
 rbind(closedCapMt(KanhaTigers)$real[1, ],
       closedCapMt(KanhaTigers, ciType="MARK")$real[1, ])

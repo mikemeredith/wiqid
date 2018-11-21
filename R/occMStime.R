@@ -78,6 +78,7 @@ occMStime <- function(DH, occsPerSeason,
     paste0("eps", 1:(nseas-1)),
     paste0("p", 1:nseas))
   logLik <- NA_real_
+  npar <- NA_integer_
   varcov <- NULL
 
   nll <- function(param){
@@ -98,7 +99,6 @@ occMStime <- function(DH, occsPerSeason,
     return(min(-sum(log(Prh)), .Machine$double.xmax))
   }
 
-  # res <- nlm(nll, start, hessian=TRUE)
   nlmArgs <- list(...)
   nlmArgs$f <- nll
   nlmArgs$p <- rep(0, K)
@@ -111,10 +111,11 @@ occMStime <- function(DH, occsPerSeason,
                    gamMat %*% beta.mat[parID==2, 1],
                    epsMat %*% beta.mat[parID==3, 1],
                    pMat %*% beta.mat[parID==4, 1])
-  # varcov0 <- try(solve(res$hessian), silent=TRUE)
+  logLik <- -res$minimum
+
   varcov0 <- try(chol2inv(chol(res$hessian)), silent=TRUE)
-  # if (!inherits(varcov0, "try-error") && all(diag(varcov0) > 0)) {
   if (!inherits(varcov0, "try-error")) {
+    npar <- K
     varcov <- varcov0
     SE <- suppressWarnings(sqrt(diag(varcov)))
     beta.mat[, 2] <- SE  # tidy later
@@ -126,7 +127,6 @@ occMStime <- function(DH, occsPerSeason,
     if(all(temp >= 0))  {
       SElp <- sqrt(temp)
       lp.mat[, 2:3] <- sweep(outer(SElp, crit), 1, lp.mat[, 1], "+")
-      logLik <- -res$minimum
     }
   }
 
@@ -134,7 +134,7 @@ occMStime <- function(DH, occsPerSeason,
               beta = beta.mat,
               beta.vcv = varcov,
               real = plogis(lp.mat),
-              logLik = c(logLik=logLik, df=K, nobs=nrow(DH)))
+              logLik = c(logLik=logLik, df=npar, nobs=nrow(DH)))
   class(out) <- c("wiqid", "list")
   return(out)
 }

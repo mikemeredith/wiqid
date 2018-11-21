@@ -131,7 +131,7 @@ survCJSaj <- function(DHj, DHa=NULL, model=list(phiJ~1, phiA~1, p~1), data=NULL,
     paste("phiA", 1:ni, sep=""),
     paste("phiJ", 1:ni, sep=""),
     paste("p", 1:ni, sep=""))
-  logLik <- NA_real_
+  npar <- NA_real_
   varcov <- NULL
 
   nll <- function(param){
@@ -166,9 +166,8 @@ survCJSaj <- function(DHj, DHa=NULL, model=list(phiJ~1, phiA~1, p~1), data=NULL,
   lp.mat[, 1] <- c(phiAMat %*% beta.mat[parID==1, 1],
                    phiJMat %*% beta.mat[parID==2, 1],
                    pMat %*% beta.mat[parID==3, 1])
-  # varc <- try(solve(res$hessian), silent=TRUE)
+  logLik <- -res$minimum
   varcov0 <- try(chol2inv(chol(res$hessian)), silent=TRUE)
-  # if (!inherits(varc, "try-error") && all(diag(varc) > 0)) {
   if (!inherits(varcov0, "try-error")) {
     varcov <- varcov0
     SE <- suppressWarnings(sqrt(diag(varcov)))
@@ -180,14 +179,14 @@ survCJSaj <- function(DHj, DHa=NULL, model=list(phiJ~1, phiA~1, p~1), data=NULL,
     if(all(temp >= 0))  {
       SElp <- sqrt(temp)
       lp.mat[, 2:3] <- sweep(outer(SElp, crit), 1, lp.mat[, 1], "+")
-      logLik <- -res$minimum
     }
+    npar <- K
   }
   out <- list(call = match.call(),
               beta = beta.mat,
               beta.vcv = varcov,
               real = plink(lp.mat),
-              logLik = c(logLik=logLik, df=K, nobs=sum(marrayJ, marrayA)))
+              logLik = c(logLik=logLik, df=npar, nobs=sum(marrayJ, marrayA)))
   class(out) <- c("wiqid", "list")
   return(out)
 }

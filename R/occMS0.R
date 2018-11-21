@@ -3,16 +3,16 @@
 
 # See MacKenzie et al (2006) "Occupancy..." p194ff
 
-occMS0 <- function(DH, occsPerSeason, ci=0.95, verify=TRUE, ...) {    
+occMS0 <- function(DH, occsPerSeason, ci=0.95, verify=TRUE, ...) {
 
-  # ** DH is detection data in a 1/0/NA matrix or data frame, sites in rows, 
+  # ** DH is detection data in a 1/0/NA matrix or data frame, sites in rows,
   #    detection occasions in columns..
   # ** occsPerSeason is a scalar or vector with the number of occasions per season
   # ci is the required confidence interval.
-  
+
   if(verify)
     DH <- verifyDH(DH, allowNA=TRUE)
-    
+
   crit <- fixCI(ci)
 
   # Check for all-NA rows (eg, Grand Skinks data set!)
@@ -31,11 +31,12 @@ occMS0 <- function(DH, occsPerSeason, ci=0.95, verify=TRUE, ...) {
   getLast <- function(dh, grp) max(which(rowsum(dh, grp) > 0))
   last <- as.vector(apply((!is.na(DH))*1, 1, getLast, grp=factor(seasonID)))
   DHplus <- as.matrix(cbind(last, DH))  # This speeds things up by a factor of 60
-  
+
   beta.mat <- matrix(NA_real_, 4, 4)
   colnames(beta.mat) <- c("est", "SE", "lowCI", "uppCI")
   rownames(beta.mat) <- c("psi1", "gamma", "epsilon", "p")
   logLik <- NA_real_
+  npar <- NA_integer_
   varcov <- NULL
 
   nll <- function(param) {
@@ -58,22 +59,23 @@ occMS0 <- function(DH, occsPerSeason, ci=0.95, verify=TRUE, ...) {
   if(res$code > 2)   # exit code 1 or 2 is ok.
     warning(paste("Convergence may not have been reached (nlm code", res$code, ")"))
   beta.mat[,1] <- res$estimate
-  # varcov0 <- try(solve(res$hessian), silent=TRUE)
+  logLik <- -res$minimum
+
   varcov0 <- try(chol2inv(chol(res$hessian)), silent=TRUE)
   # if (!inherits(varcov0, "try-error") && all(diag(varcov0) > 0)) {
   if (!inherits(varcov0, "try-error") ) {
+    npar <- 4
     varcov <- varcov0
     SE <- suppressWarnings(sqrt(diag(varcov)))
     beta.mat[, 2] <- SE  # tidy later
     beta.mat[, 3:4] <- sweep(outer(SE, crit), 1, res$estimate, "+")
-    logLik <- -res$minimum
   }
 
   out <- list(call = match.call(),
               beta = beta.mat,
               beta.vcv = varcov,
               real = plogis(beta.mat[, -2]),
-              logLik = c(logLik=logLik, df=4, nobs=nrow(DH)),
+              logLik = c(logLik=logLik, df=npar, nobs=nrow(DH)),
               ci = ci,
               link="logit",
               index = list(psi1 = 1, gamma = 2, epsilon = 3, p = 4) )
@@ -106,4 +108,3 @@ Prh1 <- function(dhp, p, PHI0, PHIt, seasonID) {
   PT <- c(prod(pvec[seasonID==last], na.rm=TRUE), 1-max(dh[seasonID==last], na.rm=TRUE))
   res <- res %*% PT
 }
-  

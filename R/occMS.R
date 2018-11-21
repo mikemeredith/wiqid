@@ -130,6 +130,7 @@ occMS <- function(DH, occsPerSeason,
     paste0("epsilon:", siteNames, ",", interval),
     paste0("p:", siteNames[siteID], ",", survID))
   logLik <- NA_real_
+  npar <- NA_integer_
   varcov <- NULL
 
   # negative log likelihood function
@@ -184,10 +185,12 @@ occMS <- function(DH, occsPerSeason,
                    gamMat %*% beta.mat[parID==2, 1],
                    epsMat %*% beta.mat[parID==3, 1],
                    pMat %*% beta.mat[parID==4, 1])
-  # varcov0 <- try(solve(res$hessian), silent=TRUE)
+  logLik <- -res$minimum
+
   varcov0 <- try(chol2inv(chol(res$hessian)), silent=TRUE)
   # if (!inherits(varcov0, "try-error") && all(diag(varcov0) > 0)) {
   if (!inherits(varcov0, "try-error")) {
+    npar <- K
     varcov <- varcov0
     SE <- suppressWarnings(sqrt(diag(varcov)))
     beta.mat[, 2] <- SE  # tidy later
@@ -201,7 +204,6 @@ occMS <- function(DH, occsPerSeason,
     if(all(temp >= 0))  {
       SElp <- sqrt(temp)
       lp.mat[, 2:3] <- sweep(outer(SElp, crit), 1, lp.mat[, 1], "+")
-      logLik <- -res$minimum
     }
   }
 
@@ -209,7 +211,7 @@ occMS <- function(DH, occsPerSeason,
               beta = beta.mat,
               beta.vcv = varcov,
               real = plogis(lp.mat),
-              logLik = c(logLik=logLik, df=K, nobs=nrow(DH)),
+              logLik = c(logLik=logLik, df=npar, nobs=nrow(DH)),
               ci = ci,
               formulae = model,
               index = index,
