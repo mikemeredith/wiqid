@@ -18,15 +18,38 @@ as.Bwiqid.Bwiqid <- function(object, header, defaultPlot, ...) {
   return(out)
 }
 
-# Class data.frame 
-as.Bwiqid.data.frame <- function(object, header, defaultPlot, ...) {
+# Class data.frame
+as.Bwiqid.data.frame <- function(object, header, defaultPlot, n.chains=1,
+    Rhat=TRUE, n.eff=TRUE, ...) {
+  npar <- length(object)
   out <- object
   class(out) <- c("Bwiqid", class(out))
   if(!missing(header))
     attr(out, "header") <- header
-  attr(out, "n.chains") <- 1
   if(!missing("defaultPlot"))
     attr(out, "defaultPlot") <- defaultPlot
+  attr(out, "n.chains") <- n.chains
+  
+  if(n.chains > 1) {
+    if(is.logical(Rhat)) {
+      if(Rhat)
+        attr(out, "Rhat") <- simpleRhat(object, n.chains=n.chains)
+    } else if(is.numeric(Rhat) && length(Rhat) == npar) {
+      attr(out, "Rhat") <- Rhat
+    } else {
+      warning("'Rhat' must be logical, or a vector with a value for each column.",
+        call.=FALSE)
+    }
+  }
+  if(is.logical(n.eff)) {
+    if(n.eff)
+      attr(out, "n.eff") <- coda::effectiveSize(object)
+  } else if(is.numeric(n.eff) && length(n.eff) == npar) {
+    attr(out, "n.eff") <- n.eff
+  } else {
+    warning("'n.eff' must be logical, or a vector with a value for each column.",
+      call.=FALSE)
+  }
   return(out)
 }
 

@@ -10,6 +10,13 @@ TODO
 
   * Have BoccSS, etc, use factors directly, not dummy variables.
 
+CHANGES in 0.1.5.9004 (2018-11-30)
+
+  * Added function 'simpleRhat'.
+
+  * 'as.Bwiqid.data.frame' gains arguments 'n.chains', 'Rhat' and 'n.eff' and is
+    included in the help page.
+
 CHANGES in 0.1.5.9003 (2018-11-20)
 
   * If the variance-covariance matrix cannot be calculated, MLE functions

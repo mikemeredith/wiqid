@@ -191,7 +191,8 @@ These are convenience wrappers for the related d/p/q/r functions in the \code{st
   \code{\link{plotPost}} \tab graphic display of a posterior distribution \cr
   \code{\link{postPriorOverlap}} \tab calculation and display of posterior/prior overlap \cr
   \code{\link{as.Bwiqid}} \tab converts a range of classes of MCMC output to class \code{Bwiqid} so that \code{wiqid}'s print and plot functions can be used. \cr
-  \code{\link{diagnostic plots}} \tab trace, density, and auto-correlation plots for MCMC output.
+  \code{\link{diagnostic plots}} \tab trace, density, and auto-correlation plots for MCMC output. \cr
+  \code{\link{simpleRhat}} \tab a fast alternative to \code{\link{gelman.diag}}.
   }
 }
 
