@@ -1,7 +1,7 @@
 # diagPlot, tracePlot, densityPlot and acfPlot functions for class Bwiqid, ie. MCMC output
 
 # Function to do multiple trace and density plots
-diagPlot <- function(object, which, ask=TRUE, maxRow=4, RhatBad=1.05, ...) {
+diagPlot <- function(object, which, howMany, ask=TRUE, maxRow=4, RhatBad=1.05, ...) {
   if(!inherits(object, "Bwiqid"))
     stop("object is not a valid Bwiqid object")
   npars <- ncol(object)
@@ -10,6 +10,7 @@ diagPlot <- function(object, which, ask=TRUE, maxRow=4, RhatBad=1.05, ...) {
     warning("Invalid number of chains, treating data as a single chain")
     n.chains <- 1
   }
+  n.iter <- nrow(object) / n.chains
   Rhat <- attr(object, "Rhat")
   if(is.null(Rhat))
     Rhat <- rep(NA, npars)
@@ -19,6 +20,14 @@ diagPlot <- function(object, which, ask=TRUE, maxRow=4, RhatBad=1.05, ...) {
   if(is.null(n.eff))
     n.eff <- rep(NA, npars)
   n.eff <- round(n.eff)
+
+  if(!missing(howMany) && abs(howMany) < n.iter) {
+    if(howMany > 0) {
+      object <- window(object, end = howMany)
+    } else {
+      object <- window(object, start = n.iter + howMany)
+    }
+  }
 
   if(!missing(which)) {
     if(is.character(which))

@@ -10,13 +10,15 @@ TODO
 
   * Have BoccSS, etc, use factors directly, not dummy variables.
 
-  * Add an argument to diagPlot to only plot the first (or last) n values of each chain.
+CHANGES in 0.1.5.9006
+
+  * 'diagPlot' gains a 'howMany' argument to plot less than the whole chain.
 
 CHANGES in 0.1.5.9005
 
-  * Fixed: bug in as.Bwiqid.jagsUI with ragged arrays (use 'simpleRhat').
+  * Fixed: bug in 'as.Bwiqid.jagsUI' with ragged arrays (use 'simpleRhat').
 
-  * as.Bwiqid.mcmc.list uses 'simpleRhat'.
+  * 'as.Bwiqid.mcmc.list' uses 'simpleRhat'.
 
 CHANGES in 0.1.5.9004 (2018-11-30)
 

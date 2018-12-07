@@ -12,7 +12,7 @@ Display trace plots, density plots or autocorrelation plots for the chains in th
 }
 \usage{
 
-diagPlot(object, which, ask=TRUE, maxRow=4, RhatBad=1.05, ...)
+diagPlot(object, which, howMany, ask=TRUE, maxRow=4, RhatBad=1.05, ...)
 
 tracePlot(object, ask=TRUE, ...)
 
@@ -27,6 +27,9 @@ An object of class \code{Bwiqid}.
 }
   \item{which}{
 An optional vector of parameter names or numbers.
+}
+  \item{howMany}{
+How many iterations to plot; if negative, the iterations at the end of the chains will be plotted.
 }
   \item{ask}{
 If \code{TRUE}, the user will be prompted before the next page of output is displayed.
