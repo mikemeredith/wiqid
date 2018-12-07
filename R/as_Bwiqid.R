@@ -29,7 +29,7 @@ as.Bwiqid.data.frame <- function(object, header, defaultPlot, n.chains=1,
   if(!missing("defaultPlot"))
     attr(out, "defaultPlot") <- defaultPlot
   attr(out, "n.chains") <- n.chains
-  
+
   if(n.chains > 1) {
     if(is.logical(Rhat)) {
       if(Rhat)
@@ -63,9 +63,7 @@ as.Bwiqid.mcmc.list <- function(object, header, defaultPlot, ...) {
   attr(out, "n.chains") <- length(object)
   attr(out, "n.eff") <- effectiveSize(object)
   if(length(object) > 1) {
-    gd <- try(gelman.diag(object, autoburnin=FALSE, multivariate=FALSE))
-    if(!inherits(gd, "try-error"))
-      attr(out, "Rhat") <- gd$psrf[, 1]
+    attr(out, "Rhat") <- simpleRhat(out, n.chains=length(object))
   }
   if(!missing("defaultPlot"))
     attr(out, "defaultPlot") <- defaultPlot
@@ -131,16 +129,15 @@ as.Bwiqid.jagsUI <- function(object, header, defaultPlot, ...) {
   stopifnot(class(object$samples) == "mcmc.list")
   out <- as.data.frame(as.matrix(object$samples))
   names(out) <- fixNames(names(out))
+  n.chains <- length(object$samples)
   class(out) <- c("Bwiqid", class(out))
   if(missing(header))
     header <- "Model fitted in JAGS with jagsUI"
   attr(out, "header") <- header
-  attr(out, "n.chains") <- length(object$samples)
-  if(length(object$samples) > 1) {
-    attr(out, "n.eff") <- unlist(object$n.eff)
-    if(length(object) > 1)
-      attr(out, "Rhat") <- unlist(object$Rhat)
-  }
+  attr(out, "n.chains") <- n.chains
+  attr(out, "n.eff") <- coda::effectiveSize(out)
+  if(n.chains > 1)
+    attr(out, "Rhat") <- simpleRhat(out, n.chains=n.chains)
   if(!missing("defaultPlot"))
     attr(out, "defaultPlot") <- defaultPlot
   attr(out, "timetaken") <- as.difftime(object$mcmc.info$elapsed.mins, units="mins")
