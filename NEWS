@@ -10,6 +10,13 @@ TODO
 
   * Have BoccSS, etc, use factors directly, not dummy variables.
 
+CHANGES in 0.1.5.9007
+
+  * 'summary.Bwiqid' now prints info on Rhat and n.eff.
+
+  * 'as.Bwiqid' methods use 'simpleRhat' and 'coda::effectiveSize' to get
+    Rhat and n.eff.
+
 CHANGES in 0.1.5.9006
 
   * 'diagPlot' gains a 'howMany' argument to plot less than the whole chain.

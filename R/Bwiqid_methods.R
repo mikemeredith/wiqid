@@ -55,6 +55,7 @@ summary.Bwiqid <- function(object, digits=3, ...)  {
     stop("object is not a valid Bwiqid object")
   call <- attr(object, "call")
   header <- attr(object, "header")
+  n.chains <- attr(object, "n.chains")
   MCerror <- attr(object, "MCerror")
   Rhat <- attr(object, "Rhat")
   n.eff <- attr(object, "n.eff")
@@ -66,6 +67,7 @@ summary.Bwiqid <- function(object, digits=3, ...)  {
     median = apply(object, 2, median),
     t(hdi(object)))
   colnames(toPrint)[4:5] <- c("HDIlo", "HDIup")
+
   if(!is.null(MCerror))
     toPrint <- cbind(toPrint, 'MCE%' = round(100 * MCerror/toPrint[, 'sd'], 1))
   if(!is.null(Rhat))
@@ -76,18 +78,64 @@ summary.Bwiqid <- function(object, digits=3, ...)  {
   if(is.null(header))
     header <- "MCMC fit results:"
   cat(header, "\n")
-  cat(nrow(object), "simulations saved.\n")
-  cat("\n'HDIlo' and 'HDIup' are the limits of a 95% HDI credible interval.\n")
-  if(!is.null(MCerror))
-    cat("'MCE%' is the Monte Carlo error as a %age of the SD (should be less than 5%).\n")
-  if(!is.null(Rhat))
-    cat("'Rhat' is the potential scale reduction factor (at convergence, Rhat=1).\n")
-  if(!is.null(n.eff))
-    cat("'n.eff' is a crude measure of effective sample size.\n")
+  if(is.null(n.chains)) {
+    cat(nrow(object), "simulations saved.\n")
+  } else {
+    cat(sprintf("%.0f chains x %.0f simulations = %.0f total.\n",
+        n.chains, nrow(object)/n.chains, nrow(object)))
+  }
   if(!is.null(timetaken)) {
     took <- format(round(timetaken, 1))
     cat("MCMC sample generation:", took, "\n")
   }
+
+  if(!is.null(MCerror)) {
+    MCEpc <- round(100 * MCerror/apply(object, 2, sd), 1)
+    t1 <- sum(MCEpc > 5, na.rm=TRUE)
+    t2 <- sum(is.na(MCEpc))
+    txt <- sprintf("\nMCerror (%% of SD): largest is %.1f%%", max(MCEpc, na.rm=TRUE))
+    if(t1) {
+      txt <- c(txt, sprintf("; %.0f (%.0f%%) are greater than 5", t1, 100*t1/length(MCEpc)))
+    } else {
+      txt <- c(txt, "; NONE are greater than 5%")
+    }
+    if(t2 > 0)
+      txt <- c(txt, sprintf("; %.0f (%.0f%%) are NA", t2, 100*t2/length(MCEpc)))
+    txt <- c(txt, ".\n")
+    cat(paste0(txt, collapse=""))
+  }
+
+  if(!is.null(Rhat)) {
+    t1 <- sum(Rhat>1.1, na.rm=TRUE)
+    t2 <- sum(is.na(Rhat))
+    txt <- sprintf("\nRhat: largest is %.2f", max(Rhat, na.rm=TRUE))
+    if(t1) {
+      txt <- c(txt, sprintf("; %.0f (%.0f%%) are greater than 1.10", t1, 100*t1/length(Rhat)))
+    } else {
+      txt <- c(txt, "; NONE are greater than 1.10")
+    }
+    if(t2 > 0)
+      txt <- c(txt, sprintf("; %.0f (%.0f%%) are NA", t2, 100*t2/length(Rhat)))
+    txt <- c(txt, ".\n")
+    cat(paste0(txt, collapse=""))
+  }
+
+  if(!is.null(n.eff)) {
+    n.eff[n.eff == 1] <- NA
+    t1 <- sum(n.eff < 1000, na.rm=TRUE)
+    t2 <- sum(is.na(n.eff))
+    txt <- sprintf("\nn.eff: smallest is %.0f", min(n.eff, na.rm=TRUE))
+    if(t1) {
+      txt <- c(txt, sprintf("; %.0f (%.0f%%) are smaller than 1000", t1, 100*t1/length(n.eff)))
+    } else {
+      txt <- c(txt, "; NONE are smaller than 1000")
+    }
+    if(t2 > 0)
+      txt <- c(txt, sprintf("; %.0f (%.0f%%) are 1 or NA", t2, 100*t2/length(Rhat)))
+    txt <- c(txt, ".\n")
+    cat(paste0(txt, collapse=""))
+  }
+  cat("\n")
   return(invisible(round(toPrint, digits=digits)))
 }
 # .........................................................
