@@ -9,15 +9,15 @@ An 'interval' estimator of the 'potential scale reduction factor' (Rhat) for MCM
 }
 
 \usage{
-simpleRhat(x, n.chains, burnin=0)
+simpleRhat(object, n.chains, burnin=0)
 }
 
 \arguments{
-  \item{x}{
+  \item{object}{
 a vector, matrix or data frame with MCMC output in columns
 }
   \item{n.chains}{
-scalar integer, the number of chains concatenated to form the columns of \code{x}; multiple chains are required to calculate Rhat.
+scalar integer, the number of chains concatenated to form the columns of \code{x}; multiple chains are required to calculate Rhat; if \code{n.chains} is missing and \code{object} has an attribute \code{n.chains}, that value will be used.
 }
   \item{burnin}{
 scalar, between 0 and 0.9; the proportion of values at the start of each chain to discard as burn-in.
@@ -44,5 +44,10 @@ Mike Meredith
 
 
 \examples{
-## to do
+# Get some output to use
+data(salamanders)
+y <- rowSums(salamanders)
+( out <- BoccSS0(y, 5) )
+
+simpleRhat(out)
 }

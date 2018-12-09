@@ -10,6 +10,12 @@ TODO
 
   * Have BoccSS, etc, use factors directly, not dummy variables.
 
+CHANGES in 0.1.5.9008
+
+  * Improved coding of 'simpleRhat'.
+
+  * Added 'getMCerror' function.
+
 CHANGES in 0.1.5.9007
 
   * 'summary.Bwiqid' now prints info on Rhat and n.eff.
