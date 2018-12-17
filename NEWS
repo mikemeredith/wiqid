@@ -1,14 +1,14 @@
 TODO
 
-  * standardise to mean=0, SD=1 (instead of SD=0.5)
-
   * deprecate Bbinom
 
   * scrap improper default priors for Bnormal, maybe do as original version of BEST
 
   * Improve Bsecr0...
 
-  * Have BoccSS, etc, use factors directly, not dummy variables.
+CHANGES in 0.1.5.9010
+
+  * New, weakly informative default priors for BoccSS.
 
 CHANGES in 0.1.5.9009
 

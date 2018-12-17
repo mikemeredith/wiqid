@@ -83,7 +83,7 @@ BoccSS <- function(DH, model=NULL, data=NULL, priors=list(),
   # Organise and check priors
   if(!is.null(priors))  {
     priorErrorFlag <- FALSE
-    priorsDefault <- list(muPsi=0, sigmaPsi=100, muP=0, sigmaP=100)
+    priorsDefault <- list(muPsi=0, sigmaPsi=3, muP=0, sigmaP=3)
     priors <- replace (priorsDefault, names(priors), priors)
     ### TODO ### check for NAs and sigma <= 0
     muPsi <- priors$muPsi
