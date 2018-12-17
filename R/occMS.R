@@ -89,8 +89,8 @@ occMS <- function(DH, occsPerSeason,
   # Get factor levels and scaling values (needed for prediction)
   xlev <- lapply(dataList[sapply(dataList, is.factor)], levels)
   scaling <- lapply(dataList[sapply(dataList, is.numeric)],
-    getScaling, scaleBy = 0.5)
-  dataList <- lapply(dataList, doScaling, scaleBy = 0.5)
+    getScaling, scaleBy = 1)
+  dataList <- lapply(dataList, doScaling, scaleBy = 1)
 
   psi1df <- selectCovars(model$psi1, dataList, nSites)
   psi1Mat <- model.matrix(model$psi1, psi1df)

@@ -13,7 +13,7 @@ test_that("predict works with occSSrn0",  {
   data(salamanders)
   n <- rep(ncol(salamanders), nrow(salamanders))
   y <- rowSums(salamanders)
-  
+
   res <- occSSrn0(y, n)
   newdata <- data.frame(dummy = 1:3)
   rownames(newdata) <- c("A", "B", "C")
@@ -51,7 +51,7 @@ test_that("predict works with occSSrn0",  {
   predr <- predict(res2, newdata, "r", type="response")
   expect_equivalent(round(colMeans(predr), 4), c(0.1475, 0.0661, 0.0537, 0.3139))
  } )
- 
+
 # ..............................................................
 
 test_that("predict works with occSSrnSite",  {
@@ -73,7 +73,7 @@ test_that("predict works with occSSrnSite",  {
   expect_equal(nrow(predLam), nrow(newdata))
   expect_equal(rownames(predLam), rownames(newdata))
   expect_equal(colnames(predLam), c("est", "SE", "lowCI", "uppCI"))
-  expect_equivalent(round(colMeans(predLam), 4), c(0.1830,  0.4186, -0.6375,  1.0035))
+  expect_equivalent(round(colMeans(predLam), 4), c(0.1830,  0.4186, -0.6375,  1.0034))
   predLam <- predict(res, newdata, "lambda", type="response")
   expect_equivalent(round(colMeans(predLam), 4), c(1.2527, 0.5216, 0.5544, 2.8358))
 
@@ -125,7 +125,7 @@ test_that("predict works with occSSrnSite",  {
   expect_equal(attr(predLam, "link"), "log")
   expect_equivalent(round(colMeans(predLam), 4), c(0.3014,  0.4100, -0.5021,  1.1049 ))
   predLam <- predict(res2, newdata, "lambda", type="response")
-  expect_equivalent(round(colMeans(predLam), 4), c(1.3535, 0.5553, 0.6061, 3.0271))
+  expect_equivalent(round(colMeans(predLam), 4), c(1.3535, 0.5553, 0.6061, 3.0270))
 
   predr <- predict(res2, newdata, "r")
   expect_equal(attr(predr, "link"), "probit")
@@ -170,5 +170,4 @@ test_that("predict works with occSSrnSite",  {
   predr <- predict(res2, newdata, "r", type="response")
   expect_equivalent(round(colMeans(predr), 4), c(0.2092, 0.0686, 0.1008, 0.3664))
 } )
- 
- 
+

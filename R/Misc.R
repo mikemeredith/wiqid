@@ -149,7 +149,7 @@ stdModel <- function (model1, defaultModel) {
 # column names end with the number of the occasion, eg, temperature
 # will be in columns named "temp1", "temp2", etc.
 
-stddata <- function(df, nocc=NULL, scaleBy=0.5)  {
+stddata <- function(df, nocc=NULL, scaleBy=1)  {
   if (is.null(df))
     return(NULL)
   if(!is.data.frame(df))

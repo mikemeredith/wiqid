@@ -19,7 +19,7 @@ test_that("Predict works for occ2sps",  {
   expect_equivalent(colMeans(pred1psiA), rail1$beta['psiA', ])
   expect_true(all(diff(pred1psiA[, 1]) == 0))
   expect_equal(rownames(pred1psiA), rownames(newdata))
-  
+
   expect_message(pred1pB <- predict(rail1, newdata, "pB"),
     "This is an intercept-only model")
   expect_equivalent(colMeans(pred1pB), rail1$beta['pB', ])
@@ -43,11 +43,11 @@ test_that("Predict works for occ2sps",  {
     model=list(psiA ~ logArea, psiBA ~ reeds, rBA ~ 1), data=railSims)
   pred3psiA <- predict(rail3, newdata, "psiA")
   expect_equal(rownames(pred3psiA), rownames(newdata))
-  expect_equivalent(round(colMeans(pred3psiA), 5), c(-0.16237, 0.51458, -1.17092, 0.84618))
+  expect_equivalent(round(colMeans(pred3psiA), 4), c(-0.1624, 0.5146, -1.1709, 0.8462))
   expect_equal(pred3psiA[1, ], pred3psiA[4, ])
   pred3psiBA <- predict(rail3, newdata, "psiBA")
   expect_equal(rownames(pred3psiBA), rownames(newdata))
-  expect_equivalent(round(colMeans(pred3psiBA), 5), c(0.06370, 0.51229, -0.94037, 1.06776 ))
+  expect_equivalent(round(colMeans(pred3psiBA), 4), c(0.0637, 0.5123, -0.9404, 1.0677 ))
   expect_equal(pred3psiBA[1, ], pred3psiBA[3, ])
   expect_message(pred3rBA <- predict(rail3, newdata, "rBA"),
     "This is an intercept-only model")

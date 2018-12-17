@@ -10,6 +10,10 @@ TODO
 
   * Have BoccSS, etc, use factors directly, not dummy variables.
 
+CHANGES in 0.1.5.9009
+
+  * Continuous covariates now standardised to mean=0, SD=1 (instead of SD=0.5).
+
 CHANGES in 0.1.5.9008
 
   * Improved coding of 'simpleRhat'.

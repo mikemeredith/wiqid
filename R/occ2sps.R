@@ -65,8 +65,8 @@ occ2sps <- function(DHA, DHB, model=NULL, data=NULL, ci=0.95, verify=TRUE)  {
   # Get factor levels and scaling values (needed for prediction)
   xlev <- lapply(data[sapply(data, is.factor)], levels)
   scaling <- lapply(data[sapply(data, is.numeric)],
-    getScaling, scaleBy = 0.5)
-  data <- as.data.frame(lapply(data, doScaling, scaleBy = 0.5))
+    getScaling, scaleBy = 1)
+  data <- as.data.frame(lapply(data, doScaling, scaleBy = 1))
 
   # Build model matrices
   modMatList <- vector('list', M)

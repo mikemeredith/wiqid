@@ -36,8 +36,8 @@ occSSrnSite <- function(y, n, model=NULL, data=NULL,
   # Get factor levels and scaling values (needed for prediction)
   xlev <- lapply(dataList[sapply(dataList, is.factor)], levels)
   scaling <- lapply(dataList[sapply(dataList, is.numeric)],
-    getScaling, scaleBy = 0.5)
-  dataList <- lapply(dataList, doScaling, scaleBy = 0.5)
+    getScaling, scaleBy = 1)
+  dataList <- lapply(dataList, doScaling, scaleBy = 1)
 
   lamDf <- selectCovars(model$lambda, dataList, nSites)
   if (nrow(lamDf) != nSites)
