@@ -35,7 +35,7 @@ as.Bwiqid.data.frame <- function(object, header, defaultPlot, n.chains=1,
   if(n.chains > 1) {
     if(is.logical(Rhat)) {
       if(Rhat)
-        attr(out, "Rhat") <- simpleRhat(object, n.chains=n.chains)
+        attr(out, "Rhat") <- simpleRhat(out, n.chains=n.chains)
     } else if(is.numeric(Rhat) && length(Rhat) == npar) {
       attr(out, "Rhat") <- Rhat
     } else {
@@ -45,7 +45,7 @@ as.Bwiqid.data.frame <- function(object, header, defaultPlot, n.chains=1,
   }
   if(is.logical(n.eff)) {
     if(n.eff)
-      attr(out, "n.eff") <- coda::effectiveSize(object)
+      attr(out, "n.eff") <- safeNeff(out)
   } else if(is.numeric(n.eff) && length(n.eff) == npar) {
     attr(out, "n.eff") <- n.eff
   } else {
@@ -64,7 +64,7 @@ as.Bwiqid.mcmc.list <- function(object, header, defaultPlot, ...) {
   if(!missing(header))
     attr(out, "header") <- header
   attr(out, "n.chains") <- length(object)
-  attr(out, "n.eff") <- effectiveSize(object)
+  attr(out, "n.eff") <- safeNeff(out)
   if(length(object) > 1) {
     attr(out, "Rhat") <- simpleRhat(out, n.chains=length(object))
   }
@@ -82,7 +82,7 @@ as.Bwiqid.mcmc <- function(object, header, defaultPlot, ...) {
   if(!missing(header))
     attr(out, "header") <- header
   attr(out, "n.chains") <- 1
-  attr(out, "n.eff") <- effectiveSize(object)
+  attr(out, "n.eff") <- safeNeff(out)
   if(!missing("defaultPlot"))
     attr(out, "defaultPlot") <- defaultPlot
   return(out)
@@ -100,7 +100,7 @@ as.Bwiqid.bugs <- function(object, header, defaultPlot, ...) {
   attr(out, "n.chains") <- object$n.chains
   if(object$n.chains > 1)
     attr(out, "Rhat") <- simpleRhat(out, n.chains=object$n.chains)
-  attr(out, "n.eff") <- coda::effectiveSize(out)
+  attr(out, "n.eff") <- safeNeff(out)
   if(!missing("defaultPlot"))
     attr(out, "defaultPlot") <- defaultPlot
   return(out)
@@ -118,7 +118,7 @@ as.Bwiqid.rjags <- function(object, header, defaultPlot, ...) {
   attr(out, "n.chains") <- object$BUGSoutput$n.chains
   if(object$BUGSoutput$n.chains > 1)
     attr(out, "Rhat") <- simpleRhat(out, n.chains=object$BUGSoutput$n.chains)
-  attr(out, "n.eff") <- coda::effectiveSize(out)
+  attr(out, "n.eff") <- safeNeff(out)
   if(!missing("defaultPlot"))
     attr(out, "defaultPlot") <- defaultPlot
   return(out)
@@ -136,7 +136,7 @@ as.Bwiqid.jagsUI <- function(object, header, defaultPlot, ...) {
     header <- "Model fitted in JAGS with jagsUI"
   attr(out, "header") <- header
   attr(out, "n.chains") <- n.chains
-  attr(out, "n.eff") <- coda::effectiveSize(out)
+  attr(out, "n.eff") <- safeNeff(out)
   if(n.chains > 1)
     attr(out, "Rhat") <- simpleRhat(out, n.chains=n.chains)
   if(!missing("defaultPlot"))
@@ -155,7 +155,7 @@ as.Bwiqid.runjags <- function(object, header, defaultPlot, ...) {
     header <- "Model fitted in JAGS with runjags"
   attr(out, "header") <- header
   attr(out, "n.chains") <- length(object$mcmc)
-  attr(out, "n.eff") <- coda::effectiveSize(out)
+  attr(out, "n.eff") <- safeNeff(out)
   # attr(out, "MCerror") <- as.data.frame(unclass(object$mcse))$mcse
   if(length(object$mcmc) > 1)
     attr(out, "Rhat") <- simpleRhat(out, n.chains=length(object$mcmc))
@@ -164,7 +164,18 @@ as.Bwiqid.runjags <- function(object, header, defaultPlot, ...) {
   attr(out, "timetaken") <- object$timetaken
   return(out)
 }
+# '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
-
+# An error-catching wrapper for coda::effectiveSize
+safeNeff <- function(x) {
+  # x is a data frame or matrix with a column for each parameter
+  safe1 <- function(v) {
+    tmp <- try(coda::effectiveSize(v), silent=TRUE)
+    if(inherits(tmp, "try-error"))
+      return(NA)
+    return(tmp)
+  }
+  apply(x, 2, safe1)
+}
 
 

@@ -6,6 +6,10 @@ TODO
 
   * Improve Bsecr0...
 
+CHANGES in 0.1.5.9011
+
+  * Fixed: as.Bwiqid can now cope with all-Inf MCMC chains.
+
 CHANGES in 0.1.5.9010
 
   * New, weakly informative default priors for BoccSS.
