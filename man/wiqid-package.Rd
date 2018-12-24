@@ -18,6 +18,8 @@ All functions use standard data frames or matrices for data input. ML estimation
 
 Simulations and bootstraps often generate weird data sets, eg. capture histories with no captures. These functions do not throw errors or give warnings if the data are weird, but return NAs if estimates cannot be calculated. Errors may still occur if the data are impossible, eg. 6 detections in 5 occasions.
 
+Note that in version 0.2.0 the scaling of continuous covariates has changed to SD=1 (previously SD=0.5). This means that beta coefficients will now be exactly half the size, matching the output from other software.
+
 The functions are listed by topic below.
 }
 
@@ -192,7 +194,8 @@ These are convenience wrappers for the related d/p/q/r functions in the \code{st
   \code{\link{postPriorOverlap}} \tab calculation and display of posterior/prior overlap \cr
   \code{\link{as.Bwiqid}} \tab converts a range of classes of MCMC output to class \code{Bwiqid} so that \code{wiqid}'s print and plot functions can be used. \cr
   \code{\link{diagnostic plots}} \tab trace, density, and auto-correlation plots for MCMC output. \cr
-  \code{\link{simpleRhat}} \tab a fast alternative to \code{\link{gelman.diag}}.
+  \code{\link{simpleRhat}} \tab a fast alternative to \code{\link{gelman.diag}}.\cr
+  \code{\link{standardize}} \tab a simple alternative to \code{\link{scale}}.
   }
 }
 

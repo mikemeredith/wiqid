@@ -34,7 +34,7 @@ BsurvCJS <- function(DH, model=list(phi~1, p~1), data=NULL, freq=1, priors=NULL,
 
   # Standardize the data
   dataList <- stddata(data, NULL)
-  dataList$.Time <- as.vector(scale(1:ni)) /2
+  dataList$.Time <- as.vector(scale(1:ni))
   dataList$.time <- as.factor(1:ni)
 
   # Set up model matrices
@@ -50,9 +50,9 @@ BsurvCJS <- function(DH, model=list(phi~1, p~1), data=NULL, freq=1, priors=NULL,
 
   # Deal with priors:
   defaultPriors <- list(muPhi = rep(0, phiK),
-                        sigmaPhi = if(phiK==1) 1 else rep(10, phiK),
+                        sigmaPhi = rep(1, phiK),
                         muP = rep(0, pK),
-                        sigmaP = if(pK==1) 1 else rep(10, pK))
+                        sigmaP = rep(1, pK))
   priors <- checkPriors(priors, defaultPriors)
 
   # Run MLE version to get starting values

@@ -54,7 +54,7 @@ BoccSS <- function(DH, model=NULL, data=NULL, priors=list(),
   # Convert the covariate data frame into a list
   dataList <- stddata(data, nSurv, scaleBy = 1)
   time <- rep(1:nSurv, each=nSites)
-  dataList$.Time <- as.vector(scale(time)) /2
+  dataList$.Time <- as.vector(scale(time)) # /2
   dataList$.time <- as.factor(time)
   before <- cbind(0L, DH[, 1:(nSurv - 1)]) # 1 if species seen on previous occasion
   dataList$.b <- as.vector(before)
@@ -83,7 +83,7 @@ BoccSS <- function(DH, model=NULL, data=NULL, priors=list(),
   # Organise and check priors
   if(!is.null(priors))  {
     priorErrorFlag <- FALSE
-    priorsDefault <- list(muPsi=0, sigmaPsi=3, muP=0, sigmaP=3)
+    priorsDefault <- list(muPsi=0, sigmaPsi=1, muP=0, sigmaP=1)
     priors <- replace (priorsDefault, names(priors), priors)
     ### TODO ### check for NAs and sigma <= 0
     muPsi <- priors$muPsi

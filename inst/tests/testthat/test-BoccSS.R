@@ -61,11 +61,11 @@ if(parallel::detectCores() > 3) {
     expect_that(attr(Bout, "n.chains"), equals(3))
     expect_equal(as.character(attr(Bout, "call")),
       c("BoccSS", "DH", "3000", "100", "123"))
-    expect_equivalent(round(attr(Bout, "n.eff")), c(256, 351))
-    expect_equivalent(round(attr(Bout, "Rhat"), 3), c(1.020, 1.010))
-    expect_equivalent(round(colMeans(Bout), 4), c(0.3479, -0.3970))
+    expect_equivalent(round(attr(Bout, "n.eff")), c(285, 377))
+    expect_equivalent(round(attr(Bout, "Rhat"), 3), c(1.016, 1.010))
+    expect_equivalent(round(colMeans(Bout), 4), c(0.3437, -0.3990))
     expect_equivalent(round(c(hdi(Bout)), 4),
-      c(-0.1277, 0.8399, -0.6700, -0.1181))
+      c(-0.1462, 0.8635, -0.6812, -0.1184))
     expect_message({Bout <- BoccSS(DH, model=list(psi~Browsed-1, p~.Time),
       data=weta,
       priors=list(sigmaPsi=c(1,1)), chains=2, sample=2000, burnin=100,
@@ -73,17 +73,17 @@ if(parallel::detectCores() > 3) {
     expect_that(class(Bout), equals(c("Bwiqid", "data.frame")))
     expect_that(dim(Bout), equals(c(2000, 4)))
     expect_that(attr(Bout, "n.chains"), equals(2))
-    expect_equivalent(round(attr(Bout, "n.eff")), c(332, 159, 355, 943))
+    expect_equivalent(round(attr(Bout, "n.eff")), c(283, 84, 309, 713))
     expect_equivalent(round(attr(Bout, "Rhat"), 3),
-      c(1.004, 1.051, 1.014, 1.001))
+      c(1.012, 1.075, 1.010, 1.001))
     expect_equal(as.character(attr(Bout, "call")),
       c( "BoccSS", "DH", "list(psi ~ Browsed - 1, p ~ .Time)",
       "weta", "list(sigmaPsi = c(1, 1))", "2", "2000", "100", "234"))
 
     expect_equivalent(round(colMeans(Bout), 4),
-      c(0.0150, 0.7826, -0.4222, 0.3359))
+      c(0.0212, 0.8992, -0.4255, 0.1649))
     expect_equivalent(round(c(hdi(Bout)), 3),
-      c(-0.515, 0.583, 0.053, 1.734, -0.679, -0.144, -0.034, 0.756))
+      c(-0.554, 0.602, 0.043, 2.255, -0.706, -0.142, -0.036, 0.373))
   })
 }
 # ........................................................
@@ -103,25 +103,25 @@ test_that("BoccSS sequential gives same answers",  {
   expect_that(attr(Bout, "n.chains"), equals(3))
   expect_equal(as.character(attr(Bout, "call")),
     c("BoccSS", "DH", "3000", "100", "FALSE", "123"))
-  expect_equivalent(round(attr(Bout, "n.eff")), c(193, 313))
-  expect_equivalent(round(attr(Bout, "Rhat"), 3), c(1.047, 1.002))
-  expect_equivalent(round(colMeans(Bout), 4), c(0.3593, -0.4058))
+  expect_equivalent(round(attr(Bout, "n.eff")), c(428, 492))
+  expect_equivalent(round(attr(Bout, "Rhat"), 3), c(1.008, 1.006))
+  expect_equivalent(round(colMeans(Bout), 4), c(0.2840, -0.3729))
   expect_equivalent(round(c(hdi(Bout)), 4),
-    c(-0.1667,  0.8787, -0.7005, -0.1146))
+    c(-0.1726,  0.7026, -0.6271, -0.1022))
   expect_message({Bout <- BoccSS(DH, model=list(psi~Browsed-1, p~.Time), data=weta,
     priors=list(sigmaPsi=c(1,1)), chains=1, sample=1000, burnin=100,
     seed=234)}, " ")
   expect_that(class(Bout), equals(c("Bwiqid", "data.frame")))
   expect_that(dim(Bout), equals(c(1000, 4)))
   expect_that(attr(Bout, "n.chains"), equals(1))
-  expect_equivalent(round(attr(Bout, "n.eff")), c(172, 77, 112, 460))
+  expect_equivalent(round(attr(Bout, "n.eff")), c(111, 72, 82, 396))
   expect_true(is.null(attr(Bout, "Rhat")))
   expect_equal(as.character(attr(Bout, "call")),
     c( "BoccSS", "DH", "list(psi ~ Browsed - 1, p ~ .Time)",
     "weta", "list(sigmaPsi = c(1, 1))", "1", "1000", "100", "234"))
 
   expect_equivalent(round(colMeans(Bout), 4),
-    c(0.0316, 0.7624, -0.4214, 0.3181))
+    c(0.0227, 0.7781, -0.4253, 0.1706))
   expect_equivalent(round(c(hdi(Bout)), 4),
-    c(-0.5437, 0.5730, -0.0126, 1.5376, -0.6816, -0.1360, -0.0682, 0.7056))
+    c(-0.5551, 0.6034, -0.0388, 1.5611, -0.7026, -0.1386, -0.0377, 0.3768))
 })

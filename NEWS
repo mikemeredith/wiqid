@@ -6,6 +6,12 @@ TODO
 
   * Improve Bsecr0...
 
+CHANGES in 0.1.5.9012
+
+  * Added 'standardize' and 'standardize2match' functions.
+
+  * Fixed: priors and covariate standardisation for BoccSS and BsurvCJS.
+
 CHANGES in 0.1.5.9011
 
   * Fixed: as.Bwiqid can now cope with all-Inf MCMC chains.
