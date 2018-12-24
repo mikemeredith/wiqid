@@ -6,81 +6,31 @@ TODO
 
   * Improve Bsecr0...
 
-CHANGES in 0.1.5.9012
+CHANGES in 0.2.0
+
+  * Continuous covariates now standardised to mean=0, SD=1 (instead of SD=0.5).
+    Default priors for 'BoccSS' and 'BsurvCJS' changed to match this.
 
   * Added 'standardize' and 'standardize2match' functions.
 
-  * Fixed: priors and covariate standardisation for BoccSS and BsurvCJS.
-
-CHANGES in 0.1.5.9011
-
-  * Fixed: as.Bwiqid can now cope with all-Inf MCMC chains.
-
-CHANGES in 0.1.5.9010
-
-  * New, weakly informative default priors for BoccSS.
-
-CHANGES in 0.1.5.9009
-
-  * Continuous covariates now standardised to mean=0, SD=1 (instead of SD=0.5).
-
-CHANGES in 0.1.5.9008
-
-  * Improved coding of 'simpleRhat'.
-
-  * Added 'getMCerror' function.
-
-CHANGES in 0.1.5.9007
-
-  * 'summary.Bwiqid' now prints info on Rhat and n.eff.
-
-  * 'as.Bwiqid' methods use 'simpleRhat' and 'coda::effectiveSize' to get
-    Rhat and n.eff.
-
-CHANGES in 0.1.5.9006
+  * Added 'simpleRhat' and 'getMCerror' functions; used by 'as.Bwiqid'.
 
   * 'diagPlot' gains a 'howMany' argument to plot less than the whole chain.
 
-CHANGES in 0.1.5.9005
-
-  * Fixed: bug in 'as.Bwiqid.jagsUI' with ragged arrays (use 'simpleRhat').
-
-  * 'as.Bwiqid.mcmc.list' uses 'simpleRhat'.
-
-CHANGES in 0.1.5.9004 (2018-11-30)
-
-  * Added function 'simpleRhat'.
-
   * 'as.Bwiqid.data.frame' gains arguments 'n.chains', 'Rhat' and 'n.eff' and is
     included in the help page.
-
-CHANGES in 0.1.5.9003 (2018-11-20)
 
   * If the variance-covariance matrix cannot be calculated, MLE functions
     now return the log(likelihood) but number of parameters, df = NA.
 
   * 'AICc' gains a 'df' argument which overrides the df value in the model
-    object.
+    object, so an AICc value can be got even if the covariance matrix cannot be
+    calculated.
 
-CHANGES in 0.1.5.9002 (2018-10-14)
-
-  * Added *beta3 wrappers with mode and concentration; added examples for BetaDist and GammaDist.
-
-  * Input checks for 'plotPost'.
-
-  * Default iterations for Bbinomial increased to reduce MC error.
-
-CHANGES in 0.1.5.9001 (2018-09-12)
-
-  * Added *beta2 and *gamma2, wrappers for *beta and *gamma with mean and sd parameters.
+  * Added *beta2 and *gamma2, wrappers for *beta and *gamma with mean and sd
+    parameters, and *beta3 with mode and concentration.
 
   * Added getBetaPar and getGammaPar to convert mean/sd parameters to shape/rate.
-
-CHANGES in 0.1.5.9000 (2018-05-22)
-
-  * summary.Bwiqid gains digits argument.
-
-  * small tweaks to diagPlot family.
 
 CHANGES in 0.1.5 (2018-04-20)
 
