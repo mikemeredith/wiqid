@@ -213,6 +213,9 @@ window.Bwiqid <- function(x, start=NULL, end=NULL, thin=1, ...)  {
   attr(x_df, "n.chains") <- attr(x, "n.chains")
   attr(x_df, "defaultPlot") <- attr(x, "defaultPlot")
   attr(x_df, "timetaken") <- attr(x, "timetaken")
+  if(n.chains > 1)
+    attr(x_df, "Rhat") <- simpleRhat(x_df, n.chains=n.chains)
+  attr(x_df, "n.eff") <- safeNeff(x_df)
 
   return(x_df)
 }

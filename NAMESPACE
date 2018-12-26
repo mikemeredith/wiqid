@@ -12,8 +12,7 @@ importFrom("stats", "AIC", "acf", "as.dist", "as.formula",
   "dbeta", "pbeta", "qbeta",
   "dgamma", "pgamma", "qgamma",
   "coef", "model.frame", "dnorm", "quantile")
-importFrom("coda", "mcmc", "mcmc.list", "as.mcmc.list",
-  "geweke.diag", "gelman.diag", "effectiveSize")
+importFrom("coda", "mcmc", "mcmc.list", "as.mcmc.list", "effectiveSize")
 importFrom("HDInterval", "hdi")
 importFrom("parallel", "detectCores", "makeCluster", "stopCluster",
   "clusterExport", "clusterEvalQ", "clusterSetRNGStream", "parLapply")

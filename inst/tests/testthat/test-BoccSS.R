@@ -19,8 +19,8 @@ test_that("BoccSS0 gives same answers",  {
   expect_that(attr(Bout, "header"),
     equals("Model fitted in R with a Gibbs sampler"))
   expect_that(attr(Bout, "n.chains"), equals(3))
-  expect_equivalent(round(attr(Bout, "n.eff")), c(4440, 5999))
-  expect_equivalent(round(attr(Bout, "Rhat"), 3), c(1, 1))
+  expect_equivalent(round(attr(Bout, "n.eff")), c(4317, 5927))
+  expect_equivalent(round(attr(Bout, "Rhat"), 3), c(1.000, 1.002))
   expect_equal(as.character(attr(Bout, "call")), c("BoccSS0", "y", "n"))
 
   expect_equivalent(round(colMeans(Bout), 4), c(0.6152, 0.2580))
@@ -33,8 +33,8 @@ test_that("BoccSS0 gives same answers",  {
   expect_that(class(Bout), equals(c("Bwiqid", "data.frame")))
   expect_that(dim(Bout), equals(c(4000, 2)))
   expect_that(attr(Bout, "n.chains"), equals(4))
-  expect_equivalent(round(attr(Bout, "n.eff")), c(1419, 1654))
-  expect_equivalent(round(attr(Bout, "Rhat"), 3), c(1.000, 1.001))
+  expect_equivalent(round(attr(Bout, "n.eff")), c(1415, 1580))
+  expect_equivalent(round(attr(Bout, "Rhat"), 3), c(1.007, 1.007))
   expect_equal(as.character(attr(Bout, "call")),
     c("BoccSS0", "y", "n", "c(5, 5)", "c(3, 3)", "4", "4000", "10" ))
 
@@ -61,8 +61,8 @@ if(parallel::detectCores() > 3) {
     expect_that(attr(Bout, "n.chains"), equals(3))
     expect_equal(as.character(attr(Bout, "call")),
       c("BoccSS", "DH", "3000", "100", "123"))
-    expect_equivalent(round(attr(Bout, "n.eff")), c(285, 377))
-    expect_equivalent(round(attr(Bout, "Rhat"), 3), c(1.016, 1.010))
+    expect_equivalent(round(attr(Bout, "n.eff")), c(231, 386))
+    expect_equivalent(round(attr(Bout, "Rhat"), 3), c(0.989, 1.006))
     expect_equivalent(round(colMeans(Bout), 4), c(0.3437, -0.3990))
     expect_equivalent(round(c(hdi(Bout)), 4),
       c(-0.1462, 0.8635, -0.6812, -0.1184))
@@ -73,9 +73,9 @@ if(parallel::detectCores() > 3) {
     expect_that(class(Bout), equals(c("Bwiqid", "data.frame")))
     expect_that(dim(Bout), equals(c(2000, 4)))
     expect_that(attr(Bout, "n.chains"), equals(2))
-    expect_equivalent(round(attr(Bout, "n.eff")), c(283, 84, 309, 713))
+    expect_equivalent(round(attr(Bout, "n.eff")), c(257, 69, 280, 931))
     expect_equivalent(round(attr(Bout, "Rhat"), 3),
-      c(1.012, 1.075, 1.010, 1.001))
+      c(0.998, 0.924, 0.994, 1.003))
     expect_equal(as.character(attr(Bout, "call")),
       c( "BoccSS", "DH", "list(psi ~ Browsed - 1, p ~ .Time)",
       "weta", "list(sigmaPsi = c(1, 1))", "2", "2000", "100", "234"))
@@ -103,8 +103,8 @@ test_that("BoccSS sequential gives same answers",  {
   expect_that(attr(Bout, "n.chains"), equals(3))
   expect_equal(as.character(attr(Bout, "call")),
     c("BoccSS", "DH", "3000", "100", "FALSE", "123"))
-  expect_equivalent(round(attr(Bout, "n.eff")), c(428, 492))
-  expect_equivalent(round(attr(Bout, "Rhat"), 3), c(1.008, 1.006))
+  expect_equivalent(round(attr(Bout, "n.eff")), c(404, 448))
+  expect_equivalent(round(attr(Bout, "Rhat"), 3), c(1.000, 0.999))
   expect_equivalent(round(colMeans(Bout), 4), c(0.2840, -0.3729))
   expect_equivalent(round(c(hdi(Bout)), 4),
     c(-0.1726,  0.7026, -0.6271, -0.1022))

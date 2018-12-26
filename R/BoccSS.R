@@ -255,18 +255,15 @@ BoccSS <- function(DH, model=NULL, data=NULL, priors=list(),
     pD <- sum(apply(lppd, 2, var)) # eqn 44
     WAIC <- tmp.sum + 2 * pD
   }
-  # Diagnostics
-  Rhat <- try(gelman.diag(MCMC, autoburnin=FALSE)$psrf[, 1], silent=TRUE)
-  if(inherits(Rhat, "try-error") || !all(is.finite(Rhat)))
-    Rhat <- NULL
 
   out <- as.Bwiqid(MCMC,
       header = "Model fitted in R with a Gibbs sampler",
       defaultPlot = names(MCMC)[1])
   attr(out, "call") <- match.call()
   attr(out, "n.chains") <- chains
-  attr(out, "n.eff") <- effectiveSize(MCMC)
-  attr(out, "Rhat") <- Rhat
+  attr(out, "n.eff") <- safeNeff(out)
+  if(chains > 1)
+    attr(out, "Rhat") <- simpleRhat(out, n.chains=chains)
   if(doWAIC)
     attr(out, "WAIC") <- c(WAIC = WAIC, pD = pD)
   attr(out, "timetaken") <- Sys.time() - startTime

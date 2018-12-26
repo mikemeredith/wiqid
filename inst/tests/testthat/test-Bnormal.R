@@ -19,8 +19,8 @@ test_that("Bnormal gives same answers",  {
     equals("Model fitted in R with a Gibbs sampler"))
   expect_that(attr(Bout, "n.chains"), equals(3))
   expect_equal(as.character(attr(Bout, "call")), c("Bnormal", "x"))
-  expect_equivalent(round(attr(Bout, "n.eff")), c(29897, 23599))
-  expect_equivalent(round(attr(Bout, "Rhat"), 3), c(1, 1))
+  expect_equivalent(round(attr(Bout, "n.eff")), c(28942, 23869))
+  expect_equivalent(round(attr(Bout, "Rhat"), 3), c(1.001, 1.000))
 
   expect_equivalent(round(colMeans(Bout), 4), c(1.0112, 0.1563))
   expect_equivalent(round(c(hdi(Bout)), 4), c(0.9089, 1.1118, 0.0901, 0.2406))

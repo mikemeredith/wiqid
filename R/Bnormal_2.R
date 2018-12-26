@@ -112,17 +112,13 @@ Bnormal2 <- function(y, priors=NULL,
             chains, sample, burnin, thin, adapt,
             modules = c("glm"), parallel = parallel, seed=seed)
 
-  Rhat <- try(gelman.diag(codaSamples, autoburnin=FALSE)$psrf[, 1], silent=TRUE)
-  if(inherits(Rhat, "try-error") || !all(is.finite(Rhat)))
-    Rhat <- NULL
-
   out <- as.Bwiqid(codaSamples,
       header = "Model fitted in JAGS with 'rjags' functions",
       defaultPlot = names(codaSamples)[1])
   attr(out, "call") <- match.call()
   attr(out, "n.chains") <- chains
-  attr(out, "n.eff") <- effectiveSize(codaSamples)
-  attr(out, "Rhat") <- Rhat
+  attr(out, "n.eff") <- safeNeff(out)
+  attr(out, "Rhat") <- simpleRhat(out, n.chains=chains)
   attr(out, "doPriorsOnly") <- doPriorsOnly
   if(!is.null(priors))
     attr(out, "priors") <- priors

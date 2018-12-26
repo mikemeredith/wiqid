@@ -49,11 +49,8 @@ diagPlot <- function(object, which, howMany, ask=TRUE, maxRow=4, RhatBad=1.05, .
   dots <- list(...)
   if(length(dots) == 1 && class(dots[[1]]) == "list")
     dots <- dots[[1]]
-  # Recommended colours for colour-blind people:
-  cbCol <- c("#000000", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2",
-    "#D55E00", "#CC79A7")
   defaultArgs <- list(xlab="Iterations", ylab="Density",
-    type='l', lty=1, col=cbCol)
+    type='l', lty=1)
   useArgsT <- useArgsD <- modifyList(defaultArgs, dots)
 
   if(npars > maxRow) {
@@ -156,10 +153,7 @@ tracePlot <- function(object, ask=TRUE, ...)  {
   dots <- list(...)
   if(length(dots) == 1 && class(dots[[1]]) == "list")
     dots <- dots[[1]]
-  # Recommended colours for colour-blind people:
-  cbCol <- c("#000000", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2",
-    "#D55E00", "#CC79A7")
-  defaultArgs <- list(xlab="Iterations", type='l', lty=1, col=cbCol)
+  defaultArgs <- list(xlab="Iterations", type='l', lty=1)
   useArgs <- modifyList(defaultArgs, dots)
   mainStem <- useArgs$main
 
@@ -188,10 +182,7 @@ densityPlot <- function(object, ask=TRUE, ...)  {
   dots <- list(...)
   if(length(dots) == 1 && class(dots[[1]]) == "list")
     dots <- dots[[1]]
-  # Recommended colours for colour-blind people:
-  cbCol <- c("#000000", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2",
-    "#D55E00", "#CC79A7")
-  defaultArgs <- list(ylab="Density", type='l', lty=1, col=cbCol, xlab="")
+  defaultArgs <- list(ylab="Density", type='l', lty=1, xlab="")
   useArgs <- modifyList(defaultArgs, dots)
   # mainStem <- useArgs$main
 
@@ -217,10 +208,7 @@ acfPlot <- function(object, lag.max=NULL, ask=TRUE, ...)  {
   dots <- list(...)
   if(length(dots) == 1 && class(dots[[1]]) == "list")
     dots <- dots[[1]]
-  # Recommended colours for colour-blind people:
-  cbCol <- c("#000000", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2",
-    "#D55E00", "#CC79A7")
-  defaultArgs <- list(ylab="ACF", xlab="Lag", type='h', lty=1, col=cbCol)
+  defaultArgs <- list(ylab="ACF", xlab="Lag", type='h', lty=1)
   useArgs <- modifyList(defaultArgs, dots)
   # mainStem <- useArgs$main
 

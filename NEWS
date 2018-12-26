@@ -6,6 +6,16 @@ TODO
 
   * Improve Bsecr0...
 
+  * should as.Bwiqid.Bwiqid recalculate diagnostics?
+
+CHANGES in 0.2.0.9000
+
+  * 'diagPlot' no longer uses CB colours.
+
+  * window.Bwiqid now adds new diagnostics for Rhat and n.eff.
+
+  * Rhat calculated with 'simpleRhat', n.eff with 'safeNeff' everywhere.
+
 CHANGES in 0.2.0
 
   * Continuous covariates now standardised to mean=0, SD=1 (instead of SD=0.5).
