@@ -8,9 +8,9 @@ TODO
 
   * should as.Bwiqid.Bwiqid recalculate diagnostics?
 
-CHANGES in 0.2.0.9000
+CHANGES in 0.2.1
 
-  * 'diagPlot' no longer uses CB colours.
+  * 'diagPlot' no longer uses its own colour palette.
 
   * window.Bwiqid now adds new diagnostics for Rhat and n.eff.
 
