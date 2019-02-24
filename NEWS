@@ -8,11 +8,17 @@ TODO
 
   * should as.Bwiqid.Bwiqid recalculate diagnostics?
 
+CHANGES in 0.2.1.9000
+
+  * Added 'crosscorrPlot' function for 'Bwiqid' objects.
+
+  * Changed 'diagPlot' display for integers to lollipop plot instead of histogram.
+
 CHANGES in 0.2.1
 
   * 'diagPlot' no longer uses its own colour palette.
 
-  * window.Bwiqid now adds new diagnostics for Rhat and n.eff.
+  * 'window.Bwiqid' now adds new diagnostics for Rhat and n.eff.
 
   * Rhat calculated with 'simpleRhat', n.eff with 'safeNeff' everywhere.
 

@@ -11,18 +11,18 @@ importFrom("stats", "AIC", "acf", "as.dist", "as.formula",
   "dt", "pt", "qt", "rt",
   "dbeta", "pbeta", "qbeta",
   "dgamma", "pgamma", "qgamma",
-  "coef", "model.frame", "dnorm", "quantile")
+  "coef", "model.frame", "dnorm", "quantile", "cor")
 importFrom("coda", "mcmc", "mcmc.list", "as.mcmc.list", "effectiveSize")
 importFrom("HDInterval", "hdi")
 importFrom("parallel", "detectCores", "makeCluster", "stopCluster",
   "clusterExport", "clusterEvalQ", "clusterSetRNGStream", "parLapply")
 importFrom("MASS", "mvrnorm")
 importFrom("truncnorm", "rtruncnorm")
-importFrom("grDevices", "devAskNewPage")
+importFrom("grDevices", "devAskNewPage", "topo.colors")
 importFrom("graphics", "abline", "hist", "lines", "matplot", "par",
-   "plot", "plot.default", "polygon", "rect", "segments",
+   "plot", "plot.default", "polygon", "rect", "segments", "points",
    "text", "box", "layout", "title")
-
+importFrom("corrplot", "corrplot")
 
 export(
   survCJS, survCJSaj,
@@ -48,7 +48,7 @@ export(
   plotPost, postPriorOverlap,
   densityFolded,
   as.Bwiqid,
-  diagPlot, tracePlot, densityPlot, acfPlot,
+  diagPlot, tracePlot, densityPlot, acfPlot, crosscorrPlot,
   simpleRhat, getMCerror,
   showShinyApp,
   dt2, pt2, qt2, rt2,

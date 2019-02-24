@@ -4,6 +4,7 @@
 \alias{tracePlot}
 \alias{densityPlot}
 \alias{acfPlot}
+\alias{crosscorrPlot}
 \title{
 Diagnostic graphics for MCMC output
 }
@@ -19,6 +20,8 @@ tracePlot(object, ask=TRUE, ...)
 densityPlot(object, ask=TRUE, ...)
 
 acfPlot(object, lag.max=NULL, ask=TRUE, ...)
+
+crosscorrPlot(object, which, ...)
 
 }
 \arguments{
@@ -45,12 +48,12 @@ Threshold for Rhat; parameters with \code{Rhat > RhatBad} are highlighted in red
 Maximum lag at which to calculate the acf; see \code{\link{acf}}.
 }
   \item{\dots}{
-Additional graphical parameters.
+Additional graphical parameters passed to \code{\link{plot.default}} or for \code{crosscorrPlot} to \code{\link{corrplot}}.
 }
 }
 
 \value{
-Return NULL invisibly. Used for their plotting side-effects.
+\code{crosscorrPlot} returns the correlation matrix invisibly; other functions return NULL invisibly. Used for their plotting side-effects.
 }
 \author{
 Mike Meredith
@@ -87,6 +90,8 @@ tracePlot(fake, ask=FALSE)
 densityPlot(fake, col=1:5, lwd=2, ask=FALSE)
 acfPlot(fake, lag.max=10, ask=FALSE)
 par(mfrow=c(1,1))
+
+crosscorrPlot(fake)
 }
 }
 \keyword{hplot}

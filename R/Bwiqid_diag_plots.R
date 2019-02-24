@@ -67,14 +67,13 @@ diagPlot <- function(object, which, howMany, ask=TRUE, maxRow=4, RhatBad=1.05, .
     useArgsT$y <- mat
     do.call(matplot, useArgsT)
     abline(h=mean(mat))
-    title( main = paste0(names(object[i]), ", Rhat = ", Rhat[i]),
+    title(main = paste0(names(object[i]), ", Rhat = ", Rhat[i]),
       line=1, adj=1, col.main=1 + redFlag)
     if(redFlag)
       box(col=2, lwd=2)
     # do density plot
     density0(mat, useArgsD)
-    if(!is.na(n.eff[i]))
-      title( main = paste0("n.eff = ", n.eff[i]),
+    title(main = paste0("n.eff = ", n.eff[i]),
         line=1, adj=0, col.main=1 + redFlag)
     if(redFlag)
       box(col=2, lwd=2)
@@ -89,24 +88,23 @@ density0 <- function(mat, plotArgs, ...)  {
 
   bw <- bw.nrd0(mat)
   # histogram or density plot?
-  if(max(abs(mat - floor(mat))) == 0 || bw == 0 || length(unique(mat)) == 1) {
-    # histogram
-    breaks <- seq(min(mat)-1, max(mat), by=1)
-    breaks2 <- hist(mat, plot=FALSE)$breaks
-    if(length(breaks2) < length(breaks)) {
-      breaks <- breaks2
-      breaks[1] <- min(mat) - 1
-      breaks[length(breaks)] <- max(mat)
-    }
-    nb <- length(breaks)
-    hgt <- apply(mat, 2, function(x) hist(x, breaks=breaks, plot=FALSE)$density)
-    if(!is.matrix(hgt))
-      hgt <- matrix(hgt, nrow=1)
-    plot(breaks, rep(0, nb), type='n', ylim=c(0, max(hgt)),
-      main=plotArgs$main, ylab=plotArgs$ylab, xlab=plotArgs$xlab)
-    for(i in 1:ncol(mat))
-      rect(breaks[-nb], rep(0, nb-1), breaks[-1], hgt[,i], border=plotArgs$col[i])
+  if(length(unique.default(mat)) == 1) {
+    plot(1, 1, type = "n", ann = FALSE, axes = FALSE)
+    text(1,1, "All values are the same.")
+  } else if(all(mat %% 1 == 0) && all(mat >= 0) && diff(range(mat)) < 50) {
+    # "histogram"
+    t1 <- apply(mat+1, 2, tabulate, nbins=max(mat)+1)/nrow(mat) # +1 cos tabulate ignores 0
+    if(min(mat) > 0)
+      t1 <- t1[-(1:min(mat)), ]
+    x0 <- min(mat):max(mat)
+    jitt <- seq(-0.3, 0.3, length=ncol(mat))
+    t3 <- outer(x0, jitt, FUN="+")
+    plot(t3, t1, type='h', col=col(t3))
+    points(t3, t1, pch=16, cex=0.5, col=col(t3))
     abline(h=0)
+  } else if (bw == 0){
+    plot(1, 1, type = "n", ann = FALSE, axes = FALSE)
+    text(1,1, "Bandwidth is zero.")
   } else {
     # density plot
     # deal with folding for probability and non-negative values
@@ -237,4 +235,34 @@ acfPlot <- function(object, lag.max=NULL, ask=TRUE, ...)  {
 
   return(invisible(NULL))
 }
+
+crosscorrPlot <- function(object, which, ...)  {
+  if(!inherits(object, "Bwiqid"))
+    stop("object is not a valid Bwiqid object")
+
+  if(!missing(which)) {
+    if(is.character(which))
+      which <- pmatch(which, names(object))
+    which <- which[!is.na(which)]
+    if(length(which) == 0)
+      stop("No parameters selected.")
+    if(any(which > ncol(object)))
+      stop("Invalid parameters selected.")
+    object <- object[which]
+  }
+
+  dots <- list(...)
+  if(length(dots) == 1 && class(dots[[1]]) == "list")
+    dots <- dots[[1]]
+  defaultArgs <- list(method='color', type='lower', cl.pos='r', tl.col='black',
+      col=topo.colors(10), addgrid.col='black')
+  useArgs <- modifyList(defaultArgs, dots)
+
+  crosscorr <- suppressWarnings(cor(object))
+  useArgs$corr <- crosscorr
+  do.call(corrplot::corrplot, useArgs)
+
+  return(invisible(crosscorr))
+}
+
 
