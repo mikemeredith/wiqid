@@ -8,6 +8,12 @@ TODO
 
   * should as.Bwiqid.Bwiqid recalculate diagnostics?
 
+CHANGES in 0.2.1.9001
+
+  * Changed 'diagPlot' display for integers to dynamite plot instead of histogram.
+
+  * Separate means for each chain in 'diagPlot' density plots.
+
 CHANGES in 0.2.1.9000
 
   * Added 'crosscorrPlot' function for 'Bwiqid' objects.

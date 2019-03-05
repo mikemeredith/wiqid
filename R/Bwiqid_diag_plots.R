@@ -88,27 +88,34 @@ density0 <- function(mat, plotArgs, ...)  {
 
   bw <- bw.nrd0(mat)
   # histogram or density plot?
-  if(length(unique.default(mat)) == 1) {
+  unik <- unique.default(mat)
+  if(length(unik) == 1) {
     plot(1, 1, type = "n", ann = FALSE, axes = FALSE)
-    text(1,1, "All values are the same.")
+    text(1,1, paste("All values are the same:\n", signif(unik, 4)))
   } else if(all(mat %% 1 == 0) && all(mat >= 0) && diff(range(mat)) < 50) {
     # "histogram"
     t1 <- apply(mat+1, 2, tabulate, nbins=max(mat)+1)/nrow(mat) # +1 cos tabulate ignores 0
     if(min(mat) > 0)
       t1 <- t1[-(1:min(mat)), ]
-    x0 <- min(mat):max(mat)
-    jitt <- seq(-0.3, 0.3, length=ncol(mat))
-    t3 <- outer(x0, jitt, FUN="+")
-    plot(t3, t1, type='h', col=col(t3))
-    points(t3, t1, pch=16, cex=0.5, col=col(t3))
+    ymax <- apply(t1, 1, max)
+    xx <- min(mat):max(mat)
+    xlim <- c(min(mat)-0.5, max(mat)+0.5)
+    plot(xx, ymax, type='h', col='grey', xlim=xlim)
     abline(h=0)
+    abline(v=colMeans(mat), col=1:ncol(mat), lwd=2, lty=3)
+    segments(x0 = rep(xx - 0.4, ncol(mat)),
+             y0 = t1,
+             x1 = rep(xx + 0.4, ncol(mat)),
+             y1 = t1,
+             col = col(t1))
   } else if (bw == 0){
     plot(1, 1, type = "n", ann = FALSE, axes = FALSE)
     text(1,1, "Bandwidth is zero.")
   } else {
     # density plot
     # deal with folding for probability and non-negative values
-    meanMat <- mean(mat) # do this before folding
+    # meanMat <- mean(mat) # do this before folding
+    meanMat <- colMeans(mat) # do this before folding
     # use these values if folding is not needed:
     from <- min(mat) - 3*bw
     to <- max(mat) + 3*bw
@@ -134,7 +141,8 @@ density0 <- function(mat, plotArgs, ...)  {
     plotArgs$x <- seq(from, to, length.out=n)
     plotArgs$y <- dens * mult
     do.call(matplot, plotArgs)
-    abline(v=meanMat)
+    abline(h=0, col='grey')
+    abline(v=meanMat, col=1:ncol(mat), lwd=2, lty=3)
   }
 }
 # ..........................................................
