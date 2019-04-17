@@ -16,13 +16,12 @@ importFrom("coda", "mcmc", "mcmc.list", "as.mcmc.list", "effectiveSize")
 importFrom("HDInterval", "hdi")
 importFrom("parallel", "detectCores", "makeCluster", "stopCluster",
   "clusterExport", "clusterEvalQ", "clusterSetRNGStream", "parLapply")
-importFrom("MASS", "mvrnorm")
+importFrom("MASS", "mvrnorm", "eqscplot")
 importFrom("truncnorm", "rtruncnorm")
-importFrom("grDevices", "devAskNewPage", "topo.colors")
+importFrom("grDevices", "devAskNewPage", "topo.colors", "colorRampPalette")
 importFrom("graphics", "abline", "hist", "lines", "matplot", "par",
    "plot", "plot.default", "polygon", "rect", "segments", "points",
    "text", "box", "layout", "title")
-importFrom("corrplot", "corrplot")
 
 export(
   survCJS, survCJSaj,

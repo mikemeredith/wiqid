@@ -11,10 +11,11 @@
 # stdModel : Regularize a list of formulae, ensuring it is a named list of one-sided formulae.
 # stddata : Convert a data frame of site and survey data into a list and standardise
 # selectCovars : Pull the covars needed for a model matrix into a specific data frame
+# matchStart : match the starts of character strings
 
 # AICtable moved to file AICc.R
 # logSumExp etc are now in file UnderOverflow.R
-# Functions to convert parameters of distributions (eg mean and sd to shape and rate) 
+# Functions to convert parameters of distributions (eg mean and sd to shape and rate)
 #   are in converters.R
 # Variants of the t-distribution are in TDist.R
 # ...............................................................................
@@ -199,8 +200,7 @@ stddata <- function(df, nocc=NULL, scaleBy=1)  {
     dataList <- lapply(dataList, doScale)
   }
   return(dataList)
-}
-# ...........................................................................
+} # ...........................................................................
 
 # Pull the covars needed for a model matrix into a specific data frame
 selectCovars <- function(formula, dataList, minrows)  {
@@ -215,9 +215,23 @@ selectCovars <- function(formula, dataList, minrows)  {
   }
   stopifnot(nrow(df) %% minrows == 0)
   return(df)
+} # ........................................................
+
+# Finds the elements in 'big' where the start of 'big' matches 'little'.
+# eg. matchStart(c("Ju", "Nov", "J"), month.name) returns 6, 7, 11, 1.
+#  June and July match both 'Ju' and 'J', but only the first match is returned.
+# The order of the output depends on 'little'.
+# Does not use 'grep', and brackets "[ ]" are treated as normal characters.
+# Returns integer(0) if no matches.
+matchStart <- function(little, big) {
+  out <- NULL
+  for(i in seq_along(little)) {
+    nc <- nchar(little[i])
+    big1 <- substr(big, 1, nc)
+    out <- c(out, which(big1 == little[i]))
+  }
+  unique(out)
 }
-
-
 
 
 

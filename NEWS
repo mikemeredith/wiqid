@@ -8,6 +8,10 @@ TODO
 
   * should as.Bwiqid.Bwiqid recalculate diagnostics?
 
+CHANGES in 0.2.1.9002
+
+  * 'crosscorrPlot' completely rewritten; accepts a range of input (not just 'Bwiqid').
+
 CHANGES in 0.2.1.9001
 
   * Changed 'diagPlot' display for integers to dynamite plot instead of histogram.

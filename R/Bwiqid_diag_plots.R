@@ -244,33 +244,4 @@ acfPlot <- function(object, lag.max=NULL, ask=TRUE, ...)  {
   return(invisible(NULL))
 }
 
-crosscorrPlot <- function(object, which, ...)  {
-  if(!inherits(object, "Bwiqid"))
-    stop("object is not a valid Bwiqid object")
-
-  if(!missing(which)) {
-    if(is.character(which))
-      which <- pmatch(which, names(object))
-    which <- which[!is.na(which)]
-    if(length(which) == 0)
-      stop("No parameters selected.")
-    if(any(which > ncol(object)))
-      stop("Invalid parameters selected.")
-    object <- object[which]
-  }
-
-  dots <- list(...)
-  if(length(dots) == 1 && class(dots[[1]]) == "list")
-    dots <- dots[[1]]
-  defaultArgs <- list(method='color', type='lower', cl.pos='r', tl.col='black',
-      col=topo.colors(10), addgrid.col='black')
-  useArgs <- modifyList(defaultArgs, dots)
-
-  crosscorr <- suppressWarnings(cor(object))
-  useArgs$corr <- crosscorr
-  do.call(corrplot::corrplot, useArgs)
-
-  return(invisible(crosscorr))
-}
-
-
+# crosscorrPlot now in its own file: plot_crosscorrPlot.R
