@@ -6,13 +6,13 @@
 # getScaling, doScaling, scaleToMatch : functions to deal with scaling
 # signifish : an alternative to signif (added 10-02-2015)
 # fixCI : Calculate critical values for CI.
-# fixNames : Tidy up the column names in MCMC output: remove [] and , and make names unique.
 # getMARKci : Calculate MARK-style confidence intervals for N
 # stdModel : Regularize a list of formulae, ensuring it is a named list of one-sided formulae.
 # stddata : Convert a data frame of site and survey data into a list and standardise
 # selectCovars : Pull the covars needed for a model matrix into a specific data frame
 # matchStart : match the starts of character strings
 
+# fixNames : removed, use 'make.names(., unique=TRUE) instead (2019-04-17)
 # AICtable moved to file AICc.R
 # logSumExp etc are now in file UnderOverflow.R
 # Functions to convert parameters of distributions (eg mean and sd to shape and rate)
@@ -78,10 +78,10 @@ fixCI <- function(ci) {
 # .....................................................................
 
 # Tidy up the column names in MCMC output: remove [] and , and make names unique
-fixNames <- function(x) {
-  tmp <- sub(",", "\\.", sub("\\]", "", sub("\\[", "", x)))
-  make.unique(tmp)
-}
+# fixNames <- function(x) {
+  # tmp <- sub(",", "\\.", sub("\\]", "", sub("\\[", "", x)))
+  # make.unique(tmp)
+# }
 # .....................................................................
 
 # Function to calculate the MARK-style confidence intervals for N

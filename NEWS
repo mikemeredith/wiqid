@@ -8,7 +8,13 @@ TODO
 
   * should as.Bwiqid.Bwiqid recalculate diagnostics?
 
-CHANGES in 0.2.1.9002
+CHANGES in 0.2.1.9003 (2019-04-18)
+
+  * 'as.Bwiqid' revamped; makes more effort to retain original Rhat and n.eff; parameter
+    names conversion changed: a1[1,2] now becomes a1.1.2. instead of a11.2; original
+    names retained as attribute 'BUGSnames'.
+
+CHANGES in 0.2.1.9002 (2019-04-17)
 
   * 'crosscorrPlot' completely rewritten; accepts a range of input (not just 'Bwiqid').
 

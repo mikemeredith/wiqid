@@ -13,6 +13,8 @@ Conversion to class Bwiqid
 }
 \description{
 Convert output containing MCMC chains to the class \code{Bwiqid}. The function is generic, with methods for a range of input objects.
+
+Note that from version 0.2.1.9003, column names in the output are different, square brackets in the original names are now replaced with dot instead of being omitted. So \code{a1[1, 2]} now becomes \code{a1.1.2.} instead of \code{a11.2}.
 }
 \usage{
 as.Bwiqid(object, ...)
@@ -61,13 +63,14 @@ Several R packages provide interfaces with WinBUGS, OpenBUGS or JAGS, and have t
 }
 
 \value{
-An object of class \code{Bwiqid}. This is a data frame with a column for the MCMC chain for each parameter. Column names are stripped of square brackets, and commas are replaced with dots, so (eg) \code{p[1, 1]} becomes \code{p1.1}.
+An object of class \code{Bwiqid}. This is a data frame with a column for the MCMC chain for each parameter. Column names are valid R names, so square brackets and commas are replaced with dots, so (eg) \code{a1[1, 2]} becomes \code{a1.1.2.}.
 
 Any of the following attributes may be present:
 
   \tabular{ll}{
   \code{header} \tab text to be displayed as the first line when the object is printed. \cr
   \code{call} \tab the original function call. \cr
+  \code{BUGSnames} \tab the original parameter names as returned by the MCMC engine. \cr
   \code{n.chains} \tab  the number of chains. \cr
   \code{n.eff} \tab  a vector of effective sample sizes for the parameters. \cr
   \code{MCerror} \tab a vector with Monte Carlo errors for the parameters. \cr

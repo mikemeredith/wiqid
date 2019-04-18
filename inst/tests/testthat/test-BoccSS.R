@@ -55,7 +55,7 @@ if(parallel::detectCores() > 3) {
       "Starting MCMC run for 3 chains with 1100 iterations")
     expect_that(class(Bout), equals(c("Bwiqid", "data.frame")))
     expect_that(dim(Bout), equals(c(3000, 2)))
-    expect_that(names(Bout), equals(c("psi_(Intercept)", "p_(Intercept)")))
+    expect_that(names(Bout), equals(c("psi_.Intercept.", "p_.Intercept.")))
     expect_that(attr(Bout, "header"),
       equals("Model fitted in R with a Gibbs sampler"))
     expect_that(attr(Bout, "n.chains"), equals(3))
@@ -98,7 +98,7 @@ test_that("BoccSS sequential gives same answers",  {
   "Starting MCMC run for 3 chains with 1100 iterations")
   expect_that(class(Bout), equals(c("Bwiqid", "data.frame")))
   expect_that(dim(Bout), equals(c(3000, 2)))
-  expect_that(names(Bout), equals(c("psi_(Intercept)", "p_(Intercept)")))
+  expect_that(names(Bout), equals(c("psi_.Intercept.", "p_.Intercept.")))
   expect_that(attr(Bout, "header"), equals("Model fitted in R with a Gibbs sampler"))
   expect_that(attr(Bout, "n.chains"), equals(3))
   expect_equal(as.character(attr(Bout, "call")),

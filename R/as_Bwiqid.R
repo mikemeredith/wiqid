@@ -59,7 +59,7 @@ as.Bwiqid.data.frame <- function(object, header, defaultPlot, n.chains=1,
 # Class mcmc.list from (inter alia) rjags package
 as.Bwiqid.mcmc.list <- function(object, header, defaultPlot, ...) {
   out <- as.data.frame(as.matrix(object))
-  names(out) <- fixNames(names(out))
+  names(out) <- make.names(names(out), unique=TRUE)
   class(out) <- c("Bwiqid", class(out))
   if(!missing(header))
     attr(out, "header") <- header
@@ -77,7 +77,7 @@ as.Bwiqid.mcmc.list <- function(object, header, defaultPlot, ...) {
 # Class mcmc
 as.Bwiqid.mcmc <- function(object, header, defaultPlot, ...) {
   out <- as.data.frame(as.matrix(object))
-  names(out) <- fixNames(names(out))
+  names(out) <- make.names(names(out), unique=TRUE)
   class(out) <- c("Bwiqid", class(out))
   if(!missing(header))
     attr(out, "header") <- header
@@ -89,18 +89,45 @@ as.Bwiqid.mcmc <- function(object, header, defaultPlot, ...) {
 }
 # ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
+# Core function for classes 'bugs', 'rjags' and 'jagsUI'
+#   handles MCMC in matrix plus summary of results already calculated
+asBwiqidCore <- function(mcmat, summary, nChains) {
+  out <- as.data.frame(mcmat)
+  BUGSnames <- colnames(out)
+  if(!all(BUGSnames == rownames(summary)))
+    stop("'summary' names do not match MCMC names.")
+  names(out) <- make.names(names(out), unique=TRUE)
+  # Try to recover pre-calculated Rhat and n.eff, else roll our own
+  Rhat <- try(summary[, 'Rhat'], silent=TRUE)
+  if(inherits(Rhat, "try-error")) {
+    if(nChains > 1) {
+      Rhat <- simpleRhat(out, n.chains=nChains)
+    } else {
+      Rhat <- NULL
+    }
+  }
+  n.eff <- try(summary[, 'n.eff'], silent=TRUE)
+  if(inherits(n.eff, "try-error")) {
+    n.eff <- safeNeff(out)
+  }
+  # Main attributes
+  class(out) <- c("Bwiqid", class(out))
+  attr(out, "BUGSnames") <- BUGSnames
+  attr(out, "n.chains") <- nChains
+  if(!is.null(Rhat))
+    attr(out, "Rhat") <- Rhat
+  attr(out, "n.eff") <- n.eff
+  return(out)
+} # ''''''''''''''''''''''''''''''''''''''''''''''
+
+
 # Class bugs from R2WinBUGS package and R2OpenBUGS
 as.Bwiqid.bugs <- function(object, header, defaultPlot, ...) {
-  out <- as.data.frame(object$sims.matrix)
-  names(out) <- fixNames(names(out))
-  class(out) <- c("Bwiqid", class(out))
+  out <- asBwiqidCore(object$sims.matrix, object$summary, object$n.chains)
   if(missing(header))
     header <- paste("Model fitted in", object$program)
   attr(out, "header") <- header
-  attr(out, "n.chains") <- object$n.chains
-  if(object$n.chains > 1)
-    attr(out, "Rhat") <- simpleRhat(out, n.chains=object$n.chains)
-  attr(out, "n.eff") <- safeNeff(out)
+  attr(out, "modelFile") <- object$model.file
   if(!missing("defaultPlot"))
     attr(out, "defaultPlot") <- defaultPlot
   return(out)
@@ -109,36 +136,26 @@ as.Bwiqid.bugs <- function(object, header, defaultPlot, ...) {
 
 # Class rjags from R2jags package
 as.Bwiqid.rjags <- function(object, header, defaultPlot, ...) {
-  out <- as.data.frame(object$BUGSoutput$sims.matrix)
-  names(out) <- fixNames(names(out))
-  class(out) <- c("Bwiqid", class(out))
+  object <- object$BUGSoutput
+  out <- asBwiqidCore(object$sims.matrix, object$summary, object$n.chains)
   if(missing(header))
     header <- "Model fitted in JAGS with R2jags"
   attr(out, "header") <- header
-  attr(out, "n.chains") <- object$BUGSoutput$n.chains
-  if(object$BUGSoutput$n.chains > 1)
-    attr(out, "Rhat") <- simpleRhat(out, n.chains=object$BUGSoutput$n.chains)
-  attr(out, "n.eff") <- safeNeff(out)
+  attr(out, "modelFile") <- object$model.file
   if(!missing("defaultPlot"))
     attr(out, "defaultPlot") <- defaultPlot
   return(out)
 }
 # '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
-# Class jagsUI from jagsUI package
+# Class jagsUI from jagsUI package ## updated 2019-04-17
 as.Bwiqid.jagsUI <- function(object, header, defaultPlot, ...) {
   stopifnot(class(object$samples) == "mcmc.list")
-  out <- as.data.frame(as.matrix(object$samples))
-  names(out) <- fixNames(names(out))
-  n.chains <- length(object$samples)
-  class(out) <- c("Bwiqid", class(out))
+  out <- asBwiqidCore(as.matrix(object$samples), object$summary, object$mcmc.info$n.chains)
   if(missing(header))
     header <- "Model fitted in JAGS with jagsUI"
   attr(out, "header") <- header
-  attr(out, "n.chains") <- n.chains
-  attr(out, "n.eff") <- safeNeff(out)
-  if(n.chains > 1)
-    attr(out, "Rhat") <- simpleRhat(out, n.chains=n.chains)
+  attr(out, "modelFile") <- object$modfile
   if(!missing("defaultPlot"))
     attr(out, "defaultPlot") <- defaultPlot
   attr(out, "timetaken") <- as.difftime(object$mcmc.info$elapsed.mins, units="mins")
@@ -149,7 +166,7 @@ as.Bwiqid.jagsUI <- function(object, header, defaultPlot, ...) {
 # Class runjags from runjags package
 as.Bwiqid.runjags <- function(object, header, defaultPlot, ...) {
   out <- as.data.frame(as.matrix(object$mcmc))
-  names(out) <- fixNames(names(out))
+  names(out) <- make.names(names(out), unique=TRUE)
   class(out) <- c("Bwiqid", class(out))
   if(missing(header))
     header <- "Model fitted in JAGS with runjags"
