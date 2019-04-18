@@ -24,8 +24,12 @@ crosscorrPlot <- function(x, which, col, addSpace=c(0,0), ...) {
   useArgs <- modifyList(defaultArgs, dots)
 
   # Deal with numerical input
-  if(inherits(x, "jagsUI"))
-    x <- x$samples
+  x <- switch(class(x)[1],
+      jagsUI  = x$samples,
+      bugs    = x$sims.matrix,
+      rjags   = x$BUGSoutput$sims.matrix,
+      runjags = x$mcmc,
+      x)
   x <- try(as.matrix(x), silent=TRUE)
   if(inherits(x, "try-error"))
     stop("Sorry, can't convert your input to a matrix.", call.=FALSE)

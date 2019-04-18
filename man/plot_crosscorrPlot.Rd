@@ -13,7 +13,7 @@ crosscorrPlot(x, which, col, addSpace=c(0,0), ...)
 }
 \arguments{
   \item{x}{
-A matrix or data frame with at least 2 columns, or an object of class \code{mcmc.list} or \code{jagsUI}.
+A matrix or data frame with at least 2 columns, or one of the following classes: \code{Bwiqid, mcmc.list, jagsUI, bugs, rjags, runjags}.
 }
   \item{which}{
 An optional vector of column numbers or names; names are partially matched, so \code{which="alpha"} will match all of \code{alpha, alpha0, alpha[1], alphanew}.
