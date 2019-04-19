@@ -4,7 +4,7 @@
 #   can be coerced to a matrix, including 'mcmc.list' objects.
 # Also deals with 'jagsUI' output.
 
-crosscorrPlot <- function(x, which, col, addSpace=c(0,0), ...) {
+crosscorrPlot <- function(x, params=NULL, col, addSpace=c(0,0), ...) {
 
   # Grab name of 'x'
   xName <- deparse(substitute(x))
@@ -16,8 +16,13 @@ crosscorrPlot <- function(x, which, col, addSpace=c(0,0), ...) {
   dots <- list(...)
   if(length(dots) == 1 && class(dots[[1]]) == "list")
     dots <- dots[[1]]
-  defaultArgs <- list(main=paste("Cross-correlation plot for", xName), 
-      xlab="", ylab="", cex.axis=1.2, axes=FALSE,
+  # catch the old 'which' argument
+  if(!is.null(dots$which) && is.null(params)) {
+    warning("Argument 'which' is deprecated, please use 'params'.", call.=FALSE)
+    params <- dots$which
+  }
+  defaultArgs <- list(main=paste("Cross-correlation plot for", xName),
+      xlab="", ylab="", cex.axis=1.2, axes=FALSE, #border=NA,
       srt=45, legendAsp = 0.1,  # legend aspect ratio
       tcl = 0.1, lwd.ticks = 1, # tick width and length in box units
       offset = 0.2)             # move parameter names out of corner
@@ -34,20 +39,19 @@ crosscorrPlot <- function(x, which, col, addSpace=c(0,0), ...) {
   if(inherits(x, "try-error"))
     stop("Sorry, can't convert your input to a matrix.", call.=FALSE)
 
-  # Deal with 'which'
-  if(!missing(which)) {
-    if(is.character(which)) {
-      which <- matchStart(which, colnames(x))
-    }
-    which <- which[which <= ncol(x)]
-    if(length(which) == 0)
-      stop("No columns match the specification in 'which'.", call.=FALSE)
-    x <- x[, which]
+  # Deal with 'params'
+  if(!is.null(params)) {
+    params <- matchStart(params, colnames(x))
+    if(length(params) == 0)
+      stop("No columns match the specification in 'params'.", call.=FALSE)
+    x <- x[, params]
   }
+  if(!is.numeric(x))
+    stop("Sorry, can't find the numbers in your input.", call.=FALSE)
   if(ncol(x) < 2)
-    stop("Your input has only one column; need >1 for correlations.", call.=FALSE)
+    stop("Need at least 2 columns to do correlations.", call.=FALSE)
 
-    crosscorr <- try(suppressWarnings(cor(x)), silent=TRUE)
+  crosscorr <- try(suppressWarnings(cor(x)), silent=TRUE)
   if(inherits(crosscorr, "try-error"))
     stop("Sorry, can't extract a correlation matrix from your input.", call.=FALSE)
   corVec <- crosscorr[lower.tri(crosscorr)]
@@ -74,30 +78,47 @@ crosscorrPlot <- function(x, which, col, addSpace=c(0,0), ...) {
   # plot rectangles in same order as corVec
   xvec <- col(crosscorr)[lower.tri(crosscorr)]
   yvec <- Npars - row(crosscorr)[lower.tri(crosscorr)]
-  rect(xvec-1, yvec, xvec, yvec+1, col=col[colorid], ...)
+  selPlot <- names(useArgs) %in%
+    c(names(as.list(args(rect))), names(par(no.readonly=TRUE)))
+  rectArgs <- useArgs[selPlot]
+  rectArgs$xleft <- xvec - 1
+  rectArgs$ybottom <- yvec
+  rectArgs$xright <- xvec
+  rectArgs$ytop <- yvec+1
+  rectArgs$col <- col[colorid]
+  do.call(rect, rectArgs)
+
   # Do the legend
   ys <- seq(ymax/2, ymax, length.out=length(col)+1)
   xwidth <- ymax/2 * useArgs$legendAsp
+  # colour strip
   rect(xleft=rep(xmax, length(col)), ybottom=ys[1:length(col)],
       xright=rep(xmax, length(col)) + xwidth, ytop=ys[-1],
       col=col, xpd=TRUE, border=NA)
-  # legend boxes and labels
-  rect(xleft=rep(xmax,2), ybottom=c(ys[1], mean(ys)),
-    xright=rep(xmax+xwidth,2), ytop=c(mean(ys), ys[length(ys)]),
-    xpd=TRUE, ...)
+  # border to colour strip
+  rectArgs$xleft <- rep(xmax,2)
+  rectArgs$ybottom <- c(ys[1], mean(ys))
+  rectArgs$xright <- rep(xmax+xwidth,2)
+  rectArgs$ytop <- c(mean(ys), ys[length(ys)])
+  rectArgs$xpd <- TRUE
+  rectArgs$col <- NULL
+  do.call(rect, rectArgs)
+  # rect(xleft=rep(xmax,2), ybottom=c(ys[1], mean(ys)),
+    # xright=rep(xmax+xwidth,2), ytop=c(mean(ys), ys[length(ys)]),
+    # xpd=TRUE, ...)
   text(x=rep(xmax+xwidth, 3), y=c(0.5,0.75,1)*(ymax), c("-1", "0", "+1"),
     pos=4, offset=0.3, cex=useArgs$cex.axis, xpd=TRUE)#, ...)
-  # parameter labels
 
+  # parameter labels
   text(x=0:(Npars-1)+useArgs$offset, y=(Npars-1):0+useArgs$offset,
     labels = rownames(crosscorr), adj=0, srt=useArgs$srt,
     cex=useArgs$cex.axis, xpd=TRUE)
   # Add ticks
   segments(x0=1:(Npars-1), x1=1:(Npars-1)+useArgs$tcl,
-      y0=(Npars-1):1-0.5, y1=(Npars-1):1-0.5, lwd=useArgs$lwd.ticks)
+      y0=(Npars-1):1-0.5, y1=(Npars-1):1-0.5, lwd=useArgs$lwd.ticks, lend=1)
   segments(x0=1:(Npars-1)-0.5, x1=1:(Npars-1)-0.5,
-      y0=(Npars-1):1, y1=(Npars-1):1+useArgs$tcl, lwd=useArgs$lwd.ticks)
-      
+      y0=(Npars-1):1, y1=(Npars-1):1+useArgs$tcl, lwd=useArgs$lwd.ticks, lend=1)
+
   return(invisible(crosscorr))
 }
 
@@ -115,15 +136,17 @@ fake <- data.frame(
   const1 = rep(1, 3000))     # all values = 1
 fake$mu10 <- fake$mu10 + fake$mu0*0.4
 fake$prob <- plogis(-fake$mu0)
+# x <- fake
 
 crosscorrPlot(fake)
 crosscorrPlot(fake, which=c("mu", "prob", "N"))
-crosscorrPlot(fake, which=c("mus", "prot", "Q"))
-crosscorrPlot(fake, which="prob")
-crosscorrPlot(fake, which=1:6)
-crosscorrPlot(fake, which=2:10)
-crosscorrPlot(fake, which=10:15)
-crosscorrPlot(fake, which=-3)
+crosscorrPlot(fake, params=c("mu", "prob", "N"))
+crosscorrPlot(fake, params=c("mus", "prot", "Q"))
+crosscorrPlot(fake, params="prob")
+crosscorrPlot(fake, params=1:6)
+crosscorrPlot(fake, params=2:10)
+crosscorrPlot(fake, params=10:15)
+crosscorrPlot(fake, params=-3)
 crosscorrPlot(fake, main="Cross-correlations")
 crosscorrPlot(fake, col=terrain.colors(255))
 crosscorrPlot(fake, xlab="Duh!") # off the page

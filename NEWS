@@ -8,6 +8,11 @@ TODO
 
   * should as.Bwiqid.Bwiqid recalculate diagnostics?
 
+CHANGES in 0.2.1.9005 (2019-04-19)
+
+  * Tweaks to 'crosscorrPlot' to prevent silly warnings; 'which' argument replaced
+    with 'params'.
+
 CHANGES in 0.2.1.9004 (2019-04-18)
 
   * 'crosscorrPlot' now accepts classes 'mcmc.list', 'jagsUI', 'bugs', 'rjags', 'runjags'.

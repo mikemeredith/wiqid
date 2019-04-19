@@ -8,15 +8,15 @@ Displays graphically the lower triangle of the correlation matrix among the colu
 }
 \usage{
 
-crosscorrPlot(x, which, col, addSpace=c(0,0), ...)
+crosscorrPlot(x, params, col, addSpace=c(0,0), ...)
 
 }
 \arguments{
   \item{x}{
 A matrix or data frame with at least 2 columns, or one of the following classes: \code{Bwiqid, mcmc.list, jagsUI, bugs, rjags, runjags}.
 }
-  \item{which}{
-An optional vector of column numbers or names; names are partially matched, so \code{which="alpha"} will match all of \code{alpha, alpha0, alpha[1], alphanew}.
+  \item{params}{
+An optional vector of column numbers or names; names are partially matched, so \code{params="alpha"} will match all of \code{alpha, alpha0, alpha[1], alphanew}; negative indices indicate parameters to exclude, positive and negative indices cannot be mixed.
 }
   \item{col}{
 The colours to use to code the correlations; default is a blue-yellow-red ramp; NA correlations appear as white boxes.
@@ -76,8 +76,8 @@ str(fake)
 tmp <- crosscorrPlot(fake)
 round(tmp, 2)
 crosscorrPlot(fake, main="Isn't this a really cool plot?")
-crosscorrPlot(fake, main="A subset of parameters", which=c("mu", "prob", "N"))
-crosscorrPlot(fake, main="Leave out 'sigma'", which=-3)
+crosscorrPlot(fake, main="A subset of parameters", params=c("mu", "prob", "N"))
+crosscorrPlot(fake, main="Leave out 'sigma'", params=-3)
 crosscorrPlot(fake, main="Just a few colours", col=c("blue","skyblue","pink","red"))
 names(fake)[5] <- "A_parameter_with_a_very_long_name"
 crosscorrPlot(fake, main="Is there room?")

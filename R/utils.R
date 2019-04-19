@@ -10,7 +10,7 @@
 # stdModel : Regularize a list of formulae, ensuring it is a named list of one-sided formulae.
 # stddata : Convert a data frame of site and survey data into a list and standardise
 # selectCovars : Pull the covars needed for a model matrix into a specific data frame
-# matchStart : match the starts of character strings
+# matchStart : has its own file
 
 # fixNames : removed, use 'make.names(., unique=TRUE) instead (2019-04-17)
 # AICtable moved to file AICc.R
@@ -216,22 +216,6 @@ selectCovars <- function(formula, dataList, minrows)  {
   stopifnot(nrow(df) %% minrows == 0)
   return(df)
 } # ........................................................
-
-# Finds the elements in 'big' where the start of 'big' matches 'little'.
-# eg. matchStart(c("Ju", "Nov", "J"), month.name) returns 6, 7, 11, 1.
-#  June and July match both 'Ju' and 'J', but only the first match is returned.
-# The order of the output depends on 'little'.
-# Does not use 'grep', and brackets "[ ]" are treated as normal characters.
-# Returns integer(0) if no matches.
-matchStart <- function(little, big) {
-  out <- NULL
-  for(i in seq_along(little)) {
-    nc <- nchar(little[i])
-    big1 <- substr(big, 1, nc)
-    out <- c(out, which(big1 == little[i]))
-  }
-  unique(out)
-}
 
 
 
