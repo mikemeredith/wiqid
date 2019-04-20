@@ -45,3 +45,17 @@ simpleRhat <- function(object, n.chains, burnin=0) {
   names(Rhat) <- parNames
   return(Rhat)
 }
+
+
+# An error-catching wrapper for coda::effectiveSize
+safeNeff <- function(x) {
+  # x is a data frame or matrix with a column for each parameter
+  safe1 <- function(v) {
+    tmp <- try(coda::effectiveSize(v), silent=TRUE)
+    if(inherits(tmp, "try-error"))
+      return(NA)
+    return(tmp)
+  }
+  apply(x, 2, safe1)
+}
+

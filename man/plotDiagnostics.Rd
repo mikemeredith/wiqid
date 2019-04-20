@@ -8,11 +8,11 @@
 Diagnostic graphics for MCMC output
 }
 \description{
-Display trace plots, density plots or autocorrelation plots for the chains in the MCMC output. Each chain is plotted with a different colour.
+Display trace plots, density plots or autocorrelation plots for the chains in the MCMC output. Each chain is plotted with a different colour. See also \code{\link{crosscorrPlot}}.
 }
 \usage{
 
-diagPlot(object, which, howMany, ask=TRUE, maxRow=4, RhatBad=1.05, ...)
+diagPlot(x, params=NULL, howMany, ask=interactive(), maxRow=4, RhatBad=1.05, ...)
 
 tracePlot(object, ask=TRUE, ...)
 
@@ -22,11 +22,14 @@ acfPlot(object, lag.max=NULL, ask=TRUE, ...)
 
 }
 \arguments{
+  \item{x}{
+A matrix or data frame with MCMC output, or one of the following classes: \code{Bwiqid, mcmc.list, jagsUI, bugs, rjags, runjags}.
+}
+  \item{params}{
+An optional vector of column numbers or names; names are partially matched, so \code{params="alpha"} will match all of \code{alpha, alpha0, alpha[1], alphanew}; negative indices indicate parameters to exclude, positive and negative indices cannot be mixed.
+}
   \item{object}{
 An object of class \code{Bwiqid}.
-}
-  \item{which}{
-An optional vector of parameter names or numbers.
 }
   \item{howMany}{
 How many iterations to plot; if negative, the iterations at the end of the chains will be plotted.
@@ -45,12 +48,17 @@ Threshold for Rhat; parameters with \code{Rhat > RhatBad} are highlighted in red
 Maximum lag at which to calculate the acf; see \code{\link{acf}}.
 }
   \item{\dots}{
-Additional graphical parameters passed to \code{\link{plot.default}}.
+Additional graphical parameters.
 }
 }
 
 \value{
-Return NULL invisibly. Used for their plotting side-effects.
+\code{diagPlot} returns invisibly a list with the components:
+ \item{mcmc3d }{a 3-D array, iterations x chains x parameters, with the MCMC samples, after subsetting}
+ \item{Rhat }{a vector of \code{Rhat} values}
+ \item{n.eff }{a vector of \code{n.eff} values}
+
+The other functions return NULL invisibly.
 }
 \author{
 Mike Meredith
@@ -81,8 +89,8 @@ attr(fake, "n.eff") <- c(2345, NA, 457, 63, 1234, 324, 543, 1, 1)
 
 fake
 diagPlot(fake)
-diagPlot(fake, which=3:6)
-diagPlot(fake, which="prob0")
+diagPlot(fake, params=3:6)
+diagPlot(fake, params=c("mu", "prob"))
 
 par(mfrow=c(3,3))
 tracePlot(fake, ask=FALSE)
