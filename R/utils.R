@@ -130,7 +130,7 @@ stdModel <- function (model1, defaultModel) {
   }
   RHS <- function (form) {
       trms <- as.character (form)
-      if (length(trms)==3) as.formula(paste(trms[c(1,3)])) else form
+      if (length(trms)==3) as.formula(paste(trms[c(1,3)], collapse=" ")) else form
   }
   lhs <- sapply(model1, LHS)
   temp <- lapply(model1, RHS)

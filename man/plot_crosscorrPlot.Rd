@@ -8,7 +8,7 @@ Displays graphically the lower triangle of the correlation matrix among the colu
 }
 \usage{
 
-crosscorrPlot(x, params, col, addSpace=c(0,0), ...)
+crosscorrPlot(x, params=NULL, col, addSpace=c(0,0), ...)
 
 }
 \arguments{

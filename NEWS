@@ -8,6 +8,10 @@ TODO
 
   * should as.Bwiqid.Bwiqid recalculate diagnostics?
 
+CHANGES in 0.2.1.9007 (2019-04-22)
+
+  * a few typos fixed plus change to 'formula' call to satisfy R 3.7.
+
 CHANGES in 0.2.1.9006 (2019-04-20)
 
   * 'diagPlot' revamped; accepts a range of classes.

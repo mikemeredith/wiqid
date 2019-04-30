@@ -47,10 +47,10 @@ plot(Bdip)
 BdipFlood <- BsurvCJS(DH, list(phi ~ flood, p ~ .time), data=df)
 BdipFlood
 op <- par(mfrow=2:1)
-plot(BdipFlood, "phi1", xlim=c(0.3, 0.75), main="No flood")
-plot(BdipFlood, "phi2", xlim=c(0.3, 0.75), main="Flood")
+plot(BdipFlood, "phi.1.", xlim=c(0.3, 0.75), main="No flood")
+plot(BdipFlood, "phi.2.", xlim=c(0.3, 0.75), main="Flood")
 par(op)
-ratio <- BdipFlood$phi2 / BdipFlood$phi1
+ratio <- BdipFlood$phi.2. / BdipFlood$phi.1.
 plotPost(ratio, compVal=1)
 }
 }

@@ -138,7 +138,7 @@ BsurvCJS <- function(DH, model=list(phi~1, p~1), data=NULL, freq=1, priors=NULL,
 
   out <- as.Bwiqid(resB,
       header = "Model fitted in JAGS with 'rjags' functions",
-      defaultPlot = "phi1")
+      defaultPlot = "phi.1.")
   attr(out, "call") <- match.call()
   attr(out, "timetaken") <- Sys.time() - startTime
   return(out)
