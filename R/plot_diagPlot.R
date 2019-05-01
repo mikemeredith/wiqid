@@ -6,12 +6,20 @@
 
 # This works with most R-to-BUGS/JAGS output
 getArrA <- function(x, summary, nChains) {
-  mcmat <- as.matrix(x)
-  if(is.null(nChains) || nrow(mcmat) %% nChains != 0) {
-    warning("Invalid number of chains, treating data as a single chain")
-    nChains <- 1
+  if(is.array(x) && length(dim(x)) == 3) {
+    mcmc3d <- x
+    if(!is.null(nChains) && dim(x)[2] != nChains)
+      stop("nChains does not match array dimensions.")
+  } else {
+    mcmat <- as.matrix(x)
+    if(is.null(nChains) || nrow(mcmat) %% nChains != 0) {
+      warning("Invalid number of chains, treating data as a single chain")
+      nChains <- 1
+    }
+    mcmc3d <- array(mcmat, c(nrow(mcmat)/nChains, nChains, ncol(mcmat)))
+    dimnames(mcmc3d) <- list(iter=NULL, chain=1:nChains, param=colnames(mcmat))
   }
-  if(!all(colnames(mcmat) == rownames(summary)))
+  if(!all(dimnames(mcmc3d)[[3]] == rownames(summary)))
     stop("'summary' names do not match MCMC names.")
   # Try to recover pre-calculated Rhat and n.eff, else roll our own
   Rhat <- try(summary[, 'Rhat'], silent=TRUE)
@@ -26,10 +34,8 @@ getArrA <- function(x, summary, nChains) {
   if(inherits(n.eff, "try-error")) {
     n.eff <- safeNeff(mcmat)
   }
-  dim(mcmat) <- c(nrow(mcmat)/nChains, nChains, ncol(mcmat))
-  dimnames(mcmat) <- list(iter=NULL, chain=1:nChains, param=rownames(summary))
 
-  return(list(mcmc3d = mcmat,
+  return(list(mcmc3d = mcmc3d,
               stats = cbind(Rhat=Rhat, n.eff=n.eff)))
 } # ''''''''''''''''''''''''''''''''''''''''''''''
 
@@ -84,8 +90,8 @@ diagPlot <- function(x, params=NULL, howMany, ask=interactive(),
   # Deal with numerical input
   arrList <- switch(class(x)[1],
       jagsUI  = getArrA(x$samples, x$summary, x$mcmc.info$n.chains),
-      bugs    = getArrA(x$sims.matrix, x$summary, x$n.chains),
-      rjags   = getArrA(x$BUGSoutput$sims.matrix, x$BUGSoutput$summary,x$BUGSoutput$n.chains),
+      bugs    = getArrA(x$sims.array, x$summary, x$n.chains),
+      rjags   = getArrA(x$BUGSoutput$sims.array, x$BUGSoutput$summary,x$BUGSoutput$n.chains),
       mcmc.list = getArrB(x, length(x)),
       runjags = getArrB(x$mcmc, length(x$mcmc)),
       getArrB(x))
@@ -156,7 +162,7 @@ diagPlot <- function(x, params=NULL, howMany, ask=interactive(),
     if(redFlag)
       box(col=2, lwd=2)
   }
-  
+
   # Return the bits, invisibly
   return(invisible(list(mcmc3d=mcmc3d, Rhat=Rhat, n.eff=n.eff)))
 }

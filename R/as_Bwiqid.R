@@ -123,7 +123,10 @@ asBwiqidCore <- function(mcmat, summary, nChains) {
 
 # Class bugs from R2WinBUGS package and R2OpenBUGS
 as.Bwiqid.bugs <- function(object, header, defaultPlot, ...) {
-  out <- asBwiqidCore(object$sims.matrix, object$summary, object$n.chains)
+  # Can't use sims.matrix as the chains are scrambled. Need to start from sims.array
+  simsMat <- matrix(object$sims.array, ncol=dim(object$sims.array)[3])
+  colnames(simsMat) <- dimnames(object$sims.array)[[3]]
+  out <- asBwiqidCore(simsMat, object$summary, object$n.chains)
   if(missing(header))
     header <- paste("Model fitted in", object$program)
   attr(out, "header") <- header
