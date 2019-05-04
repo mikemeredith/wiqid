@@ -8,6 +8,10 @@ TODO
 
   * should as.Bwiqid.Bwiqid recalculate diagnostics?
 
+CHANGES in 0.2.1.9009 (2019-05-04)
+
+  * 'diagPlot' gains a 'chains' argument.
+
 CHANGES in 0.2.1.9008 (2019-05-01)
 
   * Fixed incorrect handling of class 'bugs' objects in 'diagPlot' and 'as.Bwiqid'.

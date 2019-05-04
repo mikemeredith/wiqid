@@ -12,7 +12,7 @@ Display trace plots, density plots or autocorrelation plots for the chains in th
 }
 \usage{
 
-diagPlot(x, params=NULL, howMany, ask=interactive(), maxRow=4, RhatBad=1.05, ...)
+diagPlot(x, params=NULL, howMany, chains, ask=interactive(), maxRow=4, RhatBad=1.05, ...)
 
 tracePlot(object, ask=TRUE, ...)
 
@@ -33,6 +33,9 @@ An object of class \code{Bwiqid}.
 }
   \item{howMany}{
 How many iterations to plot; if negative, the iterations at the end of the chains will be plotted.
+}
+  \item{chains}{
+Which chains to plot, a numeric vector.
 }
   \item{ask}{
 If \code{TRUE}, the user will be prompted before the next page of output is displayed.
@@ -91,6 +94,9 @@ fake
 diagPlot(fake)
 diagPlot(fake, params=3:6)
 diagPlot(fake, params=c("mu", "prob"))
+diagPlot(fake, params=c("mu", "prob"), howMany=200)
+diagPlot(fake, params=c("mu", "prob"), howMany=-200)
+diagPlot(fake, params=c("mu", "prob"), chains=1:2)
 
 par(mfrow=c(3,3))
 tracePlot(fake, ask=FALSE)

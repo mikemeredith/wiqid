@@ -69,7 +69,7 @@ getArrB <- function(x, nChains=1) {
 
 
 # Function to do multiple trace and density plots
-diagPlot <- function(x, params=NULL, howMany, ask=interactive(),
+diagPlot <- function(x, params=NULL, howMany, chains, ask=interactive(),
   maxRow=4, RhatBad=1.05, ...) {
 
   dots <- list(...)
@@ -126,6 +126,10 @@ diagPlot <- function(x, params=NULL, howMany, ask=interactive(),
     } else {
       mcmc3d <- mcmc3d[(niter+howMany+1):niter, , , drop=FALSE]
     }
+  }
+  if(!missing(chains) && all(chains <= nchains)) {
+    mcmc3d <- mcmc3d[, chains, , drop=FALSE]
+    nchains <- length(chains)
   }
 
   # Do the plots
