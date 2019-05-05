@@ -92,16 +92,16 @@ attr(fake, "n.eff") <- c(2345, NA, 457, 63, 1234, 324, 543, 1, 1)
 
 fake
 diagPlot(fake)
-diagPlot(fake, params=3:6)
-diagPlot(fake, params=c("mu", "prob"))
-diagPlot(fake, params=c("mu", "prob"), howMany=200)
-diagPlot(fake, params=c("mu", "prob"), howMany=-200)
-diagPlot(fake, params=c("mu", "prob"), chains=1:2)
+diagPlot(fake, params=3:6, main="params=3:6")
+diagPlot(fake, params=c("mu", "prob"), main="params=c('mu', 'prob')")
+diagPlot(fake, params=c("mu", "prob"), howMany=200, main="howMany=200")
+diagPlot(fake, params=c("mu", "prob"), howMany=-200, main="howMany= -200")
+diagPlot(fake, params=c("mu", "prob"), chains=1:2, main="chains=1:2")
 
 par(mfrow=c(3,3))
-tracePlot(fake, ask=FALSE)
-densityPlot(fake, col=1:5, lwd=2, ask=FALSE)
-acfPlot(fake, lag.max=10, ask=FALSE)
+tracePlot(fake)
+densityPlot(fake, col=1:5, lwd=2)
+acfPlot(fake, lag.max=10)
 par(mfrow=c(1,1))
 }
 }

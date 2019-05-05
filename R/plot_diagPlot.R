@@ -81,6 +81,10 @@ diagPlot <- function(x, params=NULL, howMany, chains, ask=interactive(),
     params <- dots$which
     dots$which <- NULL
   }
+  mainTitle <- dots$main # this goes in outer margin
+  dots$main <- NULL
+  if(is.null(mainTitle))
+    mainTitle <- paste("Diagnostics for", deparse(substitute(x)))
   defaultArgs <- list(xlab="", ylab="", type='l', lty=1)
   useArgsT <- useArgsD <- modifyList(defaultArgs, dots)
   selPlot <- names(useArgsT) %in%
@@ -91,7 +95,7 @@ diagPlot <- function(x, params=NULL, howMany, chains, ask=interactive(),
   arrList <- switch(class(x)[1],
       jagsUI  = getArrA(x$samples, x$summary, x$mcmc.info$n.chains),
       bugs    = getArrA(x$sims.array, x$summary, x$n.chains),
-      rjags   = getArrA(x$BUGSoutput$sims.array, x$BUGSoutput$summary,x$BUGSoutput$n.chains),
+      rjags   = getArrA(x$BUGSoutput$sims.array, x$BUGSoutput$summary, x$BUGSoutput$n.chains),
       mcmc.list = getArrB(x, length(x)),
       runjags = getArrB(x$mcmc, length(x$mcmc)),
       getArrB(x))
@@ -134,8 +138,10 @@ diagPlot <- function(x, params=NULL, howMany, chains, ask=interactive(),
 
   # Do the plots
   # ------------
-  old.par <- par(mar = c(2,2,2, 0)+0.1, oma=c(1,1,1,1), "mfrow")
+  old.par <- par(mar = c(2,2,2,0)+0.1, oma=c(1,1,1,1), "mfrow")
     on.exit(par(old.par))
+  if(!is.null(mainTitle))
+    par(oma=c(1,1,3,1))
 
   if(npars > maxRow) {
     old.ask <- devAskNewPage(ask)
@@ -151,10 +157,11 @@ diagPlot <- function(x, params=NULL, howMany, chains, ask=interactive(),
     useArgsT$y <- mat
     do.call(matplot, useArgsT)
     abline(h=mean(mat))
-    titleArgs$main <- paste0(parnames[i], ", Rhat = ", Rhat[i])
-    titleArgs$line <- 1
+    titleArgs$main <- paste0(parnames[i], ": Rhat = ", Rhat[i])
+    titleArgs$line <- 0.3
     titleArgs$adj <- 1
     titleArgs$col.main <- 1 + redFlag
+    titleArgs$outer <- FALSE
     do.call(title, titleArgs)
     if(redFlag)
       box(col=2, lwd=2)
@@ -165,26 +172,31 @@ diagPlot <- function(x, params=NULL, howMany, chains, ask=interactive(),
     do.call(title, titleArgs)
     if(redFlag)
       box(col=2, lwd=2)
+    if(!is.null(mainTitle)) {
+      titleArgs$main <- mainTitle
+      titleArgs$line <- dots$line
+      titleArgs$adj <- dots$adj
+      titleArgs$col.main <- dots$col.main
+      titleArgs$outer <- TRUE
+      do.call(title, titleArgs)
+    }
   }
-
-  # Return the bits, invisibly
-  return(invisible(list(mcmc3d=mcmc3d, Rhat=Rhat, n.eff=n.eff)))
 }
 # ..........................................................
 
-# Helper function to do density plot (or histogram) for 1 parameter
+# Helper function to do density plot (or lollipops) for 1 parameter
 # mat : matrix of MCMC output with 1 column per chain
 # plotArgs : list with plotting parameters
 density0 <- function(mat, plotArgs, ...)  {
 
   bw <- bw.nrd0(mat)
-  # histogram or density plot?
+  # lollipops or density plot?
   unik <- unique.default(mat)
   if(length(unik) == 1) {
     plot(1, 1, type = "n", ann = FALSE, axes = FALSE)
     text(1,1, paste("All values are the same:\n", signif(unik, 4)))
   } else if(all(mat %% 1 == 0) && all(mat >= 0) && diff(range(mat)) < 50) {
-    # "histogram"
+    # "lollipops"
     t1 <- apply(mat+1, 2, tabulate, nbins=max(mat)+1)/nrow(mat) # +1 cos tabulate ignores 0
     if(min(mat) > 0)
       t1 <- t1[-(1:min(mat)), ]

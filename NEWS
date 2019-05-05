@@ -8,6 +8,10 @@ TODO
 
   * should as.Bwiqid.Bwiqid recalculate diagnostics?
 
+CHANGES in 0.2.1.9010 (2019-05-05)
+
+  * 'diagPlot' displays a 'main' title in the outer margin, returns nothing.
+
 CHANGES in 0.2.1.9009 (2019-05-04)
 
   * 'diagPlot' gains a 'chains' argument.
@@ -26,8 +30,7 @@ CHANGES in 0.2.1.9006 (2019-04-20)
 
 CHANGES in 0.2.1.9005 (2019-04-19)
 
-  * Tweaks to 'crosscorrPlot' to prevent silly warnings; 'which' argument replaced
-    with 'params'.
+  * Tweaks to 'crosscorrPlot' to prevent silly warnings; 'which' argument replaced with 'params'.
 
 CHANGES in 0.2.1.9004 (2019-04-18)
 
