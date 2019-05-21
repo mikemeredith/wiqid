@@ -8,6 +8,10 @@ TODO
 
   * should as.Bwiqid.Bwiqid recalculate diagnostics?
 
+CHANGES in 0.2.1.9011 (2019-05-20)
+
+  * Fixed bug in 'diagPlot' when MCMC chain values not quite equal.
+
 CHANGES in 0.2.1.9010 (2019-05-05)
 
   * 'diagPlot' displays a 'main' title in the outer margin, returns nothing.

@@ -191,10 +191,11 @@ density0 <- function(mat, plotArgs, ...)  {
 
   bw <- bw.nrd0(mat)
   # lollipops or density plot?
-  unik <- unique.default(mat)
-  if(length(unik) == 1) {
+  # unik <- unique.default(mat)
+  # if(length(unik) == 1) {
+  if(bw == 0 || diff(range(mat)) < sqrt(.Machine$double.eps)) {
     plot(1, 1, type = "n", ann = FALSE, axes = FALSE)
-    text(1,1, paste("All values are the same:\n", signif(unik, 4)))
+    text(1,1, paste("All values are the same:\n", signif(mat[1], 4)))
   } else if(all(mat %% 1 == 0) && all(mat >= 0) && diff(range(mat)) < 50) {
     # "lollipops"
     t1 <- apply(mat+1, 2, tabulate, nbins=max(mat)+1)/nrow(mat) # +1 cos tabulate ignores 0
@@ -211,9 +212,6 @@ density0 <- function(mat, plotArgs, ...)  {
              x1 = rep(xx + 0.4, ncol(mat)),
              y1 = t1,
              col = col(t1))
-  } else if (bw == 0){
-    plot(1, 1, type = "n", ann = FALSE, axes = FALSE)
-    text(1,1, "Bandwidth is zero.")
   } else {
     # density plot
     # deal with folding for probability and non-negative values
