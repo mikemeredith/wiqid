@@ -8,6 +8,10 @@ TODO
 
   * should as.Bwiqid.Bwiqid recalculate diagnostics?
 
+CHANGES in 0.2.1.9012 (2019-06-03)
+
+  * 'simpleRhat' returns NAs if only one chain, instead of throwing an error.
+
 CHANGES in 0.2.1.9011 (2019-05-20)
 
   * Fixed bug in 'diagPlot' when MCMC chain values not quite equal.

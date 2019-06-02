@@ -16,8 +16,6 @@ simpleRhat <- function(object, n.chains, burnin=0) {
     if(is.null(n.chains))
      stop("Please supply a value for 'n.chains'!", call.=FALSE)
   }
-  if(n.chains < 2)
-    stop("More than 1 chain is needed to calculate Rhat.", call.=FALSE)
   if(nrow(x) %% n.chains > 0)
     stop("The number of rows in 'x' must be a multiple of 'n.chains'.", call.=FALSE)
   if(burnin < 0 || burnin > 0.9)
@@ -25,6 +23,11 @@ simpleRhat <- function(object, n.chains, burnin=0) {
 
   n.par <- ncol(x)                     # number of parameters
   parNames <- colnames(x)
+  if(n.chains < 2) {
+    Rhat <- rep(NA_real_, n.par)
+    names(Rhat) <- parNames
+    return(Rhat)
+  }
   n.iter <- nrow(x)                    # total sample size
   ipc <- n.iter / n.chains             # iterations per chain (T)
 
@@ -37,7 +40,7 @@ simpleRhat <- function(object, n.chains, burnin=0) {
 
   W0 <- apply(x, 2:3, width)           # width of individual chains
   W <- colMeans(W0)
-  
+
   dim(x) <- c(ipc * n.chains, n.par)   # combine the chains (after burn-in)
   B <- apply(x, 2, width)              # width of pooled chains
 
