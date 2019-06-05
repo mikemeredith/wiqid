@@ -8,6 +8,10 @@ TODO
 
   * should as.Bwiqid.Bwiqid recalculate diagnostics?
 
+CHANGES in 0.2.1.9013 (2019-06-05)
+
+  * 'testthat' tests updated for new (from 3.6.0) RNG for sample.
+
 CHANGES in 0.2.1.9012 (2019-06-03)
 
   * 'simpleRhat' returns NAs if only one chain, instead of throwing an error.

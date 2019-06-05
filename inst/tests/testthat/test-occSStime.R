@@ -18,7 +18,7 @@ test_that("occSStime with logit link",  {
   res <- occSStime(BRS, p~.time, plot=FALSE)
   expect_that(class(res), equals(c("wiqid", "list")))
   expect_that(names(res), equals(c("call", "link", "beta", "beta.vcv", "real", "logLik")))
-  expect_that(is.call(res$call), is_true())
+  expect_true(is.call(res$call))
   expect_that(colnames(res$real), equals(c("est", "lowCI", "uppCI")))
   expect_that(rownames(res$real),
        equals(c("psi", "p1", "p2", "p3", "p4", "p5")))
@@ -117,7 +117,7 @@ test_that("occSStime with probit link",  {
   res <- occSStime(BRS, p~.time, plot=FALSE, link="probit")
   expect_that(class(res), equals(c("wiqid", "list")))
   expect_that(names(res), equals(c("call", "link", "beta", "beta.vcv", "real", "logLik")))
-  expect_that(is.call(res$call), is_true())
+  expect_true(is.call(res$call))
   expect_that(colnames(res$real), equals(c("est", "lowCI", "uppCI")))
   expect_that(rownames(res$real),
        equals(c("psi", "p1", "p2", "p3", "p4", "p5")))

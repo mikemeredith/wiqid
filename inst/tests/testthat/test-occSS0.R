@@ -20,7 +20,7 @@ test_that("occSS0 with logit link",  {
   expect_that(class(brs1), equals(c("wiqid", "list")))
   expect_that(names(brs1), equals(c("call", "link", "beta", "beta.vcv", "real", "logLik",
        "ci", "formulae", "index")))
-  expect_that(is.call(brs1$call), is_true())
+  expect_true(is.call(brs1$call))
   expect_that(colnames(brs1$real), equals(c("est", "lowCI", "uppCI")))
   expect_that(rownames(brs1$real), equals(c("psiHat", "pHat")))
   expect_that(round(as.vector(brs1$real[, 1]), 4),
@@ -89,7 +89,7 @@ test_that("occSS0 with probit link",  {
   expect_that(class(brs1), equals(c("wiqid", "list")))
   expect_that(names(brs1), equals(c("call", "link", "beta", "beta.vcv", "real", "logLik",
        "ci", "formulae", "index")))
-  expect_that(is.call(brs1$call), is_true())
+  expect_true(is.call(brs1$call))
   expect_that(colnames(brs1$real), equals(c("est", "lowCI", "uppCI")))
   expect_that(rownames(brs1$real), equals(c("psiHat", "pHat")))
   expect_that(round(as.vector(brs1$real[, 1]), 4),

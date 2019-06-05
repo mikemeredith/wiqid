@@ -20,7 +20,7 @@ test_that("occSScovSite with logit link",  {
 
   expect_that(class(weta1), equals(c("wiqid", "list")))
   expect_that(names(weta1), equals(c("call", "link", "beta", "beta.vcv", "real", "logLik")))
-  expect_that(is.call(weta1$call), is_true())
+  expect_true(is.call(weta1$call))
 
   expect_that(dim(weta1$beta), equals(c(2, 4)))
   expect_that(colnames(weta1$beta),
@@ -115,7 +115,7 @@ test_that("occSScovSite with probit link",  {
 
   expect_that(class(weta1p), equals(c("wiqid", "list")))
   expect_that(names(weta1p), equals(c("call", "link", "beta", "beta.vcv", "real", "logLik")))
-  expect_that(is.call(weta1p$call), is_true())
+  expect_true(is.call(weta1p$call))
 
   expect_that(dim(weta1p$beta), equals(c(2, 4)))
   expect_that(colnames(weta1p$beta),

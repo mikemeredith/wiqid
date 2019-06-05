@@ -21,7 +21,7 @@ test_that("occSSrn with logit",  {
   expect_that(class(res), equals(c("wiqid", "list")))
   expect_that(names(res), equals(c("call", "link", "beta", "beta.vcv", "real", "logLik",
     "ci", "formulae", "index")))
-  expect_that(is.call(res$call), is_true())
+  expect_true(is.call(res$call))
   expect_that(colnames(res$real), equals(c("est", "lowCI", "uppCI")))
   expect_that(rownames(res$real),
        equals(c("psiHat", "lambdaHat", "rHat")))
@@ -82,7 +82,7 @@ test_that("occSSrn with probit",  {
   expect_that(class(resp), equals(c("wiqid", "list")))
   expect_that(names(resp), equals(c("call", "link", "beta", "beta.vcv", "real", "logLik",
     "ci", "formulae", "index")))
-  expect_that(is.call(resp$call), is_true())
+  expect_true(is.call(resp$call))
   expect_that(colnames(resp$real), equals(c("est", "lowCI", "uppCI")))
   expect_that(rownames(resp$real),
        equals(c("psiHat", "lambdaHat", "rHat")))
@@ -109,7 +109,7 @@ test_that("occSSrnSite with logit",  {
   expect_that(class(res), equals(c("wiqid", "list")))
   expect_that(names(res), equals(c("call", "link", "beta", "beta.vcv", "real", "logLik",
     "ci", "formulae", "index", "xlev", "scaling")))
-  expect_that(is.call(res$call), is_true())
+  expect_true(is.call(res$call))
   expect_that(colnames(res$real), equals(c("est", "lowCI", "uppCI")))
   expect_that(rownames(res$real)[c(1, 72, 73, 145)] ,
        equals(c("psi:1", "psi:72", "lambda:1", "r:1")))
@@ -123,7 +123,7 @@ test_that("occSSrnSite with logit",  {
   expect_that(class(res), equals(c("wiqid", "list")))
   expect_that(names(res), equals(c("call", "link", "beta", "beta.vcv", "real", "logLik",
     "ci", "formulae", "index", "xlev", "scaling")))
-  expect_that(is.call(res$call), is_true())
+  expect_true(is.call(res$call))
   expect_that(colnames(res$real), equals(c("est", "lowCI", "uppCI")))
   expect_that(rownames(res$real)[c(1, 72, 73, 145)] ,
        equals(c("psi:1", "psi:72", "lambda:1", "r:1")))
@@ -139,7 +139,7 @@ test_that("occSSrnSite with logit",  {
   expect_that(class(res), equals(c("wiqid", "list")))
   expect_that(names(res), equals(c("call", "link", "beta", "beta.vcv", "real", "logLik",
     "ci", "formulae", "index", "xlev", "scaling")))
-  expect_that(is.call(res$call), is_true())
+  expect_true(is.call(res$call))
   expect_that(colnames(res$real), equals(c("est", "lowCI", "uppCI")))
   expect_that(rownames(res$real)[c(1, 72, 73, 145)] ,
        equals(c("psi:1", "psi:72", "lambda:1", "r:1")))
@@ -155,7 +155,7 @@ test_that("occSSrnSite with logit",  {
   expect_that(class(res), equals(c("wiqid", "list")))
   expect_that(names(res), equals(c("call", "link", "beta", "beta.vcv", "real", "logLik",
     "ci", "formulae", "index", "xlev", "scaling")))
-  expect_that(is.call(res$call), is_true())
+  expect_true(is.call(res$call))
   expect_that(colnames(res$real), equals(c("est", "lowCI", "uppCI")))
   expect_that(rownames(res$real)[c(1, 72, 73, 145)] ,
        equals(c("psi:1", "psi:72", "lambda:1", "r:1")))

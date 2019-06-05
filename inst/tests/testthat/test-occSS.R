@@ -16,7 +16,7 @@ test_that("occSS with logit link",  {
   weta4 <- occSS(DH)  # This should call occSS0
   expect_that(class(weta4), equals(c("wiqid", "list")))
   expect_that(names(weta4), equals(c("call", "link", "beta", "beta.vcv", "real", "logLik","ci", "formulae", "index")))
-  expect_that(is.call(weta4$call), is_true())
+  expect_true(is.call(weta4$call))
   expect_that(dim(weta4$beta), equals(c(2, 4)))
   expect_that(colnames(weta4$beta),
     equals(c("est", "SE",  "lowCI", "uppCI")))
@@ -115,7 +115,7 @@ test_that("occSS with probit link",  {
   expect_that(class(weta4p), equals(c("wiqid", "list")))
   expect_that(names(weta4p), equals(c("call", "link", "beta", "beta.vcv", "real", "logLik",
     "ci", "formulae", "index")))
-  expect_that(is.call(weta4p$call), is_true())
+  expect_true(is.call(weta4p$call))
   expect_that(dim(weta4p$beta), equals(c(2, 4)))
   expect_that(colnames(weta4p$beta),
     equals(c("est", "SE",  "lowCI", "uppCI")))

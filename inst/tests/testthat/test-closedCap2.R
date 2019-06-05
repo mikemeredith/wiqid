@@ -97,7 +97,7 @@ test_that("closedCapMtcov gives right answers",  {
   expect_that(round(AIC(res0), 4), equals(155.2433))
       # Same as M0 model.
   # Fictitious covars:
-  set.seed(123)
+  set.seed(123) # NB new RNG for sample from R 3.6.0
   covars <- data.frame(Temp = runif(ncol(KanhaTigers), 15, 25),
       Cloud = sample(0:8, ncol(KanhaTigers), replace=TRUE))
   # Check dots passed to nlm
@@ -105,22 +105,32 @@ test_that("closedCapMtcov gives right answers",  {
       "Convergence may not have been reached")
   resC <- closedCapMtcov(KanhaTigers, p~Cloud, data=covars)
   expect_that(round(as.vector(resC$real[1, ]), 2),
-      is_equivalent_to(c(28.44, 26.43, 39.95)))
+      is_equivalent_to(c(28.39, 26.41, 39.92)))
   expect_that(round(as.vector(resC$real[-1, ]), 4),
+      # is_equivalent_to(c(  ## these values are for old RNG
+     # 0.2147,0.2029,0.2088,0.2058,0.1916,0.2147,0.1972,0.1916,0.1972,0.2147,
+     # 0.1438,0.1526,0.1532,0.1545,0.1212,0.1438,0.1398,0.1212,0.1398,0.1438,
+     # 0.3080,0.2647,0.2778,0.2687,0.2893,0.3080,0.2706,0.2893,0.2706,0.3080)))
       is_equivalent_to(c(
-     0.2147,0.2029,0.2088,0.2058,0.1916,0.2147,0.1972,0.1916,0.1972,0.2147,
-     0.1438,0.1526,0.1532,0.1545,0.1212,0.1438,0.1398,0.1212,0.1398,0.1438,
-     0.3080,0.2647,0.2778,0.2687,0.2893,0.3080,0.2706,0.2893,0.2706,0.3080)))
-  expect_that(round(AIC(resC), 4), equals(157.1073))
+      0.2430, 0.2095, 0.1658, 0.2258, 0.2610, 0.1658, 0.1658, 0.1658, 0.2610,
+      0.1795, 0.1725, 0.1578, 0.1100, 0.1672, 0.1750, 0.1100, 0.1100, 0.1100,
+      0.1750, 0.1274, 0.3307, 0.2725, 0.2422, 0.2976, 0.3704, 0.2422, 0.2422,
+      0.2422, 0.3704, 0.2468)))
+  expect_that(round(AIC(resC), 4), equals(154.6523))
 
   resTC <- closedCapMtcov(KanhaTigers, p~Temp+Cloud, data=covars)
   expect_that(round(as.vector(resTC$real[1, ]), 3),
-      is_equivalent_to(c(28.226, 26.358, 39.848)))
+      is_equivalent_to(c(28.353, 26.398, 39.898)))
   expect_that(round(as.vector(resTC$real[-1, ]), 4),
+      # is_equivalent_to(c(
+     # 0.1905,0.2793,0.1798,0.3715,0.2116,0.1142,0.1227,0.1924,0.1291,0.2638,
+     # 0.1227,0.2022,0.1265,0.2431,0.1331,0.0588,0.0732,0.1202,0.0790,0.1757,
+     # 0.2837,0.3722,0.2492,0.5210,0.3195,0.2103,0.1983,0.2934,0.2037,0.3759)))
       is_equivalent_to(c(
-     0.1905,0.2793,0.1798,0.3715,0.2116,0.1142,0.1227,0.1924,0.1291,0.2638,
-     0.1227,0.2022,0.1265,0.2431,0.1331,0.0588,0.0732,0.1202,0.0790,0.1757,
-     0.2837,0.3722,0.2492,0.5210,0.3195,0.2103,0.1983,0.2934,0.2037,0.3759)))
-  expect_that(round(AIC(resTC), 4), equals(149.4179))
+     0.1910, 0.2335, 0.1556, 0.2600, 0.2965, 0.1218, 0.1683, 0.2120, 0.2371, 0.1700,
+     0.1117, 0.1704, 0.1010, 0.1824, 0.1927, 0.0631, 0.1114, 0.1247, 0.1522, 0.1185,
+     0.3071, 0.3112, 0.2322, 0.3561, 0.4266, 0.2222, 0.2460, 0.3370, 0.3498, 0.2379)))
+  # expect_that(round(AIC(resTC), 4), equals(149.4179))
+  expect_that(round(AIC(resTC), 4), equals(154.7872))
 } )
 

@@ -14,7 +14,7 @@ test_that("occMS0 gives right answers",  {
   expect_that(class(res1), equals(c("wiqid", "list")))
   expect_that(names(res1),
     equals(c("call", "beta", "beta.vcv", "real", "logLik", "ci", "link", "index")))
-  expect_that(is.call(res1$call), is_true())
+  expect_true(is.call(res1$call))
 
   expect_that(dim(res1$beta), equals(c(4, 4)))
   expect_that(colnames(res1$beta),
@@ -52,7 +52,7 @@ test_that("occMStime gives right answers",  {
   expect_that(class(res1), equals(c("wiqid", "list")))
   expect_that(names(res1),
     equals(c("call", "beta", "beta.vcv", "real", "logLik")))
-  expect_that(is.call(res1$call), is_true())
+  expect_true(is.call(res1$call))
 
   expect_that(dim(res1$beta), equals(c(4, 4)))
   expect_that(colnames(res1$beta),
@@ -108,7 +108,7 @@ test_that("occMS gives right answers",  {
     expect_that(class(res1), equals(c("wiqid", "list")))
     expect_that(names(res1),
       equals(c("call", "beta", "beta.vcv", "real", "logLik", "ci", "link", "index")))
-    expect_that(is.call(res1$call), is_true())
+    expect_true(is.call(res1$call))
 
     expect_that(dim(res1$beta), equals(c(4, 4)))
     expect_that(colnames(res1$beta),
@@ -162,7 +162,7 @@ test_that("occMScovSite gives right answers",  {
   expect_that(class(res1), equals(c("wiqid", "list")))
   expect_that(names(res1),
     equals(c("call", "beta", "beta.vcv", "real", "logLik", "ci")))
-  expect_that(is.call(res1$call), is_true())
+  expect_true(is.call(res1$call))
 
   expect_that(dim(res1$beta), equals(c(4, 4)))
   expect_that(colnames(res1$beta),
