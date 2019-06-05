@@ -56,12 +56,7 @@ Additional graphical parameters.
 }
 
 \value{
-\code{diagPlot} returns invisibly a list with the components:
- \item{mcmc3d }{a 3-D array, iterations x chains x parameters, with the MCMC samples, after subsetting}
- \item{Rhat }{a vector of \code{Rhat} values}
- \item{n.eff }{a vector of \code{n.eff} values}
-
-The other functions return NULL invisibly.
+Return nothing, used for their plotting side effect.
 }
 \author{
 Mike Meredith
