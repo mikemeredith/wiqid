@@ -1,79 +1,15 @@
-TODO
 
-  * deprecate Bbinom
+CHANGES in 0.2.2 (2019-06-05)
 
-  * scrap improper default priors for Bnormal, maybe do as original version of BEST
-
-  * Improve Bsecr0...
-
-  * should as.Bwiqid.Bwiqid recalculate diagnostics?
-
-CHANGES in 0.2.1.9013 (2019-06-05)
-
-  * 'testthat' tests updated for new (from 3.6.0) RNG for sample.
-
-CHANGES in 0.2.1.9012 (2019-06-03)
-
-  * 'simpleRhat' returns NAs if only one chain, instead of throwing an error.
-
-CHANGES in 0.2.1.9011 (2019-05-20)
-
-  * Fixed bug in 'diagPlot' when MCMC chain values not quite equal.
-
-CHANGES in 0.2.1.9010 (2019-05-05)
-
-  * 'diagPlot' displays a 'main' title in the outer margin, returns nothing.
-
-CHANGES in 0.2.1.9009 (2019-05-04)
-
-  * 'diagPlot' gains a 'chains' argument.
-
-CHANGES in 0.2.1.9008 (2019-05-01)
-
-  * Fixed incorrect handling of class 'bugs' objects in 'diagPlot' and 'as.Bwiqid'.
-
-CHANGES in 0.2.1.9007 (2019-04-22)
-
-  * a few typos fixed plus change to 'formula' call to satisfy R 3.7.
-
-CHANGES in 0.2.1.9006 (2019-04-20)
-
-  * 'diagPlot' revamped; accepts a range of classes.
-
-CHANGES in 0.2.1.9005 (2019-04-19)
-
-  * Tweaks to 'crosscorrPlot' to prevent silly warnings; 'which' argument replaced with 'params'.
-
-CHANGES in 0.2.1.9004 (2019-04-18)
-
-  * 'crosscorrPlot' now accepts classes 'mcmc.list', 'jagsUI', 'bugs', 'rjags', 'runjags'.
-
-CHANGES in 0.2.1.9003 (2019-04-18)
+  * 'diagPlot' revamped; accepts a range of classes, not just 'Bwiqid'.
 
   * 'as.Bwiqid' revamped; makes more effort to retain original Rhat and n.eff; parameter
-    names conversion changed: a1[1,2] now becomes a1.1.2. instead of a11.2; original
+    names conversion changed: a1[2,3] now becomes a1.2.3. instead of a12.3; original
     names retained as attribute 'BUGSnames'.
 
-
-CHANGES in 0.2.1.9001
-
-  * Changed 'diagPlot' display for integers to dynamite plot instead of histogram.
-
-  * Separate means for each chain in 'diagPlot' density plots.
-
-CHANGES in 0.2.1.9000
-
-  * Added 'crosscorrPlot' function for 'Bwiqid' objects.
-
-  * Changed 'diagPlot' display for integers to lollipop plot instead of histogram.
-
-CHANGES in 0.2.1
-
-  * 'diagPlot' no longer uses its own colour palette.
+  * Added 'crosscorrPlot' function, which accepts a range of classes.
 
   * 'window.Bwiqid' now adds new diagnostics for Rhat and n.eff.
-
-  * Rhat calculated with 'simpleRhat', n.eff with 'safeNeff' everywhere.
 
 CHANGES in 0.2.0
 
