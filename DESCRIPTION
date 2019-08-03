@@ -1,9 +1,9 @@
 Package: wiqid
 Type: Package
 Title: Quick and Dirty Estimates for Wildlife Populations
-Version: 0.2.2
-Date: 2019-06-05
-Depends: HDInterval
+Version: 0.2.2.9000
+Date: 2019-08-03
+Depends: HDInterval, R (>= 2.10)
 Imports: stats, truncnorm, MASS, coda
 Suggests: secr (>= 3.0), shiny, rjags
 Author: Mike Meredith

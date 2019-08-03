@@ -1,4 +1,11 @@
-# Quick and Dirty functions for Wildlife simulations.
+wiqid
+=====
+
+[![CRAN status](https://www.r-pkg.org/badges/version/wiqid)](https://cran.r-project.org/web/packages/jagsUI/index.html)
+[![Downloads](https://cranlogs.r-pkg.org/badges/last-month/wiqid)](https://www.r-pkg.org/services)
+
+
+## Quick and Dirty functions for Wildlife simulations.
 
 This package began life as a collection of little functions to estimate occupancy or abundance or survival directly in `R`, without having to export the data to `PRESENCE` or `MARK` or `EstimateS`, put together for a simulations workshop.
 
