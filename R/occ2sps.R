@@ -134,13 +134,13 @@ occ2sps <- function(DHA, DHB, model=NULL, data=NULL, ci=0.95, verify=TRUE)  {
     SE <- suppressWarnings(sqrt(diag(varcov)))
     beta.mat[, 2] <- SE
     beta.mat[, 3:4] <- sweep(outer(SE, crit), 1, beta.mat[, 1], "+")
+    SElp0 <- matrix(NA, nSites, M)
+    for(i in 1:M) {
+      SElp0[, i] <- sqrt(getFittedVar(modMatList[[i]], varcov[idK == i, idK == i]))
+    }
+    SElp <- as.vector(SElp0[, modPars])
+    lp.mat[, 2:3] <- sweep(outer(SElp, crit), 1, lp.mat[, 1], "+")
   }
-  SElp0 <- matrix(NA, nSites, M)
-  for(i in 1:M) {
-    SElp0[, i] <- sqrt(getFittedVar(modMatList[[i]], varcov[idK == i, idK == i]))
-  }
-  SElp <- as.vector(SElp0[, modPars])
-  lp.mat[, 2:3] <- sweep(outer(SElp, crit), 1, lp.mat[, 1], "+")
 
   out <- list(call = match.call(),
               beta = beta.mat,

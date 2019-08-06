@@ -1,4 +1,8 @@
 
+CHANGES in 0.2.2.9001 (2019-08-05)
+
+  * Fixed: bug in occ2sps when Hessian not invertible.
+
 CHANGES in 0.2.2.9000 (2019-08-03)
 
   * Converted all data files to .RData instead of R. Needed Depends: R (>= 2.10).
