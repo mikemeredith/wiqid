@@ -1,7 +1,12 @@
 
+CHANGES in 0.2.2.9002 (2019-10-27)
+
+  * Fixed: bug in 'dt2'; also error in argument names for '*t2' functions;
+    new '*t3' functions added.
+
 CHANGES in 0.2.2.9001 (2019-08-05)
 
-  * Fixed: bug in occ2sps when Hessian not invertible.
+  * Fixed: bug in 'occ2sps' when Hessian not invertible.
 
 CHANGES in 0.2.2.9000 (2019-08-03)
 

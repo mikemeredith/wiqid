@@ -47,7 +47,7 @@ logical; if TRUE, probabilities p are given as log(p).
 \value{
 \code{dgamma2} gives the density, \code{pgamma2} gives the distribution function, \code{qgamma2} gives the quantile function, and \code{rgamma2} generates random deviates.
 
-code{getGammaPar} returns a 2-ccolumn matrix with the shape and rate parameters corresponding to \code{mean} and \code{sd}. }
+\code{getGammaPar} returns a 2-column matrix with the shape and rate parameters corresponding to \code{mean} and \code{sd}. }
 \author{
 Mike Meredith
 }

@@ -180,7 +180,8 @@ These are convenience wrappers for the related d/p/q/r functions in the \code{st
   \code{\link{dbeta2} etc} \tab Beta distribution with mean and sd \cr
   \code{\link{dbeta3} etc} \tab Beta distribution with mode and concentration \cr
   \code{\link{dgamma2} etc} \tab Gamma distribution with mean and sd \cr
-  \code{\link{dt2} etc} \tab t-distribution with mean, sd and df parameters
+  \code{\link{dt2} etc} \tab t-distribution with location, scale and df parameters\cr
+  \code{\link{dt3} etc} \tab t-distribution with mean, sd and df parameters
   }
 }
 

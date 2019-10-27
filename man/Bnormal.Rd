@@ -7,7 +7,7 @@
 Bayesian modelling of a normal (Gaussian) distribution
 }
 \description{
-Bayesian estimation of centre (\eqn{\mu}) and scale (\eqn{\sigma}) of a normal distribution based on a sample. \code{Bnormal} uses a gamma prior on the precision, \eqn{\tau = 1/\sigma^2}, while \code{Bnormal2} applies a gamma prior to \eqn{\sigma}.
+Bayesian estimation of centre (\eqn{\mu}) and scale (spread) (\eqn{\sigma}) of a normal distribution based on a sample. \code{Bnormal} uses a gamma prior on the precision, \eqn{\tau = 1/\sigma^2}, while \code{Bnormal2} applies a gamma prior to \eqn{\sigma}.
 }
 \usage{
 Bnormal(y, priors=NULL,
