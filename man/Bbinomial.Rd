@@ -7,11 +7,11 @@
 Bayesian analysis of binomial data
 }
 \description{
-Simulates a sample from the posterior for a binomial likelihood and beta prior.
+Simulates a sample from the posterior for a binomial likelihood and beta prior. \code{Bbinom} is deprecated and will be removed in the next version; use \code{Bbinomial} instead.
 }
 \usage{
-Bbinom(y, n, priors=NULL, sample=10000)
-Bbinomial(y, n, priors=NULL, sample=100000)
+Bbinom(...)
+Bbinomial(y, n, priors=NULL, draws=100000, ...)
 }
 \arguments{
   \item{y}{
@@ -23,8 +23,11 @@ the number of trials
   \item{priors}{
 an optional list with elements specifying the priors for the mode and concentration of the beta prior distribution; see Details.
 }
-  \item{sample}{
-the number of MCMC observations to be returned.
+  \item{draws}{
+the number of MCMC draws to be returned.
+}
+  \item{...}{
+other arguments to pass to the function.
 }
 }
 

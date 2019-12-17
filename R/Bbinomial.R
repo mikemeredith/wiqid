@@ -6,7 +6,12 @@
 
 # Bbinom is retained for backward compatibility but will shortly be deprecated.
 
-Bbinomial <- function(y, n, priors=NULL, sample=100000) {
+Bbinomial <- function(y, n, priors=NULL, draws=100000, ...) {
+
+  if(!is.null(list(...)$sample)) {
+    message("*The 'sample' argument is deprecated, please use 'draws'.*")
+    draws <- list(...)$sample
+  }
 
   if(!is.null(priors$conc) && priors$conc < 2)
     stop("priors$conc must not be less than 2.")
@@ -25,42 +30,18 @@ Bbinomial <- function(y, n, priors=NULL, sample=100000) {
   po1 <- pr1 + y
   po2 <- pr2 + n - y
 
-  post <- rbeta(sample, po1, po2)
+  post <- rbeta(draws, po1, po2)
 
-  out <- as.Bwiqid(data.frame(pi = post),
-      header = "Sample drawn from beta posterior distribution",
-      defaultPlot = "pi")
+  out <- as.Bwiqid(data.frame(p = post),
+      header = "Values drawn from beta posterior distribution",
+      defaultPlot = "p")
   attr(out, "call") <- match.call()
   attr(out, "n.chains") <- 1
   return(out)
 }
 # ..............................................................
 
-Bbinom <- function(y, n, priors=NULL, sample=10000) {
-
-  if(!is.null(priors$conc) && priors$conc < 2)
-    stop("priors$conc must not be less than 2.")
-  if(!is.null(priors$mode) && (priors$mode < 0 || priors$mode > 1 ))
-    stop("priors$mode must be between 0 and 1.")
-  if(y > n)
-    stop("Number of successes (y) cannot be greater than the number of trials (n).")
-
-  if(!is.null(priors$conc) && !is.null(priors$mode)) {
-    pr1 <- priors$mode * (priors$conc - 2) + 1
-    pr2 <- (1 - priors$mode) * (priors$conc - 2) + 1
-  } else {
-    pr1 <- pr2 <- 1
-  }
-
-  po1 <- pr1 + y
-  po2 <- pr2 + n - y
-
-  post <- rbeta(sample, po1, po2)
-
-  out <- as.Bwiqid(data.frame(pi = post),
-      header = "Sample drawn from beta posterior distribution",
-      defaultPlot = "pi")
-  attr(out, "call") <- match.call()
-  attr(out, "n.chains") <- 1
-  return(out)
+Bbinom <- function(...) {
+  warning("[Bbinom] is deprecated; please use [Bbinomial] instead.", call. = FALSE)
+  Bbinomial(...)
 }

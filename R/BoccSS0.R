@@ -4,8 +4,14 @@
 # This version uses a Gibbs sampler coded in R
 
 BoccSS0 <- function(y, n, psiPrior=c(1,1), pPrior=c(1,1),
-                    chains=3, sample=30000, burnin=100) {
+                    chains=3, draws=30000, burnin=100, ...) {
   startTime <- Sys.time()
+
+  if(!is.null(list(...)$sample)) {
+    message("* The 'sample' argument is deprecated, please use 'draws'. *")
+    draws <- list(...)$sample
+  }
+
   if(!is.null(dim(y)) && dim(y)[2] > 1) {  # detection history
     n <- rowSums(!is.na(y))
     y <- rowSums(y, na.rm=TRUE)
@@ -20,7 +26,7 @@ BoccSS0 <- function(y, n, psiPrior=c(1,1), pPrior=c(1,1),
   known <- y > 0  # sites known to be occupied
   detected <- sum(y)
 
-  n.iter <- ceiling(sample / chains) + burnin
+  n.iter <- ceiling(draws / chains) + burnin
   chain <- matrix(nrow=n.iter, ncol=2)
   colnames(chain) <- c("psi", "p")
   chain[1, ] <- rep(0.5, 2)

@@ -6,12 +6,12 @@
 Spatially explicit capture-recapture (secr) density estimation using MCMC
 }
 \description{
-Functions to estimate density from mark-recapture data using MCMC methods and JAGS. 
+Functions to estimate density from mark-recapture data using MCMC methods and JAGS.
 }
 \usage{
 Bsecr0(capthist, buffer = 100, start = NULL, nAug = NA, maxSig = 2*buffer,
-                    chains=3, sample=1e4, burnin=0, thin=1, adapt=1000,
-                    priorOnly=FALSE, parallel=NULL, seed=NULL) 
+                    chains=3, draws=1e4, burnin=0, thin=1, adapt=1000,
+                    priorOnly=FALSE, parallel=NULL, seed=NULL, ...)
 }
 \arguments{
   \item{capthist}{
@@ -31,8 +31,8 @@ maximum value for the scale parameter of the detection function: the prior is \e
   \item{chains}{
 the number of Markov chains to run.
 }
-  \item{sample}{
-the total number of values to return. The number of values calculated per chain is \code{adapt + burnin + ceiling(sample / chains) * thin}.
+  \item{draws}{
+the total number of values to return. The number of values calculated per chain is \code{adapt + burnin + ceiling(draws / chains) * thin}.
 }
   \item{burnin}{
 the number of values to discard at the beginning of each chain.
@@ -41,7 +41,7 @@ the number of values to discard at the beginning of each chain.
 the thinning rate. If set to n > 1, n values are calculated for each value returned.
 }
   \item{adapt}{
-the number of iterations to run in the JAGS adaptive phase. 
+the number of iterations to run in the JAGS adaptive phase.
 }
   \item{priorOnly}{
 if TRUE, the function produces random draws from the appropriate \emph{prior} distributions, with a warning.
@@ -52,9 +52,12 @@ set a seed for the random number generators.
   \item{parallel}{
 if TRUE or NULL and sufficient cores are available, the MCMC chains are run in parallel; if TRUE and insufficient cores are available, a warning is given.
 }
+  \item{...}{
+other arguments to pass to the function.
+}
 }
 \details{
-\code{Bsecr0} implements an intercept-only model (D ~ 1, g0 ~ 1, sigma ~ 1). 
+\code{Bsecr0} implements an intercept-only model (D ~ 1, g0 ~ 1, sigma ~ 1).
 
 }
 \value{

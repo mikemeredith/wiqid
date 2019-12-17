@@ -5,8 +5,8 @@
 # This uses rjags via the local justRunJags function
 
 BsurvCJS <- function(DH, model=list(phi~1, p~1), data=NULL, freq=1, priors=NULL,
-    chains=3, sample=1e4, burnin=1000, thin=1, adapt=1000,
-    parallel = NULL, seed=NULL, priorOnly=FALSE) {
+    chains=3, draws=1e4, burnin=1000, thin=1, adapt=1000,
+    parallel = NULL, seed=NULL, priorOnly=FALSE, ...) {
   # phi(t) p(t) model or models with time covariates for Cormack-Joly-Seber
   # estimation of apparent survival.
   # ** DH is detection history matrix/data frame, animals x occasions.
@@ -17,6 +17,11 @@ BsurvCJS <- function(DH, model=list(phi~1, p~1), data=NULL, freq=1, priors=NULL,
   # ** ci is required confidence interval.
 
   startTime <- Sys.time()
+
+  if(!is.null(list(...)$sample)) {
+    message("*The 'sample' argument is deprecated, please use 'draws'.*")
+    draws <- list(...)$sample
+  }
 
   # Sanity checks:
   if (priorOnly)
@@ -133,7 +138,7 @@ BsurvCJS <- function(DH, model=list(phi~1, p~1), data=NULL, freq=1, priors=NULL,
 
   # Run the model:
   resB <- justRunJags(jagsData, inits, wanted, modelFile,
-            chains, sample, burnin, thin, adapt,
+            chains, draws, burnin, thin, adapt,
             modules = c("glm"), parallel = parallel, seed=seed)
 
   out <- as.Bwiqid(resB,

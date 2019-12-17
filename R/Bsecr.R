@@ -3,9 +3,13 @@
 
 Bsecr0 <- function(capthist, buffer = 100, start=NULL, nAug = NA,
                     maxSig = 2*buffer,
-                    chains=3, sample=1e4, burnin=0, thin=1, adapt=1000,
-                    priorOnly=FALSE, parallel=NULL, seed=NULL) {
+                    chains=3, draws=1e4, burnin=0, thin=1, adapt=1000,
+                    priorOnly=FALSE, parallel=NULL, seed=NULL, ...) {
 
+  if(!is.null(list(...)$sample)) {
+    message("*The 'sample' argument is deprecated, please use 'draws'.*")
+    draws <- list(...)$sample
+  }
   if(!inherits(capthist, "capthist"))
     stop("'capthist' is not a valid capthist object.")
   if(length(dim(capthist)) < 3)
@@ -88,7 +92,7 @@ Bsecr0 <- function(capthist, buffer = 100, start=NULL, nAug = NA,
 
   # Run the model:
   resB <- justRunJags(jagsData, inits, wanted, modelFile,
-            chains, sample, burnin, thin, adapt,
+            chains, draws, burnin, thin, adapt,
             modules = c("glm"), parallel = parallel, seed=seed)
 
   out <- as.Bwiqid(resB,

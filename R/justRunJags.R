@@ -20,18 +20,18 @@ unloadJagsModules <- function(modules)  {
 # This function is also called (with chains=1) to run JAGS in each worker.
 # Note that initList MUST be the first argument to work with parLapply.
 justRunJagsSerial <- function(initList, data, params, modelFile,
-    chains, sample, burnin, adapt=1000, thin=1) {
+    chains, draws, burnin, adapt=1000, thin=1) {
   jm <- rjags::jags.model(modelFile, data, initList, n.chains=chains, n.adapt=adapt)
   if(burnin > 0)
     update(jm, burnin)
-  rjags::coda.samples(jm, params, n.iter=ceiling(sample / chains) * thin, thin=thin)
+  rjags::coda.samples(jm, params, n.iter=ceiling(draws / chains) * thin, thin=thin)
 }
 # ---------------------------------------------------------------
 
 # The main function to run JAGS
 
 justRunJags <- function(data, inits, params, modelFile,
-        chains, sample, burnin, thin=1, adapt = 1000,
+        chains, draws, burnin, thin=1, adapt = 1000,
         modules = c("glm"), parallel = NULL, seed=NULL)  {
 
   # Check that `rjags` is installed
@@ -83,14 +83,14 @@ justRunJags <- function(data, inits, params, modelFile,
       clusterEvalQ(cl, loadJagsModules(modules)) # No need to unload as we stopCluster
     }
     chainList <- parLapply(cl, initList, justRunJagsSerial, data=data, params=params,
-      modelFile=modelFile, chains=1, sample=ceiling(sample / chains), burnin=burnin, adapt=adapt, thin=thin)
+      modelFile=modelFile, chains=1, draws=ceiling(draws / chains), burnin=burnin, adapt=adapt, thin=thin)
     mcmcList <- mcmc.list(lapply(chainList, function(x) x[[1]]))
     message("done.")
   } else {     ##### Do the serial stuff #####
     if(!is.null(modules))
       loadJagsModules(modules)
     mcmcList <- justRunJagsSerial(initList, data=data, params=params, modelFile=modelFile,
-                  chains=chains, sample=sample, burnin=burnin, adapt=adapt, thin=thin)
+                  chains=chains, draws=draws, burnin=burnin, adapt=adapt, thin=thin)
     if(!is.null(modules))
       unloadJagsModules(modules)
   }

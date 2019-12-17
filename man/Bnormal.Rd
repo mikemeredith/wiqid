@@ -11,11 +11,11 @@ Bayesian estimation of centre (\eqn{\mu}) and scale (spread) (\eqn{\sigma}) of a
 }
 \usage{
 Bnormal(y, priors=NULL,
-            chains=3, sample=10000, burnin=100)
+            chains=3, draws=10000, burnin=100, ...)
 
-Bnormal2(y, priors=NULL, 
-            chains=3, sample=3e4, burnin=0, thin=1, adapt=1000,
-            doPriorsOnly=FALSE, parallel=NULL, seed=NULL)
+Bnormal2(y, priors=NULL,
+            chains=3, draws=3e4, burnin=0, thin=1, adapt=1000,
+            doPriorsOnly=FALSE, parallel=NULL, seed=NULL, ...)
 
 }
 \arguments{
@@ -31,8 +31,8 @@ if TRUE, \code{Bnormal2} returns MCMC chains representing the prior distribution
   \item{chains}{
 the number of MCMC chains to run.
 }
-  \item{sample}{
-the number of MCMC observations per chain to be returned.
+  \item{draws}{
+the number of MCMC draws per chain to be returned.
 }
   \item{thin}{
 thinning rate. If set to n > 1, n steps of the MCMC chain are calculated for each one returned. This is useful if autocorrelation is high.
@@ -49,6 +49,10 @@ a positive integer (or NULL): the seed for the random number generator, used to 
   \item{parallel}{
 if NULL or TRUE and > 3 cores are available, the MCMC chains are run in parallel. (If TRUE and < 4 cores are available, a warning is given.)
 }
+  \item{...}{
+other arguments to pass to the function.
+}
+
 }
 
 \details{
@@ -85,5 +89,5 @@ Bnormal(HB, priors=list(muMean=1, muSD=0.2)) # a silly prior produces a warning.
 \donttest{
 Bnormal2(HB)  # with broad normal prior for mu, uniform for sigma
 Bnormal2(HB, priors=list(muMean=1000, muSD=200, sigmaMode=20, sigmaSD=10))
-} 
+}
 }

@@ -15,11 +15,11 @@ Functions to estimate occupancy from detection/non-detection data for a single s
 }
 \usage{
 BoccSS0(y, n, psiPrior=c(1,1), pPrior=c(1,1),
-                    chains=3, sample=30000, burnin=100)
+                    chains=3, draws=30000, burnin=100, ...)
 
 BoccSS(DH, model=NULL, data=NULL, priors=list(),
-                    chains=3, sample=30000, burnin=1000, thin=1, parallel,
-                    seed=NULL, doWAIC=FALSE)
+                    chains=3, draws=30000, burnin=1000, thin=1, parallel,
+                    seed=NULL, doWAIC=FALSE, ...)
 }
 \arguments{
   \item{y}{
@@ -46,7 +46,7 @@ a list with elements for prior mean and variance for coefficients; see Details. 
   \item{chains}{
 number of MCMC chains to run.
 }
-  \item{sample}{
+  \item{draws}{
 minimum number of values to return. The actual number will be a multiple of the number of chains.
 }
   \item{burnin}{
@@ -63,6 +63,9 @@ logical; if TRUE, the Watanabe-Akaike Information Criterion is calculated. NOTE:
 }
   \item{seed}{
 for reproducible results; note that parallel and sequential methods use different random number generators, so will give different results with the same seed.
+}
+  \item{...}{
+other arguments to pass to the function.
 }
 
 }

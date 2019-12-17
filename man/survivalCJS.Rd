@@ -16,8 +16,8 @@ survCJSaj(DHj, DHa=NULL, model=list(phiJ~1, phiA~1, p~1), data=NULL,
     freqj=1, freqa=1, ci = 0.95, link=c("logit", "probit"), ...)
 
 BsurvCJS(DH, model=list(phi~1, p~1), data = NULL, freq=1, priors=NULL,
-    chains=3, sample=1e4, burnin=1000, thin=1, adapt=1000,
-    parallel = NULL, seed=NULL, priorOnly=FALSE)
+    chains=3, draws=1e4, burnin=1000, thin=1, adapt=1000,
+    parallel = NULL, seed=NULL, priorOnly=FALSE, ...)
 }
 \arguments{
   \item{DH}{
@@ -59,7 +59,7 @@ a list with elements for prior mean and variance for coefficients; see Details.
   \item{chains}{
 the number of Markov chains to run.
 }
-  \item{sample}{
+  \item{draws}{
 the minimum number of values to return; the actual number returned may be slightly higher, as it will be a multiple of \code{chains}.
 }
   \item{burnin}{

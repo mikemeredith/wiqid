@@ -8,10 +8,14 @@
 #  but with normal instead of t-distribution.
 
 Bnormal2 <- function(y, priors=NULL,
-                    chains=3, sample=3e4, burnin=0, thin=1, adapt=1000,
-                    doPriorsOnly=FALSE, parallel=NULL, seed=NULL) {
+                    chains=3, draws=3e4, burnin=0, thin=1, adapt=1000,
+                    doPriorsOnly=FALSE, parallel=NULL, seed=NULL, ...) {
 
-  startTime <- Sys.time()
+   if(!is.null(list(...)$sample)) {
+    message("* The 'sample' argument is deprecated, please use 'draws'. *")
+    draws <- list(...)$sample
+  }
+ startTime <- Sys.time()
 
   if(doPriorsOnly)
     warning("The output shows the prior distributions,
@@ -109,7 +113,7 @@ Bnormal2 <- function(y, priors=NULL,
 
   # RUN THE CHAINS
   codaSamples <- justRunJags(dataForJAGS, inits, c("mu", "sigma"), modelFile,
-            chains, sample, burnin, thin, adapt,
+            chains, draws, burnin, thin, adapt,
             modules = c("glm"), parallel = parallel, seed=seed)
 
   out <- as.Bwiqid(codaSamples,

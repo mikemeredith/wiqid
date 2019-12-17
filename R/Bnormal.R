@@ -7,8 +7,12 @@
 # The gamma prior is specified by shape and rate.
 
 Bnormal <- function(y, priors=NULL,
-                    chains=3, sample=10000, burnin=100) {
+                    chains=3, draws=10000, burnin=100, ...) {
 
+  if(!is.null(list(...)$sample)) {
+    message("* The 'sample' argument is deprecated, please use 'draws'. *")
+    draws <- list(...)$sample
+  }
   startTime <- Sys.time()
 
   # Data summaries
@@ -33,7 +37,7 @@ Bnormal <- function(y, priors=NULL,
   aBit <- a + n / 2 # This doesn't change
 
   # Objects to hold results
-  n.iter <- sample + burnin
+  n.iter <- draws + burnin
   chainList <- vector('list', chains)
   chain <- matrix(nrow=n.iter, ncol=2) # will hold output
   colnames(chain) <- c("mu", "sigma")

@@ -9,7 +9,7 @@ Bayesian analysis of count data
 Simulates a sample from the posterior for a Poisson likelihood and gamma prior.
 }
 \usage{
-Bpoisson(y, n, priors=NULL, sample=10000)
+Bpoisson(y, n, priors=NULL, draws=10000, ...)
 }
 \arguments{
   \item{y}{
@@ -21,8 +21,11 @@ the sample size
   \item{priors}{
 an optional list with elements specifying the priors for the mode and SD of the gamma prior distribution; see Details.
 }
-  \item{sample}{
-the number of MCMC observations to be returned.
+  \item{draws}{
+the number of MCMC draws to be returned.
+}
+  \item{...}{
+additional arguments to pass to the function.
 }
 }
 

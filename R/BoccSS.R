@@ -3,8 +3,8 @@
 # Bayesian version, using Dorazio & Rodriguez (2011) algorithm
 
 BoccSS <- function(DH, model=NULL, data=NULL, priors=list(),
-                    chains=3, sample=30000, burnin=1000, thin=1, parallel,
-                    seed=NULL, doWAIC=FALSE) {
+                    chains=3, draws=30000, burnin=1000, thin=1, parallel,
+                    seed=NULL, doWAIC=FALSE, ...) {
   # single-season occupancy models with site and survey covariates
   # ** DH is detection data in a 1/0/NA matrix or data frame, sites in rows,
   #    detection occasions in columns..
@@ -13,6 +13,11 @@ BoccSS <- function(DH, model=NULL, data=NULL, priors=list(),
   # ** data is a DATA FRAME with single columns for site covariates and a column for each survey occasion for each survey covariate.
   # ** priors is a list with elements for prior mean and variance for coefficients.
   startTime <- Sys.time()
+
+  if(!is.null(list(...)$sample)) {
+    message("* The 'sample' argument is deprecated, please use 'draws'. *")
+    draws <- list(...)$sample
+  }
 
   # Check DH:
   tst <- try(range(DH, na.rm=TRUE), silent=TRUE)
@@ -168,7 +173,7 @@ BoccSS <- function(DH, model=NULL, data=NULL, priors=list(),
   y <- rowSums(DH, na.rm=TRUE)
   z <- as.integer(y > 0)  ## (Starting value for) occupancy state
 
-  n.iter <- ceiling(sample / chains) * thin + burnin
+  n.iter <- ceiling(draws / chains) * thin + burnin
   message("Starting MCMC run for ", chains, " chains with ", n.iter, " iterations.")
   flush.console()
 

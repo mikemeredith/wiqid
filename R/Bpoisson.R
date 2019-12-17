@@ -6,8 +6,12 @@
 
 # y is total count, n is the sample size, eg, y=10 ticks on n=6 rats.
 
-Bpoisson <- function(y, n, priors=NULL, sample=10000) {
+Bpoisson <- function(y, n, priors=NULL, draws=10000, ...) {
 
+  if(!is.null(list(...)$sample)) {
+    message("*The 'sample' argument is deprecated, please use 'draws'.*")
+    draws <- list(...)$sample
+  }
   if(!is.null(priors$mode) && priors$mode <= 0)
     stop("priors$mode must be greater than 0.")
   if(!is.null(priors$sd) && (priors$sd <= 0 ))
@@ -24,10 +28,10 @@ Bpoisson <- function(y, n, priors=NULL, sample=10000) {
   po_shape <- pr_shape + y
   po_rate <- pr_rate + n
 
-  post <- rgamma(sample, po_shape, po_rate)
+  post <- rgamma(draws, po_shape, po_rate)
 
   out <- as.Bwiqid(data.frame(lambda = post),
-      header = "Sample drawn from gamma posterior distribution",
+      header = "Values drawn from gamma posterior distribution",
       defaultPlot = "lambda")
   attr(out, "call") <- match.call()
   attr(out, "n.chains") <- 1
