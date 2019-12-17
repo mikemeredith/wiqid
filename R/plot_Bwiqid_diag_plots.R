@@ -3,9 +3,11 @@
 # diagPlot and density0 moved to plot_diagPlot.R
 # crosscorrPlot moved plot_crosscorrPlot.R
 
-tracePlot <- function(object, ask=TRUE, ...)  {
+tracePlot <- function(object, ask=NULL, ...)  {
   if(!inherits(object, "Bwiqid"))
     stop("object is not a valid Bwiqid object")
+  if(is.null(ask))
+    ask <- dev.interactive(orNone=TRUE)
   n.chains <- attr(object, "n.chains")
   if(is.null(n.chains) || nrow(object) %% n.chains != 0) {
     warning("Invalid number of chains, treating data as a single chain")
@@ -21,6 +23,10 @@ tracePlot <- function(object, ask=TRUE, ...)  {
 
   for( i in 1:ncol(object)) {
     mat <- matrix(object[, i], ncol=n.chains)
+    if(all(is.na(mat))) {
+      warning("The chain '", names(object[i]), "' contains only NAs and cannot be plotted.", call.=FALSE)
+      next
+    }
     useArgs$ylab <- names(object[i])
     useArgs$y <- mat
     useArgs$main <- names(object)[i]
@@ -32,7 +38,9 @@ tracePlot <- function(object, ask=TRUE, ...)  {
 }
 # ..........................................................
 
-densityPlot <- function(object, ask=TRUE, ...)  {
+densityPlot <- function(object, ask=NULL, ...)  {
+  if(is.null(ask))
+    ask <- dev.interactive(orNone=TRUE)
   if(!inherits(object, "Bwiqid"))
     stop("object is not a valid Bwiqid object")
   n.chains <- attr(object, "n.chains")
@@ -50,6 +58,10 @@ densityPlot <- function(object, ask=TRUE, ...)  {
 
   for( i in 1:ncol(object)) {
     mat <- matrix(object[, i], ncol=n.chains)
+    if(any(is.na(mat))) {
+      warning("The chain '", names(object)[i], "' contains NAs and cannot be plotted.", call.=FALSE)
+      next
+    }
     useArgs$main <- names(object)[i]
     density0(mat, useArgs)
   }
@@ -58,9 +70,12 @@ densityPlot <- function(object, ask=TRUE, ...)  {
 }
 # ..........................................................
 
-acfPlot <- function(object, lag.max=NULL, ask=TRUE, ...)  {
+acfPlot <- function(object, lag.max=NULL, ask=NULL, ...)  {
+
   if(!inherits(object, "Bwiqid"))
     stop("object is not a valid Bwiqid object")
+  if(is.null(ask))
+    ask <- dev.interactive(orNone=TRUE)
   n.chains <- attr(object, "n.chains")
   if(is.null(n.chains) || nrow(object) %% n.chains != 0) {
     warning("Invalid number of chains, treating data as a single chain")
@@ -76,11 +91,15 @@ acfPlot <- function(object, lag.max=NULL, ask=TRUE, ...)  {
 
   for( i in 1:ncol(object)) {
     mat <- matrix(object[, i], ncol=n.chains)
+    if(any(is.na(mat))) {
+      warning("The chain '", names(object)[i], "' contains NAs and cannot be plotted.", call.=FALSE)
+      next
+    }
     acor <- apply(mat, 2, function(x) acf(x, lag.max=lag.max, plot=FALSE)$acf)
     if(any(is.na(acor))) {
       plot(1, 1, type = "n", ann = FALSE, axes = FALSE)
       text(1,1, "No ACF calculated.")
-      title(main=names(object[i]))
+      title(main=names(object)[i])
     } else {
       lags <- 0:(nrow(acor) - 1)
       if (n.chains > 1) {
@@ -89,7 +108,7 @@ acfPlot <- function(object, lag.max=NULL, ask=TRUE, ...)  {
         jitt <- 0
       }
       lags.mat <- outer(lags, jitt, "+")
-      useArgs$main <- names(object[i])
+      useArgs$main <- names(object)[i]
       useArgs$x <- lags.mat
       useArgs$y <- acor
       do.call(matplot, useArgs)

@@ -69,8 +69,11 @@ getArrB <- function(x, nChains=1) {
 
 
 # Function to do multiple trace and density plots
-diagPlot <- function(x, params=NULL, howMany, chains, ask=interactive(),
+diagPlot <- function(x, params=NULL, howMany, chains, ask=NULL,
   maxRow=4, RhatBad=1.05, ...) {
+
+  if(is.null(ask))
+    ask <- dev.interactive(orNone=TRUE)
 
   dots <- list(...)
   if(length(dots) == 1 && class(dots[[1]]) == "list")
@@ -152,6 +155,10 @@ diagPlot <- function(x, params=NULL, howMany, chains, ask=interactive(),
   for(i in 1:npars) {
     redFlag <- !is.na(Rhat[i]) && Rhat[i] > RhatBad
     mat <- matrix(mcmc3d[, , i], ncol=nchains) # need 'matrix' if 1 chain
+    if(any(is.na(mat))) {
+      warning("The chain '", parnames[i], "' contains NAs and cannot be plotted.", call.=FALSE)
+      next
+    }
     # do trace plot
     useArgsT$ylab <- parnames[i]
     useArgsT$y <- mat

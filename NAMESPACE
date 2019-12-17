@@ -18,10 +18,11 @@ importFrom("parallel", "detectCores", "makeCluster", "stopCluster",
   "clusterExport", "clusterEvalQ", "clusterSetRNGStream", "parLapply")
 importFrom("MASS", "mvrnorm", "eqscplot")
 importFrom("truncnorm", "rtruncnorm")
-importFrom("grDevices", "devAskNewPage", "topo.colors", "colorRampPalette")
+importFrom("grDevices", "devAskNewPage", "dev.interactive",
+  "topo.colors", "colorRampPalette")
 importFrom("graphics", "abline", "hist", "lines", "matplot", "par",
-   "plot", "plot.default", "polygon", "rect", "segments", "points",
-   "text", "box", "layout", "title")
+  "plot", "plot.default", "polygon", "rect", "segments", "points",
+  "text", "box", "layout", "title")
 
 export(
   survCJS, survCJSaj,
