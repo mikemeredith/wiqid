@@ -106,7 +106,7 @@ When specifying priors, note that numerical covariates are standardized internal
 
 There are \code{print}, \code{logLik}, and \code{nobs} methods for class \code{wiqid}.
 
-\code{BsurvCJS} returns an object of class \code{Bwiqid}, a data frame with columns for each p and psi value containing the series of MCMC samples, and attributes for details of the MCMC run.
+\code{BsurvCJS} returns an object of class \code{Bwiqid}, a data frame with columns for each p and psi value containing the series of MCMC draws, and attributes for details of the MCMC run.
 }
 \references{
 Lebreton, J-D; K P Burnham; J Clobert; D R Anderson. 1992. Modeling survival and testing biological hypotheses using marked animals: a unified approach with case studies. \emph{Ecological Monographs} 62:67-118.

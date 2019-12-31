@@ -38,7 +38,7 @@ There are columns for each of the following summary statistics ...
 ... and for some or all of the following diagnostics, depending on the MCMC engine used for fitting the model:
 
  \tabular{ll}{
-  \code{n.eff} \tab  the effective sample sizes for the parameters adjusted for autocorrelation; for stable estimates of credible intervals this should be at least 10,000. See \code{\link[coda]{effectiveSize}}.\cr
+  \code{n.eff} \tab  the effective chain length for the parameters adjusted for autocorrelation; for stable estimates of credible intervals this should be at least 10,000. See \code{\link[coda]{effectiveSize}}.\cr
   \code{MCerror} \tab the Monte Carlo errors for the parameters, expressed as a percentage of the standard deviation. Values less than 5\% are acceptable. \cr
   \code{Rhat} \tab the with potential scale reduction factors for the parameters, which is 1 on convergence and should be < 1.05 for all parameters. See \code{\link[coda]{gelman.diag}}. }
 

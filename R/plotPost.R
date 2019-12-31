@@ -3,7 +3,7 @@
 #  enhancements, including shading of the HDI in showCurve=TRUE plots.
 
 plotPost <-
-function( paramSampleVec, credMass=0.95, compVal=NULL, ROPE=NULL,
+function( paramDraws, credMass=0.95, compVal=NULL, ROPE=NULL,
            HDItextPlace=0.7, showMode=FALSE, showCurve=FALSE,
            shadeHDI=NULL, ... ) {
 
@@ -11,38 +11,43 @@ function( paramSampleVec, credMass=0.95, compVal=NULL, ROPE=NULL,
   # Returns a histogram object invisibly.
   # This stuff should be in the ... argument:
   #   yaxt="n", ylab="", xlab="Parameter", main="", cex.lab=1.5, cex=1.4,
-  #   xlim=range(compVal, paramSampleVec), col="skyblue", border="white",
+  #   xlim=range(compVal, paramDraws), col="skyblue", border="white",
   #   breaks=NULL
-  
-  if(!is.numeric(paramSampleVec))
-    stop("The first argument must be a vector of numbers.")
 
   # Deal with ... argument:
   dots <- list(...)
   if(length(dots) == 1 && class(dots[[1]]) == "list")
     dots <- dots[[1]]
-  defaultArgs <- list(xlab=deparse(substitute(paramSampleVec)),
+
+  if(!is.null(dots$paramSampleVec)) {
+    message("*The 'paramSampleVec' argument is deprecated, please use 'paramDraws'.*")
+    paramDraws <- dots$paramSampleVec
+  }
+  if(!is.numeric(paramDraws))
+    stop("The first argument must be a vector of numbers.")
+
+  defaultArgs <- list(xlab=deparse(substitute(paramDraws)),
     yaxt="n", ylab="", main="", cex.lab=1.5,
     cex=1.4, col="skyblue", border="white", bty="n", lwd=5, freq=FALSE,
-    xlim=range(compVal, hdi(paramSampleVec, 0.99)))
+    xlim=range(compVal, hdi(paramDraws, 0.99)))
   useArgs <- modifyList(defaultArgs, dots)
   # Get breaks argument
   breaks <- dots$breaks
   if (is.null(breaks)) {
-    if (all(paramSampleVec == round(paramSampleVec))) { # all integers
-      breaks <- seq(min(paramSampleVec), max(paramSampleVec) + 1) - 0.5
+    if (all(paramDraws == round(paramDraws))) { # all integers
+      breaks <- seq(min(paramDraws), max(paramDraws) + 1) - 0.5
     } else {
-      nbreaks <- ceiling(diff(range(paramSampleVec)) /
-                          diff(hdi(paramSampleVec)) * 18)
-      breaks <- seq( from=min(paramSampleVec), to=max(paramSampleVec),
+      nbreaks <- ceiling(diff(range(paramDraws)) /
+                          diff(hdi(paramDraws)) * 18)
+      breaks <- seq( from=min(paramDraws), to=max(paramDraws),
                      length.out=nbreaks)
     }
   }
-  histinfo <- hist(paramSampleVec, breaks=breaks, plot=FALSE)
+  histinfo <- hist(paramDraws, breaks=breaks, plot=FALSE)
   histinfo$xname <- useArgs$xlab
 
   if (showCurve) {
-    densCurve <- densityFolded( paramSampleVec, adjust=2 )
+    densCurve <- densityFolded( paramDraws, adjust=2 )
     cenTendHt <- 0.9 * max(densCurve$y)  # For plotting
     selPlot <- names(useArgs) %in%
       c(names(as.list(args(plot.default))), names(par(no.readonly=TRUE)))
@@ -57,7 +62,7 @@ function( paramSampleVec, credMass=0.95, compVal=NULL, ROPE=NULL,
       HDI <- hdi(densCurve, credMass, allowSplit=TRUE)
       ht <- attr(HDI, "height")
       if(nrow(HDI) == 1)  # hdi is not split
-        HDI <- matrix(hdi(paramSampleVec, credMass), nrow=1)
+        HDI <- matrix(hdi(paramDraws, credMass), nrow=1)
       if(!is.null(shadeHDI))  {
         for (i in 1:nrow(HDI)) {
           inHDI <- which(densCurve$x >= HDI[i, 1] & densCurve$x <= HDI[i, 2])
@@ -89,7 +94,7 @@ function( paramSampleVec, credMass=0.95, compVal=NULL, ROPE=NULL,
     do.call(plot, plotArgs)
     # Display the HDI.
     if(!is.null(credMass)) {
-      HDI <- hdi( paramSampleVec, credMass )
+      HDI <- hdi( paramDraws, credMass )
       lines(HDI, c(0,0), lwd=4, lend='butt')
       text( mean(HDI), 0, bquote(.(100*credMass) * "% HDI" ),
             adj=c(.5,-1.7), cex=useArgs$cex, xpd=TRUE )
@@ -102,11 +107,11 @@ function( paramSampleVec, credMass=0.95, compVal=NULL, ROPE=NULL,
 
   # Display mean or mode:
   if ( showMode==FALSE ) {
-      meanParam <- mean( paramSampleVec )
+      meanParam <- mean( paramDraws )
       text( meanParam, cenTendHt,
             bquote(mean==.(signifish(meanParam,3))), adj=c(.5,0), cex=useArgs$cex, xpd=TRUE )
   } else {
-      dres <- density( paramSampleVec )
+      dres <- density( paramDraws )
       modeParam <- dres$x[which.max(dres$y)]
       text( modeParam, cenTendHt,
             bquote(mode==.(signifish(modeParam,3))), adj=c(.5,0), cex=useArgs$cex, xpd=TRUE )
@@ -115,8 +120,8 @@ function( paramSampleVec, credMass=0.95, compVal=NULL, ROPE=NULL,
   if ( !is.null( compVal ) ) {
     cvHt <- 0.7 * max(histinfo$density)
     cvCol <- "darkgreen"
-    pcgtCompVal <- round( 100 * sum( paramSampleVec > compVal )
-                          / length( paramSampleVec ) , 1 )
+    pcgtCompVal <- round( 100 * sum( paramDraws > compVal )
+                          / length( paramDraws ) , 1 )
      pcltCompVal <- 100 - pcgtCompVal
      lines( c(compVal,compVal), c(0.96*cvHt,0),
             lty="dotted", lwd=1, col=cvCol )
@@ -129,8 +134,8 @@ function( paramSampleVec, credMass=0.95, compVal=NULL, ROPE=NULL,
   if ( !is.null( ROPE ) ) {
     ROPEtextHt <- 0.55 * max(histinfo$density)
     ropeCol <- "darkred"
-     pcInROPE <- ( sum( paramSampleVec > ROPE[1] & paramSampleVec < ROPE[2] )
-                          / length( paramSampleVec ) )
+     pcInROPE <- ( sum( paramDraws > ROPE[1] & paramDraws < ROPE[2] )
+                          / length( paramDraws ) )
      lines( c(ROPE[1],ROPE[1]), c(0.96*ROPEtextHt,0), lty="dotted", lwd=2,
             col=ropeCol )
      lines( c(ROPE[2],ROPE[2]), c(0.96*ROPEtextHt,0), lty="dotted", lwd=2,

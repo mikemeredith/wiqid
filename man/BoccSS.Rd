@@ -53,7 +53,7 @@ minimum number of values to return. The actual number will be a multiple of the 
 number of iterations per chain to discard as burn-in.
 }
   \item{thin}{
-the thinning interval between consecutive values in the sample
+the thinning interval between consecutive values in the chain.
 }
   \item{parallel}{
 logical; if TRUE \emph{and} \code{n.chains} > 1 \emph{and} available cores (as returned by \code{parallel::detectCores}) > 2, chains will be run in parallel. If missing, chains will be run in parallel if \code{n.chains} < available cores.
@@ -92,7 +92,6 @@ If you are unsure of the order of predictors, do a short run and check the outpu
 \value{
 Returns an object of class \code{Bwiqid}, which is a data frame with a column for each parameter in the model.
 
-
 There are \code{print} and \code{plot} methods for class \code{Bwiqid}, as well as \link{diagnostic plots}.
 }
 
@@ -119,6 +118,4 @@ tmp <- BoccSS0(y, n)
 tmp
 occSS0(y, n)  # for comparison
 plot(tmp)
-
-
 }

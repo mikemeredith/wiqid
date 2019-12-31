@@ -44,7 +44,7 @@ number of steps to discard as burn-in at the beginning of each chain.
 number of steps for adaptation.
 }
   \item{seed}{
-a positive integer (or NULL): the seed for the random number generator, used to obtain reproducible samples if required.
+a positive integer (or NULL): the seed for the random number generator, used to obtain reproducible output if required.
 }
   \item{parallel}{
 if NULL or TRUE and > 3 cores are available, the MCMC chains are run in parallel. (If TRUE and < 4 cores are available, a warning is given.)

@@ -1,4 +1,4 @@
-\name{Bayesian binomial simulation}
+\name{Bayesian binomial analysis}
 \alias{Bbinom}
 \alias{Bbinomial}
 
@@ -7,7 +7,7 @@
 Bayesian analysis of binomial data
 }
 \description{
-Simulates a sample from the posterior for a binomial likelihood and beta prior. \code{Bbinom} is deprecated and will be removed in the next version; use \code{Bbinomial} instead.
+Draws random values from the posterior for a binomial likelihood and beta prior. \code{Bbinom} is deprecated and will be removed in the next version; use \code{Bbinomial} instead.
 }
 \usage{
 Bbinom(...)
@@ -32,7 +32,7 @@ other arguments to pass to the function.
 }
 
 \details{
-The function generates a vector of random draws from the posterior distribution of the probability of success. It uses conjugacy to determine the parameters of the posterior beta distribution, and draws independent samples from this.
+The function generates a vector of random draws from the posterior distribution of the probability of success. It uses conjugacy to determine the parameters of the posterior beta distribution, and draws independent values from this.
 
 A prior can be specified with the \code{priors} argument. A beta prior is used, specified by mode, \code{mode}, and concentration, \code{conc}.
 

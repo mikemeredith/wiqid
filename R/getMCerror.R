@@ -24,7 +24,7 @@ getMCerror <- function(object, n.chains, SDpc=FALSE) {
     stop("The number of rows in 'x' must be a multiple of 'n.chains'.", call.=FALSE)
   n.par <- ncol(x)                     # number of parameters
   parNames <- colnames(x)
-  n.iter <- nrow(x)                    # total sample size
+  n.iter <- nrow(x)                    # total number of draws
   ipc <- n.iter / n.chains             # iterations per chain (T in Lunn et al)
 
   bpc <- sqrt(n.iter) %/% n.chains     # batches per chain (Q)
@@ -46,8 +46,3 @@ getMCerror <- function(object, n.chains, SDpc=FALSE) {
     return(MCE)
   }
 }
-
-
-
-
-

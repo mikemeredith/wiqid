@@ -1,9 +1,9 @@
 # Some of the plotting code taken from package BEST, originally by John Kruschke.
 
 postPriorOverlap <-
-function( paramSampleVec, prior, ..., yaxt="n", ylab="",
+function( paramDraws, prior, ..., yaxt="n", ylab="",
            xlab="Parameter", main="", cex.lab=1.5, cex=1.4,
-           xlim=range(paramSampleVec), ylim=NULL, # xpd=NA,
+           xlim=range(paramDraws), ylim=NULL, # xpd=NA,
            colors=c("skyblue", "yellow", "green", "white"),
            breaks=NULL) {
 
@@ -11,16 +11,21 @@ function( paramSampleVec, prior, ..., yaxt="n", ylab="",
   #   displays and calculates the overlap.
   # Returns the overlap.
 
+  if(!is.null(list(...)$paramSampleVec)) {
+    message("*The 'paramSampleVec' argument is deprecated, please use 'paramDraws'.*")
+    paramDraws <- list(...)$paramSampleVec
+  }
+
   # oldpar <- par(xpd=xpd) ; on.exit(par(oldpar))
 
   # get breaks: a sensible number over the hdi; cover the full range (and no more);
   #   equal spacing.
   if (is.null(breaks)) {
-    nbreaks <- ceiling(diff(range(paramSampleVec)) / as.numeric(diff(hdi(paramSampleVec))/18))
-    breaks <- seq(from=min(paramSampleVec), to=max(paramSampleVec), length.out=nbreaks)
+    nbreaks <- ceiling(diff(range(paramDraws)) / as.numeric(diff(hdi(paramDraws))/18))
+    breaks <- seq(from=min(paramDraws), to=max(paramDraws), length.out=nbreaks)
   }
   # plot posterior histogram.
-  histinfo <- hist(paramSampleVec, xlab=xlab, yaxt=yaxt, ylab=ylab,
+  histinfo <- hist(paramDraws, xlab=xlab, yaxt=yaxt, ylab=ylab,
                    freq=FALSE, border=colors[4], col=colors[1],
                    xlim=xlim, ylim=ylim, main=main, cex=cex, cex.lab=cex.lab,
                    breaks=breaks)
@@ -44,6 +49,6 @@ function( paramSampleVec, prior, ..., yaxt="n", ylab="",
     lines(histinfo$mids, priorInfo, lwd=2, col='brown')
   # Add text
   text(mean(breaks), 0, paste0("overlap = ", round(overlap*100), "%"), pos=3, cex=cex)
-    
+
   return(overlap)
 }

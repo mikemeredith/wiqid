@@ -4,22 +4,22 @@
 Overlap between posterior and prior probability distributions.
 }
 \description{
-Calculates and displays the overlap between a posterior distribution (as a vector of samples, typically from an MCMC process) and a prior distribution (as a vector of samples or as a function).
+Calculates and displays the overlap between a posterior distribution (as a vector of values, typically draws from an MCMC process) and a prior distribution (as a vector of values or as a function).
 % Unidentifiable parameters will have high overlap: Gimenez et al (2009) suggest that overlap greater than 35\% indicates weak identifiability.
 %% Maybe take this out, too many false positives!
 }
 \usage{
-postPriorOverlap(paramSampleVec, prior, ..., yaxt="n", ylab="",
+postPriorOverlap(paramDraws, prior, ..., yaxt="n", ylab="",
            xlab="Parameter", main="", cex.lab=1.5, cex=1.4,
-           xlim=range(paramSampleVec), ylim=NULL,
+           xlim=range(paramDraws), ylim=NULL,
            colors=c("skyblue", "yellow", "green", "white"), breaks=NULL)
 }
 \arguments{
-  \item{paramSampleVec}{
-a vector of samples drawn from the target distribution.
+  \item{paramDraws}{
+a vector of values drawn from the target distribution.
 }
   \item{prior}{
-\emph{either} a vector of samples drawn from the prior distribution \emph{or} the name for the density function of the distribution; standard R functions for this have a \code{d-} prefix, eg. \code{dbeta}. Arguments required by the function must be specified by their (abbreviated) names in the \code{\dots} argument; see the examples.
+\emph{either} a vector of values drawn from the prior distribution \emph{or} the name for the density function of the distribution; standard R functions for this have a \code{d-} prefix, eg. \code{dbeta}. Arguments required by the function must be specified by their (abbreviated) names in the \code{\dots} argument; see the examples.
 }
   \item{...}{
 named parameters to be passed to \code{prior} when it is a function.

@@ -1,4 +1,4 @@
-\name{Bayesian Poisson simulation}
+\name{Bayesian Poisson analysis}
 \alias{Bpoisson}
 
 
@@ -6,7 +6,7 @@
 Bayesian analysis of count data
 }
 \description{
-Simulates a sample from the posterior for a Poisson likelihood and gamma prior.
+Generates random draws from the posterior for a Poisson likelihood and gamma prior.
 }
 \usage{
 Bpoisson(y, n, priors=NULL, draws=10000, ...)
@@ -30,7 +30,7 @@ additional arguments to pass to the function.
 }
 
 \details{
-The function generates a vector of random draws from the posterior distribution of the probability of the observed count. It uses conjugacy to determine the parameters of the posterior gamma distribution, and draws independent samples from this.
+The function generates a vector of random draws from the posterior distribution of the probability of the observed count. It uses conjugacy to determine the parameters of the posterior gamma distribution, and draws independent values from this.
 
 A prior can be specified with the \code{priors} argument. A gamma prior is used, specified by mode, \code{mode}, and SD, \code{sd}.
 
@@ -48,7 +48,7 @@ Mike Meredith.
 }
 
 \examples{
-# Generate a sample from a gamma distribution, maybe the number of ticks
+# Generate a sample from a Poisson distribution, maybe the number of ticks
 #   observed on a sample of rodents:
 n <- 10  # number of trials (rodents examined)
 ( y <- rpois(n, 1.2) ) # number of ticks on each rodent

@@ -1,4 +1,8 @@
 
+CHANGES in 0.2.2.9005 (2019-12-31)
+
+  * Removed more references to 'sample'.
+
 CHANGES in 0.2.2.9004 (2019-12-17)
 
   * MCMC diagnostic plots now handle chains with NAs.

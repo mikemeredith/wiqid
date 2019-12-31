@@ -44,7 +44,7 @@ print.Bwiqid <- function(x, digits=4, ...)  {
     cat("'n.eff' is a crude measure of effective sample size.\n")
   if(!is.null(timetaken)) {
     took <- format(round(timetaken, 1))
-    cat("MCMC sample generation:", took, "\n")
+    cat("MCMC chain generation:", took, "\n")
   }
 }
 # .........................................................
@@ -86,7 +86,7 @@ summary.Bwiqid <- function(object, digits=3, ...)  {
   }
   if(!is.null(timetaken)) {
     took <- format(round(timetaken, 1))
-    cat("MCMC sample generation:", took, "\n")
+    cat("MCMC chain generation:", took, "\n")
   }
 
   if(!is.null(MCerror)) {

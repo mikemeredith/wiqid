@@ -4,15 +4,15 @@
 Graphic display of a posterior probability distribution
 }
 \description{
-Plot the posterior probability distribution for a single parameter from a vector of samples, typically from an MCMC process, with appropriate summary statistics.
+Plot the posterior probability distribution for a single parameter from a vector of values, typically draws from an MCMC process, with appropriate summary statistics.
 }
 \usage{
-plotPost(paramSampleVec, credMass = 0.95, compVal = NULL, ROPE = NULL,
+plotPost(paramDraws, credMass = 0.95, compVal = NULL, ROPE = NULL,
   HDItextPlace = 0.7, showMode = FALSE, showCurve = FALSE, shadeHDI = NULL, ...)
 }
 \arguments{
-  \item{paramSampleVec}{
-A vector of samples drawn from the target distribution.
+  \item{paramDraws}{
+A vector of values drawn from the target distribution.
 }
   \item{credMass}{
 the probability mass to include in credible intervals; set to NULL to suppress plotting of credible intervals.
@@ -21,7 +21,7 @@ the probability mass to include in credible intervals; set to NULL to suppress p
 a value for comparison with those plotted.
 }
   \item{ROPE}{
-a two element vector, such as \code{c(-1, 1)}, specifying the limits of the Region Of Practical Equivalence. 
+a two element vector, such as \code{c(-1, 1)}, specifying the limits of the Region Of Practical Equivalence.
 }
   \item{HDItextPlace}{
 a value in [0,1] that controls the horizontal position of the labels at the ends of the HDI bar.
@@ -33,7 +33,7 @@ logical: if TRUE, the mode is displayed instead of the mean.
 logical: if TRUE, the posterior density will be represented by a kernel density function instead of a histogram.
 }
   \item{shadeHDI}{
-specifies a colour to shade the area under the curve corresponding to the HDI; NULL for no shading. Ignored if \code{showCurve = FALSE}. Use\code{colours()} to see a list of possible colours.
+specifies a colour to shade the area under the curve corresponding to the HDI; NULL for no shading. Ignored if \code{showCurve = FALSE}. Use \code{colours()} to see a list of possible colours.
 }
   \item{\dots}{
 graphical parameters and the \code{breaks} parameter for the histogram.
@@ -74,7 +74,7 @@ plotPost(tst)
 tst2 <- c(rnorm(1e5), rnorm(5e4, 7))
 plotPost(tst2)                  # A valid 95% CrI, but not HDI
 plotPost(tst2, showCurve=TRUE)  # Correct 95% HDI
-plotPost(tst2, showCurve=TRUE, shadeHDI='pink') 
+plotPost(tst2, showCurve=TRUE, shadeHDI='pink')
 
 }
 \keyword{hplot}

@@ -51,7 +51,7 @@ integer, the number of chains included in the object.
 either logical or a vector of Rhat values of length equal to the number of columns in \code{object}; if \code{Rhat=TRUE}, \code{\link{simpleRhat}} will be called to provide values.
 }
   \item{n.eff}{
-either logical or a vector of effective sample sizes of length equal to the number of columns in \code{object}; if \code{n.eff=TRUE}, \code{\link{effectiveSize}} will be called to provide values.
+either logical or a vector of effective chain lengths with values for each column in \code{object}; if \code{n.eff=TRUE}, \code{\link{effectiveSize}} will be called to provide values.
 }
   \item{\dots}{
 named parameters to be passed to other methods.
@@ -72,7 +72,7 @@ Any of the following attributes may be present:
   \code{call} \tab the original function call. \cr
   \code{BUGSnames} \tab the original parameter names as returned by the MCMC engine. \cr
   \code{n.chains} \tab  the number of chains. \cr
-  \code{n.eff} \tab  a vector of effective sample sizes for the parameters. \cr
+  \code{n.eff} \tab  a vector of effective chain lengths for the parameters. \cr
   \code{MCerror} \tab a vector with Monte Carlo errors for the parameters. \cr
   \code{Rhat} \tab a vector with potential scale reduction factors for the parameters. \cr
   \code{defaultPlot} \tab the name of the parameter to be plotted as the default by \code{plot.Bwiqid}. \cr
