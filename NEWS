@@ -1,37 +1,42 @@
 
-CHANGES in 0.2.3 (2019-12-31)
+CHANGES in 0.2.2.9005 (2019-12-31)
+
+  * Removed more references to 'sample'.
+
+CHANGES in 0.2.2.9004 (2019-12-17)
+
+  * MCMC diagnostic plots now handle chains with NAs.
+
+CHANGES in 0.2.2.9003 (2019-12-17)
 
   * References to 'sample' replaced with 'draws' in all MCMC-related locations.
+
+CHANGES in 0.2.2.9002 (2019-10-27)
 
   * Fixed: bug in 'dt2'; also error in argument names for '*t2' functions;
     new '*t3' functions added.
 
+CHANGES in 0.2.2.9001 (2019-08-05)
+
   * Fixed: bug in 'occ2sps' when Hessian not invertible.
+
+CHANGES in 0.2.2.9000 (2019-08-03)
 
   * Converted all data files to .RData instead of R. Needed Depends: R (>= 2.10).
 
-  * 'diagPlot' revamped; accepts a range of classes, not just 'Bwiqid'; additional arguments.
+  * Added badges to README.md.
 
-CHANGES in 0.2.2
+CHANGES in 0.2.2 (2019-06-05)
 
-  * Fixed incorrect handling of class 'bugs' objects in 'diagPlot' and 'as.Bwiqid'.
+  * 'diagPlot' revamped; accepts a range of classes, not just 'Bwiqid'.
 
   * 'as.Bwiqid' revamped; makes more effort to retain original Rhat and n.eff; parameter
-    names conversion changed: a1[1,2] now becomes a1.1.2. instead of a11.2; original
+    names conversion changed: a1[2,3] now becomes a1.2.3. instead of a12.3; original
     names retained as attribute 'BUGSnames'.
 
-  * Changed 'diagPlot' display for integers to dynamite plot instead of histogram;
-    separate means for each chain in 'diagPlot' density plots.
-
-  * Added 'crosscorrPlot' function for a range of classes.
-
-CHANGES in 0.2.1
-
-  * 'diagPlot' no longer uses its own colour palette.
+  * Added 'crosscorrPlot' function, which accepts a range of classes.
 
   * 'window.Bwiqid' now adds new diagnostics for Rhat and n.eff.
-
-  * Rhat calculated with 'simpleRhat', n.eff with 'safeNeff' everywhere.
 
 CHANGES in 0.2.0
 
