@@ -1,4 +1,8 @@
 
+CHANGES in 0.2.2.9006 (2020-01-01)
+
+  * Added 'secrFit'.
+
 CHANGES in 0.2.2.9005 (2019-12-31)
 
   * Removed more references to 'sample'.

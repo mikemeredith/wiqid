@@ -56,7 +56,8 @@ export(
   dbeta2, pbeta2, qbeta2, rbeta2, getBeta2Par,
   dbeta3, pbeta3, qbeta3, rbeta3, getBeta3Par,
   dgamma2, pgamma2, qgamma2, rgamma2, getGammaPar,
-  "standardize", "standardize2match")
+  "standardize", "standardize2match",
+  "secrFit")
 
 S3method("print", "wiqid")
 S3method("logLik", "wiqid")
