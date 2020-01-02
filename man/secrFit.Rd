@@ -6,7 +6,7 @@
 Spatially Explicit Capture-Recapture
 }
 \description{
-A wrapper for \code{secr::secr.fit}. In \code{secr} v. 4, \code{\link[secr]{secr.fit}} gains a new option, \code{fastproximity}. If TRUE, some data sets are compress and reconfigured models used that run much faster. This cannot be implemented for all models. The default is \code{fastproximity=TRUE}. This means that you can have a set of models where some have been reconfigured, others not, and AICs are not comparable across these models. The function \code{secrFit} simply calls \code{secr.fit} with \code{fastproximity = FALSE}, making it easy to run a models with consistent settings.
+A wrapper for \code{secr::secr.fit}. In \code{secr} v. 4, \code{\link[secr]{secr.fit}} gains a new option, \code{fastproximity}. If TRUE, some data sets are compressed and reconfigured to run much faster. This cannot be implemented for all models. The default is \code{fastproximity=TRUE}. This means that you can have a set of models where some have been reconfigured, others not, and AICs are not comparable across these models. The function \code{secrFit} simply calls \code{secr.fit} with \code{fastproximity = FALSE}, making it easy to run models with consistent settings.
 }
 \usage{
 secrFit (capthist, model = list(D~1, g0~1, sigma~1), mask = NULL, buffer = NULL,
@@ -39,6 +39,6 @@ returns an object of class secr representing the fitted SECR model.
 }
 
 \author{
-Mike Meredith
+This wrapper by Mike Meredith
 }
 
