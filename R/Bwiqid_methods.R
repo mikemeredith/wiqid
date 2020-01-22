@@ -31,7 +31,7 @@ print.Bwiqid <- function(x, digits=4, ...)  {
   if(is.null(header))
     header <- "MCMC fit results:"
   cat(header, "\n")
-  cat(nrow(x), "simulations saved.\n")
+  cat(nrow(x), "draws saved.\n")
   if(nrow(toPrint0) < nrow(toPrint))
     cat("(Duplicate rows removed.)\n")
   print(toPrint0, digits = digits)
@@ -79,9 +79,9 @@ summary.Bwiqid <- function(object, digits=3, ...)  {
     header <- "MCMC fit results:"
   cat(header, "\n")
   if(is.null(n.chains)) {
-    cat(nrow(object), "simulations saved.\n")
+    cat(nrow(object), "draws saved.\n")
   } else {
-    cat(sprintf("%.0f chains x %.0f simulations = %.0f total.\n",
+    cat(sprintf("%.0f chains x %.0f draws = %.0f total.\n",
         n.chains, nrow(object)/n.chains, nrow(object)))
   }
   if(!is.null(timetaken)) {
