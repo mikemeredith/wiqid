@@ -88,16 +88,25 @@ Bsecr0 <- function(capthist, buffer = 100, start=NULL, nAug = NA,
                         SY=c(SY, runif(nAug-nInd, yl, yu)),
                         sigma=mle.res[3], g0=mle.res[2],
                         psi=psistart)}
-  wanted <- c("D", "g0", "sigma")
+  wanted <- c("D", "g0", "sigma", "SX", "SY", "z")
 
   # Run the model:
   resB <- justRunJags(jagsData, inits, wanted, modelFile,
             chains, draws, burnin, thin, adapt,
             modules = c("glm"), parallel = parallel, seed=seed)
+  resMat <- as.matrix(resB)
+  forB <- colnames(resMat) == "D" | colnames(resMat) == "g0" | colnames(resMat) == "sigma"
 
-  out <- as.Bwiqid(resB,
+  AC0 <- resMat[, !forB][, 1:(nAug*2)]
+  dim(AC0) <- c(dim(AC0)[1], nAug, 2)
+  w <- resMat[, !forB][, nAug*2 + 1:nAug]
+  w[w==0] <- NA
+  AC <- sweep(AC0, 1:2, w, "*")
+ 
+  out <- as.Bwiqid(as.data.frame(resMat[, forB]),
       header = "Model fitted in JAGS with 'rjags' functions",
       defaultPlot = "D")
+  attr(out, "ACs") <- AC
   attr(out, "timetaken") <- Sys.time() - startTime
   attr(out, "call") <- match.call()
   # check augmentation
