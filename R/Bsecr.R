@@ -105,7 +105,7 @@ Bsecr0 <- function(capthist, buffer = 100, start=NULL, nAug = NA,
  
   out <- as.Bwiqid(as.data.frame(resMat[, forB]),
       header = "Model fitted in JAGS with 'rjags' functions",
-      defaultPlot = "D")
+      defaultPlot = "D", n.chains = length(resB))
   attr(out, "ACs") <- AC
   attr(out, "timetaken") <- Sys.time() - startTime
   attr(out, "call") <- match.call()
