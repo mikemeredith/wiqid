@@ -1,4 +1,8 @@
 
+CHANGES in 0.2.3.9002 (2020-02-15)
+
+  * Fixed bug in 'Bsecr0'.
+
 CHANGES in 0.2.3.9001 (2020-01-22)
 
   * 'Bsecr0' now returns MCMC chains for activity centres
