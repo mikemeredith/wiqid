@@ -18,11 +18,12 @@ importFrom("parallel", "detectCores", "makeCluster", "stopCluster",
   "clusterExport", "clusterEvalQ", "clusterSetRNGStream", "parLapply")
 importFrom("MASS", "mvrnorm", "eqscplot")
 importFrom("truncnorm", "rtruncnorm")
-importFrom("grDevices", "devAskNewPage", "dev.interactive",
+importFrom("grDevices", "devAskNewPage", "dev.interactive", "adjustcolor", "palette",
   "topo.colors", "colorRampPalette")
 importFrom("graphics", "abline", "hist", "lines", "matplot", "par",
   "plot", "plot.default", "polygon", "rect", "segments", "points",
   "text", "box", "layout", "title")
+
 
 export(
   survCJS, survCJSaj,
@@ -46,6 +47,7 @@ export(
   AICc, allCombinations, AICtable, WAIC,
   plotComb,
   plotPost, postPriorOverlap,
+  plotACs,
   densityFolded,
   as.Bwiqid,
   diagPlot, tracePlot, densityPlot, acfPlot, crosscorrPlot,
