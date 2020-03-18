@@ -8,7 +8,7 @@ Print and summary methods for objects of class 'Bwiqid'
 Both functions print details of the MCMC process to the Console. \code{print} also prints a table of summary statistics for the parameters and several MCMC diagnostic measures to the Console, while \code{summary} returns invisibly a corresponding data frame, which can be passed to \code{View}.
 }
 \usage{
-\method{print}{Bwiqid}(x, digits=4, ...)
+\method{print}{Bwiqid}(x, digits=3, ...)
 
 \method{summary}{Bwiqid}(object, digits=3, ...)
 

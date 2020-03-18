@@ -1,5 +1,8 @@
 
+CHANGES in 0.2.3.9004 (2020-03-18)
 
+  * 'print.Bwiqid' and 'summary.Bwiqid' now give MCE% instead of n.eff.
+  
 CHANGES in 0.2.3.9003 (2020-03-11)
 
   * Added 'plotACs'.
