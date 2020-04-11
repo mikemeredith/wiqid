@@ -2,7 +2,7 @@
 
 # Do helper functions to produce 3D array with MCMC output
 #  itersPerChain x chains x parameters
-#  plus matrix with Rhat and n.eff
+#  plus matrix with Rhat and MCEpc
 
 # This works with most R-to-BUGS/JAGS output
 getArrA <- function(x, summary, nChains) {
@@ -10,6 +10,7 @@ getArrA <- function(x, summary, nChains) {
     mcmc3d <- x
     if(!is.null(nChains) && dim(x)[2] != nChains)
       stop("nChains does not match array dimensions.")
+    mcmat <- matrix(x, dim(x)[1] * dim(x)[2], dim(x)[3])
   } else {
     mcmat <- as.matrix(x)
     if(is.null(nChains) || nrow(mcmat) %% nChains != 0) {
@@ -30,18 +31,25 @@ getArrA <- function(x, summary, nChains) {
       Rhat <- NA
     }
   }
-  n.eff <- try(summary[, 'n.eff'], silent=TRUE)
-  if(inherits(n.eff, "try-error")) {
-    n.eff <- safeNeff(mcmat)
-  }
+  # n.eff <- try(summary[, 'n.eff'], silent=TRUE)
+  # if(inherits(n.eff, "try-error")) {
+    # n.eff <- safeNeff(mcmat)
+  # }
+  MCerror <- attr(x, "MCerror")
+  if(is.null(MCerror))
+    MCerror <- getMCerror(mcmat, n.chains=nChains)
+  SD <- apply(mcmat, 2, sd)
+  MCEpc <- MCerror / SD * 100
 
   return(list(mcmc3d = mcmc3d,
-              stats = cbind(Rhat=Rhat, n.eff=n.eff)))
+              stats = cbind(Rhat=Rhat, MCEpc=MCEpc)))
 } # ''''''''''''''''''''''''''''''''''''''''''''''
 
 # This works with mcmc.list, Bwiqid and data frames
 getArrB <- function(x, nChains=1) {
   mcmat <- as.matrix(x)
+  if(!is.numeric(mcmat))
+    stop("Sorry, can't find the numbers in your input.", call.=FALSE)
   names <- colnames(mcmat)
   # Look for attributes, else roll our own
   nc <- attr(x, "n.chains")
@@ -56,15 +64,20 @@ getArrB <- function(x, nChains=1) {
     Rhat <- simpleRhat(mcmat, n.chains=nChains)
   if(is.null(Rhat))
     Rhat <- NA
-  n.eff <- attr(x, "n.eff")
-  if(is.null(n.eff))
-    n.eff <- safeNeff(mcmat)
+  # n.eff <- attr(x, "n.eff")
+  # if(is.null(n.eff))
+    # n.eff <- safeNeff(mcmat)
+  MCerror <- attr(x, "MCerror")
+  if(is.null(MCerror))
+    MCerror <- getMCerror(mcmat, n.chains=nChains)
+  SD <- apply(mcmat, 2, sd)
+  MCEpc <- MCerror / SD * 100
 
   dim(mcmat) <- c(nrow(mcmat)/nChains, nChains, ncol(mcmat))
   dimnames(mcmat) <- list(iter=NULL, chain=1:nChains, param=names)
 
   return(list(mcmc3d = mcmat,
-              stats = cbind(Rhat=Rhat, n.eff=n.eff)))
+              stats = cbind(Rhat=Rhat, MCEpc=MCEpc)))
 } # ''''''''''''''''''''''''''''''''''''''''''''''
 
 
@@ -107,7 +120,8 @@ diagPlot <- function(x, params=NULL, howMany, chains, ask=NULL,
   if(!is.numeric(mcmc3d) || length(dim(mcmc3d)) != 3)
     stop("Could not extract numeric MCMC chains from your input.", call.=FALSE)
   Rhat <- round(arrList$stats[, 'Rhat'], 3)
-  n.eff <- round(arrList$stats[, 'n.eff'])
+  # n.eff <- round(arrList$stats[, 'n.eff'])
+  MCEpc <- round(arrList$stats[, 'MCEpc'], 2)
 
   niter <- dim(mcmc3d)[1]
   nchains <- dim(mcmc3d)[2]
@@ -123,7 +137,8 @@ diagPlot <- function(x, params=NULL, howMany, chains, ask=NULL,
       stop("No columns match the specification in 'params'.", call.=FALSE)
     mcmc3d <- mcmc3d[, , params, drop=FALSE]
     Rhat <- Rhat[params]
-    n.eff <- n.eff[params]
+    # n.eff <- n.eff[params]
+    MCEpc <- MCEpc[params]
     parnames <- dimnames(mcmc3d)[[3]]
     npars <- dim(mcmc3d)[3]
   }
@@ -174,7 +189,8 @@ diagPlot <- function(x, params=NULL, howMany, chains, ask=NULL,
       box(col=2, lwd=2)
     # do density plot
     density0(mat, useArgsD)
-    titleArgs$main <- paste0("n.eff = ", n.eff[i])
+    # titleArgs$main <- paste0("n.eff = ", n.eff[i])
+    titleArgs$main <- paste0("MCE% = ", MCEpc[i])
     titleArgs$adj <- 0
     do.call(title, titleArgs)
     if(redFlag)
