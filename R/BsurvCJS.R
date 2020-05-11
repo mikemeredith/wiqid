@@ -141,10 +141,9 @@ BsurvCJS <- function(DH, model=list(phi~1, p~1), data=NULL, freq=1, priors=NULL,
             chains, draws, burnin, thin, adapt,
             modules = c("glm"), parallel = parallel, seed=seed)
 
-  out <- as.Bwiqid(resB,
-      header = "Model fitted in JAGS with 'rjags' functions",
-      defaultPlot = "phi.1.")
+  out <- mcmcOutput(resB,
+      header = "Model fitted in JAGS with 'rjags' functions")
   attr(out, "call") <- match.call()
-  attr(out, "timetaken") <- Sys.time() - startTime
+  attr(out, "timeTaken") <- unclass(difftime(Sys.time(), startTime, units="secs"))
   return(out)
 }

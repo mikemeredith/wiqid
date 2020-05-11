@@ -47,14 +47,9 @@ BoccSS0 <- function(y, n, psiPrior=c(1,1), pPrior=c(1,1),
   # Diagnostics
   MCMC <- mcmc.list(chainList)
 
-  out <- as.Bwiqid(MCMC,
-      header = "Model fitted in R with a Gibbs sampler",
-      defaultPlot = "psi")
+  out <- mcmcOutput(MCMC,
+      header = "Model fitted in R with a Gibbs sampler")
   attr(out, "call") <- match.call()
-  attr(out, "n.chains") <- chains
-  attr(out, "n.eff") <- safeNeff(out)
-  if(chains > 1)
-    attr(out, "Rhat") <- simpleRhat(out, n.chains=chains)
-  attr(out, "timetaken") <- Sys.time() - startTime
+  attr(out, "timeTaken") <- unclass(difftime(Sys.time(), startTime, units="secs"))
   return(out)
 }

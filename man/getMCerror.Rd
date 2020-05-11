@@ -2,10 +2,10 @@
 \alias{getMCerror}
 
 \title{
-MCMC error using the batch method
+MCMC error using the batch method (deprecated)
 }
 \description{
-The Monte Carlo error is a result of using (pseudo-)random numbers to generate the MCMC chain: multiple runs with different random number sequences produce different chains with slightly different summary statistics. A simple way to estimate MC error is to divide values into batches and calculate the variance of the batch means. See Lunn et al (2013, p77) for details. There is a trade-off between number of batches and batch size, and we make these approximately equal (only approximately as the number of batches must be a multiple of the number of chains). The function gives the same values as \code{coda::batchSE} with an appropriate \code{batchSize}.
+This is now a wrapper for \code{\link[mcmcOutput]{getMCE}}
 }
 
 \usage{
@@ -14,13 +14,13 @@ getMCerror(object, n.chains, SDpc=FALSE)
 
 \arguments{
   \item{object}{
-a vector, matrix or data frame with MCMC output in columns
+an object of any class with MCMC output that can be coerced to class mcmcOutput.
 }
   \item{n.chains}{
-scalar integer, the number of chains concatenated to form the columns of \code{x}.
+ignored
 }
   \item{SDpc}{
-logical, if TRUE the MC error is expressed as a percentage of the standard deviation of the corresponding posterior.
+if TRUE, the value of the MC error as a percentage of the posterior SD will be returned.
 }
 }
 

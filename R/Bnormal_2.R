@@ -116,17 +116,13 @@ Bnormal2 <- function(y, priors=NULL,
             chains, draws, burnin, thin, adapt,
             modules = c("glm"), parallel = parallel, seed=seed)
 
-  out <- as.Bwiqid(codaSamples,
-      header = "Model fitted in JAGS with 'rjags' functions",
-      defaultPlot = names(codaSamples)[1])
+  out <- mcmcOutput(codaSamples,
+      header = "Model fitted in JAGS with 'rjags' functions")
   attr(out, "call") <- match.call()
-  attr(out, "n.chains") <- chains
-  attr(out, "n.eff") <- safeNeff(out)
-  attr(out, "Rhat") <- simpleRhat(out, n.chains=chains)
   attr(out, "doPriorsOnly") <- doPriorsOnly
   if(!is.null(priors))
     attr(out, "priors") <- priors
 
-  attr(out, "timetaken") <- Sys.time() - startTime
+  attr(out, "timeTaken") <- unclass(difftime(Sys.time(), startTime, units="secs"))
   return(out)
 }

@@ -53,17 +53,12 @@ Bnormal <- function(y, priors=NULL,
       tau <- rgamma(1, aBit, b + sum((y - mu)^2)/2)
       chain[t, ] <- c(mu, sqrt(1/tau))
     }
-    chainList[[ch]] <- mcmc(chain[(burnin+1):n.iter, ])
+    chainList[[ch]] <- chain[(burnin+1):n.iter, ]
   }
-  MCMC <- mcmc.list(chainList)
+  MCMC <- do.call(rbind, chainList)
 
-  out <- as.Bwiqid(MCMC,
-      header = "Model fitted in R with a Gibbs sampler",
-      defaultPlot = names(MCMC)[1])
+  out <- mcmcOutput(MCMC, header = "Model fitted in R with a Gibbs sampler")
   attr(out, "call") <- match.call()
-  attr(out, "n.chains") <- chains
-  attr(out, "n.eff") <- safeNeff(out)
-  attr(out, "Rhat") <- simpleRhat(out, n.chains=chains)
-  attr(out, "timetaken") <- Sys.time() - startTime
+  attr(out, "timeTaken") <- unclass(difftime(Sys.time(), startTime, units="secs"))
   return(out)
 }

@@ -12,17 +12,19 @@ importFrom("stats", "AIC", "acf", "as.dist", "as.formula",
   "dbeta", "pbeta", "qbeta",
   "dgamma", "pgamma", "qgamma",
   "coef", "model.frame", "dnorm", "quantile", "cor")
-importFrom("coda", "mcmc", "mcmc.list", "as.mcmc.list", "effectiveSize")
-importFrom("HDInterval", "hdi")
 importFrom("parallel", "detectCores", "makeCluster", "stopCluster",
   "clusterExport", "clusterEvalQ", "clusterSetRNGStream", "parLapply")
 importFrom("MASS", "mvrnorm", "eqscplot")
-importFrom("truncnorm", "rtruncnorm")
 importFrom("grDevices", "devAskNewPage", "dev.interactive", "adjustcolor", "palette",
   "topo.colors", "colorRampPalette")
 importFrom("graphics", "abline", "hist", "lines", "matplot", "par",
   "plot", "plot.default", "polygon", "rect", "segments", "points",
   "text", "box", "layout", "title")
+
+importFrom("truncnorm", "rtruncnorm")
+importFrom("coda", "mcmc", "mcmc.list", "as.mcmc.list", "effectiveSize")
+importFrom("HDInterval", "hdi")
+importFrom("mcmcOutput", "mcmcOutput")
 
 
 export(
@@ -46,11 +48,11 @@ export(
   distRogersTanimoto, distSimRatio, distSorensen, distWhittaker,
   AICc, allCombinations, AICtable, WAIC,
   plotComb,
-  plotPost, postPriorOverlap,
+  plotPost, # postPriorOverlap, # moved to mcmcOutput
   plotACs,
-  densityFolded,
+  # densityFolded, # moved to mcmcOutput
   as.Bwiqid,
-  diagPlot, tracePlot, densityPlot, acfPlot, crosscorrPlot,
+  # diagPlot, tracePlot, densityPlot, acfPlot, crosscorrPlot, # moved to mcmcOutput
   simpleRhat, getMCerror,
   showShinyApp,
   dt2, pt2, qt2, rt2,
@@ -72,17 +74,17 @@ S3method("AICc", "default")
 S3method("print", "Bwiqid")
 S3method("summary", "Bwiqid")
 S3method("plot", "Bwiqid")
-S3method("window", "Bwiqid")
+# S3method("window", "Bwiqid")
 S3method("head", "Bwiqid")
 S3method("tail", "Bwiqid")
 
 S3method("as.Bwiqid", "default")
-S3method("as.Bwiqid", "Bwiqid")
-S3method("as.Bwiqid", "data.frame")
-S3method("as.Bwiqid", "mcmc.list")
-S3method("as.Bwiqid", "mcmc")
-S3method("as.Bwiqid", "bugs")
-S3method("as.Bwiqid", "rjags")
-S3method("as.Bwiqid", "runjags")
-S3method("as.Bwiqid", "jagsUI")
+# S3method("as.Bwiqid", "Bwiqid")
+# S3method("as.Bwiqid", "data.frame")
+# S3method("as.Bwiqid", "mcmc.list")
+# S3method("as.Bwiqid", "mcmc")
+# S3method("as.Bwiqid", "bugs")
+# S3method("as.Bwiqid", "rjags")
+# S3method("as.Bwiqid", "runjags")
+# S3method("as.Bwiqid", "jagsUI")
 

@@ -1,13 +1,13 @@
 Package: wiqid
 Type: Package
 Title: Quick and Dirty Estimates for Wildlife Populations
-Version: 0.2.3.9005
-Date: 2020-04-11
-Depends: HDInterval, R (>= 2.10)
+Version: 0.2.3.9006
+Date: 2020-05-10
+Depends: HDInterval, R (>= 2.10), mcmcOutput
 Imports: stats, truncnorm, MASS, coda, plotrix
 Suggests: secr (>= 3.0), shiny, rjags
 Author: Mike Meredith
-Maintainer: Mike Meredith <mike@mikemeredith.net>
+Maintainer: Mike Meredith <mike@mmeredith.net>
 BugReports: https://github.com/mikemeredith/wiqid/issues
 Description: Provides simple, fast functions for maximum likelihood and Bayesian estimates of wildlife population parameters, suitable for use with simulated data or bootstraps. Early versions were indeed quick and dirty, but optional error-checking routines and meaningful error messages have been added. Includes single and multi-season occupancy, closed capture population estimation, survival, species richness and distance measures.
 License: GPL-3

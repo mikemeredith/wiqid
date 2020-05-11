@@ -109,13 +109,11 @@ Bsecr0 <- function(capthist, buffer = 100, start=NULL, nAug = NA,
     animalIDs[1:length(aid)] <- aid
   dimnames(AC) <- list(NULL, animalIDs, c("x", "y"))
  
-  out <- as.Bwiqid(as.data.frame(resMat[, forB]),
-      header = "Model fitted in JAGS with 'rjags' functions",
-      defaultPlot = "D")
+  out <- mcmcOutput(resMat[, forB], nChains=chains,
+      header = "Model fitted in JAGS with 'rjags' functions")
   attr(out, "ACs") <- AC
   attr(out, "traps") <- traps(capthist)
-  attr(out, "n.chains") <- chains
-  attr(out, "timetaken") <- Sys.time() - startTime
+  attr(out, "timeTaken") <- unclass(difftime(Sys.time(), startTime, units="secs"))
   attr(out, "call") <- match.call()
   # check augmentation
   if(ceiling(max(out$D) * A) >= nAug)

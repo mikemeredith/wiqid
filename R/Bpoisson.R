@@ -30,10 +30,8 @@ Bpoisson <- function(y, n, priors=NULL, draws=10000, ...) {
 
   post <- rgamma(draws, po_shape, po_rate)
 
-  out <- as.Bwiqid(data.frame(lambda = post),
-      header = "Values drawn from gamma posterior distribution",
-      defaultPlot = "lambda")
+  out <- mcmcOutput(data.frame(lambda = post),
+      header = "Values drawn from gamma posterior distribution")
   attr(out, "call") <- match.call()
-  attr(out, "n.chains") <- 1
   return(out)
 }

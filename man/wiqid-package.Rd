@@ -14,7 +14,7 @@ There are a number of sophisticated programs for the analysis of wildlife data, 
 
 We now use \pkg{wiqid} in basic wildlife study design and data analysis workshops, and most functions now have options to check the input data and give informative error messages. Workshop participants have used \code{lm}, \code{glm} and functions in the \code{secr} and \code{BEST} packages. So  \pkg{wiqid} tries to match the look and feel of these functions.
 
-All functions use standard data frames or matrices for data input. ML estimation functions return objects of class \code{wiqid} with parameter estimates on the transformed scale (usually logit functions), variance-covariance matrix, and back-transformed `real' values; there are \code{print}, \code{logLik} and \code{predict} methods. Bayesian functions (distinguished by an initial "B") return class \code{Bwiqid} objects, a data frame with a column of MCMC observations for each parameter, plus attributes for MCMC diagnostics; there are \code{print}, \code{summary} and \code{plot} methods.
+All functions use standard data frames or matrices for data input. ML estimation functions return objects of class \code{wiqid} with parameter estimates on the transformed scale (usually logit functions), variance-covariance matrix, and back-transformed `real' values; there are \code{print}, \code{logLik} and \code{predict} methods. Bayesian functions (distinguished by an initial "B") return class \code{mcmcOutput} objects.
 
 Simulations and bootstraps often generate weird data sets, eg. capture histories with no captures. These functions do not throw errors or give warnings if the data are weird, but return NAs if estimates cannot be calculated. Errors may still occur if the data are impossible, eg. 6 detections in 5 occasions.
 
@@ -191,11 +191,6 @@ These are convenience wrappers for the related d/p/q/r functions in the \code{st
   \code{\link{AICc}} \tab AIC with small-sample correction \cr
   \code{\link{AICtable}} \tab tabulate AIC for several models \cr
   \code{\link{allCombinations}} \tab model formulae for combinations of covariates \cr
-  \code{\link{plotPost}} \tab graphic display of a posterior distribution \cr
-  \code{\link{postPriorOverlap}} \tab calculation and display of posterior/prior overlap \cr
-  \code{\link{as.Bwiqid}} \tab converts a range of classes of MCMC output to class \code{Bwiqid} so that \code{wiqid}'s print and plot functions can be used. \cr
-  \code{\link{diagnostic plots}} \tab trace, density, and auto-correlation plots for MCMC output. \cr
-  \code{\link{simpleRhat}} \tab a fast alternative to \code{\link{gelman.diag}}.\cr
   \code{\link{standardize}} \tab a simple alternative to \code{\link{scale}}.
   }
 }

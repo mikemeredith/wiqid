@@ -32,11 +32,9 @@ Bbinomial <- function(y, n, priors=NULL, draws=100000, ...) {
 
   post <- rbeta(draws, po1, po2)
 
-  out <- as.Bwiqid(data.frame(p = post),
-      header = "Values drawn from beta posterior distribution",
-      defaultPlot = "p")
+  out <- mcmcOutput(data.frame(p = post),
+      header = "Values drawn from beta posterior distribution")
   attr(out, "call") <- match.call()
-  attr(out, "n.chains") <- 1
   return(out)
 }
 # ..............................................................

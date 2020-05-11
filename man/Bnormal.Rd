@@ -64,9 +64,7 @@ When \code{priors = NULL} (the default), \code{Bnormal} uses improper flat prior
 }
 
 \value{
-Returns an object of class \code{Bwiqid}, which is a data frame with a column for each parameter in the model.
-
-There are \code{print} and \code{plot} methods for class \code{Bwiqid}, as well as \link{diagnostic plots}.
+Returns an object of class \code{mcmcOutput}.
 }
 
 \references{
