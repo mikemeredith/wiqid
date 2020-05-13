@@ -197,8 +197,6 @@ These are convenience wrappers for the related d/p/q/r functions in the \code{st
 
 \author{
 Mike Meredith
-
-Maintainer: Mike Meredith <mmeredith@wcs.org>
 }
 
 \keyword{ package }

@@ -52,7 +52,7 @@ test_that("occSS with logit link",  {
   expect_that(colnames(weta5$beta),
     equals(c("est", "SE",  "lowCI", "uppCI")))
   expect_that(rownames(weta5$beta),
-    equals(c("psi: (Intercept)", "psi: BrowsedTRUE", "p: (Intercept)")))
+    equals(c("psi: Intrcpt", "psi: BrowsedTRUE", "p: Intrcpt")))
   # Standardisation changed; leave this out for now
   # expect_that(round(as.vector(weta5$beta), 4),
       # equals(c( 0.5196,  0.6167, -0.6223,  0.4188,  0.3627,  0.2367, -0.3012,
@@ -78,7 +78,7 @@ test_that("occSS with logit link",  {
   expect_that(colnames(weta6$beta),
     equals(c("est", "SE",  "lowCI", "uppCI")))
   expect_that(rownames(weta6$beta),
-    equals(c("psi: (Intercept)", "psi: BrowsedTRUE", "p: (Intercept)",
+    equals(c("psi: Intrcpt", "psi: BrowsedTRUE", "p: Intrcpt",
              "p: ObsDB",  "p: ObsDC")))
   # Standardisation changed; leave this out for now
   # expect_that(round(as.vector(weta6$beta), 4),
@@ -141,7 +141,7 @@ test_that("occSS with probit link",  {
   expect_that(colnames(weta5p$beta),
     equals(c("est", "SE",  "lowCI", "uppCI")))
   expect_that(rownames(weta5p$beta),
-    equals(c("psi: (Intercept)", "psi: BrowsedTRUE", "p: (Intercept)")))
+    equals(c("psi: Intrcpt", "psi: BrowsedTRUE", "p: Intrcpt")))
   # Standardisation changed; leave this out for now
   # expect_that(round(as.vector(weta5p$beta), 4),
       # equals(c( 0.5196,  0.6167, -0.6223,  0.4188,  0.3627,  0.2367, -0.3012,
@@ -166,7 +166,7 @@ test_that("occSS with probit link",  {
   expect_that(colnames(weta6p$beta),
     equals(c("est", "SE",  "lowCI", "uppCI")))
   expect_that(rownames(weta6p$beta),
-    equals(c("psi: (Intercept)", "psi: BrowsedTRUE", "p: (Intercept)",
+    equals(c("psi: Intrcpt", "psi: BrowsedTRUE", "p: Intrcpt",
              "p: ObsDB",  "p: ObsDC")))
   # Standardisation changed; leave this out for now
   # expect_that(round(as.vector(weta6p$beta), 4),

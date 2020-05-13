@@ -26,7 +26,7 @@ test_that("occSScovSite with logit link",  {
   expect_that(colnames(weta1$beta),
     equals(c("est", "SE",  "lowCI", "uppCI")))
   expect_that(rownames(weta1$beta),
-    equals(c("psi: (Intercept)", "p: (Intercept)")))
+    equals(c("psi: Intrcpt", "p: Intrcpt")))
   expect_that(round(as.vector(weta1$beta), 4),
       equals(c(0.4751, -0.6218,  0.3746,  0.2364, -0.2590, -1.0851,  1.2093, -0.1585)))
 
@@ -55,7 +55,7 @@ test_that("occSScovSite with logit link",  {
   expect_that(colnames(weta2$beta),
     equals(c("est", "SE",  "lowCI", "uppCI")))
   expect_that(rownames(weta2$beta),
-    equals(c("psi: (Intercept)", "psi: BrowsedTRUE", "p: (Intercept)")))
+    equals(c("psi: Intrcpt", "psi: BrowsedTRUE", "p: Intrcpt")))
   # expect_that(round(as.vector(weta2$beta), 4),
       # equals(c(0.5196, 0.6167, -0.6223,  0.4188,  0.3627,  0.2367, -0.3012,
               # -0.0942, -1.0861, 1.3403,  1.3276, -0.1584)))
@@ -81,7 +81,7 @@ test_that("occSScovSite with logit link",  {
   expect_that(colnames(weta3$beta),
     equals(c("est", "SE",  "lowCI", "uppCI")))
   expect_that(rownames(weta3$beta),
-    equals(c("psi: (Intercept)", "psi: BrowsedTRUE", "p: (Intercept)", "p: BrowsedTRUE")))
+    equals(c("psi: Intrcpt", "psi: BrowsedTRUE", "p: Intrcpt", "p: BrowsedTRUE")))
   # expect_that(round(as.vector(weta3$beta), 4),
       # equals(c( 0.5180,  0.6030, -0.6260,  0.0149,  0.4168,  0.4236,  0.2446,
                 # 0.2446, -0.2989, -0.2273, -1.1054, -0.4645,  1.3349,  1.4333,
@@ -121,7 +121,7 @@ test_that("occSScovSite with probit link",  {
   expect_that(colnames(weta1p$beta),
     equals(c("est", "SE",  "lowCI", "uppCI")))
   expect_that(rownames(weta1p$beta),
-    equals(c("psi: (Intercept)", "p: (Intercept)")))
+    equals(c("psi: Intrcpt", "p: Intrcpt")))
   expect_that(round(as.vector(weta1p$beta), 4),
       equals(c( 0.2966, -0.3870,  0.2319,  0.1452,
                -0.1581, -0.6716,  0.7512, -0.1025)))
@@ -142,7 +142,7 @@ test_that("occSScovSite with probit link",  {
   expect_that(colnames(weta2p$beta),
     equals(c("est", "SE",  "lowCI", "uppCI")))
   expect_that(rownames(weta2p$beta),
-    equals(c("psi: (Intercept)", "psi: BrowsedTRUE", "p: (Intercept)")))
+    equals(c("psi: Intrcpt", "psi: BrowsedTRUE", "p: Intrcpt")))
   # expect_that(round(as.vector(weta2p$beta), 4),
       # equals(c(0.5196, 0.6167, -0.6223,  0.4188,  0.3627,  0.2367, -0.3012,
               # -0.0942, -1.0861, 1.3403,  1.3276, -0.1584)))
@@ -167,7 +167,7 @@ test_that("occSScovSite with probit link",  {
   expect_that(colnames(weta3p$beta),
     equals(c("est", "SE",  "lowCI", "uppCI")))
   expect_that(rownames(weta3p$beta),
-    equals(c("psi: (Intercept)", "psi: BrowsedTRUE", "p: (Intercept)", "p: BrowsedTRUE")))
+    equals(c("psi: Intrcpt", "psi: BrowsedTRUE", "p: Intrcpt", "p: BrowsedTRUE")))
   # expect_that(round(as.vector(weta3p$beta), 4),
       # equals(c( 0.5180,  0.6030, -0.6260,  0.0149,  0.4168,  0.4236,  0.2446,
                 # 0.2446, -0.2989, -0.2273, -1.1054, -0.4645,  1.3349,  1.4333,

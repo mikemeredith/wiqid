@@ -51,7 +51,7 @@ test_that("Predict works for occ2sps",  {
   expect_equal(pred3psiBA[1, ], pred3psiBA[3, ])
   expect_message(pred3rBA <- predict(rail3, newdata, "rBA"),
     "This is an intercept-only model")
-  expect_equivalent(colMeans(pred3rBA), rail3$beta['rBA:(Intercept)', ])
+  expect_equivalent(colMeans(pred3rBA), rail3$beta['rBA:Intrcpt', ])
   expect_true(all(diff(pred3rBA[, 1]) == 0))
   expect_equal(rownames(pred3rBA), rownames(newdata))
 

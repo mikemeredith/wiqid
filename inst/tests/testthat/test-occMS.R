@@ -58,7 +58,7 @@ test_that("occMStime gives right answers",  {
   expect_that(colnames(res1$beta),
     equals(c("est", "SE",  "lowCI", "uppCI")))
   expect_that(rownames(res1$beta),
-    equals(c("psi1", "gam: (Intercept)", "eps: (Intercept)", "p: (Intercept)" )))
+    equals(c("psi1", "gam: Intrcpt", "eps: Intrcpt", "p: Intrcpt" )))
   expect_that(round(as.vector(res1$beta), 4),
       equals(c(-0.4284, -2.6133, -2.1971,  0.7962,  0.1318,  0.1865,  0.2029,
         0.1077, -0.6868, -2.9788, -2.5947,  0.5850, -0.1701, -2.2478,
@@ -115,7 +115,7 @@ test_that("occMS gives right answers",  {
       equals(c("est", "SE",  "lowCI", "uppCI")))
     expect_that(rownames(res1$beta),
       equals(c("psi1", "gamma", "epsilon", "p" )))
-      # equals(c("psi1: (Intercept)", "gam: (Intercept)", "eps: (Intercept)", "p: (Intercept)" )))
+      # equals(c("psi1: Intrcpt", "gam: Intrcpt", "eps: Intrcpt", "p: Intrcpt" )))
     expect_that(round(as.vector(res1$beta), 4),
         equals(c(-0.4284, -2.6133, -2.1971,  0.7962,  0.1318,  0.1865,  0.2029,
           0.1077, -0.6868, -2.9788, -2.5947,  0.5850, -0.1701, -2.2478,
@@ -168,8 +168,8 @@ test_that("occMScovSite gives right answers",  {
   expect_that(colnames(res1$beta),
     equals(c("est", "SE",  "lowCI", "uppCI")))
   expect_that(rownames(res1$beta),
-    # equals(c("ps1: (Intercept)", "gam: (Intercept)", "eps: (Intercept)", "p: (Intercept)" )))
-    equals(c("psi1: (Intercept)", "gam: (Intercept)", "eps: (Intercept)", "p: (Intercept)" )))
+    # equals(c("ps1: Intrcpt", "gam: Intrcpt", "eps: Intrcpt", "p: Intrcpt" )))
+    equals(c("psi1: Intrcpt", "gam: Intrcpt", "eps: Intrcpt", "p: Intrcpt" )))
   expect_that(round(as.vector(res1$beta), 4),
       equals(c(-0.4284, -2.6133, -2.1971,  0.7962,  0.1318,  0.1865,  0.2029,
         0.1077, -0.6868, -2.9788, -2.5947,  0.5850, -0.1701, -2.2478,

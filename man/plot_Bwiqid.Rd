@@ -7,7 +7,7 @@ Plot method for objects of class 'Bwiqid'
 Method to display a plot showing the posterior probability distribution of one of the parameters of interest.
 }
 \usage{
-   
+
 \method{plot}{Bwiqid}(x, which=NULL, credMass=0.95,
            ROPE=NULL, compVal=NULL, showCurve=FALSE,
            showMode=FALSE, shadeHDI=NULL,  ...)
@@ -57,7 +57,7 @@ Mike Meredith, adapted from code by John Kruschke.
 }
 
 \seealso{
-\code{\link{plotPost}}.
+\code{\link{postPlot}}.
 }
 \examples{
 # See examples in dippers.

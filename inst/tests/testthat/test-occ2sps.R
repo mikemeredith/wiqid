@@ -54,9 +54,9 @@ test_that("occ2sps gives right answers",  {
   rail3 <- occ2sps(DHA, DHB,
     model=list(psiA ~ logArea, psiBA ~ reeds, rBA ~ 1), data=railSims)
   expect_that(rownames(rail3$beta),
-    equals(c("psiA:(Intercept)",  "psiA:logArea",      "psiBa:(Intercept)",
-      "pA:(Intercept)",    "pB:(Intercept)",    "psiBA:(Intercept)",
-      "psiBA:reedsTRUE",   "rBA:(Intercept)")))
+    equals(c("psiA:Intrcpt",  "psiA:logArea",      "psiBa:Intrcpt",
+      "pA:Intrcpt",    "pB:Intrcpt",    "psiBA:Intrcpt",
+      "psiBA:reedsTRUE",   "rBA:Intrcpt")))
   expect_that(round(as.vector(rail3$beta[, 1]), 4),
       equals(c(-0.1624,  1.4346,  1.4676,  1.3715,  1.4056, -0.8656,  1.8585, -0.7350)))
   expect_that(round(as.vector(rail3$beta[, 2]), 4),

@@ -35,7 +35,7 @@ test_that("Predict works for occMS",  {
 
   expect_message(pred1a <- predict(res1, newdata, "epsilon"),
      "This is an intercept-only model")
-  expect_equivalent(colMeans(pred1a), res1$beta['eps: (Intercept)', ])
+  expect_equivalent(colMeans(pred1a), res1$beta['eps: Intrcpt', ])
   expect_true(all(diff(pred1a[, 1]) == 0))
 
   newdata2 <- expand.grid(habitat = c("Natural","Pasture"), .interval = factor(1:4))
@@ -56,7 +56,7 @@ test_that("Predict works for occMS",  {
 
   expect_message(pred3a <- predict(res3, newdata2, "epsilon"),
      "This is an intercept-only model")
-  expect_equivalent(colMeans(pred3a), res3$beta['eps: (Intercept)', ])
+  expect_equivalent(colMeans(pred3a), res3$beta['eps: Intrcpt', ])
   expect_true(all(diff(pred3a[, 1]) == 0))
 
   res4 <- occMS(DH, 3, gamma ~ habitat + .interval, data=GrandSkinks)
@@ -70,7 +70,7 @@ test_that("Predict works for occMS",  {
 
   expect_message(pred4a <- predict(res3, newdata2, "p"),
      "This is an intercept-only model")
-  expect_equivalent(colMeans(pred4a), res3$beta['p: (Intercept)', ])
+  expect_equivalent(colMeans(pred4a), res3$beta['p: Intrcpt', ])
   expect_true(all(diff(pred3a[, 1]) == 0))
 
   newdata3 <- expand.grid(habitat = c("Natural","Pasture"), .season = factor(1:5))
@@ -87,7 +87,7 @@ test_that("Predict works for occMS",  {
 
   expect_message(pred5a <- predict(res5, newdata3, "psi1"),
      "This is an intercept-only model")
-  expect_equivalent(colMeans(pred5a), res5$beta['psi1: (Intercept)', ])
+  expect_equivalent(colMeans(pred5a), res5$beta['psi1: Intrcpt', ])
   expect_true(all(diff(pred5a[, 1]) == 0))
 })
 # ..............................................................

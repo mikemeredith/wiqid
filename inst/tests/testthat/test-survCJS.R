@@ -19,15 +19,15 @@ test_that("survCJS gives right answers",  {
   expect_that(class(res), equals(c("wiqid", "list")))
   expect_that(names(res), equals(c("call", "beta", "beta.vcv", "real", "logLik")))
   expect_that(colnames(res$real), equals(c("est", "lowCI", "uppCI")))
-  expect_that(rownames(res$beta), equals(c("phi: (Intercept)", "p: (Intercept)")))
+  expect_that(rownames(res$beta), equals(c("phi: Intrcpt", "p: Intrcpt")))
   expect_that(round(as.vector(t(res$real[6:7,])), 4),
       equals(c(0.5602, 0.5105, 0.6088, 0.9026, 0.8305, 0.9460))) # MARK output
   expect_that(round(AIC(res), 4), equals(670.8377)) # MARK output
 
   res <- survCJS(DH, phi ~ .time)
-  expect_that(rownames(res$beta), equals(c("phi: (Intercept)", "phi: .time2",
+  expect_that(rownames(res$beta), equals(c("phi: Intrcpt", "phi: .time2",
           "phi: .time3", "phi: .time4", "phi: .time5", "phi: .time6",
-          "p: (Intercept)")))
+          "p: Intrcpt")))
   expect_that(round(as.vector(t(res$real[1:7,])), 4),
       equals(c(0.6258, 0.3965, 0.8098,
                0.4542, 0.3295, 0.5849,
@@ -40,8 +40,8 @@ test_that("survCJS gives right answers",  {
 
   dd <- data.frame(flood = c(FALSE, TRUE, TRUE, FALSE, FALSE, FALSE))
   res <- survCJS(DH, phi ~ flood, data=dd)
-  expect_that(rownames(res$beta), equals(c("phi: (Intercept)", "phi: floodTRUE",
-          "p: (Intercept)")))
+  expect_that(rownames(res$beta), equals(c("phi: Intrcpt", "phi: floodTRUE",
+          "p: Intrcpt")))
   expect_that(round(as.vector(t(res$real[c(1,2,7),])), 4),
       equals(c(0.6071, 0.5451, 0.6658,
                0.4688, 0.3858, 0.5537,
@@ -56,8 +56,8 @@ test_that("survCJS gives right answers",  {
   expect_that(round(AIC(res), 4), equals(666.1028)) # MARK output
 
   res <- survCJS(DH, phi ~ flood*group, data=dd, group=dippers$sex)
-  expect_that(rownames(res$beta), equals(c("phi: (Intercept)", "phi: floodTRUE",
-          "phi: groupM", "phi: floodTRUE:groupM", "p: (Intercept)")))
+  expect_that(rownames(res$beta), equals(c("phi: Intrcpt", "phi: floodTRUE",
+          "phi: groupM", "phi: floodTRUE:groupM", "p: Intrcpt")))
   expect_that(round(as.vector(t(res$real[c(1,2,7, 8, 13),])), 4),
       equals(c( 0.6033, 0.5163, 0.6842,
                 0.4568, 0.3468, 0.5712,
@@ -69,8 +69,8 @@ test_that("survCJS gives right answers",  {
   # Check with unequal intervals
   DH1 <- DH[, -5]
   res1 <- survCJS(DH1, phi ~ .time, interval = c(1,1,1,2,1))
-  expect_equal(rownames(res1$beta), c("phi: (Intercept)", "phi: .time2",
-          "phi: .time3", "phi: .time4", "phi: .time5", "p: (Intercept)"))
+  expect_equal(rownames(res1$beta), c("phi: Intrcpt", "phi: .time2",
+          "phi: .time3", "phi: .time4", "phi: .time5", "p: Intrcpt"))
   expect_equivalent(round(colMeans(res1$real), 4), c(0.7120, 0.5789, 0.8121))
   expect_equal(round(AIC(res1), 4), 520.4062)
 }  )
