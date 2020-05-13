@@ -21,7 +21,7 @@ log_qArray <- function(log_phi, log_p, log_1mp) {
   n <- length(log_phi)
 
   # Create n x n+1 matrix and fill diagonal
-  q <- diag(as.vector(log_p + log_phi), n, n+1)  
+  q <- diag(as.vector(log_p + log_phi), n, n+1)
   # Fill the upper triangle, and get the row sums
   sum_probs <- numeric(n)
   for (i in 1:(n-1)){
@@ -32,7 +32,7 @@ log_qArray <- function(log_phi, log_p, log_1mp) {
   }
   sum_probs[n] <- q[n, n]
   # Add the last column and return
-  q[, n+1] <- log1minusExp(sum_probs) 
+  q[, n+1] <- log1minusExp(sum_probs)
   return(q)
 }
 # ..........................................................................
@@ -96,15 +96,17 @@ survCJS <- function(DH, model=list(phi~1, p~1), data=NULL, freq=1, group, interv
 
   # Standardize the data
   dataList <- stddata(data, NULL)
-  dataList$.Time <- as.vector(scale(1:ni)) /2
+  dataList$.Time <- as.vector(scale(1:ni)) #/2
+  dataList$.Time2 <- dataList$.Time^2
+  dataList$.Time3 <- dataList$.Time^3
   dataList$.time <- as.factor(1:ni)
 
   # Set up model matrices
   phiDf <- selectCovars(model$phi, dataList, ni*nGroup)
-  phiMat <- model.matrix(model$phi, phiDf)
+  phiMat <- modelMatrix(model$phi, phiDf)
   phiK <- ncol(phiMat)
   pDf <- selectCovars(model$p, dataList, ni*nGroup)
-  pMat <- model.matrix(model$p, pDf)
+  pMat <- modelMatrix(model$p, pDf)
   pK <- ncol(pMat)
   K <- phiK + pK
   if(nrow(phiMat) != ni*nGroup || nrow(pMat) != ni*nGroup)

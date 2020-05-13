@@ -12,7 +12,7 @@
 #   - for factors, original levels
 
 predict.wiqid <- function(object, newdata, parameter, ci, type=c("link", "response"), ...) {
-  
+
   if(missing(newdata) || !is.data.frame(newdata))
     stop("Please supply a data frame for newdata.")
   if(missing(parameter))
@@ -28,14 +28,14 @@ predict.wiqid <- function(object, newdata, parameter, ci, type=c("link", "respon
     link <- "logit"
   if(length(link) > 1)
       link <- link[[parameter]]
-    
+
   # get the index, if length(index) == 1 it's an intercept-only model
   index <- object$index[[parameter]]
   if(is.null(index))
     stop("No coefficients found for parameter ", parameter)
-  
+
   if(length(index) == 1) {   # INTERCEPT ONLY MODEL
-    message("This is an intercept-only model, all values identical.")    
+    message("This is an intercept-only model, all values identical.")
     intercept <- object$beta[index, 1:2] # est and SE
     intercept <- c(intercept, intercept[1] + intercept[2] * crit)
     lp.mat <- matrix(rep(intercept, each=nrow(newdata)), nrow(newdata))
@@ -67,9 +67,9 @@ predict.wiqid <- function(object, newdata, parameter, ci, type=c("link", "respon
     xlev <- object$xlev
     xlev <- xlev[names(xlev)%in% varsNeeded]  # can be empty
     mf <- model.frame(formula, newdata, xlev=xlev)
-    modMat <- model.matrix(formula, mf)
-    
-    
+    modMat <- modelMatrix(formula, mf)
+
+
     # Get point estimates and SEs
     lp.mat <- matrix(NA_real_, nrow(modMat), 4)
     rownames(lp.mat) <- rownames(modMat)

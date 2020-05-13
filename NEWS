@@ -1,4 +1,10 @@
 
+CHANGES in 0.2.3.9006 (2020-05-13)
+
+  * Functions with built-in '.Time' variable get '.Time2' and '.Time3' variables; no need now for I(.Time^2).
+
+  * Intercepts are now labeled "Intrcpt" instead of "(Intercept)".
+
 CHANGES in 0.2.3.9006 (2020-05-10)
 
   * Added package 'mcmcOutput' to Depends.

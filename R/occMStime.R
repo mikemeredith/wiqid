@@ -54,13 +54,13 @@ occMStime <- function(DH, occsPerSeason,
   dataList$.season <- as.factor(rep(1:nseas))
 
   gamDf <- selectCovars(model$gamma, dataList, nseas)[-nseas, , drop=FALSE]
-  gamMat <- model.matrix(model$gamma, gamDf)
+  gamMat <- modelMatrix(model$gamma, gamDf)
   gamK <- ncol(gamMat)
   epsDf <- selectCovars(model$epsilon, dataList, nseas)[-nseas, , drop=FALSE]
-  epsMat <- model.matrix(model$epsilon, epsDf)
+  epsMat <- modelMatrix(model$epsilon, epsDf)
   epsK <- ncol(epsMat)
   pDf <- selectCovars(model$p, dataList, nseas)
-  pMat <- model.matrix(model$p, pDf)
+  pMat <- modelMatrix(model$p, pDf)
   pK <- ncol(pMat)
   K <- 1 + gamK + epsK + pK
   parID <- rep(1:4, c(1, gamK, epsK, pK))

@@ -93,17 +93,17 @@ occMS <- function(DH, occsPerSeason,
   dataList <- lapply(dataList, doScaling, scaleBy = 1)
 
   psi1df <- selectCovars(model$psi1, dataList, nSites)
-  psi1Mat <- model.matrix(model$psi1, psi1df)
+  psi1Mat <- modelMatrix(model$psi1, psi1df)
   psi1K <- ncol(psi1Mat)
   gamDf <- selectCovars(model$gamma, dataList, nSites*(nseas-1))
-  gamMat <- model.matrix(model$gamma, gamDf)
+  gamMat <- modelMatrix(model$gamma, gamDf)
   gamK <- ncol(gamMat)
   epsDf <- selectCovars(model$epsilon, dataList, nSites*(nseas-1))
-  epsMat <- model.matrix(model$epsilon, epsDf)
+  epsMat <- modelMatrix(model$epsilon, epsDf)
   epsK <- ncol(epsMat)
   pDfNA <- selectCovars(model$p, dataList, nSites*nOcc)
   pDf <- pDfNA[survey.done, , drop=FALSE]
-  pMat <- model.matrix(model$p, pDf)  # model.matrix removes any NAs
+  pMat <- modelMatrix(model$p, pDf)  # modelMatrix removes any NAs
   if (nrow(pMat) != sum(survey.done))
     stop("Missing survey covars not allowed when a survey was done.")
   pK <- ncol(pMat)

@@ -60,6 +60,8 @@ BoccSS <- function(DH, model=NULL, data=NULL, priors=list(),
   dataList <- stddata(data, nSurv, scaleBy = 1)
   time <- rep(1:nSurv, each=nSites)
   dataList$.Time <- as.vector(scale(time)) # /2
+  dataList$.Time2 <- dataList$.Time^2
+  dataList$.Time3 <- dataList$.Time^3
   dataList$.time <- as.factor(time)
   before <- cbind(0L, DH[, 1:(nSurv - 1)]) # 1 if species seen on previous occasion
   dataList$.b <- as.vector(before)
@@ -73,13 +75,13 @@ BoccSS <- function(DH, model=NULL, data=NULL, priors=list(),
   psiDf <- selectCovars(model$psi, dataList, nSites)
   if (nrow(psiDf) != nSites)
     stop("Number of site covars doesn't match sites.\nAre you using survey covars?")
-  psiModMat <- model.matrix(model$psi, psiDf)
+  psiModMat <- modelMatrix(model$psi, psiDf)
   if(nrow(psiModMat) != nrow(psiDf))
       stop("Missing site covariates are not allowed.")
   psiK <- ncol(psiModMat)
   pDf0 <- selectCovars(model$p, dataList, nSites*nSurv)
   pDf <- pDf0[survey.done, , drop=FALSE]
-  pModMat <- model.matrix(model$p, pDf)
+  pModMat <- modelMatrix(model$p, pDf)
   if(nrow(pModMat) != nrow(pDf))
       stop("Missing survey covariates are not allowed when a survey was done.")
   pK <- ncol(pModMat)

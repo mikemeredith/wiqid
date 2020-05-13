@@ -2,6 +2,7 @@
 # This file contains utilities used in several places in the code
 #   and NOT exported:
 
+# modelMatrix : wrapper for model.matrix, changes "(Intercept)" to "Intrcpt"
 # getVar0, getFittedVar : get variance for fitted values
 # getScaling, doScaling, scaleToMatch : functions to deal with scaling
 # signifish : an alternative to signif (added 10-02-2015)
@@ -18,6 +19,16 @@
 # Functions to convert parameters of distributions (eg mean and sd to shape and rate)
 #   are in converters.R
 # Variants of the t-distribution are in TDist.R
+# ...............................................................................
+
+# Produces a  model matrix but the intercept column is named "Intrcpt" without
+#   parentheses
+modelMatrix <- function(formula, data, ...) {
+  mm <- model.matrix(formula, data, ...)
+  colnames(mm)[colnames(mm) == "(Intercept)"] <- "Intrcpt"
+  return(mm)
+}
+
 # ...............................................................................
 
 # Functions to calculate the variance of fitted values from model matrix and var-covar matrix.

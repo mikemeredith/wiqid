@@ -22,7 +22,7 @@ log_qArrayAJ <- function(log_phi, log_p, log_1mp, log_phiJ=log_phi) {
   q <- diag(as.vector(log_p + log_phiJ), n, n+1)
   # Fill the upper triangle, and get the row sums
   sum_probs <- numeric(n)
-  for (i in 1:(n-1)){ 
+  for (i in 1:(n-1)){
     for (j in (i+1):n) {
       q[i,j] <- log_phiJ[i] + sum(log_phi[(i+1):j]) + sum(log_1mp[i:(j-1)]) + log_p[j]
     }
@@ -30,7 +30,7 @@ log_qArrayAJ <- function(log_phi, log_p, log_1mp, log_phiJ=log_phi) {
   }
   sum_probs[n] <- q[n, n]
   # Add the last column and return
-  q[, n+1] <- log1minusExp(sum_probs) 
+  q[, n+1] <- log1minusExp(sum_probs)
   return(q)
 }
 # ..........................................................................
@@ -57,7 +57,7 @@ survCJSaj <- function(DHj, DHa=NULL, model=list(phiJ~1, phiA~1, p~1), data=NULL,
   nocc <- ncol(DHj)
   ni <- nocc - 1  # number of survival intervals and REcapture occasions
   if(!is.null(DHa) && ncol(DHa) != nocc)
-    stop("'DHa' and 'DHj' must have the same number of columns.") 
+    stop("'DHa' and 'DHj' must have the same number of columns.")
   if (length(freqj) == 1)
     freqj <- rep(freqj, nrow(DHj))
   # if (length(freqa) == 1)
@@ -100,18 +100,20 @@ survCJSaj <- function(DHj, DHa=NULL, model=list(phiJ~1, phiA~1, p~1), data=NULL,
 
   # Standardize the data
   dataList <- stddata(data, NULL)
-  dataList$.Time <- as.vector(scale(1:ni)) /2
+  dataList$.Time <- as.vector(scale(1:ni)) #/2
+  dataList$.Time2 <- dataList$.Time^2
+  dataList$.Time3 <- dataList$.Time^3
   dataList$.time <- as.factor(1:ni)
 
   # Set up model matrices
   phiADf <- selectCovars(model$phiA, dataList, ni)
-  phiAMat <- model.matrix(model$phiA, phiADf)
+  phiAMat <- modelMatrix(model$phiA, phiADf)
   phiAK <- ncol(phiAMat)
   phiJDf <- selectCovars(model$phiJ, dataList, ni)
-  phiJMat <- model.matrix(model$phiJ, phiJDf)
+  phiJMat <- modelMatrix(model$phiJ, phiJDf)
   phiJK <- ncol(phiJMat)
   pDf <- selectCovars(model$p, dataList, ni)
-  pMat <- model.matrix(model$p, pDf)
+  pMat <- modelMatrix(model$p, pDf)
   pK <- ncol(pMat)
   K <- phiAK + phiJK + pK
   parID <- rep(1:3, c(phiAK, phiJK, pK))

@@ -55,9 +55,9 @@ other arguments passed to \code{\link{nlm}}.
 }
 \details{
 
-\code{occSS} allows for psi or p to be modelled as a logistic or probit function of site covariates or survey covariates, as specified by \code{model}. It includes a built in \code{.time} covariate which can be used for modelling p with time as a fixed effect, and \code{.Time} for a linear or quadratic trend. A built-in \code{.b} covariate corresponds to a behavioural effect, where detection depends on whether the species was detected on the previous occasion or not.
+\code{occSS} allows for psi or p to be modelled as a logistic or probit function of site covariates or survey covariates, as specified by \code{model}. It includes a built in \code{.time} covariate which can be used for modelling p with time as a fixed effect, and \code{.Time, .Time2, .Time3} for a linear, quadratic or cubic trend. A built-in \code{.b} covariate corresponds to a behavioural effect, where detection depends on whether the species was detected on the previous occasion or not.
 
-\code{occSStime} allows for time-varying covariates that are the same across all sites, eg, moon-phase. A categorical time variable \code{.time} and a time trend \code{.Time} are built-in. A plot of detection probability vs time is produced if \code{plot=TRUE}.
+\code{occSStime} allows for time-varying covariates that are the same across all sites, eg, moon-phase. Time variables are built in, as for \code{occSS}. A plot of detection probability vs time is produced if \code{plot=TRUE}.
 
 \code{occSS0} implements a simple model with one parameter for probability of occupancy and one for probability of detection, ie. a \code{psi(.) p(.)} model.
 
@@ -95,7 +95,7 @@ See the examples for the \code{\link{weta}} data set. See \code{\link{occ2sps}} 
 data(salamanders)
 occSS(salamanders)
 occSStime(salamanders, p ~ .time)  # time as a fixed effect
-occSStime(salamanders, p ~ .Time + I(.Time^2))  # a quadratic time effect
+occSStime(salamanders, p ~ .Time + .Time2)  # a quadratic time effect
 occSS(salamanders, p ~ .b)
 
 # or use the fast functions with y, n format:

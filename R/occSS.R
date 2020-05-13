@@ -48,6 +48,8 @@ occSS <- function(DH, model=NULL, data=NULL, ci=0.95, link=c("logit", "probit"),
   time <- rep(1:nSurv, each=nSites)
   # dataList$.Time <- as.vector(scale(time)) /2
   dataList$.Time <- time
+  dataList$.Time2 <- time^2
+  dataList$.Time3 <- time^3
   dataList$.time <- as.factor(time)
   before <- cbind(FALSE, DH[, 1:(nSurv - 1)] > 0) # 1 if animal seen on previous occasion
   dataList$.b <- as.vector(before)
@@ -65,13 +67,13 @@ occSS <- function(DH, model=NULL, data=NULL, ci=0.95, link=c("logit", "probit"),
   psiDf <- selectCovars(model$psi, dataList, nSites)
   if (nrow(psiDf) != nSites)
     stop("Number of site covars doesn't match sites.\nAre you using survey covars?")
-  psiModMat <- model.matrix(model$psi, psiDf)
+  psiModMat <- modelMatrix(model$psi, psiDf)
   if(nrow(psiModMat) != nrow(psiDf))
       stop("Missing site covariates are not allowed.")
   psiK <- ncol(psiModMat)
   pDf0 <- selectCovars(model$p, dataList, nSites*nSurv)
   pDf <- pDf0[survey.done, , drop=FALSE]
-  pModMat <- model.matrix(model$p, pDf)
+  pModMat <- modelMatrix(model$p, pDf)
   if(nrow(pModMat) != nrow(pDf))
       stop("Missing survey covariates are not allowed when a survey was done.")
   pK <- ncol(pModMat)

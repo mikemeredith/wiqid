@@ -71,7 +71,7 @@ occ2sps <- function(DHA, DHB, model=NULL, data=NULL, ci=0.95, verify=TRUE)  {
   # Build model matrices
   modMatList <- vector('list', M)
   for(i in 1:M)
-    modMatList[[i]] <- model.matrix(model[[i]], data)
+    modMatList[[i]] <- modelMatrix(model[[i]], data)
   parK <- sapply(modMatList, ncol)    # Number of parameters for each model matrix
   K <- sum(parK)  # total number of parameters
   idK <- rep(1:M, parK)  # specifies which of the K parameters belongs to each model matrix

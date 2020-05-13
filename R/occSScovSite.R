@@ -36,15 +36,15 @@ occSScovSite <- function(y, n, model=NULL, data=NULL,
   psiDf <- selectCovars(model$psi, dataList, nSites)
   if (nrow(psiDf) != nSites)
     stop("Number of site covars doesn't match sites.")
-  psiModMat <- model.matrix(model$psi, psiDf)
+  psiModMat <- modelMatrix(model$psi, psiDf)
   psiK <- ncol(psiModMat)
   pDf <- selectCovars(model$p, dataList, nSites)
   if (nrow(pDf) != nSites)
     stop("Number of site covars doesn't match sites.")
-  pModMat <- model.matrix(model$p, pDf)
+  pModMat <- modelMatrix(model$p, pDf)
   pK <- ncol(pModMat)
   K <- psiK + pK
-  # model.matrix removes rows with NAs:
+  # modelMatrix removes rows with NAs:
   if(nrow(psiModMat) != nSites || nrow(pModMat) != nSites)
     stop("Missing site covariates are not allowed.")
 

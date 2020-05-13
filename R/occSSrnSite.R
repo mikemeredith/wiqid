@@ -42,16 +42,16 @@ occSSrnSite <- function(y, n, model=NULL, data=NULL,
   lamDf <- selectCovars(model$lambda, dataList, nSites)
   if (nrow(lamDf) != nSites)
     stop("Number of site covars doesn't match sites.")
-  lamModMat <- model.matrix(model$lambda, lamDf)
+  lamModMat <- modelMatrix(model$lambda, lamDf)
   lamK <- ncol(lamModMat)
   rDf <- selectCovars(model$r, dataList, nSites)
   if (nrow(rDf) != nSites)
     stop("Number of site covars doesn't match sites.")
-  rModMat <- model.matrix(model$r, rDf)
+  rModMat <- modelMatrix(model$r, rDf)
   rK <- ncol(rModMat)
   K <- lamK + rK
 
-  # model.matrix removes rows with NAs:
+  # modelMatrix removes rows with NAs:
   if(nrow(lamModMat) != nSites || nrow(rModMat) != nSites)
     stop("Missing site covariates are not allowed.")
 
