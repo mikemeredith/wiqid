@@ -2,19 +2,19 @@
 # Function to plot activity centres
 
 plotACs <- function(
-    object,           # Bwiqid object with ACs attribute
+    object,           # mcmcOutput object with ACs attribute
     which=NA,         # which ACs to plot (don't usually want to do all in one plot)
     howMany=3000,     # number of points to plot for each animal
     showLabels=TRUE  # whether to label plot with animal IDs
   )  {
 
   # Check input
-  if(!inherits(object, "Bwiqid"))
-    stop("Input object is not class 'Bwiqid'.")
+  if(!inherits(object, "mcmcOutput"))
+    stop("Input object is not class 'mcmcOutput'.")
   ACs <- attr(object, "ACs")
   if(is.null(ACs))
     stop("Can't find Activity Centre information.")
-    
+
   # Reduce number of iterations
   if(dim(ACs)[1] > howMany) {
     keep <- seq(1, dim(ACs)[1], length = howMany)

@@ -1,4 +1,8 @@
 
+CHANGES in 0.2.3.9008 (2020-05-21)
+
+  * Updated 'plotACs' to work with class 'mcmcOutput'.
+
 CHANGES in 0.2.3.9007 (2020-05-13)
 
   * Updated 'testthat' tests to match recent changes.
