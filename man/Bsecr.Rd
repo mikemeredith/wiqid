@@ -85,10 +85,10 @@ require(secr)
 data(stoatDNA)
 # This takes ca 10 mins on a multicore machine:
 Bout <- Bsecr0(stoatCH, buffer=1000)
-Bout
+summary(Bout)
 plot(Bout)
 # look at diagnostic plots to see if D is constrained by nAug:
-tracePlot(Bout)
-densityPlot(Bout)  # Upper values of D doesn't look constrained.
+diagPlot(Bout)      # Upper values of D doesn't look constrained.
+plotACs(Bout, 1:20) # Plot the ACs for captured animals
 }
 }

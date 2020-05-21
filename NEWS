@@ -1,13 +1,17 @@
 
-CHANGES in 0.2.3.9008 (2020-05-21)
+CHANGES in 0.2.3.9010 (2020-05-21)
+
+  * Fixed examples for 'Bsecr0'.
+
+CHANGES in 0.2.3.9009 (2020-05-21)
 
   * Updated 'plotACs' to work with class 'mcmcOutput'.
 
-CHANGES in 0.2.3.9007 (2020-05-13)
+CHANGES in 0.2.3.9008 (2020-05-13)
 
   * Updated 'testthat' tests to match recent changes.
 
-CHANGES in 0.2.3.9006 (2020-05-13)
+CHANGES in 0.2.3.9007 (2020-05-13)
 
   * Functions with built-in '.Time' variable get '.Time2' and '.Time3' variables; no need now for I(.Time^2).
 
