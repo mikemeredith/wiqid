@@ -2,7 +2,7 @@
 
 # setwd("D:/Github/wiqid_package")
 setwd("../..")
-
+getwd()
 
 library(devtools)
 sIg <- scan("spellcheckIgnore.txt", what='character', comment="#")
@@ -16,11 +16,11 @@ devtools::load_all("C:/GitHub/wiqid_package/wiqid")
 # ========================
 unlink(list.files(pattern="Rplots.pdf", recursive=TRUE))
 system("R CMD build wiqid")  # Produces the .tar.gz file
-system("R CMD check wiqid_0.2.3.9010.tar.gz")
-system("R CMD check --as-cran wiqid_0.2.3.9010.tar.gz")
-# system("R CMD check --run-donttest wiqid_0.2.3.9010.tar.gz")
+system("R CMD check wiqid_0.2.3.9011.tar.gz")
+system("R CMD check --as-cran wiqid_0.2.3.9011.tar.gz")
+# system("R CMD check --run-donttest wiqid_0.2.3.9011.tar.gz")
 # Sys.setenv(R_ZIPCMD = "C:/Rtools/bin/zip.exe")
-system("R CMD INSTALL --build wiqid_0.2.3.9010.tar.gz") # installs and produces the .zip binary
+system("R CMD INSTALL --build wiqid_0.2.3.9011.tar.gz") # installs and produces the .zip binary
 
 system("R CMD INSTALL wiqid") # Use this for a "dev" install.
 
@@ -28,8 +28,7 @@ system("R CMD INSTALL wiqid") # Use this for a "dev" install.
 # Test it:
 library(testthat)
 test_package("wiqid", reporter=ProgressReporter)
-# graphics.off()
-test_dir("D:/GitHub/wiqid_package/wiqid/inst/tests/testthat", reporter=ProgressReporter)
+# test_dir("D:/GitHub/wiqid_package/wiqid/inst/tests/testthat", reporter=ProgressReporter)
 
 
 # Try it out:
