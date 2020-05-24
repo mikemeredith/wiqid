@@ -84,7 +84,7 @@ The function \code{secr.fit} in package \code{secr}.
 require(secr)
 data(stoatDNA)
 # This takes ca 10 mins on a multicore machine:
-Bout <- Bsecr0(stoatCH, buffer=1000)
+Bout <- Bsecr0(stoatCH, buffer=1000, chains=2) # 2 chains for testing
 summary(Bout)
 plot(Bout)
 # look at diagnostic plots to see if D is constrained by nAug:

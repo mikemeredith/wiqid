@@ -7,7 +7,7 @@
 Conversion to class Bwiqid (deprecated)
 }
 \description{
-Convert output containing MCMC chains to the class \code{mcmcOutput}, with a warning. The class \code{mcmcOutput} is deprecated, use \code{mcmcOutput} instead.
+Convert output containing MCMC chains to the class \code{mcmcOutput}, with a warning. The class \code{Bwiqid} is deprecated, use \code{mcmcOutput} instead.
 }
 \usage{
 as.Bwiqid(object, ...)

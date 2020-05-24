@@ -2,8 +2,15 @@
 
 # setwd("D:/Github/wiqid_package")
 setwd("../..")
-getwd()
+dir()
 
+# Dependencies
+# ============
+install.packages(c("truncnorm", "coda", "plotrix", "secr", "shiny", "rjags"))
+devtools::install_github("mikemeredith/mcmcOutput")
+
+# Spell check
+# ===========
 library(devtools)
 sIg <- scan("spellcheckIgnore.txt", what='character', comment="#")
 tmp <- spell_check("wiqid", ignore=c(hunspell::en_stats, sIg), "en_GB")
@@ -16,11 +23,12 @@ devtools::load_all("C:/GitHub/wiqid_package/wiqid")
 # ========================
 unlink(list.files(pattern="Rplots.pdf", recursive=TRUE))
 system("R CMD build wiqid")  # Produces the .tar.gz file
-system("R CMD check wiqid_0.2.3.9011.tar.gz")
-system("R CMD check --as-cran wiqid_0.2.3.9011.tar.gz")
-# system("R CMD check --run-donttest wiqid_0.2.3.9011.tar.gz")
+# system("R CMD check wiqid_0.2.3.9012.tar.gz")
+system("R CMD check --as-cran wiqid_0.2.3.9012.tar.gz")
+# system("R CMD check --run-donttest wiqid_0.2.3.9012.tar.gz")
 # Sys.setenv(R_ZIPCMD = "C:/Rtools/bin/zip.exe")
-system("R CMD INSTALL --build wiqid_0.2.3.9011.tar.gz") # installs and produces the .zip binary
+system("R CMD INSTALL --build wiqid_0.2.3.9012.tar.gz") # installs and produces the .zip binary
+system("R CMD INSTALL wiqid_0.2.3.9012.tar.gz") # installs only
 
 system("R CMD INSTALL wiqid") # Use this for a "dev" install.
 

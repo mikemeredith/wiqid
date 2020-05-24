@@ -85,7 +85,7 @@ Bnormal(HB)  # with improper flat priors for mu and tau
 Bnormal(HB, priors=list(muMean=1000, muSD=200))
 Bnormal(HB, priors=list(muMean=1, muSD=0.2)) # a silly prior produces a warning.
 \donttest{
-Bnormal2(HB)  # with broad normal prior for mu, uniform for sigma
-Bnormal2(HB, priors=list(muMean=1000, muSD=200, sigmaMode=20, sigmaSD=10))
+Bnormal2(HB, chains=2)  # with broad normal prior for mu, uniform for sigma
+Bnormal2(HB, chains=2, priors=list(muMean=1000, muSD=200, sigmaMode=20, sigmaSD=10))
 }
 }

@@ -44,7 +44,7 @@ survCJS(DH, phi ~ flood * group, data=df, group=dippers$sex)
 \donttest{
 Bdip <- BsurvCJS(DH, parallel=FALSE)
 plot(Bdip)
-BdipFlood <- BsurvCJS(DH, list(phi ~ flood, p ~ .time), data=df)
+BdipFlood <- BsurvCJS(DH, list(phi ~ flood, p ~ .time), data=df, parallel=FALSE)
 BdipFlood
 op <- par(mfrow=2:1)
 plot(BdipFlood, "phi[1]", xlim=c(0.3, 0.75), main="No flood")
