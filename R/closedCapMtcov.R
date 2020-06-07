@@ -18,7 +18,7 @@ function(CH, model=list(p~1), data=NULL, ci = 0.95, ciType=c("normal", "MARK"), 
 
   # Convert the covariate data frame into a list
   dataList <- stddata(data, nocc)
-  dataList$.Time <- scale(1:nocc)
+  dataList$.Time <- standardize(1:nocc)
   dataList$.Time2 <- dataList$.Time^2
   dataList$.Time3 <- dataList$.Time^3
   dataList$.time <- as.factor(1:nocc)

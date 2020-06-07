@@ -1,4 +1,12 @@
 
+CHANGES in 0.2.3.9013 (2020-06-07)
+
+  * Changed instances of 'as.vector(scale(..)) to standardize(..).
+
+  * Added URL to DESCRIPTION.
+
+  * Checked for issues with data.frame or as.data.frame with new default for stringsAsFactors.
+
 CHANGES in 0.2.3.9012 (2020-05-24)
 
   * Fixed 'donttest' in examples so that they can be tested (doh!), which --as-cran does in R devel.

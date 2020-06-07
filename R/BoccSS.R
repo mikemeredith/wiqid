@@ -59,7 +59,7 @@ BoccSS <- function(DH, model=NULL, data=NULL, priors=list(),
   # Convert the covariate data frame into a list
   dataList <- stddata(data, nSurv, scaleBy = 1)
   time <- rep(1:nSurv, each=nSites)
-  dataList$.Time <- as.vector(scale(time)) # /2
+  dataList$.Time <- standardize(time)
   dataList$.Time2 <- dataList$.Time^2
   dataList$.Time3 <- dataList$.Time^3
   dataList$.time <- as.factor(time)

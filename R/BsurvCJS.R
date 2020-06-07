@@ -39,7 +39,7 @@ BsurvCJS <- function(DH, model=list(phi~1, p~1), data=NULL, freq=1, priors=NULL,
 
   # Standardize the data
   dataList <- stddata(data, NULL)
-  dataList$.Time <- as.vector(scale(1:ni))
+  dataList$.Time <- standardize(1:ni)
   dataList$.Time2 <- dataList$.Time^2
   dataList$.Time3 <- dataList$.Time^3
   dataList$.time <- as.factor(1:ni)

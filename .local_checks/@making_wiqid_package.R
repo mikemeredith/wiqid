@@ -17,26 +17,32 @@ tmp <- spell_check("wiqid", ignore=c(hunspell::en_stats, sIg), "en_GB")
 length(tmp)  # number of misspellings found
 tmp  # error if length == 0
 
+# Development
+# ===========
 devtools::load_all("C:/GitHub/wiqid_package/wiqid")
+system("R CMD INSTALL wiqid") # Use this for a "dev" install.
+# test_dir("D:/GitHub/wiqid_package/wiqid/inst/tests/testthat", reporter=ProgressReporter)
 
 # Create the wiqid package
 # ========================
 unlink(list.files(pattern="Rplots.pdf", recursive=TRUE))
 system("R CMD build wiqid")  # Produces the .tar.gz file
-# system("R CMD check wiqid_0.2.3.9012.tar.gz")
-system("R CMD check --as-cran wiqid_0.2.3.9012.tar.gz")
-# system("R CMD check --run-donttest wiqid_0.2.3.9012.tar.gz")
-# Sys.setenv(R_ZIPCMD = "C:/Rtools/bin/zip.exe")
-system("R CMD INSTALL --build wiqid_0.2.3.9012.tar.gz") # installs and produces the .zip binary
-system("R CMD INSTALL wiqid_0.2.3.9012.tar.gz") # installs only
+chkstub <- "R CMD check wiqid_0.2.3.9013.tar.gz"   # <---- fix version number here...
+insstub <- "R CMD INSTALL wiqid_0.2.3.9013.tar.gz" # ... and here.
 
-system("R CMD INSTALL wiqid") # Use this for a "dev" install.
+## Pick one to check:
+# For laptop (no LaTeX installed)
+system(paste(chkstub, "--no-manual"))
+system(paste(chkstub, "--as-cran --no-manual"))
 
+## Pick one to install
+system(paste(insstub, "--build"))
+system(insstub)
 
-# Test it:
+# Test it
+# =======
 library(testthat)
 test_package("wiqid", reporter=ProgressReporter)
-# test_dir("D:/GitHub/wiqid_package/wiqid/inst/tests/testthat", reporter=ProgressReporter)
 
 
 # Try it out:

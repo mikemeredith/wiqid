@@ -205,7 +205,7 @@ stddata <- function(df, nocc=NULL, scaleBy=1)  {
   if (!is.null(scaleBy)) {
     doScale <- function(x) {
       if (is.numeric(x))
-        x <- as.vector(scale(x) * scaleBy)
+        x <- standardize(x) * scaleBy
       return(x)
     }
     dataList <- lapply(dataList, doScale)
