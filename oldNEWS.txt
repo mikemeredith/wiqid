@@ -1,17 +1,67 @@
 
-CHANGES in 0.3.0 (2020-06-07)
+CHANGES in 0.2.3.9013 (2020-06-07)
 
-  * Added package 'mcmcOutput' to Depends; all functions handling MCMC chains removed: acfPlot, crosscorrPlot, densityFolded, densityPlot, diagPlot, postPriorOverlap, tracePlot; functions producing MCMC chains return an 'mcmcOutput' object.
+  * Changed instances of 'as.vector(scale(..)) to standardize(..).
 
-  * Class 'Bwiqid' deprecated; 'as.Bwiqid' warns and returns an 'mcmcOutput' object.
+  * Added URL to DESCRIPTION.
 
-  * 'Bsecr0' now returns MCMC chains for activity centres; function 'plotACs' added to plot these.
+  * Checked for issues with data.frame or as.data.frame with new default for stringsAsFactors.
 
-  * Fixed: in data set 'railSims', 'logArea' is now a vector, not a 1-column matrix; values unchanged.
+CHANGES in 0.2.3.9012 (2020-05-24)
+
+  * Fixed 'donttest' in examples so that they can be tested (doh!), which --as-cran does in R devel.
+
+CHANGES in 0.2.3.9011 (2020-05-24)
+
+  * Fixed data set 'railSims': 'logArea' is now a vector, not a 1-column matrix; values unchanged.
+
+CHANGES in 0.2.3.9010 (2020-05-21)
+
+  * Fixed examples for 'Bsecr0'.
+
+CHANGES in 0.2.3.9009 (2020-05-21)
+
+  * Updated 'plotACs' to work with class 'mcmcOutput'.
+
+CHANGES in 0.2.3.9008 (2020-05-13)
+
+  * Updated 'testthat' tests to match recent changes.
+
+CHANGES in 0.2.3.9007 (2020-05-13)
 
   * Functions with built-in '.Time' variable get '.Time2' and '.Time3' variables; no need now for I(.Time^2).
 
-  * Intercepts are now labeled "Intrcpt" instead of "(Intercept)", so no need for backticks.
+  * Intercepts are now labeled "Intrcpt" instead of "(Intercept)".
+
+CHANGES in 0.2.3.9006 (2020-05-10)
+
+  * Added package 'mcmcOutput' to Depends.
+
+  * Removed functions that have been moved to 'mcmcOutput' package: acfPlot, crosscorrPlot, densityFolded, densityPlot, diagPlot, postPriorOverlap, tracePlot.
+
+  * 'as.Bwiqid' warns and returns an 'mcmcOutput' object.
+
+  * Updated the following functions to return 'mcmcOutput' objects: Bbinomial, Bnormal, Bnormal2, Bpoisson, BoccSS0, BoccSS, Bsecr0, BsurvCJS.
+
+CHANGES in 0.2.3.9005 (2020-04-11)
+
+  * 'diagPlot' now displays MCE% instead of n.eff.
+
+CHANGES in 0.2.3.9004 (2020-03-18)
+
+  * 'print.Bwiqid' and 'summary.Bwiqid' now give MCE% instead of n.eff.
+
+CHANGES in 0.2.3.9003 (2020-03-11)
+
+  * Added 'plotACs'.
+
+CHANGES in 0.2.3.9002 (2020-02-15)
+
+  * Fixed bug in 'Bsecr0'.
+
+CHANGES in 0.2.3.9001 (2020-01-22)
+
+  * 'Bsecr0' now returns MCMC chains for activity centres
 
 CHANGES in 0.2.3 (2019-12-31)
 
