@@ -1,6 +1,5 @@
 # Individual checks
 
-# setwd("C:/Github/wiqid_package")
 # setwd("D:/Github/wiqid_package")
 setwd("../..")
 dir()
@@ -28,8 +27,8 @@ system("R CMD INSTALL wiqid") # Use this for a "dev" install.
 # ========================
 unlink(list.files(pattern="Rplots.pdf", recursive=TRUE))
 system("R CMD build wiqid")  # Produces the .tar.gz file
-chkstub <- "R CMD check wiqid_0.3.0.tar.gz"   # <---- fix version number here...
-insstub <- "R CMD INSTALL wiqid_0.3.0.tar.gz" # ... and here.
+chkstub <- "R CMD check wiqid_0.2.3.9013.tar.gz"   # <---- fix version number here...
+insstub <- "R CMD INSTALL wiqid_0.2.3.9013.tar.gz" # ... and here.
 
 ## Pick one to check:
 # For laptop (no LaTeX installed)

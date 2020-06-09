@@ -3,6 +3,5 @@
 .git
 .travis.yml
 README.md
-oldNEWS
 Rplots.pdf
 .local_checks
