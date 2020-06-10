@@ -6,16 +6,14 @@ dir()
 
 # Dependencies
 # ============
-install.packages(c("truncnorm", "coda", "plotrix", "secr", "shiny", "rjags"))
-devtools::install_github("mikemeredith/mcmcOutput")
+install.packages(c("truncnorm", "coda", "plotrix", "mcmcOutput"))  # 'strong' dependencies
+install.packages(c("secr", "shiny", "rjags"))  # Suggests
 
 # Spell check
 # ===========
-library(devtools)
-sIg <- scan("spellcheckIgnore.txt", what='character', comment="#")
-tmp <- spell_check("wiqid", ignore=c(hunspell::en_stats, sIg), "en_GB")
-length(tmp)  # number of misspellings found
-tmp  # error if length == 0
+library(spelling)
+( out <- spell_check_package(pkg = "wiqid") )
+update_wordlist(pkg = "wiqid", confirm = TRUE)
 
 # Development
 # ===========
@@ -35,11 +33,11 @@ remove.packages(c("secr", "shiny", "rjags")) # must do before attaching.
 # Install Depends and Imports but NOT Suggests
 install.packages(c("HDInterval", "truncnorm", "coda"))
 Sys.setenv("_R_CHECK_FORCE_SUGGESTS_" = FALSE)
-system(paste("R CMD check", pkg, "--as-cran"))
+system(paste("R CMD check", pkg, "--as-cran"))  # should give NOTEs, no ERRORs.
 library(testthat)
 test_dir("wiqid/inst/tests/testthat", reporter=ProgressReporter)
 
-# Now install rjags, secr and shiny and do the donttest examples
+# Now install rjags, secr and shiny and recheck
 install.packages(c("rjags", "secr", "shiny"))
 Sys.setenv("_R_CHECK_FORCE_SUGGESTS_" = TRUE)
 system(paste("R CMD check", pkg, "--as-cran"))

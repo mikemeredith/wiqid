@@ -22,7 +22,7 @@ The data are provided as a data frame, such as would result from reading in data
 Data distributed with PRESENCE.
 }
 \references{
-MacKenzie, D I; J D Nichols; A J Royle; K H Pollock; L L Bailey; J E Hines 2006. \emph{Occupancy estimation and modeling : inferring patterns and dynamics of species occurrence}. Elsevier Publishing.
+MacKenzie, D I; J D Nichols; A J Royle; K H Pollock; L L Bailey; J E Hines 2006. \emph{Occupancy Estimation and Modeling : Inferring Patterns and Dynamics of Species Occurrence}. Elsevier Publishing.
 }
 \examples{
 data(GrandSkinks)

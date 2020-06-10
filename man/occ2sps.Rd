@@ -51,7 +51,7 @@ Returns an object of class \code{wiqid}, see \link{wiqid-class} for details.
 
 Richmond, Hines, Beissinger (2010) Two-species occupancy models: a new parameterization applied to co-occurrence of secretive rails. \emph{Ecological Applications} 20(7):2036-2046
 
-MacKenzie, D I; J D Nichols; A J Royle; K H Pollock; L L Bailey; J E Hines 2006. \emph{Occupancy estimation and modeling : inferring patterns and dynamics of species occurrence}. Elsevier Publishing.
+MacKenzie, D I; J D Nichols; A J Royle; K H Pollock; L L Bailey; J E Hines 2006. \emph{Occupancy Estimation and Modeling : Inferring Patterns and Dynamics of Species Occurrence}. Elsevier Publishing.
 }
 \author{
 Mike Meredith

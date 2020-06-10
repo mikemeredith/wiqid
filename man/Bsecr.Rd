@@ -69,7 +69,7 @@ There are print, plot, and window methods for \code{Bwiqid}.
 \references{
 Borchers & Efford (2008) Spatially explicit maximum likelihood methods for capture-recapture studies \emph{Biometrics} 64, 377-385
 
-Royle & Dorazio (2008) \emph{Hierarchical modeling and inference in ecology}. Academic Press
+Royle & Dorazio (2008) \emph{Hierarchical Modeling and Inference in Ecology}. Academic Press
 }
 
 \author{

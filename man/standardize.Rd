@@ -24,7 +24,7 @@ either a logical or a numeric value of length 1.
 }
 }
 \details{
-\code{standardize} differs from \code{\link{scale}} by (1) accepting multidimensional arrays but not data frames; (2) \emph{not} standardizing column-wise but using a single value to center or to scale; (3) if \code{x} is a vector, the output will be a vector (not a 1-column matrix). If each column in the matrix represents a different variable, use \code{scale} not \code{standardize}.
+\code{standardize} differs from \code{\link{scale}} by (1) accepting multidimensional arrays but not data frames; (2) \emph{not} standardizing column-wise but using a single value to centre or to scale; (3) if \code{x} is a vector, the output will be a vector (not a 1-column matrix). If each column in the matrix represents a different variable, use \code{scale} not \code{standardize}.
 
 Centring is performed before scaling.
 

@@ -19,7 +19,7 @@ Data for adult male meadow voles \emph{Microtus pennsylvanicus} from a live-trap
 The data are provided as a data frame, such as would result from reading in data from a text file. Further formatting is needed before using these for analysis: see the examples. 
 }
 \source{
-Williams, Nichols, Conroy (2002) \emph{Analysis and management of animal populations: modeling, estimation, and decision making} Academic Press, San Diego CA
+Williams, Nichols, Conroy (2002) \emph{Analysis and Management of Animal Populations: Modeling, Estimation, and Decision Making} Academic Press, San Diego CA
 }
 \references{
 Nichols, Pollock, Hines (1984) The use of a robust capture-recapture design in small mammal population studies: A field example with \emph{Microtus pennsylvanicus.} \emph{Acta Theriologica} 29:357-365.

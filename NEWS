@@ -1,4 +1,8 @@
 
+CHANGES in 0.2.3.9015 (2020-06-10)
+
+  * Spell checking with en-GB.
+
 CHANGES in 0.2.3.9014 (2020-06-09)
 
   * Fixed issues arising when Suggests packages are not installed.

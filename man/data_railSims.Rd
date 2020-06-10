@@ -5,7 +5,7 @@
 Simulated detection/non-detection data for two species of rails
 }
 \description{
-A data set for single-season two-species occupancy modeling. See \code{\link{occ2sps}} for details of these kinds of models.
+A data set for single-season two-species occupancy modelling. See \code{\link{occ2sps}} for details of these kinds of models.
 }
 \usage{data("railSims")}
 \format{

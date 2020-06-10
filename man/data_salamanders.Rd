@@ -15,7 +15,7 @@ A matrix with 39 rows corresponding to sites and 5 columns corresponding to surv
 Described in MacKenzie et al (2006) p99. The data are distributed with the software package PRESENCE.
 }
 \references{
-MacKenzie, D I; J D Nichols; A J Royle; K H Pollock; L L Bailey; J E Hines 2006. \emph{Occupancy estimation and modeling : inferring patterns and dynamics of species occurrence}. Elsevier Publishing.
+MacKenzie, D I; J D Nichols; A J Royle; K H Pollock; L L Bailey; J E Hines 2006. \emph{Occupancy Estimation and Modeling : Inferring Patterns and Dynamics of Species Occurrence}. Elsevier Publishing.
 }
 \examples{
 data(salamanders)
