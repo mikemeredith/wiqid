@@ -30,13 +30,10 @@ If \code{topic} is missing, a list of available apps. Otherwise, nothing useful;
 }
 
 \author{
-A much simplified version of code by Jason Bryer on Github at https://github.com/jbryer/IS606, adapted by Mike Meredith. 
+A much simplified version of code by Jason Bryer on GitHub at \url{https://github.com/jbryer/IS606}, adapted by Mike Meredith.
 }
 
 \examples{
 showShinyApp() # Shows a list of available apps
-
-# The following command will cause R to freeze until you press Esc:
-# showShinyApp("Be")
 
 }

@@ -1,8 +1,11 @@
-# Individual checks
 
-# setwd("D:/Github/wiqid_package")
+# Set directory
+# =============
+# Choose one:
+setwd("C:/Github/wiqid_package") # laptop
+setwd("D:/Github/wiqid_package") # desktop
 setwd("../..")
-dir()
+dir()  # check...
 
 # Dependencies
 # ============
@@ -25,7 +28,7 @@ system("R CMD INSTALL wiqid") # Use this for a "dev" install.
 # ========================
 unlink(list.files(pattern="Rplots.pdf", recursive=TRUE))
 system("R CMD build wiqid")  # Produces the .tar.gz file
-pkg <- "wiqid_0.2.3.9014.tar.gz"   # <---- fix version number here
+pkg <- "wiqid_0.3.0.tar.gz"   # <---- fix version number here
 
 # Check without Suggests packages
 # -------------------------------
@@ -35,7 +38,7 @@ install.packages(c("HDInterval", "truncnorm", "coda"))
 Sys.setenv("_R_CHECK_FORCE_SUGGESTS_" = FALSE)
 system(paste("R CMD check", pkg, "--as-cran"))  # should give NOTEs, no ERRORs.
 library(testthat)
-test_dir("wiqid/inst/tests/testthat", reporter=ProgressReporter)
+test_dir("wiqid/inst/tests/testthat", reporter=ProgressReporter)  # should be no errors
 
 # Now install rjags, secr and shiny and recheck
 install.packages(c("rjags", "secr", "shiny"))
