@@ -27,17 +27,39 @@ system("R CMD INSTALL wiqid") # Use this for a "dev" install.
 # ========================
 unlink(list.files(pattern="Rplots.pdf", recursive=TRUE))
 system("R CMD build wiqid")  # Produces the .tar.gz file
-chkstub <- "R CMD check wiqid_0.2.3.9013.tar.gz"   # <---- fix version number here...
-insstub <- "R CMD INSTALL wiqid_0.2.3.9013.tar.gz" # ... and here.
+pkg <- "wiqid_0.2.3.9014.tar.gz"   # <---- fix version number here
 
+# Check without Suggests packages
+# -------------------------------
+remove.packages(c("secr", "shiny", "rjags")) # must do before attaching.
+# Install Depends and Imports but NOT Suggests
+install.packages(c("HDInterval", "truncnorm", "coda"))
+Sys.setenv("_R_CHECK_FORCE_SUGGESTS_" = FALSE)
+system(paste("R CMD check", pkg, "--as-cran"))
+library(testthat)
+test_dir("wiqid/inst/tests/testthat", reporter=ProgressReporter)
+
+# Now install rjags, secr and shiny and do the donttest examples
+install.packages(c("rjags", "secr", "shiny"))
+Sys.setenv("_R_CHECK_FORCE_SUGGESTS_" = TRUE)
+system(paste("R CMD check", pkg, "--as-cran"))
+
+# Standard checks
+# ---------------
 ## Pick one to check:
 # For laptop (no LaTeX installed)
-system(paste(chkstub, "--no-manual"))
-system(paste(chkstub, "--as-cran --no-manual"))
+system(paste("R CMD check", pkg, "--no-manual"))
+system(paste("R CMD check", pkg, "--as-cran --no-manual"))
 
+# For desktop
+system(paste("R CMD check", pkg))
+system(paste("R CMD check", pkg, "--as-cran"))
+
+# Installation
+# ------------
 ## Pick one to install
-system(paste(insstub, "--build"))
-system(insstub)
+system(paste("R CMD INSTALL", pkg, "--build"))
+system(paste("R CMD INSTALL", pkg))  # use this for R devel
 
 # Test it
 # =======

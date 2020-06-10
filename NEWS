@@ -1,4 +1,8 @@
 
+CHANGES in 0.2.3.9014 (2020-06-09)
+
+  * Fixed issues arising when Suggests packages are not installed.
+
 CHANGES in 0.2.3.9013 (2020-06-07)
 
   * Changed instances of 'as.vector(scale(..)) to standardize(..).

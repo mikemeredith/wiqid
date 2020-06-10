@@ -88,13 +88,6 @@ fixCI <- function(ci) {
 }
 # .....................................................................
 
-# Tidy up the column names in MCMC output: remove [] and , and make names unique
-# fixNames <- function(x) {
-  # tmp <- sub(",", "\\.", sub("\\]", "", sub("\\[", "", x)))
-  # make.unique(tmp)
-# }
-# .....................................................................
-
 # Function to calculate the MARK-style confidence intervals for N
 # See help for Closed Captures
 
@@ -107,26 +100,6 @@ getMARKci <- function(beta, SE.beta, ci) {
 # .........................................................................
 
 ## Regularize a list of formulae, ensuring it is a named list of one-sided formulae.
-## based on Murray Efford's 'stdform' function in 'secr'
-
-# Old version, to be phased out
-stdform <- function (flist) {
-  warning("stdform is deprecated. Use stdModel instead.")
-    LHS <- function (form) {
-        trms <- as.character (form)
-        if (length(trms)==2) '' else trms[2]
-    }
-    RHS <- function (form) {
-        trms <- as.character (form)
-        if (length(trms)==3) as.formula(paste(trms[c(1,3)])) else form
-    }
-    lhs <- sapply(flist, LHS)
-    temp <- lapply(flist, RHS)
-    if (is.null(names(flist))) names(temp) <- lhs
-    else names(temp) <- ifelse(names(flist) == '', lhs, names(flist))
-    temp
-}
-
 # New version:
 stdModel <- function (model1, defaultModel) {
   if(is.null(model1))

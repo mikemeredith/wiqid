@@ -1,5 +1,5 @@
 
-# Adapted from Kery & Schaub
+# Adapted from Kery & Schaub (2012), written by Michael Schaub.
 
 # Not exported
 

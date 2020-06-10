@@ -26,18 +26,3 @@ matchStart <- function(little, big) {
   }
   unique(out)
 }
-
-if(FALSE) {
-big <- month.name
-little <- c("Ju", "Nov", "J")
-little <- -(3:5)
-
-matchStart(c("Ju", "Nov", "J"), month.name)
-matchStart(3:5, month.name)
-matchStart(c(3:7, 4:9), month.name)
-matchStart(9:20, month.name)
-matchStart(-(3:5), month.name)
-matchStart(-3:5, month.name)  # neg. numbers ignored if mixed
-
-}
-

@@ -19,7 +19,7 @@ test_that("Bnormal gives same answers",  {
     equals("Model fitted in R with a Gibbs sampler"))
   expect_that(attr(Bout, "nChains"), equals(1))
   expect_equal(as.character(attr(Bout, "call")), c("Bnormal", "x"))
-  
+
   expect_equivalent(round(colMeans(Bout), 4), c(1.0112, 0.1563))
   expect_equivalent(round(c(hdi(Bout)), 4), c(0.9089, 1.1118, 0.0901, 0.2406))
   xx <- x * 1000
@@ -35,7 +35,8 @@ test_that("Bnormal gives same answers",  {
   expect_equivalent(round(c(hdi(Bout)), 1), c(908.6, 1112.8,   91.4,  242.8))
 })
 
-test_that("Bnormal2 gives same answers",  {
+if(requireNamespace("rjags", quietly = TRUE)) {
+  test_that("Bnormal2 gives same answers",  {
   # Generate data
   set.seed(123)
   x <- rnorm(10, 1, 0.15)
@@ -60,4 +61,5 @@ test_that("Bnormal2 gives same answers",  {
   dummy <- capture.output(Bout <- Bnormal2(x, priors=list(muMean=0, muSD=10, sigmaMode=0.1, sigmaSD=0.2), seed=345))  # informative prior for mu and sigma
   expect_equivalent(round(colMeans(Bout), 4), c(1.0106, 0.1623))
   expect_equivalent(round(c(hdi(Bout)), 4), c(0.9013, 1.1138, 0.0929, 0.2486))
-})
+  })
+}
