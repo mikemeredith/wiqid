@@ -28,7 +28,7 @@ system("R CMD INSTALL wiqid") # Use this for a "dev" install.
 # ========================
 unlink(list.files(pattern="Rplots.pdf", recursive=TRUE))
 system("R CMD build wiqid")  # Produces the .tar.gz file
-pkg <- "wiqid_0.3.0.tar.gz"   # <---- fix version number here
+pkg <- "wiqid_0.3.0.9000.tar.gz"   # <---- fix version number here
 
 # Check without Suggests packages
 # -------------------------------
@@ -72,6 +72,9 @@ test_package("wiqid", reporter=ProgressReporter)
 rm(list=ls())
 library(wiqid)
 ?wiqid
+
+data(railSims)
+str(railSims) # look at logArea
 
 example(Bsecr0) # takes 12 mins
 plotACs(Bout)

@@ -1,4 +1,8 @@
 
+CHANGES in 0.3.0.9000 (2020-09-13)
+
+  * Fixed: in data set `railSims`, `logArea` is now a vector, not a 1-column matrix; values unchanged.
+
 CHANGES in 0.3.0 (2020-06-10)
 
   * Added package `mcmcOutput` to Depends; all functions handling MCMC chains removed: `acfPlot`, `crosscorrPlot`, `densityFolded`, `densityPlot`, `diagPlot`, `postPriorOverlap`, `tracePlot`; functions producing MCMC chains return an `mcmcOutput` object.
