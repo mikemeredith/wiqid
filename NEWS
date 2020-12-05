@@ -1,4 +1,8 @@
 
+CHANGES in 0.3.0.9001 (2020-12-05)
+
+  * Added function `predictAvg` and data set `toves`.
+
 CHANGES in 0.3.0.9000 (2020-09-13)
 
   * Fixed: in data set `railSims`, `logArea` is now a vector, not a 1-column matrix; values unchanged.

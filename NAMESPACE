@@ -46,7 +46,7 @@ export(
   distChaoJaccCorr, distChaoJaccNaive, distChaoSorCorr, distChaoSorNaive,
   distChord, distJaccard, distMatching, distMorisitaHorn, distOchiai, distPreston,
   distRogersTanimoto, distSimRatio, distSorensen, distWhittaker,
-  AICc, allCombinations, AICtable, WAIC,
+  AICc, allCombinations, AICtable, WAIC, predictAvg,
   plotComb,
   plotPost, # postPriorOverlap, # moved to mcmcOutput
   plotACs,
