@@ -1,4 +1,8 @@
 
+CHANGES in 0.3.0.9002 (2021-02-05)
+
+  * Fixed bug in input data checks for `occ2sps`.
+
 CHANGES in 0.3.0.9001 (2020-12-05)
 
   * Added function `predictAvg` and data set `toves`.

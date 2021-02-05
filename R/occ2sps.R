@@ -19,13 +19,13 @@ occ2sps <- function(DHA, DHB, model=NULL, data=NULL, ci=0.95, verify=TRUE)  {
   DHA <- as.matrix(DHA)
   DHB <- as.matrix(DHB)
   if(verify) {
-    if(!all.equal(dim(DHA), dim(DHB)))
-      stop("DHA and DHB must have the same number of rows and columns.")
+    if(!all(dim(DHA) == dim(DHB)))
+      stop("DHA and DHB do not have the same number of rows and columns.")
     DHA <- verifyDH(DHA, allowNA = TRUE)
     DHB <- verifyDH(DHB, allowNA = TRUE)
     # Check that the NAs match up
-    if(!all.equal(is.na(DHA), is.na(DHB), check.attributes=FALSE))
-      stop("DHA and DHB must have missing values for the same surveys.")
+    if(!all(is.na(DHA) == is.na(DHB)))
+      stop("Missing values in DHA and DHB do not match up.")
   }
 
   # Standardise the model:

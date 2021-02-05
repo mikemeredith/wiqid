@@ -20,7 +20,7 @@ update_wordlist(pkg = "wiqid", confirm = TRUE)
 
 # Development
 # ===========
-devtools::load_all("C:/GitHub/wiqid_package/wiqid")
+devtools::load_all("wiqid")
 system("R CMD INSTALL wiqid") # Use this for a "dev" install.
 # test_dir("D:/GitHub/wiqid_package/wiqid/inst/tests/testthat", reporter=ProgressReporter)
 
@@ -28,7 +28,7 @@ system("R CMD INSTALL wiqid") # Use this for a "dev" install.
 # ========================
 unlink(list.files(pattern="Rplots.pdf", recursive=TRUE))
 system("R CMD build wiqid")  # Produces the .tar.gz file
-pkg <- "wiqid_0.3.0.9001.tar.gz"   # <---- fix version number here
+pkg <- "wiqid_0.3.0.9002.tar.gz"   # <---- fix version number here
 
 # Check without Suggests packages
 # -------------------------------
