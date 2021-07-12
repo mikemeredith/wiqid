@@ -7,7 +7,7 @@
 
 \description{
 
-This page documents the priors used in the Bayesian analysis. For logistic models, sensible priors depend on the range of values and thus on the standardisation scheme used, which is also detailed here. 
+This page documents the priors used in the Bayesian analysis. For logistic models, sensible priors depend on the range of values and thus on the standardisation scheme used, which is also detailed here.
 
 At present, this represents good intentions! It has not been implemented in all the functions in \pkg{wiqid}.
 }
@@ -18,7 +18,7 @@ Continuous variables are standardised to facilitate writing models, and optimisa
 
 Binary variables coded as TRUE/FALSE and dummy variables are not changed. To make continuous variables comparable with these, they are centred by subtracting the mean, and then divided by their standard deviation.
 
-Update: In versions prior to 0.2.x, continuous variables were centred by subtracting the mean, and then divided by \emph{two times} their standard deviation (Gelman, 2008). With the new default, beta coefficients will be exactly have the size. There many some rounding errors in the fourth decimal place for other estimates.
+Update: In versions prior to 0.2.x, continuous variables were centred by subtracting the mean, and then divided by \emph{two times} their standard deviation (Gelman, 2008). With the new default, beta coefficients will be exactly half the size. There may be some rounding errors in the fourth decimal place for other estimates.
 
 Note that all numerical inputs (ie, \code{is.numeric == TRUE}) that appear in the \code{data} argument will be standardised, including binary variables coded as 0/1. Variables coded as TRUE/FALSE or as factors are not affected.
 
