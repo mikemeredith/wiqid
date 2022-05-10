@@ -59,6 +59,7 @@ Bnormal <- function(y, priors=NULL,
 
   out <- mcmcOutput(MCMC, header = "Model fitted in R with a Gibbs sampler")
   attr(out, "call") <- match.call()
+  attr(out, "nChains") <- chains
   attr(out, "timeTaken") <- unclass(difftime(Sys.time(), startTime, units="secs"))
   return(out)
 }

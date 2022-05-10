@@ -122,7 +122,7 @@ Bnormal2 <- function(y, priors=NULL,
   attr(out, "doPriorsOnly") <- doPriorsOnly
   if(!is.null(priors))
     attr(out, "priors") <- priors
-
+  attr(out, "nChains") <- chains
   attr(out, "timeTaken") <- unclass(difftime(Sys.time(), startTime, units="secs"))
   return(out)
 }

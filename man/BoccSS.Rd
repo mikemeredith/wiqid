@@ -74,8 +74,9 @@ other arguments to pass to the function.
 
 Independent beta distributions are used as priors for \code{BoccSS0}, as specified by \code{psiPrior} and \code{pPrior}. The defaults, \code{c(1, 1)}, correspond to uniform priors on the probabilities of occupancy and detection.
 
-\code{BoccSS} uses a probit link to model occupancy and detection as a function of covariates (Dorazio and Rodriguez 2011); most software uses a logistic (logit) link.
-See \link{Links}.
+\code{BoccSS} uses a probit link to model occupancy and detection as a function of site covariates or survey covariates, as specified by \code{model}(Dorazio and Rodriguez 2011). It includes a built in \code{.time} covariate which can be used for modelling p with time as a fixed effect, and \code{.Time, .Time2, .Time3} for a linear, quadratic or cubic trend. A built-in \code{.b} covariate corresponds to a behavioural effect, where detection depends on whether the species was detected on the previous occasion or not.
+
+Note that most software uses a logistic (logit) link; see \link{Links}.
 Coefficients on the probit scale are about half the size of the equivalent on the logit scale.
 
 Priors for \code{BoccSS} are listed in the \code{priors} argument, which may contain elements:

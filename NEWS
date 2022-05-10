@@ -1,4 +1,9 @@
 
+CHANGES in 0.3.0.9003 (2022-03-15)
+
+  * Added additional information to the help page for `BoccSS`.
+  * Fixed bug in `Bnormal` and `Bnormal2`: object returned has number of chains as attribute.
+
 CHANGES in 0.3.0.9002 (2021-02-05)
 
   * Fixed bug in input data checks for `occ2sps`.
