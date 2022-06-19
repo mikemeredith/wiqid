@@ -17,6 +17,8 @@ Species richness estimators
 }
 \description{
 Functions to estimate species richness, based on samples from one or more surveys (quadrats, sites, occasions, ...) as included in EstimateS. See Details for individual estimators.
+
+EstimateS no longer runs under Windows 10 or later and is effectively defunct. See \url{https://www.robertkcolwell.org/pages/estimates}.
 }
 \usage{
 richACE(cntVec, threshold = 10)
@@ -59,9 +61,7 @@ the required confidence interval.
 
 \code{richMM} calculates the asymptotic species richness from a Michaelis-Menten curve fitted to the species rarefaction curve (Colwell et al. 2004).
 
-See the EstimateS Users Guide at \url{http://viceroy.eeb.uconn.edu/estimates/} for the equations for the functions above.
-
-The following are not included in EstimateS v.8.2:
+The following were not included in EstimateS v.8.2:
 
 \code{richJackA1} and \code{richJackA2} calculate first and second order abundance-based jackknife estimators of species richness (Gotelli & Colwell 2011).
 

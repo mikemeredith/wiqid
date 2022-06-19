@@ -175,7 +175,8 @@ function(x, which=NULL, credMass=0.95,
 
   # Deal with ... argument
   dots <- list(...)
-  if(length(dots) == 1 && class(dots[[1]]) == "list")
+  # if(length(dots) == 1 && class(dots[[1]]) == "list")
+  if(length(dots) == 1 && inherits(dots[[1]], "list"))  # Fixed 2022-06-06
     dots <- dots[[1]]
 
   if(is.null(which)) # && !is.null(attr(x, "defaultPlot")))

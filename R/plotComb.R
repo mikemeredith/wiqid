@@ -1,12 +1,12 @@
 
 # Function to plot the Bayesian posterior resulting from the comb method
-#   described in Kruschke (2015) DBDA. 
+#   described in Kruschke (2015) DBDA.
 
 plotComb <- function(x, y, credMass=0.95, plot=TRUE, showMode=FALSE,
            shadeHDI=NULL, ...) {
   if(length(credMass) != 1 || credMass <= 0 || credMass >= 1)
     stop("credMass must be in 0 < credMass < 1")
-    
+
   # Calculate HDI:
   sorted = sort(y, decreasing=TRUE )
   heightIdx = min( which( cumsum( sorted) >= sum(y) * credMass ) )
@@ -18,13 +18,14 @@ plotComb <- function(x, y, credMass=0.95, plot=TRUE, showMode=FALSE,
   HDI <- cbind(lower = x[begs], upper = x[ends])
   attr(HDI, "credMass") <- credMass
   attr(HDI, "height") <- height
-  
+
   # Do the plot:
   if(plot) {
     dots <- list(...)
-    if(length(dots) == 1 && class(dots[[1]]) == "list")
+    # if(length(dots) == 1 && class(dots[[1]]) == "list")
+    if(length(dots) == 1 && inherits(dots[[1]], "list"))  # Fixed 2022-06-06
       dots <- dots[[1]]
-    defaultArgs <- list(xlab=deparse(substitute(x)), 
+    defaultArgs <- list(xlab=deparse(substitute(x)),
       yaxt="n", ylab="", main="", cex.lab=1.5,
       cex=1.4, col="skyblue", bty="n", lwd=5,
       xlim=range(x))

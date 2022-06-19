@@ -30,7 +30,7 @@ If \code{topic} is missing, a list of available apps. Otherwise, nothing useful;
 }
 
 \author{
-A much simplified version of code by Jason Bryer on GitHub at \url{https://github.com/jbryer/IS606}, adapted by Mike Meredith.
+A much simplified version of code by Jason Bryer on GitHub at \url{https://github.com/jbryer/DATA606}, adapted by Mike Meredith.
 }
 
 \examples{

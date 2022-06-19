@@ -17,7 +17,7 @@ test_that("Bnormal gives same answers",  {
   expect_that(names(Bout), equals(c("mu", "sigma")))
   expect_that(attr(Bout, "header"),
     equals("Model fitted in R with a Gibbs sampler"))
-  expect_that(attr(Bout, "nChains"), equals(1))
+  expect_that(attr(Bout, "nChains"), equals(3))
   expect_equal(as.character(attr(Bout, "call")), c("Bnormal", "x"))
 
   expect_equivalent(round(colMeans(Bout), 4), c(1.0112, 0.1563))
