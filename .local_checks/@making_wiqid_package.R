@@ -28,7 +28,7 @@ system("R CMD INSTALL wiqid") # Use this for a "dev" install.
 # ========================
 unlink(list.files(pattern="Rplots.pdf", recursive=TRUE))
 system("R CMD build wiqid")  # Produces the .tar.gz file
-pkg <- "wiqid_0.3.2.tar.gz"   # <---- fix version number here
+pkg <- "wiqid_0.3.3.tar.gz"   # <---- fix version number here
 
 # Check without Suggests packages
 # -------------------------------

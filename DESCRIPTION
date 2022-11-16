@@ -1,13 +1,13 @@
 Package: wiqid
 Type: Package
 Title: Quick and Dirty Estimates for Wildlife Populations
-Version: 0.3.2
-Date: 2022-11-15
+Version: 0.3.3
+Date: 2022-11-16
 Depends: HDInterval, R (>= 2.10), mcmcOutput
 Imports: stats, truncnorm, MASS, coda, plotrix
 Suggests: secr (>= 3.0), shiny, rjags
 Authors@R: c(
-  person("Ngumbang", "Juat", role="cre", email="mgumbangjuat@hotmail.com"),
+  person("Ngumbang", "Juat", role="cre", email="ngumbangjuat@hotmail.com"),
   person("Mike", "Meredith", role="aut"),
   person("Jason", "Bryer", role="ctb", comment="showShinyApp"),
   person("John", "Kruschke", role="ctb"),
